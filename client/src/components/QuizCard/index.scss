@@ -1,0 +1,89 @@
+@import "~materialize-css/sass/materialize";
+
+.quiz-card {
+  @extend .card, .hoverable, .z-depth-2;
+  margin: 0;
+
+  &__start-btn {
+    @extend .waves-effect, .waves-light, .cyan, .white-text, .hoverable;
+    position: absolute;
+    bottom: 0;
+    right: 24px;
+    padding: 5px 25px;
+    border-radius: 20px;
+    text-transform: capitalize;
+    transform: translateY(50%);
+  }
+
+  &__actions {
+    position: absolute;
+    visibility: hidden;
+    top: 8px;
+    right: 24px;
+    margin: 0 -5px;
+    transition: all .3s ease-in-out;
+    opacity: 0;
+  }
+
+  &:hover &__actions {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  &__share-btn, &__bookmark-btn {
+    margin: 0 5px;
+  }
+
+  &__bookmark-icon::before {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 1.2rem;
+    line-height: 32.4px;
+    content: "turned_in_not";
+  }
+
+  &__bookmark-icon--active::before,
+  &__bookmark-btn:hover &__bookmark-icon::before {
+    content: "turned_in";
+  }
+
+  &__excerpt {
+    margin-bottom: 10px!important;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  &__author {
+    margin-right: auto;
+  }
+
+  &__counter {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+  }
+
+  &__counter-icon {
+    font-size: 20px;
+    margin-right: 4px;
+  }
+}
+
+.tag {
+  @extend .chip;
+  height: auto;
+  line-height: 1;
+  padding: {
+    top: 4px;
+    bottom: 4px;
+  }
+
+  &:hover {
+    @extend .z-depth-1;
+  }
+}

@@ -31,7 +31,7 @@ module.exports = {
       disableDotRule: true,
     },
     stats: 'minimal',
-    // proxy: { },
+    proxy: { '/api/*': { target: 'http://localhost:5000', secure: false } },
   },
   module: {
     rules: [
@@ -50,7 +50,6 @@ module.exports = {
           isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
           { loader: 'css-loader', options: { sourceMap: true } },
           { loader: 'postcss-loader', options: { sourceMap: true } },
-          // Compiles Sass to CSS
           { loader: 'sass-loader', options: { sourceMap: true } },
         ],
       },
@@ -113,6 +112,7 @@ module.exports = {
   resolve: {
     extensions: ['.jsx', '.js'],
     alias: {
+      app: path.join(__dirname, '../src/'),
       assets: path.join(__dirname, '../src/assets/'),
     },
   },
