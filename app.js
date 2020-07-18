@@ -1,6 +1,13 @@
 const express = require('express');
 const config = require('config');
 const mongoose = require('mongoose');
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: config.get('cloudinaryCloudName'),
+  api_key: config.get('cloudinaryApiKey'),
+  api_secret: config.get('cloudinaryApiSecret'),
+});
 
 const app = express();
 

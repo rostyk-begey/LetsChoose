@@ -19,7 +19,7 @@ const NAV_ITEMS = [
   },
 ];
 
-const Page = ({ className, children, containerClassName }) => {
+const Page = ({ className, children, containerClassName = '' }) => {
   const baseClassName = 'page';
   const { logout, isAuthenticated } = useContext(AuthContext);
 
@@ -48,15 +48,16 @@ const Page = ({ className, children, containerClassName }) => {
               {label}
             </Link>
           ))}
-        {isAuthenticated && (
+        {isAuthenticated && [
+          <Link to={ROUTES.ACCOUNT.INDEX}>Account</Link>,
           <button
             type="button"
             onClick={logout}
             className={`${baseClassName}__logout-btn`}
           >
             Logout
-          </button>
-        )}
+          </button>,
+        ]}
       </Navbar>
       <Container
         className={`${baseClassName}__page-wrapper ${containerClassName}`}
