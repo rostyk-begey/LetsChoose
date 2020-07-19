@@ -1,37 +1,39 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useContext } from 'react';
+import { StandaloneFormPage } from 'tabler-react';
 import { Link } from 'react-router-dom';
 
-import Page from 'app/components/Page';
 import AuthContext from 'app/context/AuthContext';
 import useHttp from 'app/hooks/http';
-import useForm from 'app/hooks/form';
 import ROUTES from 'app/utils/routes';
 import AuthForm from 'app/components/AuthForm';
 
-import './index.scss';
-
 const INPUTS = [
   {
-    noLayout: true,
-    label: 'Username or Email',
+    label: 'Login',
     name: 'login',
-    icon: 'account_circle',
+    placeholder: 'login',
+    type: 'text',
+    validation: {
+      pattern: {
+        required: 'Please enter a login',
+      },
+    },
   },
   {
-    noLayout: true,
-    password: true,
     label: 'Password',
     name: 'password',
-    icon: 'enhanced_encryption',
+    type: 'password',
+    placeholder: 'password',
+    validation: {
+      required: 'Please enter a password',
+    },
   },
 ];
 
 const LoginPage = () => {
-  const baseClassName = 'login-page';
   const auth = useContext(AuthContext);
   const { request, loading, error } = useHttp();
-  const { form, onChange } = useForm({ login: '', password: '' });
-  const onSubmit = useCallback(async () => {
+  const onSubmit = async (form) => {
     try {
       const { token, userId } = await request(
         ROUTES.API.AUTH.LOGIN,
@@ -45,31 +47,23 @@ const LoginPage = () => {
     } catch (e) {
       M.toast({ html: e.message });
     }
-  }, [form]);
+  };
 
   return (
-    <Page
-      className={baseClassName}
-      containerClassName={`${baseClassName}__container`}
-    >
+    <StandaloneFormPage imageURL="">
       <AuthForm
-        className={`${baseClassName}_login-form`}
-        onChange={onChange}
-        onSubmit={onSubmit}
         inputs={INPUTS}
-        submitText="Login"
-        submitIcon="send"
-        buttonDisabled={loading}
+        title="Login to your Account"
+        buttonText="Login"
+        onSubmit={onSubmit}
+        buttonLoading={loading}
         formAfter={
-          <span className={`${baseClassName}__form-text`}>
-            Don't have an account?{' '}
-            <Link to={ROUTES.REGISTER} tabIndex={-1}>
-              Sign up
-            </Link>
-          </span>
+          <div className="mt-2">
+            Don't have an account? <Link to={ROUTES.REGISTER}>Sign up</Link>
+          </div>
         }
       />
-    </Page>
+    </StandaloneFormPage>
   );
 };
 
