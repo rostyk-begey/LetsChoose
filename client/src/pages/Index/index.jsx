@@ -1,4 +1,6 @@
 import React from 'react';
+import { Page as TablerPage } from 'tabler-react';
+
 import Page from 'app/components/Page';
 
 const IndexPage = () => {
@@ -6,7 +8,7 @@ const IndexPage = () => {
 
   return (
     <Page className={baseClassName}>
-      <h1 className={`${baseClassName}_title`}>Index page</h1>
+      <TablerPage.Content title="Index page" />
     </Page>
   );
 };

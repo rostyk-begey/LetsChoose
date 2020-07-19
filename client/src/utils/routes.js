@@ -1,9 +1,11 @@
 export default {
-  HOME: '/',
+  INDEX: '/',
+  HOME: '/home',
   LOGIN: '/login',
   LOGOUT: '/logout',
   REGISTER: '/register',
-  QUIZ: '/quiz',
+  USERS: '/users',
+  CONTEST: '/contest',
   API: {
     AUTH: {
       LOGIN: '/api/auth/login',
