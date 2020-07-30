@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { StandaloneFormPage } from 'tabler-react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import AuthContext from 'app/context/AuthContext';
 import useHttp from 'app/hooks/http';
+import useURLSearchParams from 'app/hooks/URLSearchParams';
 import ROUTES from 'app/utils/routes';
 import AuthForm from 'app/components/AuthForm';
 
@@ -31,8 +32,10 @@ const INPUTS = [
 ];
 
 const LoginPage = () => {
+  const query = useURLSearchParams();
   const auth = useContext(AuthContext);
   const { request, loading, error } = useHttp();
+  const history = useHistory();
   const onSubmit = async (form) => {
     try {
       const { token, userId } = await request(
@@ -44,9 +47,8 @@ const LoginPage = () => {
         },
       );
       auth.login(token, userId);
-    } catch (e) {
-      M.toast({ html: e.message });
-    }
+      history.push(query.get('redirectTo'));
+    } catch (e) {}
   };
 
   return (

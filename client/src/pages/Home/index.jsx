@@ -28,14 +28,14 @@ const HomePage = () => {
                 type="radio"
                 label="Popular"
                 checked={filter === FILTERS.POPULAR}
-                onClick={() => setFilter(FILTERS.POPULAR)}
+                onChange={() => setFilter(FILTERS.POPULAR)}
               />
               <Form.SelectGroupItem
                 className="mb-0"
                 type="radio"
                 label="Newest"
                 checked={filter === FILTERS.NEWEST}
-                onClick={() => setFilter(FILTERS.NEWEST)}
+                onChange={() => setFilter(FILTERS.NEWEST)}
               />
             </Form.SelectGroup>
             <Form.Input
@@ -48,10 +48,9 @@ const HomePage = () => {
       >
         <Grid.Row>
           {[...Array(10).keys()].map((idx) => (
-            <Grid.Col sm={6} lg={4}>
+            <Grid.Col sm={6} lg={4} key={idx}>
               <ContestCard
                 id={idx}
-                key={idx}
                 views={Math.floor(Math.random() * 1000)}
                 likes={Math.floor(Math.random() * 1000)}
                 dislikes={Math.floor(Math.random() * 1000)}

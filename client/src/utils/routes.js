@@ -8,6 +8,7 @@ export default {
   CONTEST: '/contest',
   API: {
     AUTH: {
+      INDEX: '/api/auth',
       LOGIN: '/api/auth/login',
       REGISTER: '/api/auth/register',
     },
