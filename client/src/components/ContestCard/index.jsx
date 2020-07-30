@@ -53,7 +53,7 @@ const ContestCard = ({
         </div>
         <div className="ml-auto text-muted">
           {COUNTERS.map(({ icon, data }) => (
-            <span className="icon d-none d-md-inline-block ml-3">
+            <span className="icon d-none d-md-inline-block ml-3" key={icon}>
               <Icon name={icon} className="mr-1" />
               {data}
             </span>

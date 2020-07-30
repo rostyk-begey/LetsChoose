@@ -5,20 +5,17 @@ import { Site, Page as TablerPage, Button } from 'tabler-react';
 import AuthContext from 'app/context/AuthContext';
 import ROUTES from 'app/utils/routes';
 
+const newNavBarItem = (to, value, icon, useExact) => ({
+  to,
+  icon,
+  value,
+  useExact,
+  LinkComponent: Link,
+});
+
 const NAV_BAR_ITEMS = [
-  {
-    value: 'Feed',
-    to: ROUTES.HOME,
-    icon: 'home',
-    LinkComponent: Link,
-    useExact: true,
-  },
-  {
-    value: 'Trends',
-    icon: 'search',
-    to: '/data-nodes',
-    LinkComponent: Link,
-  },
+  newNavBarItem(ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
+  newNavBarItem(ROUTES.HOME, 'Trends', 'search', ROUTES.HOME),
 ];
 
 const AUTH_BUTTONS = [
@@ -46,7 +43,13 @@ export const Page = ({ children }) => {
       { icon: 'send', value: 'Message' },
       { isDivider: true },
       { icon: 'help-circle', value: 'Need help?' },
-      { icon: 'log-out', value: 'Sign out', onClick: logout },
+      {
+        icon: 'log-out',
+        value: 'Sign out',
+        onClick: () => {
+          logout(ROUTES.LOGIN);
+        },
+      },
     ],
   };
 

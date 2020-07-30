@@ -15,10 +15,13 @@ const useAuth = () => {
     );
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback((redirectTo = null) => {
     setToken(null);
     setUserId(null);
     localStorage.removeItem(STORAGE_KEY);
+    if (redirectTo) {
+      history.push(redirectTo);
+    }
   }, []);
 
   useEffect(() => {

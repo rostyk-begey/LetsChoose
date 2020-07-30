@@ -5,8 +5,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const User = require('../models/User');
+const auth = require('../middleware/auth.middleware');
 
 const router = Router();
+
+router.post('/', auth, async (req, res) => {
+  res.status(200).json({});
+});
 
 router.post(
   '/register',
