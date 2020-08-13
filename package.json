@@ -8,6 +8,7 @@
     "server": "nodemon app.js",
     "client": "yarn --cwd client run start",
     "client:build": "yarn --cwd client run build",
+    "build": "concurrently \"yarn run client:build\" \"yarn start\"",
     "dev": "concurrently \"yarn run server\" \"yarn run client\""
   },
   "keywords": [
