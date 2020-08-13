@@ -7,9 +7,12 @@
     "start": "NODE_ENV=production node app.js",
     "server": "nodemon app.js",
     "client": "yarn --cwd client run start",
-    "client:build": "yarn --cwd client install",
-    "build": "concurrently \"yarn run client:install\" \"yarn run client:build\"Q",
+    "client:build": "yarn --cwd client build",
+    "heroku-postbuild": "cd client && yarn install --production=false && yarn run build",
     "dev": "concurrently \"yarn run server\" \"yarn run client\""
+  },
+  "engines": {
+    "node": "14.4.0"
   },
   "keywords": [
     "choose",
