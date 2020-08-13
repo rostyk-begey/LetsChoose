@@ -7,8 +7,8 @@
     "start": "NODE_ENV=production node app.js",
     "server": "nodemon app.js",
     "client": "yarn --cwd client run start",
-    "client:build": "yarn --cwd client run build",
-    "build": "concurrently \"yarn run client:build\" \"yarn start\"",
+    "client:build": "yarn --cwd client install",
+    "build": "concurrently \"yarn run client:install\" \"yarn run client:build\" \"yarn start\"",
     "dev": "concurrently \"yarn run server\" \"yarn run client\""
   },
   "keywords": [
