@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "NODE_ENV=production node app.js",
     "server": "nodemon app.js",
     "client": "yarn --cwd client run start",
     "client:build": "yarn --cwd client run build",
