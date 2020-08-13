@@ -5,8 +5,12 @@ export default {
   LOGOUT: '/logout',
   REGISTER: '/register',
   USERS: '/users',
-  CONTEST: '/contest',
+  CONTESTS: {
+    INDEX: '/contests',
+    NEW: '/contests/new',
+  },
   API: {
+    CONTESTS: '/api/contests',
     AUTH: {
       INDEX: '/api/auth',
       LOGIN: '/api/auth/login',

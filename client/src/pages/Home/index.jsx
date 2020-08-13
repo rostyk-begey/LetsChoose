@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Page as TablerPage, Grid, Form } from 'tabler-react';
 
 import Page from 'app/components/Page';
 import ContestCard from 'app/components/ContestCard';
+import { useContestAll } from 'app/hooks/api/contest';
+import AuthContext from 'app/context/AuthContext';
 
 import './index.scss';
-
-import cardImage from 'assets/images/card-1.jpg';
 
 const FILTERS = {
   POPULAR: 'POPULAR',
@@ -14,7 +14,17 @@ const FILTERS = {
 };
 
 const HomePage = () => {
+  const auth = useContext(AuthContext);
   const [filter, setFilter] = useState(FILTERS.POPULAR);
+  const {
+    data: { data: contests = [] } = {},
+    ...contestsQuery
+  } = useContestAll();
+  useEffect(() => {
+    if (contestsQuery.error && contestsQuery.error.response.status === 401) {
+      auth.logout();
+    }
+  }, [contestsQuery.error]);
   return (
     <Page>
       <TablerPage.Content
@@ -47,22 +57,12 @@ const HomePage = () => {
         }
       >
         <Grid.Row>
-          {[...Array(10).keys()].map((idx) => (
-            <Grid.Col sm={6} lg={4} key={idx}>
-              <ContestCard
-                id={idx}
-                views={Math.floor(Math.random() * 1000)}
-                likes={Math.floor(Math.random() * 1000)}
-                dislikes={Math.floor(Math.random() * 1000)}
-                thumbnail={cardImage}
-                title="Card Title"
-                excerpt="I am a very simple card. I am good at containing small bits of
-            information. I am convenient because I require little markup to
-            use effectively."
-                tags={['music', 'movie', 'image', 'art']}
-              />
-            </Grid.Col>
-          ))}
+          {contestsQuery.isSuccess &&
+            contests.map((contest) => (
+              <Grid.Col sm={6} lg={4} key={contest._id}>
+                <ContestCard data={contest} />
+              </Grid.Col>
+            ))}
         </Grid.Row>
       </TablerPage.Content>
     </Page>

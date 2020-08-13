@@ -1,7 +1,8 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { Button, Card, Form } from 'tabler-react';
-import cn from 'classnames';
+
+import FormInput from 'app/components/FormInput';
 
 import './index.scss';
 
@@ -13,36 +14,33 @@ const AuthForm = ({
   buttonLoading = false,
   formAfter = '',
 }) => {
-  const { register, handleSubmit, errors } = useForm({
+  const form = useForm({
     mode: 'onBlur',
     reValidateMode: 'onChange',
   });
+  const { handleSubmit, errors } = form;
 
   return (
     <Form
       className="card"
       onSubmit={handleSubmit(onSubmit)}
-      errors={errors}
       method="POST"
       title="Register new account"
     >
       <Card.Body className="p-6">
         <Card.Title RootComponent="div">{title}</Card.Title>
-        {inputs.map(({ type, name, label, placeholder, validation }, i) => (
-          <Form.Group key={label} label={label}>
-            <input
-              className={cn('form-control', { 'is-invalid': errors[name] })}
-              tabIndex={i}
-              name={name}
+        <FormProvider {...form}>
+          {inputs.map(({ type, name, label, placeholder, validation }, i) => (
+            <FormInput
+              key={i}
               type={type}
+              name={name}
+              label={label}
               placeholder={placeholder}
-              ref={register(validation)}
+              validation={validation}
             />
-            {errors[name] && (
-              <span className="invalid-feedback">{errors[name].message}</span>
-            )}
-          </Form.Group>
-        ))}
+          ))}
+        </FormProvider>
         <Form.Footer>
           <Button
             type="submit"

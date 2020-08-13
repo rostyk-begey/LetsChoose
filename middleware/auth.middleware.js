@@ -13,8 +13,8 @@ module.exports = (req, res, next) => {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const decoded = jwt.verify(token, config.get('jwtSecret'));
-    req.userId = decoded;
+    const { userId } = jwt.verify(token, config.get('jwtSecret'));
+    req.userId = userId;
     next();
   } catch (e) {
     return res.status(401).json({ message: 'Unauthorized' });

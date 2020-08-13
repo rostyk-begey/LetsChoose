@@ -1,0 +1,18 @@
+.create-contest-form {
+  min-height: 500px;
+
+  &__flex-1 {
+    flex: 1;
+  }
+
+  &__preview-holder {
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, .04);
+  }
+
+  &__preview {
+    object-fit: cover;
+    object-position: center;
+  }
+}

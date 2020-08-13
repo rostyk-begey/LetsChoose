@@ -1,8 +1,0 @@
-{
-  "port": 5000,
-  "jwtSecret": "jwtSecret",
-  "mongoUri": "mongodb+srv://rostyslav:LeTAjXNbjSDUDB74@cluster0.be4wl.mongodb.net/app?retryWrites=true&w=majority",
-  "cloudinaryCloudName": "dcfzgnkj8",
-  "cloudinaryApiKey": "344426286256624",
-  "cloudinaryApiSecret": "9ttHTjERjF5fbPYv2xqmE-b3R90"
-}

@@ -8,6 +8,7 @@ import RegisterPage from 'app/pages/Register';
 import IndexPage from 'app/pages/Index';
 import UserPage from 'app/pages/User';
 import ContestPage from 'app/pages/Contest';
+import CreateContestPage from 'app/pages/CreateContest';
 
 import ROUTES from 'app/utils/routes';
 
@@ -32,7 +33,13 @@ const useRoutes = (isAuthenticated) => {
       exact: false,
     },
     {
-      path: `${ROUTES.CONTEST}/:id`,
+      path: ROUTES.CONTESTS.NEW,
+      allowed: isAuthenticated,
+      component: CreateContestPage,
+      exact: true,
+    },
+    {
+      path: `${ROUTES.CONTESTS.INDEX}/:id`,
       allowed: isAuthenticated,
       component: ContestPage,
       exact: false,
@@ -55,7 +62,7 @@ const useRoutes = (isAuthenticated) => {
   return (
     <Switch>
       {routes.map((route) => (
-        <PrivateRoute {...route} />
+        <PrivateRoute {...route} key={route.path} />
       ))}
       <Route path="*">
         <Redirect to={ROUTES.INDEX} />
