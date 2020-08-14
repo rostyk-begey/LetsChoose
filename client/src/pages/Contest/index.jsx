@@ -88,6 +88,8 @@ const ContestPage = () => {
   //     setIsStarted(false);
   //   },
   // );
+  const currentRound = 0;
+  const currentPair = [];
 
   return (
     <Page>
