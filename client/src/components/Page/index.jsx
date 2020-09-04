@@ -5,6 +5,8 @@ import { Site, Page as TablerPage, Button } from 'tabler-react';
 import AuthContext from 'app/context/AuthContext';
 import ROUTES from 'app/utils/routes';
 
+import logo from '../../assets/images/logo.svg';
+
 const newNavBarItem = (to, value, icon, useExact) => ({
   to,
   icon,
@@ -15,7 +17,7 @@ const newNavBarItem = (to, value, icon, useExact) => ({
 
 const NAV_BAR_ITEMS = [
   newNavBarItem(ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
-  newNavBarItem(ROUTES.HOME, 'Trends', 'search', ROUTES.HOME),
+  newNavBarItem(ROUTES.CONTESTS.NEW, 'New', 'plus', ROUTES.CONTESTS.NEW),
 ];
 
 const AUTH_BUTTONS = [
@@ -59,7 +61,7 @@ export const Page = ({ children }) => {
         <Site.Header
           href={ROUTES.HOME}
           alt="Let's Choose"
-          imageURL="/"
+          imageURL={logo}
           navItems={
             !isAuthenticated && (
               <Button.List>

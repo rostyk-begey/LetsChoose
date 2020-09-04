@@ -1,0 +1,10 @@
+.contest-page {
+  &__compare-item-image {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      filter: brightness(0.5) drop-shadow(2px 4px 6px black);
+    }
+  }
+}
