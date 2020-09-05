@@ -1,7 +1,8 @@
 const Mongoose = require('mongoose');
+const cloudinary = require('cloudinary').v2;
+const User = require('../models/User');
 const Contest = require('../models/Contest');
 const ContestItem = require('../models/ContestItem');
-const cloudinary = require('cloudinary').v2;
 
 // const rand = () => Math.random().toString(36).substr(2);
 
@@ -37,7 +38,10 @@ const cloudinary = require('cloudinary').v2;
 const ContestController = {
   async get({ query = {} }, res) {
     try {
-      const contests = await Contest.find(query);
+      const contests = await Contest.find(query).populate(
+        'author',
+        'username _id',
+      );
       res.status(200).json(contests);
     } catch (e) {
       res.status(500);
@@ -45,8 +49,8 @@ const ContestController = {
   },
   async find({ params: { id } }, res) {
     try {
-      const contest = await Contest.findOne({ _id: id });
-      contest.items = await ContestItem.find({ contestId: contest._id });
+      const contest = await Contest.findById(id);
+      contest.items = await ContestItem.find({ contestId: id });
       res.status(200).json(contest);
     } catch (e) {
       res.status(500);
