@@ -33,16 +33,20 @@ const AUTH_BUTTONS = [
 ];
 
 export const Page = ({ children }) => {
-  const { logout, isAuthenticated } = useContext(AuthContext);
+  const { logout, isAuthenticated, userId } = useContext(AuthContext);
   const accountDropdownProps = {
     avatarURL: '/',
     name: 'Jane Pearson',
-    description: 'Administrator',
+    // description: 'Administrator',
     options: [
-      { icon: 'user', value: 'Profile' },
+      {
+        icon: 'user',
+        value: 'Profile',
+        to: `${ROUTES.USERS}/${userId}`,
+      },
       { icon: 'settings', value: 'Settings' },
-      { icon: 'mail', value: 'Inbox', badge: '6' },
-      { icon: 'send', value: 'Message' },
+      // { icon: 'mail', value: 'Inbox', badge: '6' },
+      // { icon: 'send', value: 'Message' },
       { isDivider: true },
       { icon: 'help-circle', value: 'Need help?' },
       {
