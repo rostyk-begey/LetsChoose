@@ -1,6 +1,5 @@
 const Mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
-const User = require('../models/User');
 const Contest = require('../models/Contest');
 const ContestItem = require('../models/ContestItem');
 
@@ -58,8 +57,8 @@ const ContestController = {
   },
   async create({ userId, files, body: { title, excerpt, items } }, res) {
     try {
-      const fieldameFilter = (key) => ({ fieldname }) => fieldname === key;
-      const thumbnail = files.find(fieldameFilter('thumbnail'));
+      const fieldNameFilter = (key) => ({ fieldname }) => fieldname === key;
+      const thumbnail = files.find(fieldNameFilter('thumbnail'));
       const contestId = Mongoose.Types.ObjectId();
       const { secure_url } = await cloudinary.uploader.upload(thumbnail.path, {
         public_id: `contests/${contestId}/thumbnail`,
@@ -74,7 +73,7 @@ const ContestController = {
       contest.save();
       const savingItems = items.map(async (item, i) => {
         const contestItemId = Mongoose.Types.ObjectId();
-        const image = files.find(fieldameFilter(`items[${i}][image]`));
+        const image = files.find(fieldNameFilter(`items[${i}][image]`));
         const { secure_url } = await cloudinary.uploader.upload(image.path, {
           public_id: `contests/${contestId}/items/${contestItemId}`,
         });
@@ -82,7 +81,7 @@ const ContestController = {
           ...item,
           image: secure_url,
           _id: contestItemId,
-          contestId: contestId,
+          contestId,
         });
         await contestItem.save();
       });
