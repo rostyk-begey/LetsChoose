@@ -5,6 +5,8 @@ import humanTime from 'human-time';
 
 import ROUTES from 'app/utils/routes';
 
+import './index.scss';
+
 const ContestCard = ({
   data: {
     _id: id,
@@ -20,6 +22,7 @@ const ContestCard = ({
     tags = [],
   },
 }) => {
+  const baseClassName = 'contest-card';
   const COUNTERS = [
     {
       icon: 'eye',
@@ -36,9 +39,18 @@ const ContestCard = ({
   ];
 
   return (
-    <Card>
-      <Link to={`${ROUTES.CONTESTS.INDEX}/${id}`}>
-        <img src={thumbnail} alt="" className="card-img-top" />
+    <Card className={baseClassName}>
+      <Link
+        to={`${ROUTES.CONTESTS.INDEX}/${id}`}
+        className={`${baseClassName}__image-holder`}
+      >
+        <img
+          width="500"
+          height="500"
+          src={thumbnail}
+          alt=""
+          className={`card-img-top ${baseClassName}__image`}
+        />
       </Link>
       <Card.Body className="p-4">
         <h4>

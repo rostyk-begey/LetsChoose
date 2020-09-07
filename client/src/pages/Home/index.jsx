@@ -58,7 +58,7 @@ const HomePage = () => {
         <Grid.Row>
           {contestsQuery.isSuccess &&
             contests.map((contest) => (
-              <Grid.Col sm={6} lg={4} key={contest._id}>
+              <Grid.Col width={12} md={6} lg={4} key={contest._id}>
                 <ContestCard data={contest} />
               </Grid.Col>
             ))}
