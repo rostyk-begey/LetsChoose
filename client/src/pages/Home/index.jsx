@@ -29,7 +29,6 @@ const HomePage = () => {
     <Page>
       <TablerPage.Content
         title="Popular Contests"
-        subTitle="1 - 12 of 1713 photos"
         options={
           <>
             <Form.SelectGroup className="mr-2" canSelectMultiple={false}>
