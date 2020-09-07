@@ -17,9 +17,7 @@ const INPUTS = [
     placeholder: 'login',
     type: 'text',
     validation: {
-      pattern: {
-        required: 'Please enter a login',
-      },
+      required: 'Please enter a login',
     },
   },
   {
