@@ -7,6 +7,8 @@ import AuthContext from 'app/context/AuthContext';
 import useHttp from 'app/hooks/http';
 import ROUTES from 'app/utils/routes';
 
+import logo from 'assets/images/logo.svg';
+
 const INPUTS = [
   {
     label: 'Email',
@@ -73,7 +75,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <StandaloneFormPage imageURL="">
+    <StandaloneFormPage imageURL={logo}>
       <AuthForm
         inputs={INPUTS}
         title="Create New Account"
