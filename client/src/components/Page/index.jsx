@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Site, Page as TablerPage, Button } from 'tabler-react';
 
@@ -34,6 +34,7 @@ const AUTH_BUTTONS = [
 
 export const Page = ({ children }) => {
   const { logout, isAuthenticated, userId } = useContext(AuthContext);
+  const [navCollapse, setNavCollapse] = useState(true);
   const accountDropdownProps = {
     avatarURL: '/',
     name: 'Jane Pearson',
@@ -81,9 +82,14 @@ export const Page = ({ children }) => {
             )
           }
           accountDropdown={isAuthenticated ? accountDropdownProps : undefined}
+          onMenuToggleClick={() => setNavCollapse((prevState) => !prevState)}
         />
         {isAuthenticated && (
-          <Site.Nav collapse={false} tabbed itemsObjects={NAV_BAR_ITEMS} />
+          <Site.Nav
+            collapse={navCollapse}
+            tabbed
+            itemsObjects={NAV_BAR_ITEMS}
+          />
         )}
         {children}
       </TablerPage.Main>
