@@ -47,8 +47,8 @@ const LoginPage = () => {
         },
       );
       auth.login(token, userId);
-      const redirectTo = query.get('redirectTo') || ROUTES.HOME;
-      history.push(redirectTo);
+      const redirectTo = query.get('redirectTo');
+      if (redirectTo) history.push(redirectTo);
     } catch (e) {
       console.log(e);
     }
