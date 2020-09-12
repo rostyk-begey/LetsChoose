@@ -1,5 +1,12 @@
+@import "src/assets/styles/bootstrap-utils";
+
 .create-contest-form {
   min-height: 500px;
+
+  @include media-breakpoint-only(lg) {
+    min-height: unset;
+    height: 400px;
+  }
 
   &__flex-1 {
     flex: 1;
@@ -9,6 +16,18 @@
     height: 100%;
     overflow: hidden;
     background-color: rgba(0, 0, 0, .04);
+
+    @include media-breakpoint-down(md) {
+      height: 360px;
+    }
+
+    @include media-breakpoint-down(sm) {
+      height: 270px;
+    }
+
+    @include media-breakpoint-down(xs) {
+      height: 50vw;
+    }
   }
 
   &__preview {

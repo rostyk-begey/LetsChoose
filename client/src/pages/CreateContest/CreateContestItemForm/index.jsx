@@ -25,37 +25,48 @@ const CreateContestItemForm = ({ onSubmit, buttonLoading = false }) => {
   return (
     <Form className="card" onSubmit={handleSubmit(submit)} title="Add new item">
       <FormProvider {...form}>
-        <Card.Body className="p-6 row">
-          <Grid.Col lg={4}>
-            <DropzoneFileInput
-              name={fileInputName}
-              accept="image/jpeg"
-              previewHolderClassName={`${baseClassName}__preview-holder`}
-              previewClassName={`${baseClassName}__preview`}
-            />
-          </Grid.Col>
-          <Grid.Col lg={8}>
-            <Card.Title RootComponent="div">Add new item</Card.Title>
-            <div className="d-flex">
-              <FormInput
-                name={titleInputName}
-                type="text"
-                placeholder="Title"
-                validation={{ required: 'Please enter title' }}
-                wrapperClassName="mr-3 mb-0"
-              />
-              <Button
-                className="ml-auto"
-                type="submit"
-                color="primary"
-                outline
-                disabled={Object.keys(errors).length || buttonLoading}
-                loading={buttonLoading}
+        <Card.Body className="p-4 p-md-5 p-xl-6">
+          <Grid.Row>
+            <Grid.Col width={6} md={6} lg={4}>
+              <DropzoneFileInput
+                name={fileInputName}
+                accept="image/jpeg"
+                previewHolderClassName={`${baseClassName}__preview-holder`}
+                previewClassName={`${baseClassName}__preview`}
               >
-                Add
-              </Button>
-            </div>
-          </Grid.Col>
+                <h4 className="px-2 m-0 text-center">
+                  Drag & drop image here, or click to select image
+                </h4>
+              </DropzoneFileInput>
+            </Grid.Col>
+            <Grid.Col
+              width={6}
+              md={6}
+              lg={8}
+              className="d-flex flex-column justify-content-center"
+            >
+              <Card.Title RootComponent="div">Add new item</Card.Title>
+              <div className="d-flex flex-column flex-md-row">
+                <FormInput
+                  name={titleInputName}
+                  type="text"
+                  placeholder="Title"
+                  validation={{ required: 'Please enter title' }}
+                  wrapperClassName="mr-0 mr-md-3 mb-4 mb-md-0"
+                />
+                <Button
+                  className="ml-auto"
+                  type="submit"
+                  color="primary"
+                  outline
+                  disabled={Object.keys(errors).length || buttonLoading}
+                  loading={buttonLoading}
+                >
+                  Add
+                </Button>
+              </div>
+            </Grid.Col>
+          </Grid.Row>
         </Card.Body>
       </FormProvider>
     </Form>

@@ -5,6 +5,7 @@ import { useFormContext } from 'react-hook-form';
 const DropzoneFileInput = ({
   name,
   accept,
+  children,
   previewHolderClassName,
   previewClassName,
 }) => {
@@ -18,7 +19,6 @@ const DropzoneFileInput = ({
         shouldValidate: true,
         shouldDirty: true,
       });
-      // trigger(name).then(() => {});
     },
     [setValue, trigger, name],
   );
@@ -40,17 +40,6 @@ const DropzoneFileInput = ({
       setPreviewUrl('');
     }
   }, [file]);
-  // useEffect(() => {
-  //   if (acceptedFiles?.length) {
-  //     setValue(name, acceptedFiles[0], {
-  //       shouldValidate: true,
-  //       shouldDirty: true,
-  //     });
-  //     setPreviewUrl(URL.createObjectURL(acceptedFiles[0]));
-  //   } else {
-  //     setPreviewUrl('');
-  //   }
-  // }, [acceptedFiles]);
 
   return (
     <div
@@ -61,18 +50,9 @@ const DropzoneFileInput = ({
       {previewUrl ? (
         <img className={previewClassName} src={previewUrl} alt="" />
       ) : (
-        <h3 className="px-2 m-0">
-          Drag & drop image here, or click to select image
-        </h3>
+        children
       )}
-      <input
-        // type="file"
-        // className="d-none"
-        // name={name}
-        {...getInputProps({
-          className: 'd-none',
-        })}
-      />
+      <input {...getInputProps({ className: 'd-none' })} />
     </div>
   );
 };

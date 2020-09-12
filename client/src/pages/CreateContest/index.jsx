@@ -56,10 +56,10 @@ const CreateContestPage = () => {
       {/*<Prompt message="Are you sure you want to leave?" when={isStarted} />*/}
       <TablerPage.Content>
         <Grid.Row justifyContent="center">
-          <Grid.Col lg={12}>
+          <Grid.Col width={12}>
             <CreateContestForm onSubmit={saveContest} />
           </Grid.Col>
-          <Grid.Col lg={12}>
+          <Grid.Col width={12}>
             <CreateContestItemForm onSubmit={addItem} />
           </Grid.Col>
         </Grid.Row>

@@ -53,18 +53,22 @@ const CreateContestForm = ({ onSubmit, buttonLoading = false }) => {
       title="Create new contest"
     >
       <FormProvider {...form}>
-        <Card.Body className="p-6 d-flex flex-column">
+        <Card.Body className="p-4 p-md-5 p-xl-6 d-flex flex-column">
           <Card.Title RootComponent="div">Create new contest</Card.Title>
           <Grid.Row className={`${baseClassName}__flex-1`}>
-            <Grid.Col lg={7}>
+            <Grid.Col lg={7} width={12} className="mb-4 mb-lg-0">
               <DropzoneFileInput
                 name={fileInputName}
                 accept="image/jpeg"
-                previewHolderClassName={`${baseClassName}__preview-holder mb-4`}
+                previewHolderClassName={`${baseClassName}__preview-holder`}
                 previewClassName={`${baseClassName}__preview`}
-              />
+              >
+                <h3 className="px-2 m-0 text-center">
+                  Drag & drop image here, or click to select image
+                </h3>
+              </DropzoneFileInput>
             </Grid.Col>
-            <Grid.Col lg={5} className="d-flex flex-column">
+            <Grid.Col lg={5} width={12} className="d-flex flex-column">
               {INPUTS.map((input) => (
                 <FormInput key={input.name} {...input} />
               ))}
