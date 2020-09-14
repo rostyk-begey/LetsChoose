@@ -29,7 +29,10 @@ export const useContestFind = (id, config = {}) => {
 
 export const useContestAll = (params = {}, config = {}) => {
   const { all } = useContestApi();
-  return useQuery('contests', () => all(params), { retry: 0, ...config });
+  return useQuery(['contests', params], () => all(params), {
+    retry: 0,
+    ...config,
+  });
 };
 
 export const useContestCreate = () => {

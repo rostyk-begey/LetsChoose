@@ -1,48 +1,84 @@
 const Mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
+const User = require('../models/User');
 const Contest = require('../models/Contest');
 const ContestItem = require('../models/ContestItem');
 
-// const rand = () => Math.random().toString(36).substr(2);
+const SORT_OPTIONS = {
+  POPULAR: 'views',
+  NEWEST: '_id',
+};
 
-// const generateAvatar = () => {
-//   const token = rand() + rand();
-//   return `https://picsum.photos/seed/${token}/400`;
-// };
+const getPaginationPipelines = (page = 1, perPage = 10) => [
+  {
+    $limit: perPage,
+  },
+  {
+    $skip: (page - 1) * perPage,
+  },
+];
 
-// const CONTESTS = [...Array(10).keys()].map((i) => ({
-//   id: `contest-${i}`,
-//   title: `Contest ${i + 1}`,
-//   authorId: i,
-//   excerpt:
-//     'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi impedit nobis nostrum recusandae temporibus. Amet, asperiores dolores eius incidunt nisi pariatur quas. Alias aliquam aut consequatur culpa cupiditate dignissimos dolor dolore doloremque dolorum ea eius illo, ipsa ipsum labore minima molestias, nemo, neque nihil pariatur provident quam quas quidem sint.',
-//   thumbnail: generateAvatar(),
-//   views: Math.floor(Math.random() * 1000),
-//   likes: Math.floor(Math.random() * 1000),
-//   dislikes: Math.floor(Math.random() * 1000),
-//   tags: ['music', 'movie', 'image', 'art'],
-// }));
+const getSearchPipelines = (search = '') => {
+  const query = search.trim();
+  if (!query) return [];
 
-// const itemsPerContest = 8;
-
-// const ITEMS = [...Array(itemsPerContest * 10).keys()].map((i) => ({
-//   id: `item-${~~(i / itemsPerContest)}${i}`,
-//   contestId: `contest-${~~(i / itemsPerContest)}`,
-//   title: `Item ${i + 1}`,
-//   image: generateAvatar(),
-//   score: 0,
-//   compares: 0,
-// }));
+  return [
+    {
+      $search: {
+        text: {
+          query,
+          path: ['title', 'excerpt'],
+          fuzzy: {
+            maxEdits: 2,
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        score: { $meta: 'searchScore' },
+      },
+    },
+  ];
+};
 
 const ContestController = {
   async get({ query = {} }, res) {
     try {
-      const contests = await Contest.find(query).populate(
-        'author',
-        'username _id',
-      );
-      res.status(200).json(contests);
+      let {
+        page = 1,
+        perPage = 10,
+        search = '',
+        sortBy = SORT_OPTIONS.NEWEST,
+      } = query;
+      page = parseInt(page, 10);
+      perPage = parseInt(perPage, 10);
+      if (!Object.keys(SORT_OPTIONS).includes(sortBy)) {
+        sortBy = SORT_OPTIONS.POPULAR;
+      }
+      const count = await Contest.countDocuments();
+      const totalPages = Math.ceil(count / perPage);
+      if (page > totalPages) {
+        // todo: validate
+      }
+      let contests = await Contest.aggregate([
+        ...getSearchPipelines(search),
+        {
+          $sort: { score: -1, [SORT_OPTIONS[sortBy]]: -1 },
+        },
+        ...getPaginationPipelines(page, perPage),
+      ]).exec();
+      contests = await User.populate(contests, {
+        path: 'author',
+        select: { _id: 1, username: 1 },
+      });
+      res.status(200).json({
+        contests,
+        totalPages,
+        currentPage: page,
+      });
     } catch (e) {
+      console.log(e);
       res.status(500);
     }
   },
@@ -100,10 +136,10 @@ const ContestController = {
       res.status(500);
     }
   },
-  async remove({ userId, params: { id } }, res) {
+  async remove({ params: { id } }, res) {
     try {
-      await Contest.remove({ _id: id });
-      await ContestItem.remove({ contestId: id });
+      await Contest.deleteOne({ _id: id });
+      await ContestItem.deleteMany({ contestId: id });
       res.status(200).json({ message: 'Contest successfully deleted!' });
     } catch (e) {
       res.status(500);

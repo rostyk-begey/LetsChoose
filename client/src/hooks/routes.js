@@ -24,7 +24,7 @@ const useRoutes = (isAuthenticated) => {
       path: ROUTES.HOME,
       allowed: isAuthenticated,
       component: HomePage,
-      exact: true,
+      exact: false,
     },
     {
       path: `${ROUTES.USERS}/:id`,

@@ -4,8 +4,8 @@ const config = require('config');
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 const path = require('path');
-const multer = require('multer');
-const upload = multer();
+
+const PORT = config.get('port');
 
 const app = express();
 
@@ -13,6 +13,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/contests', require('./routes/contests.routes'));
+
+app.disable('etag');
 
 if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static(path.join(__dirname, 'client', 'dist')));
@@ -34,7 +36,7 @@ if (process.env.NODE_ENV === 'production') {
       api_key: config.get('cloudinary.apiKey'),
       api_secret: config.get('cloudinary.apiSecret'),
     });
-    app.listen(config.get('port'), () => console.log('listening'));
+    app.listen(PORT, () => console.log(`Listening localhost:${PORT}`));
   } catch (e) {
     console.error(e);
     process.exit(1);

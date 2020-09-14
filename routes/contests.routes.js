@@ -4,10 +4,12 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const multer = require('multer');
 const auth = require('../middleware/auth.middleware');
+const isAuthor = require('../middleware/isAuthor.middleware');
 const Contest = require('../models/Contest');
 const ContestController = require('../controllers/ContestController');
-const multer = require('multer');
+
 const storage = multer.diskStorage({
   filename: (req, file, callback) => {
     callback(null, Date.now() + file.originalname);
@@ -20,7 +22,7 @@ const fileFilter = (req, file, cb) => {
   }
   cb(null, true);
 };
-const upload = multer({ storage: storage, fileFilter });
+const upload = multer({ storage, fileFilter });
 
 const router = Router();
 
@@ -70,10 +72,9 @@ router.get(
 
 router.get('/:id', auth, ContestController.find);
 
-// todo: validate author
-router.put('/:id', auth, ContestController.update);
-// todo: validate author
-router.delete('/:id', auth, ContestController.remove);
+router.put('/:id', auth, isAuthor, ContestController.update);
+
+router.delete('/:id', auth, isAuthor, ContestController.remove);
 
 router.post(
   '/:id/start',
