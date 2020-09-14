@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Page as TablerPage, Grid, Form } from 'tabler-react';
-import { useThrottleCallback } from '@react-hook/throttle';
 import { throttle } from 'lodash';
 
 import Page from 'app/components/Page';
