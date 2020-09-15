@@ -24,7 +24,6 @@ const SORT_OPTIONS = {
 };
 
 const HomePage = () => {
-  const auth = useContext(AuthContext);
   const history = useHistory();
   const query = useURLSearchParams();
   const defaultParams = {
@@ -38,11 +37,6 @@ const HomePage = () => {
     page: 1,
   });
   const { data: { contests = [], currentPage, totalPages } = {} } = data;
-  useEffect(() => {
-    if (contestsQuery.error && contestsQuery.error.response.status === 401) {
-      auth.logout();
-    }
-  }, [contestsQuery.error]);
 
   // Restore params from URL
   useEffect(() => {
@@ -81,7 +75,7 @@ const HomePage = () => {
   const handleSearch = ({ target: { name, value } }) => throttled(name, value);
 
   return (
-    <Page>
+    <Page isPrivate>
       <TablerPage.Content
         title="Popular Contests"
         subTitle={`Page ${currentPage}/${totalPages}`}
