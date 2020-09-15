@@ -84,10 +84,13 @@ const ContestController = {
   },
   async find({ params: { id } }, res) {
     try {
+      console.log(id);
       const contest = await Contest.findById(id);
+      console.log(contest);
       contest.items = await ContestItem.find({ contestId: id });
       res.status(200).json(contest);
     } catch (e) {
+      console.log(e);
       res.status(500);
     }
   },

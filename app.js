@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const config = require('config');
-const mongoose = require('mongoose');
+const mongoose = require('mongoose').set('debug', config.get('mongooseDebug'));
 const cloudinary = require('cloudinary').v2;
 const path = require('path');
 

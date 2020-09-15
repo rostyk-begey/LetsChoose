@@ -5,7 +5,7 @@ import AuthContext from 'app/context/AuthContext';
 import axios from 'axios';
 import ROUTES from 'app/utils/routes';
 
-const useContestApi = () => {
+export const useContestApi = () => {
   const auth = useContext(AuthContext);
   const api = axios.create({
     baseURL: ROUTES.API.CONTESTS,
