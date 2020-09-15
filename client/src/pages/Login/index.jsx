@@ -9,6 +9,7 @@ import ROUTES from 'app/utils/routes';
 import AuthForm from 'app/components/AuthForm';
 
 import logo from 'assets/images/logo.svg';
+import { useApiLogin } from 'app/hooks/api/auth';
 
 const INPUTS = [
   {
@@ -34,18 +35,13 @@ const INPUTS = [
 const LoginPage = () => {
   const query = useURLSearchParams();
   const auth = useContext(AuthContext);
-  const { request, loading, error } = useHttp();
+  const [login, ...loginQuery] = useApiLogin();
   const history = useHistory();
   const onSubmit = async (form) => {
     try {
-      const { token, userId } = await request(
-        ROUTES.API.AUTH.LOGIN,
-        'POST',
-        form,
-        {
-          accepts: 'application/json',
-        },
-      );
+      const {
+        data: { token, userId },
+      } = await login(form);
       auth.login(token, userId);
       const redirectTo = query.get('redirectTo');
       if (redirectTo) history.push(redirectTo);
@@ -61,7 +57,7 @@ const LoginPage = () => {
         title="Login to your Account"
         buttonText="Login"
         onSubmit={onSubmit}
-        buttonLoading={loading}
+        buttonLoading={loginQuery.isLoading}
         formAfter={
           <div className="mt-2">
             Don&apos;t have an account?{' '}
