@@ -12,7 +12,8 @@ import {
   Icon,
   Tag,
 } from 'tabler-react';
-import { Link } from 'react-router-dom';
+import { Link, Prompt } from 'react-router-dom';
+import arrayShuffle from 'shuffle-array';
 
 import ContestCard from 'app/components/ContestCard';
 import Page from 'app/components/Page';
@@ -25,8 +26,65 @@ const TABS = {
   STATISTIC: 'STATISTIC',
 };
 
-const ContestPage = () => {
+const useContest = (items) => {
+  const [isStarted, setIsStarted] = useState(false);
+  const [currentLevelItems, setCurrentLevelItems] = useState([]);
+  const [nextLevelItems, setNextLevelItems] = useState([]);
+  const [currentPair, setCurrentPair] = useState([]);
+  // const [contestProgress, setContestProgress] = useState({});
+
+  // init
+  useEffect(() => {
+    setCurrentLevelItems(arrayShuffle(items.keys()));
+  }, []);
+
+  const onItemSelect = useCallback(
+    (id) => () => setNextLevelItems([...nextLevelItems, id]),
+    [nextLevelItems],
+  );
+  useEffect(() => {
+    const shuffledItems = arrayShuffle(items.keys());
+    setCurrentLevelItems(shuffledItems);
+    setCurrentPair([
+      {
+        ...items[shuffledItems[0]],
+        onSelect: onItemSelect(currentLevelItems[0]),
+      },
+      {
+        ...items[shuffledItems[1]],
+        onSelect: onItemSelect(currentLevelItems[1]),
+      },
+    ]);
+  }, [currentLevelItems]);
+
+  return {
+    isStarted,
+    currentPair,
+    onStart: () => setIsStarted(true),
+    onFinish: () => setIsStarted(false),
+  };
+};
+
+const ContestPage = ({ router }) => {
   const [activeTab, setActiveTab] = useState(TABS.GENERAL);
+  const [isLoading, setIsLoading] = useState(false);
+  const [contestData, setContestData] = useState({});
+  useEffect(() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setContestData({
+        items: Array(10).map((i) => ({
+          id: `item-${i}`,
+          title: `Item ${i}`,
+          image: cardImage,
+        })),
+      });
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+  const onStart = useCallback(() => {
+    // setContestUnfinishedItems
+  }, [contestData]);
   const tabs = [
     {
       label: 'General',
@@ -54,6 +112,12 @@ const ContestPage = () => {
 
   return (
     <Page>
+      <Prompt
+        when={isStarted}
+        message={() =>
+          'Are you sure you want to quit? Current progress would not be saved!'
+        }
+      />
       <TablerPage.Content>
         <Grid.Row justifyContent="center">
           <Grid.Col lg={8}>
@@ -88,7 +152,7 @@ const ContestPage = () => {
                       <img
                         className="d-flex rounded"
                         src={cardImage}
-                        alt="Generic placeholder image"
+                        alt="Generic placeholder"
                       />
                     </Media>
                     <Grid.Row>
