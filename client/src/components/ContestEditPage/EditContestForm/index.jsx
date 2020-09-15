@@ -19,7 +19,7 @@ const EditContestForm = ({
     reValidateMode: 'onChange',
     defaultValues,
   });
-  const { reset, errors, handleSubmit, setValue } = form;
+  const { errors, handleSubmit } = form;
   const fileInputName = 'thumbnail';
   const INPUTS = [
     {
@@ -45,7 +45,6 @@ const EditContestForm = ({
       className={cn('card', baseClassName)}
       onSubmit={handleSubmit((form) => {
         onSubmit(form);
-        // setValue(fileInputName, undefined);
       })}
       errors={[]}
       method="POST"

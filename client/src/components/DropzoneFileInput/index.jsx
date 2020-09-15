@@ -32,13 +32,12 @@ const DropzoneFileInput = ({
     return () => unregister(name);
   }, [register, unregister, name]);
   useEffect(() => {
-    if (file) {
+    if (file && typeof file !== 'string') {
       setPreviewUrl(URL.createObjectURL(file));
     } else {
       setPreviewUrl(previewDefaultUrl);
     }
   }, [file, previewDefaultUrl]);
-  console.log(previewUrl);
 
   return (
     <div

@@ -20,7 +20,7 @@ export const useContestApi = () => {
   const create = (data) => api.post('/', data);
   const update = (id, data) => api.post(`/${id}`, data);
   const remove = (id) => api.delete(`/${id}`);
-  return { all, find, create, remove };
+  return { all, find, create, update, remove };
 };
 
 export const useContestFind = (id, config = {}) => {
@@ -45,10 +45,10 @@ export const useContestCreate = () => {
   }
 };
 
-export const useContestUpdate = () => {
+export const useContestUpdate = (id) => {
   try {
     const { update } = useContestApi();
-    return useMutation(update);
+    return useMutation((data) => update(id, data));
   } catch (e) {
     console.log(e);
   }

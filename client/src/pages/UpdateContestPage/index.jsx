@@ -1,66 +1,54 @@
-import React, { useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useCallback } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 import jsonToFormData from 'json-form-data';
+import { Dimmer, Grid, Loader, Page as TablerPage } from 'tabler-react';
 
+import ROUTES from 'app/utils/routes';
+import Page from 'app/components/Page';
+import EditContestForm from 'app/components/ContestEditPage/EditContestForm';
 import { useContestFind, useContestUpdate } from 'app/hooks/api/contest';
-import useContestItems from 'app/hooks/contestItems';
-import ContestEditPage from 'app/components/ContestEditPage';
 
 const UpdateContestPage = () => {
-  const baseClassName = 'create-contest-page';
   const { id: contestId = null } = useParams();
+  const history = useHistory();
+  if (!contestId) history.push(ROUTES.HOME);
   const {
     data: { data: contest = {} } = {},
     ...getContestQuery
   } = useContestFind(contestId);
-  const [updateContest, updateContestQuery] = useContestUpdate();
-  const {
-    items,
-    setItems,
-    addItem,
-    deleteItem,
-    updateItem,
-  } = useContestItems();
+  const [updateContest, updateContestQuery] = useContestUpdate(contestId);
   const saveContest = useCallback(
     async ({ thumbnail, ...contestData }) => {
       try {
-        console.log({
-          ...contest,
-          ...contestData,
-          thumbnail,
-          items,
-        });
-        // await updateContest(
-        //   jsonToFormData({
-        //     ...contest,
-        //     ...contestData,
-        //     thumbnail,
-        //     items,
-        //   }),
-        // );
+        await updateContest(
+          jsonToFormData({
+            title: contest.title,
+            excerpt: contest.excerpt,
+            ...contestData,
+            thumbnail,
+          }),
+        );
+        history.push(`${ROUTES.CONTESTS.INDEX}/${contestId}`);
       } catch (e) {
         console.log(e);
       }
     },
-    [items, contest],
+    [contest],
   );
 
-  useEffect(() => {
-    if (!getContestQuery.error && contest !== {}) {
-      setItems(contest.items);
-    }
-  }, [contest]);
-
   return (
-    <ContestEditPage
-      isLoading={false}
-      save={saveContest}
-      contestData={contest}
-      items={items}
-      addItem={addItem}
-      updateItem={updateItem}
-      deleteItem={deleteItem}
-    />
+    <Page>
+      <Dimmer active={updateContestQuery.isLoading} loader={<Loader />}>
+        {/*<Prompt message="Are you sure you want to leave?" when={isStarted} />*/}
+        <TablerPage.Content>
+          <Grid.Row justifyContent="center">
+            <Grid.Col width={12}>
+              <EditContestForm onSubmit={saveContest} defaultValues={contest} />
+            </Grid.Col>
+          </Grid.Row>
+        </TablerPage.Content>
+      </Dimmer>
+    </Page>
   );
 };
 

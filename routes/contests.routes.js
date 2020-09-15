@@ -72,7 +72,7 @@ router.get(
 
 router.get('/:id', auth, ContestController.find);
 
-router.put('/:id', auth, isAuthor, ContestController.update);
+router.post('/:id', upload.any(), auth, isAuthor, ContestController.update);
 
 router.delete('/:id', auth, isAuthor, ContestController.remove);
 

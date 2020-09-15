@@ -42,6 +42,11 @@ const getSearchPipelines = (search = '') => {
   ];
 };
 
+const getCloudinaryImagePublicId = (url) =>
+  url.split('/').slice(-1)[0].split('.')[0];
+
+const fieldNameFilter = (key) => ({ fieldname }) => fieldname === key;
+
 const ContestController = {
   async get({ query = {} }, res) {
     try {
@@ -84,9 +89,10 @@ const ContestController = {
   },
   async find({ params: { id } }, res) {
     try {
-      console.log(id);
       const contest = await Contest.findById(id);
-      console.log(contest);
+      if (!contest) {
+        return res.status(404).json({ message: 'Resource not found!' });
+      }
       contest.items = await ContestItem.find({ contestId: id });
       res.status(200).json(contest);
     } catch (e) {
@@ -96,7 +102,6 @@ const ContestController = {
   },
   async create({ userId, files, body: { title, excerpt, items } }, res) {
     try {
-      const fieldNameFilter = (key) => ({ fieldname }) => fieldname === key;
       const thumbnail = files.find(fieldNameFilter('thumbnail'));
       const contestId = Mongoose.Types.ObjectId();
       const { secure_url } = await cloudinary.uploader.upload(thumbnail.path, {
@@ -131,20 +136,44 @@ const ContestController = {
       res.status(500);
     }
   },
-  async update({ userId, params: { id }, body: data }, res) {
+  async update(
+    { files, params: { id: contestId }, body: { title, excerpt } },
+    res,
+  ) {
     try {
-      await Contest.updateOne({ _id: id }, data);
+      const contest = await Contest.findById(contestId);
+      const data = {};
+      if (title) data.title = title;
+      if (excerpt) data.excerpt = excerpt;
+      if (files?.length) {
+        const thumbnailFile = files.find(fieldNameFilter('thumbnail'));
+        if (contest.thumbnail) {
+          await cloudinary.uploader.destroy(
+            getCloudinaryImagePublicId(contest.thumbnail),
+          );
+        }
+        const { secure_url } = await cloudinary.uploader.upload(
+          thumbnailFile.path,
+          {
+            public_id: `contests/${contestId}/thumbnail`,
+          },
+        );
+        data.thumbnail = secure_url;
+      }
+      await Contest.updateOne({ _id: contestId }, data);
       res.status(200).json({ message: 'Contest successfully updated!' });
     } catch (e) {
+      console.log(e);
       res.status(500);
     }
   },
   async remove({ params: { id } }, res) {
     try {
       await Contest.deleteOne({ _id: id });
-      await ContestItem.deleteMany({ contestId: id });
+      await ContestItem.deleteMany({ contestId: id }); // todo: delete images
       res.status(200).json({ message: 'Contest successfully deleted!' });
     } catch (e) {
+      console.log(e);
       res.status(500);
     }
   },

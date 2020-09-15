@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import { Grid, Page as TablerPage } from 'tabler-react';
-import { Link, Prompt, useParams } from 'react-router-dom';
 
 import Page from 'app/components/Page';
 import EditContestForm from 'app/components/ContestEditPage/EditContestForm';
 import CreatedContestItem from 'app/components/ContestEditPage/EditSingleContestItemForm';
-import CreateContestItemForm from 'app/components/ContestEditPage/EditContestItemForm';
+import CreateContestItemForm from 'app/components/ContestEditPage/CreateContestItemForm';
 
-import './index.scss';
+import '../../pages/CreateContest/index.scss';
 
 const ContestEditPage = ({
   save,
