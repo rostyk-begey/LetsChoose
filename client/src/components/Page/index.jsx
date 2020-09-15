@@ -15,11 +15,6 @@ const newNavBarItem = (to, value, icon, useExact) => ({
   LinkComponent: Link,
 });
 
-const NAV_BAR_ITEMS = [
-  newNavBarItem(ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
-  newNavBarItem(ROUTES.CONTESTS.NEW, 'New', 'plus', ROUTES.CONTESTS.NEW),
-];
-
 const AUTH_BUTTONS = [
   {
     value: 'Login',
@@ -35,6 +30,16 @@ const AUTH_BUTTONS = [
 export const Page = ({ children }) => {
   const { logout, isAuthenticated, userId } = useContext(AuthContext);
   const [navCollapse, setNavCollapse] = useState(true);
+  const navBarItems = [
+    newNavBarItem(ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
+    newNavBarItem(
+      `${ROUTES.USERS}/${userId}`,
+      'My profile',
+      'user',
+      ROUTES.CONTESTS.NEW,
+    ),
+    newNavBarItem(ROUTES.CONTESTS.NEW, 'New', 'plus', ROUTES.CONTESTS.NEW),
+  ];
   const accountDropdownProps = {
     avatarURL: '/',
     name: 'Jane Pearson',
@@ -85,11 +90,7 @@ export const Page = ({ children }) => {
           onMenuToggleClick={() => setNavCollapse((prevState) => !prevState)}
         />
         {isAuthenticated && (
-          <Site.Nav
-            collapse={navCollapse}
-            tabbed
-            itemsObjects={NAV_BAR_ITEMS}
-          />
+          <Site.Nav collapse={navCollapse} tabbed itemsObjects={navBarItems} />
         )}
         {children}
       </TablerPage.Main>

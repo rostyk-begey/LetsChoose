@@ -11,7 +11,7 @@ const UserPage = () => {
   const { id } = useParams();
   const auth = useContext(AuthContext);
   const {
-    data: { data: contests = [] } = {},
+    data: { data: { contests = [], totalPages, currentPage } = {} } = {},
     ...contestsQuery
   } = useContestAll({ author: id });
   useEffect(() => {
@@ -47,7 +47,7 @@ const UserPage = () => {
           </Grid.Col>
           <Grid.Col lg={8} width={12}>
             <Grid.Row>
-              {contestsQuery.isSuccess &&
+              {!!contests?.length &&
                 contests.map((contest) => (
                   <Grid.Col width={12} md={6} lg={6} key={contest._id}>
                     <ContestCard data={contest} />

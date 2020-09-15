@@ -54,6 +54,7 @@ const ContestController = {
         page = 1,
         perPage = 10,
         search = '',
+        author = '',
         sortBy = SORT_OPTIONS.NEWEST,
       } = query;
       page = parseInt(page, 10);
@@ -66,7 +67,11 @@ const ContestController = {
       if (page > totalPages) {
         // todo: validate
       }
+      const matchPipeline = author
+        ? [{ $match: { author: Mongoose.Types.ObjectId(author) } }]
+        : [];
       let contests = await Contest.aggregate([
+        ...matchPipeline,
         ...getSearchPipelines(search),
         {
           $sort: { score: -1, [SORT_OPTIONS[sortBy]]: -1 },

@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', require('./routes/auth.routes'));
-app.use('/api/contests', require('./routes/contests.routes'));
+app.use('/api/contests', require('./routes/contest.routes'));
 
 app.disable('etag');
 
