@@ -5,7 +5,7 @@ import React, {
   useState,
   useEffect,
 } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Page as TablerPage, Grid, Form } from 'tabler-react';
 import { throttle } from 'lodash';
 

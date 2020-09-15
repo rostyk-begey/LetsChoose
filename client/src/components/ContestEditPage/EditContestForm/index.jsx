@@ -8,11 +8,16 @@ import DropzoneFileInput from 'app/components/DropzoneFileInput';
 
 import './index.scss';
 
-const CreateContestForm = ({ onSubmit, buttonLoading = false }) => {
+const EditContestForm = ({
+  defaultValues = {},
+  onSubmit,
+  buttonLoading = false,
+}) => {
   const baseClassName = 'create-contest-form';
   const form = useForm({
     mode: 'onBlur',
     reValidateMode: 'onChange',
+    defaultValues,
   });
   const { reset, errors, handleSubmit, setValue } = form;
   const fileInputName = 'thumbnail';
@@ -40,18 +45,13 @@ const CreateContestForm = ({ onSubmit, buttonLoading = false }) => {
       className={cn('card', baseClassName)}
       onSubmit={handleSubmit((form) => {
         onSubmit(form);
-        reset(
-          INPUTS.reduce((acc, { name, defaultValue = '' }) => {
-            acc[name] = defaultValue;
-            return acc;
-          }, {}),
-        );
-        setValue(fileInputName, undefined);
+        // setValue(fileInputName, undefined);
       })}
       errors={[]}
       method="POST"
       title="Create new contest"
     >
+      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <FormProvider {...form}>
         <Card.Body className="p-4 p-md-5 p-xl-6 d-flex flex-column">
           <Card.Title RootComponent="div">Create new contest</Card.Title>
@@ -59,6 +59,7 @@ const CreateContestForm = ({ onSubmit, buttonLoading = false }) => {
             <Grid.Col lg={7} width={12} className="mb-4 mb-lg-0">
               <DropzoneFileInput
                 name={fileInputName}
+                previewDefaultUrl={defaultValues.thumbnail}
                 accept="image/jpeg"
                 previewHolderClassName={`${baseClassName}__preview-holder`}
                 previewClassName={`${baseClassName}__preview`}
@@ -70,7 +71,12 @@ const CreateContestForm = ({ onSubmit, buttonLoading = false }) => {
             </Grid.Col>
             <Grid.Col lg={5} width={12} className="d-flex flex-column">
               {INPUTS.map((input) => (
-                <FormInput key={input.name} {...input} />
+                <FormInput
+                  key={input.name}
+                  defaultValue={defaultValues[input.name]}
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...input}
+                />
               ))}
               <Button
                 type="submit"
@@ -89,4 +95,4 @@ const CreateContestForm = ({ onSubmit, buttonLoading = false }) => {
   );
 };
 
-export default CreateContestForm;
+export default EditContestForm;

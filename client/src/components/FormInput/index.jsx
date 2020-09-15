@@ -8,6 +8,7 @@ const FormInput = ({
   name,
   label,
   placeholder,
+  defaultValue,
   validation,
   wrapperClassName = '',
   className = '',
@@ -24,6 +25,7 @@ const FormInput = ({
         className={cn('form-control', className, { 'is-invalid': error })}
         name={name}
         type={type}
+        defaultValue={defaultValue}
         placeholder={placeholder}
         ref={register(validation)}
       />

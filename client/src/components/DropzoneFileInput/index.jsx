@@ -6,15 +6,15 @@ const DropzoneFileInput = ({
   name,
   accept,
   children,
+  previewDefaultUrl = '',
   previewHolderClassName,
   previewClassName,
 }) => {
   const { register, unregister, setValue, trigger, watch } = useFormContext();
   const file = watch(name);
-  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewUrl, setPreviewUrl] = useState(previewDefaultUrl);
   const onDrop = useCallback(
     (droppedFiles) => {
-      console.log(droppedFiles[0]);
       setValue(name, droppedFiles[0], {
         shouldValidate: true,
         shouldDirty: true,
@@ -33,16 +33,16 @@ const DropzoneFileInput = ({
   }, [register, unregister, name]);
   useEffect(() => {
     if (file) {
-      // console.log(file.path);
       setPreviewUrl(URL.createObjectURL(file));
     } else {
-      // console.log('no file');
-      setPreviewUrl('');
+      setPreviewUrl(previewDefaultUrl);
     }
-  }, [file]);
+  }, [file, previewDefaultUrl]);
+  console.log(previewUrl);
 
   return (
     <div
+      /* eslint-disable-next-line react/jsx-props-no-spreading */
       {...getRootProps({
         className: `d-flex align-items-center justify-content-center ${previewHolderClassName}`,
       })}
@@ -52,6 +52,7 @@ const DropzoneFileInput = ({
       ) : (
         children
       )}
+      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <input {...getInputProps({ className: 'd-none' })} />
     </div>
   );

@@ -8,7 +8,7 @@ import './index.scss';
 const CreatedContestItem = ({ image, title, onUpdate, onDelete }) => {
   const baseClassName = 'created-contest-item';
   const fileInputName = 'image';
-  const [imageUrl, setImageUrl] = useState(URL.createObjectURL(image));
+  const [imageUrl, setImageUrl] = useState(image);
   const { register, watch, reset, handleSubmit } = useForm({
     mode: 'onBlur',
     reValidateMode: 'onChange',
@@ -17,7 +17,7 @@ const CreatedContestItem = ({ image, title, onUpdate, onDelete }) => {
   const [showEditor, setShowEditor] = useState(false);
   const cancelEdit = () => {
     setShowEditor(false);
-    setImageUrl(URL.createObjectURL(image));
+    setImageUrl(image);
     reset();
   };
   const onSubmit = ({ image: updatedImage, title: updatedTitle }) => {
@@ -62,7 +62,7 @@ const CreatedContestItem = ({ image, title, onUpdate, onDelete }) => {
             className={cn('form-control mr-3', {
               'is-invalid': false,
             })}
-            tabIndex={1}
+            // tabIndex={1}
             name="title"
             type="text"
             placeholder="Title"
