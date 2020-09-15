@@ -14,13 +14,9 @@ const UserPage = () => {
     data: { data: { contests = [], totalPages, currentPage } = {} } = {},
     ...contestsQuery
   } = useContestAll({ author: id });
-  useEffect(() => {
-    if (contestsQuery.error && contestsQuery.error.response.status === 401) {
-      auth.logout();
-    }
-  }, [contestsQuery.error]);
+
   return (
-    <Page>
+    <Page isPrivate>
       <TablerPage.Content>
         <Grid.Row>
           <Grid.Col lg={4} width={12}>

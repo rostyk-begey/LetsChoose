@@ -4,8 +4,8 @@ import { StandaloneFormPage } from 'tabler-react';
 
 import AuthForm from 'app/components/AuthForm';
 import AuthContext from 'app/context/AuthContext';
-import useHttp from 'app/hooks/http';
 import ROUTES from 'app/utils/routes';
+import { useApiLogin, useApiRegister } from 'app/hooks/api/auth';
 
 import logo from 'assets/images/logo.svg';
 
@@ -54,22 +54,19 @@ const INPUTS = [
 
 const RegisterPage = () => {
   const auth = useContext(AuthContext);
-  const { request, loading, error } = useHttp();
+  const [register, ...registerQuery] = useApiRegister();
+  const [login, ...loginQuery] = useApiLogin();
 
   const onSubmit = async (form) => {
     try {
       setTimeout(() => {}, 5000);
-      await request(ROUTES.API.AUTH.REGISTER, 'POST', form);
-      const { token, userId } = await request(
-        ROUTES.API.AUTH.LOGIN,
-        'POST',
-        { login: form.username, password: form.password },
-        {
-          accepts: 'application/json',
-        },
-      );
+      await register(form);
+      const {
+        data: { token, userId },
+      } = await login({ login: form.username, password: form.password });
       auth.login(token, userId);
     } catch (e) {
+      console.log(e);
       // M.toast({ html: e.message });
     }
   };
@@ -81,7 +78,7 @@ const RegisterPage = () => {
         title="Create New Account"
         buttonText="Create Account"
         onSubmit={onSubmit}
-        buttonLoading={loading}
+        buttonLoading={registerQuery.isLoading || loginQuery.isLoading}
         formAfter={
           <div className="mt-2">
             Already have an account? <Link to={ROUTES.LOGIN}>Login</Link>

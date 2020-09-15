@@ -1,11 +1,13 @@
-import React, { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Site, Page as TablerPage, Button } from 'tabler-react';
 
 import AuthContext from 'app/context/AuthContext';
 import ROUTES from 'app/utils/routes';
 
 import logo from '../../assets/images/logo.svg';
+import { useApiAuth } from 'app/hooks/api/auth';
+import routes from 'app/utils/routes';
 
 const newNavBarItem = (to, value, icon, useExact) => ({
   to,
@@ -27,8 +29,10 @@ const AUTH_BUTTONS = [
   },
 ];
 
-export const Page = ({ children }) => {
+export const Page = ({ isPrivate = false, children }) => {
   const { logout, isAuthenticated, userId } = useContext(AuthContext);
+  const location = useLocation();
+  const [auth, authQuery] = useApiAuth();
   const [navCollapse, setNavCollapse] = useState(true);
   const navBarItems = [
     newNavBarItem(ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
@@ -65,6 +69,17 @@ export const Page = ({ children }) => {
     ],
   };
 
+  useEffect(() => {
+    if (isPrivate) auth();
+  }, []);
+
+  useEffect(() => {
+    if (isPrivate && authQuery.isError) {
+      console.log(location.pathname);
+      logout(`${ROUTES.LOGIN}?redirectTo=${location.pathname}`);
+    }
+  }, [authQuery]);
+
   return (
     <TablerPage>
       <TablerPage.Main>
@@ -98,5 +113,4 @@ export const Page = ({ children }) => {
     </TablerPage>
   );
 };
-
 export default Page;
