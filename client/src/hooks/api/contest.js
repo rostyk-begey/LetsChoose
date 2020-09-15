@@ -5,7 +5,7 @@ import AuthContext from 'app/context/AuthContext';
 import axios from 'axios';
 import ROUTES from 'app/utils/routes';
 
-const useContestApi = () => {
+export const useContestApi = () => {
   const auth = useContext(AuthContext);
   const api = axios.create({
     baseURL: ROUTES.API.CONTESTS,
@@ -18,8 +18,9 @@ const useContestApi = () => {
   const all = (params) => api.get('/', { params });
   const find = (id) => api.get(`/${id}`);
   const create = (data) => api.post('/', data);
+  const update = (id, data) => api.post(`/${id}`, data);
   const remove = (id) => api.delete(`/${id}`);
-  return { all, find, create, remove };
+  return { all, find, create, update, remove };
 };
 
 export const useContestFind = (id, config = {}) => {
@@ -29,13 +30,25 @@ export const useContestFind = (id, config = {}) => {
 
 export const useContestAll = (params = {}, config = {}) => {
   const { all } = useContestApi();
-  return useQuery('contests', () => all(params), { retry: 0, ...config });
+  return useQuery(['contests', params], () => all(params), {
+    retry: 0,
+    ...config,
+  });
 };
 
 export const useContestCreate = () => {
   try {
     const { create } = useContestApi();
     return useMutation(create);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const useContestUpdate = (id) => {
+  try {
+    const { update } = useContestApi();
+    return useMutation((data) => update(id, data));
   } catch (e) {
     console.log(e);
   }

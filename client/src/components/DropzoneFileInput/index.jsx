@@ -5,20 +5,20 @@ import { useFormContext } from 'react-hook-form';
 const DropzoneFileInput = ({
   name,
   accept,
+  children,
+  previewDefaultUrl = '',
   previewHolderClassName,
   previewClassName,
 }) => {
   const { register, unregister, setValue, trigger, watch } = useFormContext();
   const file = watch(name);
-  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewUrl, setPreviewUrl] = useState(previewDefaultUrl);
   const onDrop = useCallback(
     (droppedFiles) => {
-      console.log(droppedFiles[0]);
       setValue(name, droppedFiles[0], {
         shouldValidate: true,
         shouldDirty: true,
       });
-      // trigger(name).then(() => {});
     },
     [setValue, trigger, name],
   );
@@ -32,28 +32,16 @@ const DropzoneFileInput = ({
     return () => unregister(name);
   }, [register, unregister, name]);
   useEffect(() => {
-    if (file) {
-      // console.log(file.path);
+    if (file && typeof file !== 'string') {
       setPreviewUrl(URL.createObjectURL(file));
     } else {
-      // console.log('no file');
-      setPreviewUrl('');
+      setPreviewUrl(previewDefaultUrl);
     }
-  }, [file]);
-  // useEffect(() => {
-  //   if (acceptedFiles?.length) {
-  //     setValue(name, acceptedFiles[0], {
-  //       shouldValidate: true,
-  //       shouldDirty: true,
-  //     });
-  //     setPreviewUrl(URL.createObjectURL(acceptedFiles[0]));
-  //   } else {
-  //     setPreviewUrl('');
-  //   }
-  // }, [acceptedFiles]);
+  }, [file, previewDefaultUrl]);
 
   return (
     <div
+      /* eslint-disable-next-line react/jsx-props-no-spreading */
       {...getRootProps({
         className: `d-flex align-items-center justify-content-center ${previewHolderClassName}`,
       })}
@@ -61,18 +49,10 @@ const DropzoneFileInput = ({
       {previewUrl ? (
         <img className={previewClassName} src={previewUrl} alt="" />
       ) : (
-        <h3 className="px-2 m-0">
-          Drag & drop image here, or click to select image
-        </h3>
+        children
       )}
-      <input
-        // type="file"
-        // className="d-none"
-        // name={name}
-        {...getInputProps({
-          className: 'd-none',
-        })}
-      />
+      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+      <input {...getInputProps({ className: 'd-none' })} />
     </div>
   );
 };

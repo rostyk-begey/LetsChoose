@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Site, Page as TablerPage, Button } from 'tabler-react';
 
@@ -15,11 +15,6 @@ const newNavBarItem = (to, value, icon, useExact) => ({
   LinkComponent: Link,
 });
 
-const NAV_BAR_ITEMS = [
-  newNavBarItem(ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
-  newNavBarItem(ROUTES.CONTESTS.NEW, 'New', 'plus', ROUTES.CONTESTS.NEW),
-];
-
 const AUTH_BUTTONS = [
   {
     value: 'Login',
@@ -33,16 +28,31 @@ const AUTH_BUTTONS = [
 ];
 
 export const Page = ({ children }) => {
-  const { logout, isAuthenticated } = useContext(AuthContext);
+  const { logout, isAuthenticated, userId } = useContext(AuthContext);
+  const [navCollapse, setNavCollapse] = useState(true);
+  const navBarItems = [
+    newNavBarItem(ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
+    newNavBarItem(
+      `${ROUTES.USERS}/${userId}`,
+      'My profile',
+      'user',
+      ROUTES.CONTESTS.NEW,
+    ),
+    newNavBarItem(ROUTES.CONTESTS.NEW, 'New', 'plus', ROUTES.CONTESTS.NEW),
+  ];
   const accountDropdownProps = {
     avatarURL: '/',
     name: 'Jane Pearson',
-    description: 'Administrator',
+    // description: 'Administrator',
     options: [
-      { icon: 'user', value: 'Profile' },
+      {
+        icon: 'user',
+        value: 'Profile',
+        to: `${ROUTES.USERS}/${userId}`,
+      },
       { icon: 'settings', value: 'Settings' },
-      { icon: 'mail', value: 'Inbox', badge: '6' },
-      { icon: 'send', value: 'Message' },
+      // { icon: 'mail', value: 'Inbox', badge: '6' },
+      // { icon: 'send', value: 'Message' },
       { isDivider: true },
       { icon: 'help-circle', value: 'Need help?' },
       {
@@ -77,9 +87,10 @@ export const Page = ({ children }) => {
             )
           }
           accountDropdown={isAuthenticated ? accountDropdownProps : undefined}
+          onMenuToggleClick={() => setNavCollapse((prevState) => !prevState)}
         />
         {isAuthenticated && (
-          <Site.Nav collapse={false} tabbed itemsObjects={NAV_BAR_ITEMS} />
+          <Site.Nav collapse={navCollapse} tabbed itemsObjects={navBarItems} />
         )}
         {children}
       </TablerPage.Main>

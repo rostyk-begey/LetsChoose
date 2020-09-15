@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Avatar, Icon, Tag } from 'tabler-react';
+import humanTime from 'human-time';
 
 import ROUTES from 'app/utils/routes';
+
+import './index.scss';
 
 const ContestCard = ({
   data: {
@@ -10,14 +13,16 @@ const ContestCard = ({
     views,
     likes,
     dislikes,
-    author: authorId,
+    author: { _id: authorId, username },
     thumbnail,
     isBookmarked = false,
     title,
     excerpt,
+    createdAt,
     tags = [],
   },
 }) => {
+  const baseClassName = 'contest-card';
   const COUNTERS = [
     {
       icon: 'eye',
@@ -34,9 +39,18 @@ const ContestCard = ({
   ];
 
   return (
-    <Card>
-      <Link to={`${ROUTES.CONTESTS.INDEX}/${id}`}>
-        <img src={thumbnail} alt="" className="card-img-top" />
+    <Card className={baseClassName}>
+      <Link
+        to={`${ROUTES.CONTESTS.INDEX}/${id}`}
+        className={`${baseClassName}__image-holder`}
+      >
+        <img
+          width="500"
+          height="500"
+          src={thumbnail}
+          alt=""
+          className={`card-img-top ${baseClassName}__image`}
+        />
       </Link>
       <Card.Body className="p-4">
         <h4>
@@ -47,8 +61,10 @@ const ContestCard = ({
             <Avatar icon="users" size="md" className="mr-3" />
           </Link>
           <div>
-            <Link to={`${ROUTES.USERS}/${authorId}`}>@author</Link>
-            <small className="d-block text-muted">12 days ago</small>
+            <Link to={`${ROUTES.USERS}/${authorId}`}>@{username}</Link>
+            <small className="d-block text-muted">
+              {humanTime(new Date(createdAt))}
+            </small>
           </div>
           <div className="ml-auto text-muted">
             {COUNTERS.map(({ icon, data }) => (

@@ -11,6 +11,7 @@ import ContestPage from 'app/pages/Contest';
 import CreateContestPage from 'app/pages/CreateContest';
 
 import ROUTES from 'app/utils/routes';
+import UpdateContestPage from 'app/pages/UpdateContestPage';
 
 const useRoutes = (isAuthenticated) => {
   const routes = [
@@ -24,7 +25,7 @@ const useRoutes = (isAuthenticated) => {
       path: ROUTES.HOME,
       allowed: isAuthenticated,
       component: HomePage,
-      exact: true,
+      exact: false,
     },
     {
       path: `${ROUTES.USERS}/:id`,
@@ -39,7 +40,13 @@ const useRoutes = (isAuthenticated) => {
       exact: true,
     },
     {
-      path: `${ROUTES.CONTESTS.INDEX}/:id`,
+      path: ROUTES.CONTESTS.UPDATE,
+      allowed: isAuthenticated,
+      component: UpdateContestPage,
+      exact: false,
+    },
+    {
+      path: ROUTES.CONTESTS.SINGLE,
       allowed: isAuthenticated,
       component: ContestPage,
       exact: false,
@@ -62,6 +69,7 @@ const useRoutes = (isAuthenticated) => {
   return (
     <Switch>
       {routes.map((route) => (
+        // eslint-disable-next-line react/jsx-props-no-spreading
         <PrivateRoute {...route} key={route.path} />
       ))}
       <Route path="*">

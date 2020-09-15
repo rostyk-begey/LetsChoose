@@ -1,25 +1,23 @@
-import React, { useState, useCallback } from 'react';
-import { Grid, Page as TablerPage } from 'tabler-react';
-import { Link, Prompt, useParams } from 'react-router-dom';
+import React, { useCallback } from 'react';
+import { Dimmer, Grid, Loader, Page as TablerPage } from 'tabler-react';
+import { Prompt, useHistory } from 'react-router-dom';
 import jsonToFormData from 'json-form-data';
 
+import ROUTES from 'app/utils/routes';
 import Page from 'app/components/Page';
 import { useContestCreate } from 'app/hooks/api/contest';
-import CreateContestForm from 'app/pages/CreateContest/CreateContestForm';
-import CreatedContestItem from 'app/pages/CreateContest/CreatedContestItem';
-import CreateContestItemForm from 'app/pages/CreateContest/CreateContestItemForm';
+import useContestItems from 'app/hooks/contestItems';
+import EditContestForm from 'app/components/ContestEditPage/EditContestForm';
+import CreatedContestItem from 'app/components/ContestEditPage/EditSingleContestItemForm';
+import CreateContestItemForm from 'app/components/ContestEditPage/CreateContestItemForm';
 
 import './index.scss';
 
-const TABS = {
-  GENERAL: 'GENERAL',
-  STATISTIC: 'STATISTIC',
-};
-
 const CreateContestPage = () => {
   const baseClassName = 'create-contest-page';
-  const [createContest, { state, error, isLoading }] = useContestCreate();
-  const [items, setItems] = useState([]);
+  const history = useHistory();
+  const [createContest, createContestQuery] = useContestCreate();
+  const { items, addItem, deleteItem, updateItem } = useContestItems();
   const saveContest = useCallback(
     async ({ thumbnail, ...contestData }) => {
       try {
@@ -30,53 +28,42 @@ const CreateContestPage = () => {
             items,
           }),
         );
+        history.push(ROUTES.HOME);
       } catch (e) {
         console.log(e);
       }
     },
     [items],
   );
-  const addItem = useCallback((item) => setItems([...items, item]), [items]);
-  const updateItem = useCallback(
-    (index, updatedItem) =>
-      setItems(
-        items.map((item, i) =>
-          i === index ? { ...item, ...updatedItem } : item,
-        ),
-      ),
-    [items],
-  );
-  const deleteItem = useCallback(
-    (index) => setItems(items.filter((_, i) => index !== i)),
-    [items],
-  );
 
   return (
     <Page>
       {/*<Prompt message="Are you sure you want to leave?" when={isStarted} />*/}
-      <TablerPage.Content>
-        <Grid.Row justifyContent="center">
-          <Grid.Col lg={12}>
-            <CreateContestForm onSubmit={saveContest} />
-          </Grid.Col>
-          <Grid.Col lg={12}>
-            <CreateContestItemForm onSubmit={addItem} />
-          </Grid.Col>
-        </Grid.Row>
-        {!!items.length && (
-          <div className={`${baseClassName}__contest-items`}>
-            {items.map(({ image, title }, i) => (
-              <CreatedContestItem
-                key={title}
-                image={image}
-                title={title}
-                onUpdate={(item) => updateItem(i, item)}
-                onDelete={() => deleteItem(i)}
-              />
-            ))}
-          </div>
-        )}
-      </TablerPage.Content>
+      <Dimmer active={createContestQuery.isLoading} loader={<Loader />}>
+        <TablerPage.Content>
+          <Grid.Row justifyContent="center">
+            <Grid.Col width={12}>
+              <EditContestForm onSubmit={saveContest} />
+            </Grid.Col>
+            <Grid.Col width={12}>
+              <CreateContestItemForm onSubmit={addItem} />
+            </Grid.Col>
+          </Grid.Row>
+          {!!items?.length && (
+            <div className={`${baseClassName}__contest-items`}>
+              {items.map(({ image, title }, i) => (
+                <CreatedContestItem
+                  key={title}
+                  image={URL.createObjectURL(image)}
+                  title={title}
+                  onUpdate={(item) => updateItem(i, item)}
+                  onDelete={() => deleteItem(i)}
+                />
+              ))}
+            </div>
+          )}
+        </TablerPage.Content>
+      </Dimmer>
     </Page>
   );
 };

@@ -8,6 +8,8 @@ export default {
   CONTESTS: {
     INDEX: '/contests',
     NEW: '/contests/new',
+    SINGLE: '/contests/:id',
+    UPDATE: '/contests/:id/update',
   },
   API: {
     CONTESTS: '/api/contests',

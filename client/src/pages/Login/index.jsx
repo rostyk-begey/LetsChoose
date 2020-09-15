@@ -8,6 +8,8 @@ import useURLSearchParams from 'app/hooks/URLSearchParams';
 import ROUTES from 'app/utils/routes';
 import AuthForm from 'app/components/AuthForm';
 
+import logo from 'assets/images/logo.svg';
+
 const INPUTS = [
   {
     label: 'Login',
@@ -15,9 +17,7 @@ const INPUTS = [
     placeholder: 'login',
     type: 'text',
     validation: {
-      pattern: {
-        required: 'Please enter a login',
-      },
+      required: 'Please enter a login',
     },
   },
   {
@@ -47,12 +47,15 @@ const LoginPage = () => {
         },
       );
       auth.login(token, userId);
-      history.push(query.get('redirectTo'));
-    } catch (e) {}
+      const redirectTo = query.get('redirectTo');
+      if (redirectTo) history.push(redirectTo);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
-    <StandaloneFormPage imageURL="">
+    <StandaloneFormPage imageURL={logo}>
       <AuthForm
         inputs={INPUTS}
         title="Login to your Account"
@@ -61,7 +64,8 @@ const LoginPage = () => {
         buttonLoading={loading}
         formAfter={
           <div className="mt-2">
-            Don't have an account? <Link to={ROUTES.REGISTER}>Sign up</Link>
+            Don&apos;t have an account?{' '}
+            <Link to={ROUTES.REGISTER}>Sign up</Link>
           </div>
         }
       />

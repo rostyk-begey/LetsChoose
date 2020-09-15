@@ -3,8 +3,9 @@ import { useState, useEffect, useCallback } from 'react';
 const STORAGE_KEY = 'AUTH';
 
 const useAuth = () => {
-  const [token, setToken] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const authData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  const [token, setToken] = useState(authData?.token);
+  const [userId, setUserId] = useState(authData?.userId);
 
   const login = useCallback((jwtToken, id) => {
     setToken(jwtToken);
@@ -20,7 +21,7 @@ const useAuth = () => {
     setUserId(null);
     localStorage.removeItem(STORAGE_KEY);
     if (redirectTo) {
-      history.push(redirectTo);
+      // history.push(redirectTo);
     }
   }, []);
 

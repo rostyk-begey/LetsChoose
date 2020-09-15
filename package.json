@@ -12,7 +12,7 @@
     "dev": "concurrently \"yarn run server\" \"yarn run client\""
   },
   "engines": {
-    "node": "14.4.0"
+    "node": "14.9.0"
   },
   "keywords": [
     "choose",
