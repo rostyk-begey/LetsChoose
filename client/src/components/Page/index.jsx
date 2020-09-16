@@ -1,13 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Site, Page as TablerPage, Button } from 'tabler-react';
+import useInterval from 'use-interval';
 
 import AuthContext from 'app/context/AuthContext';
 import ROUTES from 'app/utils/routes';
 
 import logo from '../../assets/images/logo.svg';
 import { useApiAuth } from 'app/hooks/api/auth';
-import routes from 'app/utils/routes';
 
 const newNavBarItem = (to, value, icon, useExact) => ({
   to,
@@ -69,13 +69,16 @@ export const Page = ({ isPrivate = false, children }) => {
     ],
   };
 
-  useEffect(() => {
-    if (isPrivate) auth();
-  }, []);
+  useInterval(
+    () => {
+      if (isPrivate) auth();
+    },
+    isPrivate ? 5 * 1000 : null,
+    true,
+  );
 
   useEffect(() => {
     if (isPrivate && authQuery.isError) {
-      console.log(location.pathname);
       logout(`${ROUTES.LOGIN}?redirectTo=${location.pathname}`);
     }
   }, [authQuery]);
