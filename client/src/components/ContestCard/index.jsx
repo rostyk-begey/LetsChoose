@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Avatar, Icon, Tag } from 'tabler-react';
 import humanTime from 'human-time';
+import clip from 'text-clipper';
 
 import ROUTES from 'app/utils/routes';
 
@@ -56,6 +57,9 @@ const ContestCard = ({
         <h4>
           <Link to={`${ROUTES.CONTESTS.INDEX}/${id}`}>{title}</Link>
         </h4>
+        <p className={`card-text ${baseClassName}__excerpt`}>
+          {clip(excerpt, 150)}
+        </p>
         <div className="d-flex align-items-center">
           <Link to={`${ROUTES.USERS}/${authorId}`}>
             <Avatar icon="users" size="md" className="mr-3" />
