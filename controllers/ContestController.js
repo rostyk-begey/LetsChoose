@@ -1,6 +1,5 @@
 const Mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
-const User = require('../models/User');
 const Contest = require('../models/Contest');
 const ContestItem = require('../models/ContestItem');
 
@@ -72,6 +71,7 @@ const ContestController = {
         ? [{ $match: { 'author.username': author } }]
         : [];
       let contests = await Contest.aggregate([
+        ...getSearchPipelines(search),
         {
           $lookup: {
             from: 'users',
@@ -84,7 +84,6 @@ const ContestController = {
           $unwind: '$author',
         },
         ...matchPipeline,
-        ...getSearchPipelines(search),
         {
           $sort: { score: -1, [SORT_OPTIONS[sortBy]]: -1 },
         },

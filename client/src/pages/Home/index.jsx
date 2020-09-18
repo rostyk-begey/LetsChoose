@@ -1,62 +1,16 @@
-import React, { useRef, useCallback, useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Page as TablerPage, Grid, Form, Container } from 'tabler-react';
-import { throttle } from 'lodash';
+import React, { useState } from 'react';
+import { Page as TablerPage, Grid, Form } from 'tabler-react';
 import { useScrollPosition } from '@n8tb1t/use-scroll-position';
 
 import Page from 'app/components/Page';
 import ContestCard from 'app/components/ContestCard';
 import { useContestAll } from 'app/hooks/api/contest';
-import useURLSearchParams from 'app/hooks/URLSearchParams';
+import useGetParams from 'app/hooks/getParams';
 import ROUTES from 'app/utils/routes';
 
 const SORT_OPTIONS = {
   POPULAR: 'POPULAR',
   NEWEST: 'NEWEST',
-};
-
-const useGetParams = (baseUrl, defaultParams) => {
-  const history = useHistory();
-  const query = useURLSearchParams();
-  const [params, setParams] = useState(defaultParams);
-
-  // Restore params from URL
-  useEffect(() => {
-    const newPrams = Object.keys(defaultParams).reduce((acc, key) => {
-      const param = query.get(key);
-      if (param) acc[key] = param;
-      return acc;
-    }, {});
-    setParams((prevState) => ({
-      ...prevState,
-      ...newPrams,
-    }));
-  }, []);
-
-  const updateParam = useCallback(
-    (name, value) => {
-      const newParams = {
-        ...params,
-        [name]: value,
-      };
-      setParams(newParams);
-      const urlParams = Object.entries(newParams).reduce((acc, [key, val]) => {
-        if (val) acc.append(key, val);
-        return acc;
-      }, new URLSearchParams());
-      history.push(`${baseUrl}?${urlParams}`);
-    },
-    [params],
-  );
-  const onInputChange = ({ target: { name, value } }) =>
-    updateParam(name, value);
-
-  const { current: throttled } = useRef(
-    throttle(updateParam, 1000, { leading: false }),
-  );
-  const handleSearch = ({ target: { name, value } }) => throttled(name, value);
-
-  return { params, handleSearch, onInputChange };
 };
 
 const HomePage = () => {

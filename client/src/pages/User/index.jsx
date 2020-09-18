@@ -1,19 +1,74 @@
 import React, { useEffect, useContext } from 'react';
-import { Grid, Card, Page as TablerPage } from 'tabler-react';
+import { Grid, Card, Page as TablerPage, Form } from 'tabler-react';
 import { useParams } from 'react-router-dom';
 
 import Page from 'app/components/Page';
 import ContestCard from 'app/components/ContestCard';
 import { useContestAll } from 'app/hooks/api/contest';
+import useGetParams from 'app/hooks/getParams';
+import ROUTES from 'app/utils/routes';
+
+const SORT_OPTIONS = {
+  POPULAR: 'POPULAR',
+  NEWEST: 'NEWEST',
+};
 
 const UserPage = () => {
   const { username } = useParams();
+  const { params, handleSearch, onInputChange } = useGetParams(
+    `${ROUTES.USERS}/${username}`,
+    {
+      search: '',
+      sortBy: SORT_OPTIONS.POPULAR,
+    },
+  );
   const {
     data: { data: { contests = [], totalPages, currentPage } = {} } = {},
-  } = useContestAll({ author: username });
+  } = useContestAll({ author: username, ...params });
 
   return (
-    <Page isPrivate>
+    <Page
+      isPrivate
+      navbarBefore={
+        <Grid.Col lg={5} className="ml-auto mt-4 mt-lg-0" ignoreCol>
+          <div className="page-options d-flex">
+            <Form.SelectGroup className="mr-2" canSelectMultiple={false}>
+              <Form.SelectGroupItem
+                className="mb-0"
+                type="radio"
+                label="Popular"
+                value={SORT_OPTIONS.POPULAR}
+                checked={params.sortBy === SORT_OPTIONS.POPULAR}
+                onChange={onInputChange}
+                name="sortBy"
+              />
+              <Form.SelectGroupItem
+                className="mb-0"
+                type="radio"
+                label="Newest"
+                value={SORT_OPTIONS.NEWEST}
+                checked={params.sortBy === SORT_OPTIONS.NEWEST}
+                onChange={onInputChange}
+                name="sortBy"
+              />
+            </Form.SelectGroup>
+            <div className="input-icon">
+              <input
+                name="search"
+                className="form-control"
+                type="text"
+                placeholder="Search for..."
+                defaultValue={params.search}
+                onChange={handleSearch}
+              />
+              <span className="input-icon-addon">
+                <i className="fe fe-search" />
+              </span>
+            </div>
+          </div>
+        </Grid.Col>
+      }
+    >
       <TablerPage.Content>
         <Grid.Row>
           <Grid.Col lg={4} width={12}>
