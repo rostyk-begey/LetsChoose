@@ -1,6 +1,5 @@
 const Mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
-const User = require('../models/User');
 const Contest = require('../models/Contest');
 const ContestItem = require('../models/ContestItem');
 
@@ -67,21 +66,29 @@ const ContestController = {
       if (page > totalPages) {
         // todo: validate
       }
+      console.log(author);
       const matchPipeline = author
-        ? [{ $match: { author: Mongoose.Types.ObjectId(author) } }]
+        ? [{ $match: { 'author.username': author } }]
         : [];
       let contests = await Contest.aggregate([
-        ...matchPipeline,
         ...getSearchPipelines(search),
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'author',
+            foreignField: '_id',
+            as: 'author',
+          },
+        },
+        {
+          $unwind: '$author',
+        },
+        ...matchPipeline,
         {
           $sort: { score: -1, [SORT_OPTIONS[sortBy]]: -1 },
         },
         ...getPaginationPipelines(page, perPage),
       ]).exec();
-      contests = await User.populate(contests, {
-        path: 'author',
-        select: { _id: 1, username: 1 },
-      });
       res.status(200).json({
         contests,
         totalPages,

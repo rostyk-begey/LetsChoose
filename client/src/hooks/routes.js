@@ -28,7 +28,7 @@ const useRoutes = (isAuthenticated) => {
       exact: false,
     },
     {
-      path: `${ROUTES.USERS}/:id`,
+      path: `${ROUTES.USERS}/:username`,
       allowed: isAuthenticated,
       component: UserPage,
       exact: false,

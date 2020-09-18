@@ -1,22 +1,12 @@
-import React, {
-  useRef,
-  useCallback,
-  useContext,
-  useState,
-  useEffect,
-} from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
 import { Page as TablerPage, Grid, Form } from 'tabler-react';
-import { throttle } from 'lodash';
+import { useScrollPosition } from '@n8tb1t/use-scroll-position';
 
 import Page from 'app/components/Page';
 import ContestCard from 'app/components/ContestCard';
 import { useContestAll } from 'app/hooks/api/contest';
-import useURLSearchParams from 'app/hooks/URLSearchParams';
-import AuthContext from 'app/context/AuthContext';
+import useGetParams from 'app/hooks/getParams';
 import ROUTES from 'app/utils/routes';
-
-import './index.scss';
 
 const SORT_OPTIONS = {
   POPULAR: 'POPULAR',
@@ -24,13 +14,11 @@ const SORT_OPTIONS = {
 };
 
 const HomePage = () => {
-  const history = useHistory();
-  const query = useURLSearchParams();
-  const defaultParams = {
+  const baseClassName = 'home-page';
+  const { params, handleSearch, onInputChange } = useGetParams(ROUTES.HOME, {
     search: '',
     sortBy: SORT_OPTIONS.POPULAR,
-  };
-  const [params, setParams] = useState(defaultParams);
+  });
   const { data = {}, ...contestsQuery } = useContestAll({
     ...params,
     perPage: 10,
@@ -38,49 +26,21 @@ const HomePage = () => {
   });
   const { data: { contests = [], currentPage, totalPages } = {} } = data;
 
-  // Restore params from URL
-  useEffect(() => {
-    const newPrams = Object.keys(defaultParams).reduce((acc, key) => {
-      const param = query.get(key);
-      if (param) acc[key] = param;
-      return acc;
-    }, {});
-    setParams((prevState) => ({
-      ...prevState,
-      ...newPrams,
-    }));
-  }, []);
-
-  const updateParam = useCallback(
-    (name, value) => {
-      const newParams = {
-        ...params,
-        [name]: value,
-      };
-      setParams(newParams);
-      const urlParams = Object.entries(newParams).reduce((acc, [key, val]) => {
-        if (val) acc.append(key, val);
-        return acc;
-      }, new URLSearchParams());
-      history.push(`${ROUTES.HOME}?${urlParams}`);
+  const [isScrolled, setIsScrolled] = useState(false);
+  useScrollPosition(
+    ({ currPos }) => {
+      const isShow = currPos.y < 0;
+      if (isShow !== isScrolled) setIsScrolled(isShow);
     },
-    [params],
+    [isScrolled],
   );
-  const onInputChange = ({ target: { name, value } }) =>
-    updateParam(name, value);
-
-  const { current: throttled } = useRef(
-    throttle(updateParam, 1000, { leading: false }),
-  );
-  const handleSearch = ({ target: { name, value } }) => throttled(name, value);
 
   return (
-    <Page isPrivate>
-      <TablerPage.Content
-        title="Popular Contests"
-        subTitle={`Page ${currentPage}/${totalPages}`}
-        options={
-          <>
+    <Page
+      isPrivate
+      navbarBefore={
+        <Grid.Col lg={5} className="ml-auto mt-4 mt-lg-0" ignoreCol>
+          <div className="page-options d-flex">
             <Form.SelectGroup className="mr-2" canSelectMultiple={false}>
               <Form.SelectGroupItem
                 className="mb-0"
@@ -114,9 +74,11 @@ const HomePage = () => {
                 <i className="fe fe-search" />
               </span>
             </div>
-          </>
-        }
-      >
+          </div>
+        </Grid.Col>
+      }
+    >
+      <TablerPage.Content className={`${baseClassName}__content`}>
         <Grid.Row>
           {contestsQuery.isSuccess &&
             contests.map((contest) => (
