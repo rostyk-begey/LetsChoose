@@ -4,6 +4,7 @@ const config = require('config');
 const mongoose = require('mongoose').set('debug', config.get('mongooseDebug'));
 const cloudinary = require('cloudinary').v2;
 const path = require('path');
+const { handleError } = require('./usecases/error');
 
 const PORT = config.get('port');
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/contests', require('./routes/contest.routes'));
+app.use('/api/users', require('./routes/user.routes'));
 
 app.disable('etag');
 
@@ -23,6 +25,8 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
   });
 }
+
+app.use((err, req, res, next) => handleError(err, res));
 
 (async () => {
   try {

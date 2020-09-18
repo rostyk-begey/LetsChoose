@@ -1,16 +1,12 @@
 const Contest = require('../models/Contest');
+const { AppError } = require('../usecases/error');
 
 module.exports = async ({ userId, params: { id } }, res, next) => {
-  try {
-    const { author } = await Contest.findById(id);
-    if (author.toString() === userId.toString()) {
-      next();
-    } else {
-      return res
-        .status(401)
-        .json({ message: 'User has no permission to proceed request' });
-    }
-  } catch (e) {
-    return res.status(404).json({ message: 'Resource not found' });
+  const contest = await Contest.findById(id);
+  if (!contest) throw new AppError('Resource not found', 404);
+  if (contest.author.toString() === userId.toString()) {
+    next();
+  } else {
+    throw new AppError('User has no permission to proceed request', 401);
   }
 };
