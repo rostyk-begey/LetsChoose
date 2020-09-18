@@ -61,11 +61,11 @@ const ContestCard = ({
           {clip(excerpt, 150)}
         </p>
         <div className="d-flex align-items-center">
-          <Link to={`${ROUTES.USERS}/${authorId}`}>
-            <Avatar icon="users" size="md" className="mr-3" />
+          <Link to={`${ROUTES.USERS}/${username}`}>
+            <Avatar icon="user" size="md" className="mr-3" />
           </Link>
           <div>
-            <Link to={`${ROUTES.USERS}/${authorId}`}>@{username}</Link>
+            <Link to={`${ROUTES.USERS}/${username}`}>@{username}</Link>
             <small className="d-block text-muted">
               {humanTime(new Date(createdAt))}
             </small>

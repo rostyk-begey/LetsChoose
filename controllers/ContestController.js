@@ -67,10 +67,22 @@ const ContestController = {
       if (page > totalPages) {
         // todo: validate
       }
+      console.log(author);
       const matchPipeline = author
-        ? [{ $match: { author: Mongoose.Types.ObjectId(author) } }]
+        ? [{ $match: { 'author.username': author } }]
         : [];
       let contests = await Contest.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'author',
+            foreignField: '_id',
+            as: 'author',
+          },
+        },
+        {
+          $unwind: '$author',
+        },
         ...matchPipeline,
         ...getSearchPipelines(search),
         {
@@ -78,10 +90,6 @@ const ContestController = {
         },
         ...getPaginationPipelines(page, perPage),
       ]).exec();
-      contests = await User.populate(contests, {
-        path: 'author',
-        select: { _id: 1, username: 1 },
-      });
       res.status(200).json({
         contests,
         totalPages,

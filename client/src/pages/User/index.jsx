@@ -4,16 +4,13 @@ import { useParams } from 'react-router-dom';
 
 import Page from 'app/components/Page';
 import ContestCard from 'app/components/ContestCard';
-import AuthContext from 'app/context/AuthContext';
 import { useContestAll } from 'app/hooks/api/contest';
 
 const UserPage = () => {
-  const { id } = useParams();
-  const auth = useContext(AuthContext);
+  const { username } = useParams();
   const {
     data: { data: { contests = [], totalPages, currentPage } = {} } = {},
-    ...contestsQuery
-  } = useContestAll({ author: id });
+  } = useContestAll({ author: username });
 
   return (
     <Page isPrivate>
