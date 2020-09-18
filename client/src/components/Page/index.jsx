@@ -10,6 +10,7 @@ import { useApiAuth } from 'app/hooks/api/auth';
 import './index.scss';
 
 import logo from '../../assets/images/logo.svg';
+import NavBar from 'app/components/NavBar';
 
 const newNavBarItem = (to, value, icon, useExact) => ({
   to,
@@ -31,7 +32,7 @@ const AUTH_BUTTONS = [
   },
 ];
 
-export const Page = ({ isPrivate = false, children }) => {
+export const Page = ({ isPrivate = false, children, navbarBefore }) => {
   const baseClassName = 'page-template';
   const { logout, isAuthenticated, userId } = useContext(AuthContext);
   const location = useLocation();
@@ -111,7 +112,13 @@ export const Page = ({ isPrivate = false, children }) => {
           onMenuToggleClick={() => setNavCollapse((prevState) => !prevState)}
         />
         {isAuthenticated && (
-          <Site.Nav collapse={navCollapse} tabbed itemsObjects={navBarItems} />
+          <NavBar
+            tabbed
+            className={`${baseClassName}__navbar`}
+            collapse={navCollapse}
+            itemsObjects={navBarItems}
+            before={navbarBefore}
+          />
         )}
       </header>
       <TablerPage.Main className={`${baseClassName}__main`}>

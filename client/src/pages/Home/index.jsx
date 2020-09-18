@@ -3,15 +3,12 @@ import { useHistory } from 'react-router-dom';
 import { Page as TablerPage, Grid, Form, Container } from 'tabler-react';
 import { throttle } from 'lodash';
 import { useScrollPosition } from '@n8tb1t/use-scroll-position';
-import classNames from 'classnames';
 
 import Page from 'app/components/Page';
 import ContestCard from 'app/components/ContestCard';
 import { useContestAll } from 'app/hooks/api/contest';
 import useURLSearchParams from 'app/hooks/URLSearchParams';
 import ROUTES from 'app/utils/routes';
-
-import './index.scss';
 
 const SORT_OPTIONS = {
   POPULAR: 'POPULAR',
@@ -85,57 +82,49 @@ const HomePage = () => {
   );
 
   return (
-    <Page isPrivate>
+    <Page
+      isPrivate
+      navbarBefore={
+        <Grid.Col lg={5} className="ml-auto mt-4 mt-lg-0" ignoreCol>
+          <div className="page-options d-flex">
+            <Form.SelectGroup className="mr-2" canSelectMultiple={false}>
+              <Form.SelectGroupItem
+                className="mb-0"
+                type="radio"
+                label="Popular"
+                value={SORT_OPTIONS.POPULAR}
+                checked={params.sortBy === SORT_OPTIONS.POPULAR}
+                onChange={onInputChange}
+                name="sortBy"
+              />
+              <Form.SelectGroupItem
+                className="mb-0"
+                type="radio"
+                label="Newest"
+                value={SORT_OPTIONS.NEWEST}
+                checked={params.sortBy === SORT_OPTIONS.NEWEST}
+                onChange={onInputChange}
+                name="sortBy"
+              />
+            </Form.SelectGroup>
+            <div className="input-icon">
+              <input
+                name="search"
+                className="form-control"
+                type="text"
+                placeholder="Search for..."
+                defaultValue={params.search}
+                onChange={handleSearch}
+              />
+              <span className="input-icon-addon">
+                <i className="fe fe-search" />
+              </span>
+            </div>
+          </div>
+        </Grid.Col>
+      }
+    >
       <TablerPage.Content className={`${baseClassName}__content`}>
-        <header
-          className={classNames(`${baseClassName}__header`, {
-            [`${baseClassName}__header--scrolled`]: isScrolled,
-          })}
-        >
-          <Container>
-            <TablerPage.Header
-              title="Popular Contests"
-              subTitle={`Page ${currentPage}/${totalPages}`}
-              options={
-                <>
-                  <Form.SelectGroup className="mr-2" canSelectMultiple={false}>
-                    <Form.SelectGroupItem
-                      className="mb-0"
-                      type="radio"
-                      label="Popular"
-                      value={SORT_OPTIONS.POPULAR}
-                      checked={params.sortBy === SORT_OPTIONS.POPULAR}
-                      onChange={onInputChange}
-                      name="sortBy"
-                    />
-                    <Form.SelectGroupItem
-                      className="mb-0"
-                      type="radio"
-                      label="Newest"
-                      value={SORT_OPTIONS.NEWEST}
-                      checked={params.sortBy === SORT_OPTIONS.NEWEST}
-                      onChange={onInputChange}
-                      name="sortBy"
-                    />
-                  </Form.SelectGroup>
-                  <div className="input-icon">
-                    <input
-                      name="search"
-                      className="form-control"
-                      type="text"
-                      placeholder="Search for..."
-                      defaultValue={params.search}
-                      onChange={handleSearch}
-                    />
-                    <span className="input-icon-addon">
-                      <i className="fe fe-search" />
-                    </span>
-                  </div>
-                </>
-              }
-            />
-          </Container>
-        </header>
         <Grid.Row>
           {contestsQuery.isSuccess &&
             contests.map((contest) => (
