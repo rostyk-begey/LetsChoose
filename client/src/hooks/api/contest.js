@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useInfiniteQuery } from 'react-query';
 
 import AuthContext from 'app/context/AuthContext';
 import axios from 'axios';
@@ -34,6 +34,30 @@ export const useContestAll = (params = {}, config = {}) => {
     retry: 0,
     ...config,
   });
+};
+
+export const useContestAllInfinite = (params = {}, config = {}) => {
+  const queryParams = {
+    author: '',
+    search: '',
+    sortBy: 'POPULAR',
+    page: 1,
+    perPage: 10,
+    ...params,
+  };
+  const { all } = useContestApi();
+  return useInfiniteQuery(
+    ['contests', queryParams],
+    (key, _, page = 1) => all({ ...queryParams, page }),
+    {
+      retry: 0,
+      ...config,
+      getFetchMore: ({ data: { currentPage, totalPages } }) => {
+        if (currentPage === totalPages) return false;
+        return currentPage + 1;
+      },
+    },
+  );
 };
 
 export const useContestCreate = () => {
