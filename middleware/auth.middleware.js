@@ -7,11 +7,12 @@ module.exports = (req, res, next) => {
     next();
   }
 
-  const token = req.headers?.authorization?.split(' ')[1];
-
-  if (!token) throw new AppError('Unauthorized', 401);
-
-  const { userId } = jwt.verify(token, config.get('jwtSecret'));
-  req.userId = userId;
-  next();
+  try {
+    const token = req.headers?.authorization?.split(' ')[1];
+    const { userId } = jwt.verify(token, config.get('jwtSecret'));
+    req.userId = userId;
+    next();
+  } catch (e) {
+    throw new AppError('Unauthorized', 401);
+  }
 };

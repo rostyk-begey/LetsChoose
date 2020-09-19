@@ -14,9 +14,10 @@ class AppError extends Error {
 const handleError = (err, res) => {
   err.statusCode = err.statusCode || 500;
   let response = {
-    status: err.statusCode,
-    message: err.status || 'error',
+    statusCode: err.statusCode,
+    status: err.status || 'error',
   };
+  if (err.isOperational) response.message = err.message;
   if (err.data !== {}) {
     response = {
       ...response,
@@ -25,7 +26,7 @@ const handleError = (err, res) => {
   }
 
   if (process.env.NODE_ENV !== 'production') {
-    console.log(response);
+    console.log(err);
   }
 
   res.status(err.statusCode).json(response);

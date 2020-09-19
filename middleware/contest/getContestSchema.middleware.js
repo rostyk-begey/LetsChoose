@@ -9,10 +9,16 @@ module.exports = checkSchema({
   page: {
     in: 'query',
     toInt: true,
+    customSanitizer: {
+      options: (value) => value || 1,
+    },
   },
   perPage: {
     in: 'query',
     toInt: true,
+    customSanitizer: {
+      options: (value) => value || 10,
+    },
   },
   search: {
     in: 'query',
