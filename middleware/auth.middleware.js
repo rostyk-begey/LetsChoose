@@ -13,7 +13,6 @@ module.exports = (req, res, next) => {
     req.userId = userId;
     next();
   } catch (e) {
-    console.log(e);
     throw new AppError('Unauthorized', 401);
   }
 };
