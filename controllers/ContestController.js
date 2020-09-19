@@ -73,10 +73,7 @@ const ContestController = {
       ? [{ $match: { 'author.username': author } }]
       : [];
     const contests = await Contest.aggregate([
-      ...getSearchPipelines(search),
-      ...matchPipeline,
-      getSortPipeline(search, sortBy),
-      ...getPaginationPipelines(page, perPage),
+      ...getSearchPipelines(search), // should be a first stage
       {
         $lookup: {
           from: 'users',
@@ -88,6 +85,9 @@ const ContestController = {
       {
         $unwind: '$author',
       },
+      ...matchPipeline,
+      getSortPipeline(search, sortBy),
+      ...getPaginationPipelines(page, perPage),
     ]).exec();
     res.status(200).json({
       contests,
