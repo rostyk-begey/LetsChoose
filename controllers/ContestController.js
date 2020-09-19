@@ -7,10 +7,10 @@ const { AppError } = require('../usecases/error');
 
 const getPaginationPipelines = (page = 1, perPage = 10) => [
   {
-    $limit: perPage,
+    $skip: (page - 1) * perPage,
   },
   {
-    $skip: (page - 1) * perPage,
+    $limit: perPage,
   },
 ];
 
@@ -41,12 +41,14 @@ const getSearchPipelines = (search = '') => {
 const getCloudinaryImagePublicId = (url) =>
   url.split('/').slice(-1)[0].split('.')[0];
 
-const fieldNameFilter = (key) => ({ fieldname }) => fieldname === key;
+const getSortPipeline = (search, sortBy) => {
+  const sortOptions = search ? { score: -1 } : {};
+  if (sortBy) sortOptions[sortBy] = -1;
 
-const SORT_OPTIONS = {
-  POPULAR: 'views',
-  NEWEST: '_id',
+  return { $sort: sortOptions };
 };
+
+const fieldNameFilter = (key) => ({ fieldname }) => fieldname === key;
 
 const ContestController = {
   async get(req, res) {
@@ -60,13 +62,7 @@ const ContestController = {
     }
 
     const {
-      query: {
-        page = 1,
-        perPage = 10,
-        search = '',
-        author = '',
-        sortBy = SORT_OPTIONS.NEWEST,
-      },
+      query: { page = 1, perPage = 10, search = '', author = '', sortBy = '' },
     } = req;
     const count = await Contest.countDocuments();
     const totalPages = Math.ceil(count / perPage);
@@ -77,7 +73,7 @@ const ContestController = {
       ? [{ $match: { 'author.username': author } }]
       : [];
     const contests = await Contest.aggregate([
-      ...getSearchPipelines(search),
+      ...getSearchPipelines(search), // should be a first stage
       {
         $lookup: {
           from: 'users',
@@ -90,9 +86,7 @@ const ContestController = {
         $unwind: '$author',
       },
       ...matchPipeline,
-      {
-        $sort: { score: -1, [SORT_OPTIONS[sortBy]]: -1 },
-      },
+      getSortPipeline(search, sortBy),
       ...getPaginationPipelines(page, perPage),
     ]).exec();
     res.status(200).json({

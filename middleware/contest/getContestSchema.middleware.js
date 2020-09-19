@@ -1,7 +1,7 @@
 const { checkSchema } = require('express-validator');
 
 const SORT_OPTIONS = {
-  POPULAR: 'views',
+  // POPULAR: 'views', // todo: implement views counting
   NEWEST: '_id',
 };
 
@@ -31,10 +31,7 @@ module.exports = checkSchema({
   sortBy: {
     in: 'query',
     customSanitizer: {
-      options: (value) =>
-        Object.keys(SORT_OPTIONS).includes(value)
-          ? value
-          : SORT_OPTIONS.POPULAR,
+      options: (value) => SORT_OPTIONS[value] || SORT_OPTIONS.NEWEST,
     },
   },
 });
