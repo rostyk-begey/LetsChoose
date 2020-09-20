@@ -1,20 +1,16 @@
 const Mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
-const User = require('../models/User');
+const { validationResult } = require('express-validator');
 const Contest = require('../models/Contest');
 const ContestItem = require('../models/ContestItem');
-
-const SORT_OPTIONS = {
-  POPULAR: 'views',
-  NEWEST: '_id',
-};
+const { AppError } = require('../usecases/error');
 
 const getPaginationPipelines = (page = 1, perPage = 10) => [
   {
-    $limit: perPage,
+    $skip: (page - 1) * perPage,
   },
   {
-    $skip: (page - 1) * perPage,
+    $limit: perPage,
   },
 ];
 
@@ -45,142 +41,145 @@ const getSearchPipelines = (search = '') => {
 const getCloudinaryImagePublicId = (url) =>
   url.split('/').slice(-1)[0].split('.')[0];
 
+const getSortPipeline = (search, sortBy) => {
+  const sortOptions = search ? { score: -1 } : {};
+  if (sortBy) sortOptions[sortBy] = -1;
+
+  return { $sort: sortOptions };
+};
+
 const fieldNameFilter = (key) => ({ fieldname }) => fieldname === key;
 
 const ContestController = {
-  async get({ query = {} }, res) {
-    try {
-      let {
-        page = 1,
-        perPage = 10,
-        search = '',
-        author = '',
-        sortBy = SORT_OPTIONS.NEWEST,
-      } = query;
-      page = parseInt(page, 10);
-      perPage = parseInt(perPage, 10);
-      if (!Object.keys(SORT_OPTIONS).includes(sortBy)) {
-        sortBy = SORT_OPTIONS.POPULAR;
-      }
-      const count = await Contest.countDocuments();
-      const totalPages = Math.ceil(count / perPage);
-      if (page > totalPages) {
-        // todo: validate
-      }
-      const matchPipeline = author
-        ? [{ $match: { author: Mongoose.Types.ObjectId(author) } }]
-        : [];
-      let contests = await Contest.aggregate([
-        ...matchPipeline,
-        ...getSearchPipelines(search),
-        {
-          $sort: { score: -1, [SORT_OPTIONS[sortBy]]: -1 },
-        },
-        ...getPaginationPipelines(page, perPage),
-      ]).exec();
-      contests = await User.populate(contests, {
-        path: 'author',
-        select: { _id: 1, username: 1 },
+  async get(req, res) {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      throw new AppError('Invalid query', 400, {
+        errors: errors.array(),
+        message: 'Invalid query',
       });
-      res.status(200).json({
-        contests,
-        totalPages,
-        currentPage: page,
-      });
-    } catch (e) {
-      console.log(e);
-      res.status(500);
     }
+
+    const {
+      query: { page = 1, perPage = 10, search = '', author = '', sortBy = '' },
+    } = req;
+    const count = await Contest.countDocuments();
+    const totalPages = Math.ceil(count / perPage);
+    if (page > totalPages) {
+      throw new AppError('Invalid page number', 403);
+    }
+    const matchPipeline = author
+      ? [{ $match: { 'author.username': author } }]
+      : [];
+    const contests = await Contest.aggregate([
+      ...getSearchPipelines(search), // should be a first stage
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'author',
+          foreignField: '_id',
+          as: 'author',
+        },
+      },
+      {
+        $unwind: '$author',
+      },
+      ...matchPipeline,
+      getSortPipeline(search, sortBy),
+      ...getPaginationPipelines(page, perPage),
+    ]).exec();
+    res.status(200).json({
+      contests,
+      totalPages,
+      currentPage: page,
+    });
   },
   async find({ params: { id } }, res) {
-    try {
-      const contest = await Contest.findById(id);
-      if (!contest) {
-        return res.status(404).json({ message: 'Resource not found!' });
-      }
-      contest.items = await ContestItem.find({ contestId: id });
-      res.status(200).json(contest);
-    } catch (e) {
-      console.log(e);
-      res.status(500);
+    const contest = await Contest.findById(id);
+    if (!contest) {
+      return new AppError('Resource not found!', 404);
     }
+    contest.items = await ContestItem.find({ contestId: id });
+    res.status(200).json(contest);
   },
-  async create({ userId, files, body: { title, excerpt, items } }, res) {
-    try {
-      const thumbnail = files.find(fieldNameFilter('thumbnail'));
-      const contestId = Mongoose.Types.ObjectId();
-      const { secure_url } = await cloudinary.uploader.upload(thumbnail.path, {
-        public_id: `contests/${contestId}/thumbnail`,
+  async create(req, res) {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      throw new AppError('Invalid query', 400, {
+        errors: errors.array(),
+        message: 'Invalid query',
       });
-      const contest = new Contest({
-        _id: contestId,
-        thumbnail: secure_url,
-        title,
-        excerpt,
-        author: userId,
-      });
-      contest.save();
-      const savingItems = items.map(async (item, i) => {
-        const contestItemId = Mongoose.Types.ObjectId();
-        const image = files.find(fieldNameFilter(`items[${i}][image]`));
-        const { secure_url } = await cloudinary.uploader.upload(image.path, {
-          public_id: `contests/${contestId}/items/${contestItemId}`,
-        });
-        const contestItem = new ContestItem({
-          ...item,
-          image: secure_url,
-          _id: contestItemId,
-          contestId,
-        });
-        await contestItem.save();
-      });
-      await Promise.all(savingItems);
-      res.status(201).json({ message: 'Contest successfully created!' });
-    } catch (e) {
-      console.log(e);
-      res.status(500);
     }
+
+    const {
+      userId,
+      files,
+      body: { title, excerpt, items },
+    } = req;
+    const thumbnail = files.find(fieldNameFilter('thumbnail'));
+    const contestId = Mongoose.Types.ObjectId();
+    const { secure_url } = await cloudinary.uploader.upload(thumbnail.path, {
+      public_id: `contests/${contestId}/thumbnail`,
+    });
+    const contest = new Contest({
+      _id: contestId,
+      thumbnail: secure_url,
+      title,
+      excerpt,
+      author: userId,
+    });
+    contest.save();
+    const savingItems = items.map(async (item, i) => {
+      const contestItemId = Mongoose.Types.ObjectId();
+      const image = files.find(fieldNameFilter(`items[${i}][image]`));
+      const { secure_url } = await cloudinary.uploader.upload(image.path, {
+        public_id: `contests/${contestId}/items/${contestItemId}`,
+      });
+      const contestItem = new ContestItem({
+        ...item,
+        image: secure_url,
+        _id: contestItemId,
+        contestId,
+      });
+      await contestItem.save();
+    });
+    await Promise.all(savingItems);
+    res.status(201).json({ message: 'Contest successfully created!' });
   },
-  async update(
-    { files, params: { id: contestId }, body: { title, excerpt } },
-    res,
-  ) {
-    try {
-      const contest = await Contest.findById(contestId);
-      const data = {};
-      if (title) data.title = title;
-      if (excerpt) data.excerpt = excerpt;
-      if (files?.length) {
-        const thumbnailFile = files.find(fieldNameFilter('thumbnail'));
-        if (contest.thumbnail) {
-          await cloudinary.uploader.destroy(
-            getCloudinaryImagePublicId(contest.thumbnail),
-          );
-        }
-        const { secure_url } = await cloudinary.uploader.upload(
-          thumbnailFile.path,
-          {
-            public_id: `contests/${contestId}/thumbnail`,
-          },
+  async update(req, res) {
+    const {
+      files,
+      params: { id: contestId },
+      body: { title, excerpt },
+    } = req;
+    const contest = await Contest.findById(contestId);
+    const data = {};
+    if (title) data.title = title;
+    if (excerpt) data.excerpt = excerpt;
+    if (files?.length) {
+      const thumbnailFile = files.find(fieldNameFilter('thumbnail'));
+      if (contest.thumbnail) {
+        await cloudinary.uploader.destroy(
+          getCloudinaryImagePublicId(contest.thumbnail),
         );
-        data.thumbnail = secure_url;
       }
-      await Contest.updateOne({ _id: contestId }, data);
-      res.status(200).json({ message: 'Contest successfully updated!' });
-    } catch (e) {
-      console.log(e);
-      res.status(500);
+      const { secure_url } = await cloudinary.uploader.upload(
+        thumbnailFile.path,
+        {
+          public_id: `contests/${contestId}/thumbnail`,
+        },
+      );
+      data.thumbnail = secure_url;
     }
+    await Contest.updateOne({ _id: contestId }, data);
+    res.status(200).json({ message: 'Contest successfully updated!' });
   },
   async remove({ params: { id } }, res) {
-    try {
-      await Contest.deleteOne({ _id: id });
-      await ContestItem.deleteMany({ contestId: id }); // todo: delete images
-      res.status(200).json({ message: 'Contest successfully deleted!' });
-    } catch (e) {
-      console.log(e);
-      res.status(500);
-    }
+    await Contest.deleteOne({ _id: id });
+    await ContestItem.deleteMany({ contestId: id }); // todo: delete images
+    res.status(200).json({ message: 'Contest successfully deleted!' });
   },
 };
 

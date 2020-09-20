@@ -1,9 +1,0 @@
-.home-page {
-  &__cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px,400px));
-    grid-gap: 30px 35px;
-    padding: 40px 0;
-    justify-content: center;
-  }
-}

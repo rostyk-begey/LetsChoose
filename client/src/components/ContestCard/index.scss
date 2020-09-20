@@ -22,6 +22,18 @@
     }
   }
 
+  &__excerpt {
+    min-height: 70px;
+
+    @include media-breakpoint-down(lg) {
+      min-height: 110px;
+    }
+
+    @include media-breakpoint-down(sm) {
+      min-height: unset;
+    }
+  }
+
   &__image {
     display: block;
     height: 100%;

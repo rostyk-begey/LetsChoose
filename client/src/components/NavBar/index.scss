@@ -1,0 +1,13 @@
+@import "../../assets/styles/bootstrap-utils";
+
+.nav-bar {
+  max-height: 600px;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+
+  &--collapse {
+    @include media-breakpoint-down(md) {
+      max-height: 0;
+    }
+  }
+}
