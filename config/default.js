@@ -1,7 +1,8 @@
 const {
   PORT,
   MONGOOSE_DEBUG,
-  JWT_SECRET,
+  JWT_ACCESS_SECRET,
+  JWT_REFRESH_SECRET,
   MONGO_URI,
   CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY,
@@ -10,7 +11,8 @@ const {
 
 module.exports = {
   port: PORT || 5000,
-  jwtSecret: JWT_SECRET || 'default_jwt_secret',
+  jwtAccessSecret: JWT_ACCESS_SECRET || 'default_jwt_secret',
+  jwtRefreshSecret: JWT_REFRESH_SECRET || 'default_jwt_secret',
   mongoUri: MONGO_URI,
   mongooseDebug: MONGOOSE_DEBUG || false,
   cloudinary: {

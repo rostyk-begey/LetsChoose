@@ -4,13 +4,14 @@ import { Site, Page as TablerPage, Button } from 'tabler-react';
 import useInterval from 'use-interval';
 
 import AuthContext from 'app/context/AuthContext';
+import UserProfileContext from 'app/context/UserProfileContext';
 import ROUTES from 'app/utils/routes';
 import { useApiAuth } from 'app/hooks/api/auth';
+import NavBar from 'app/components/NavBar';
 
 import './index.scss';
 
 import logo from '../../assets/images/logo.svg';
-import NavBar from 'app/components/NavBar';
 
 const newNavBarItem = (to, value, icon, useExact) => ({
   to,
@@ -34,14 +35,15 @@ const AUTH_BUTTONS = [
 
 export const Page = ({ isPrivate = false, children, navbarBefore }) => {
   const baseClassName = 'page-template';
-  const { logout, isAuthenticated, userId } = useContext(AuthContext);
+  const { logout, isAuthenticated } = useContext(AuthContext);
+  const { user: { username = '' } = {} } = useContext(UserProfileContext);
   const location = useLocation();
   const [auth, authQuery] = useApiAuth();
   const [navCollapse, setNavCollapse] = useState(true);
   const navBarItems = [
     newNavBarItem(ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
     newNavBarItem(
-      `${ROUTES.USERS}/${userId}`,
+      `${ROUTES.USERS}/${username}`,
       'My profile',
       'user',
       ROUTES.CONTESTS.NEW,
@@ -50,13 +52,13 @@ export const Page = ({ isPrivate = false, children, navbarBefore }) => {
   ];
   const accountDropdownProps = {
     avatarURL: '/',
-    name: 'Jane Pearson',
+    name: `@${username}`,
     // description: 'Administrator',
     options: [
       {
         icon: 'user',
         value: 'Profile',
-        to: `${ROUTES.USERS}/${userId}`,
+        to: `${ROUTES.USERS}/${username}`,
       },
       { icon: 'settings', value: 'Settings' },
       // { icon: 'mail', value: 'Inbox', badge: '6' },
@@ -73,19 +75,19 @@ export const Page = ({ isPrivate = false, children, navbarBefore }) => {
     ],
   };
 
-  useInterval(
-    () => {
-      if (isPrivate) auth();
-    },
-    isPrivate ? 5 * 1000 : null,
-    true,
-  );
-
-  useEffect(() => {
-    if (isPrivate && authQuery.isError) {
-      logout(`${ROUTES.LOGIN}?redirectTo=${location.pathname}`);
-    }
-  }, [authQuery]);
+  // useInterval(
+  //   () => {
+  //     if (isPrivate) auth();
+  //   },
+  //   isPrivate ? 5 * 1000 : null,
+  //   true,
+  // );
+  //
+  // useEffect(() => {
+  //   if (isPrivate && authQuery.isError) {
+  //     logout(`${ROUTES.LOGIN}?redirectTo=${location.pathname}`);
+  //   }
+  // }, [authQuery]);
 
   return (
     <TablerPage className={baseClassName}>

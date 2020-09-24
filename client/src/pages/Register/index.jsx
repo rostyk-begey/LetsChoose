@@ -8,6 +8,7 @@ import ROUTES from 'app/utils/routes';
 import { useApiLogin, useApiRegister } from 'app/hooks/api/auth';
 
 import logo from 'assets/images/logo.svg';
+import useAuth from 'app/hooks/auth';
 
 const INPUTS = [
   {
@@ -53,7 +54,7 @@ const INPUTS = [
 ];
 
 const RegisterPage = () => {
-  const auth = useContext(AuthContext);
+  const auth = useAuth();
   const [register, ...registerQuery] = useApiRegister();
   const [login, ...loginQuery] = useApiLogin();
 
@@ -62,9 +63,9 @@ const RegisterPage = () => {
       setTimeout(() => {}, 5000);
       await register(form);
       const {
-        data: { token, userId },
+        data: { accessToken },
       } = await login({ login: form.username, password: form.password });
-      auth.login(token, userId);
+      auth.login(accessToken);
     } catch (e) {
       console.log(e);
       // M.toast({ html: e.message });

@@ -3,13 +3,13 @@ import { StandaloneFormPage } from 'tabler-react';
 import { Link, useHistory } from 'react-router-dom';
 
 import AuthContext from 'app/context/AuthContext';
-import useHttp from 'app/hooks/http';
 import useURLSearchParams from 'app/hooks/URLSearchParams';
 import ROUTES from 'app/utils/routes';
 import AuthForm from 'app/components/AuthForm';
+import { useApiLogin } from 'app/hooks/api/auth';
 
 import logo from 'assets/images/logo.svg';
-import { useApiLogin } from 'app/hooks/api/auth';
+import useAuth from 'app/hooks/auth';
 
 const INPUTS = [
   {
@@ -34,15 +34,15 @@ const INPUTS = [
 
 const LoginPage = () => {
   const query = useURLSearchParams();
-  const auth = useContext(AuthContext);
-  const [login, ...loginQuery] = useApiLogin();
+  const auth = useAuth();
+  const [login, loginQuery] = useApiLogin();
   const history = useHistory();
   const onSubmit = async (form) => {
     try {
       const {
-        data: { token, userId },
+        data: { accessToken },
       } = await login(form);
-      auth.login(token, userId);
+      auth.login(accessToken);
       const redirectTo = query.get('redirectTo');
       if (redirectTo) history.push(redirectTo);
     } catch (e) {

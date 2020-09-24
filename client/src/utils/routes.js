@@ -12,11 +12,14 @@ export default {
     UPDATE: '/contests/:id/update',
   },
   API: {
-    CONTESTS: '/api/contests',
+    INDEX: '/api',
+    CONTESTS: '/contests',
+    USERS: '/users',
     AUTH: {
-      INDEX: '/api/auth',
-      LOGIN: '/api/auth/login',
-      REGISTER: '/api/auth/register',
+      INDEX: '/auth',
+      LOGIN: '/auth/login',
+      REGISTER: '/auth/register',
+      REFRESH_TOKEN: '/auth/refresh_token',
     },
   },
 };

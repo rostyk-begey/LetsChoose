@@ -119,6 +119,7 @@ module.exports = {
     alias: {
       app: path.join(__dirname, '../src/'),
       assets: path.join(__dirname, '../src/assets/'),
+      'react-dom': '@hot-loader/react-dom',
     },
   },
 };
