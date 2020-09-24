@@ -1,30 +1,14 @@
 import { useContext } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 
-import AuthContext from 'app/context/AuthContext';
-import axios from 'axios';
 import ROUTES from 'app/utils/routes';
+import api from 'app/providers/apiProvider';
 
 export const useAuthApi = () => {
-  const { token } = useContext(AuthContext);
-  const api = axios.create({
-    baseURL: ROUTES.API.AUTH.INDEX,
-    headers: {
-      accepts: 'application/json',
-    },
-  });
-  const auth = () =>
-    api.post(
-      '/',
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-  const login = (data) => api.post(`/login`, data);
-  const register = (data) => api.post('/register', data);
+  const baseURL = ROUTES.API.AUTH.INDEX;
+  const auth = () => api.post('/');
+  const login = (data) => api.post(`${baseURL}/login`, data);
+  const register = (data) => api.post(`${baseURL}/register`, data);
   return { auth, login, register };
 };
 

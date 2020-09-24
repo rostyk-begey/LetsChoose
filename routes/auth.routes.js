@@ -13,12 +13,16 @@ router.post('/', auth, async (req, res) => {
 
 router.post('/register', registerSchema, catchAsync(UserController.register));
 
-router.post('/login', loginSchema, catchAsync(UserController.login));
-
 router.post(
-  '/refresh_token',
+  '/login',
+  (req, res, next) => {
+    console.log(req);
+    next();
+  },
   loginSchema,
-  catchAsync(UserController.refreshToken),
+  catchAsync(UserController.login),
 );
+
+router.post('/refresh_token', catchAsync(UserController.refreshToken));
 
 module.exports = router;
