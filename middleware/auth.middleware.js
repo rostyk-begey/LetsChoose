@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
 
   try {
     const token = req.headers?.authorization?.split(' ')[1];
-    const { userId } = jwt.verify(token, config.get('jwtSecret'));
+    const { userId } = jwt.verify(token, config.get('jwtAccessSecret'));
     req.userId = userId;
     next();
   } catch (e) {

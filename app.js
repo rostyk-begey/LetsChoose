@@ -4,12 +4,14 @@ const config = require('config');
 const mongoose = require('mongoose').set('debug', config.get('mongooseDebug'));
 const cloudinary = require('cloudinary').v2;
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const { handleError } = require('./usecases/error');
 
 const PORT = config.get('port');
 
 const app = express();
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', require('./routes/auth.routes'));

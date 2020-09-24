@@ -7,6 +7,19 @@ const Contest = require('../models/Contest');
 const ContestItem = require('../models/ContestItem');
 const { AppError } = require('../usecases/error');
 
+// todo: update token version
+const generateTokens = ({ _id, tokenVersion = 0 }) => {
+  const accessToken = jwt.sign({ userId: _id }, config.get('jwtAccessSecret'), {
+    expiresIn: '15s',
+  });
+  const refreshToken = jwt.sign(
+    { userId: _id, tokenVersion },
+    config.get('jwtRefreshSecret'),
+    { expiresIn: '7d' },
+  );
+  return { accessToken, refreshToken };
+};
+
 const UserController = {
   async login(req, res) {
     const errors = validationResult(req);
@@ -21,9 +34,7 @@ const UserController = {
     const { login, password } = req.body;
     let user = await User.findOne({ email: login });
 
-    if (!user) {
-      user = await User.findOne({ username: login });
-    }
+    if (!user) user = await User.findOne({ username: login });
 
     if (!user) throw new AppError('User not exists!', 400);
 
@@ -31,11 +42,22 @@ const UserController = {
 
     if (!isMatch) throw new AppError('Incorrect login data', 400);
 
-    const token = jwt.sign({ userId: user.id }, config.get('jwtSecret'), {
-      expiresIn: '1h',
+    const { accessToken, refreshToken } = generateTokens(user);
+
+    const responseBody = {
+      userId: user.id,
+      accessToken,
+    };
+
+    res.cookie('jid', refreshToken, {
+      httpOnly: true,
     });
 
-    res.status(200).json({ token, userId: user.id });
+    if (req.query?.refreshTokenLocation === 'body') {
+      responseBody.refreshToken = refreshToken;
+    }
+
+    res.status(200).json(responseBody);
   },
   async register(req, res) {
     const errors = validationResult(req);
@@ -55,8 +77,48 @@ const UserController = {
 
     res.status(201).json({ message: 'User successfully created!' });
   },
+  async refreshToken(req, res) {
+    let token;
+    let userId;
+
+    if (req.query?.refreshTokenLocation === 'body') {
+      token = req.body.refreshToken;
+    } else {
+      token = req.cookies.jid;
+    }
+
+    if (!token) throw new AppError('Invalid token', 400);
+
+    try {
+      ({ userId } = jwt.verify(token, config.get('jwtRefreshSecret')));
+      req.userId = userId;
+    } catch (e) {
+      throw new AppError('Invalid signature', 400);
+    }
+
+    const user = await User.findById(userId).select('-password');
+
+    if (!user) throw new AppError('Invalid token', 400);
+
+    const { accessToken, refreshToken } = generateTokens(user);
+
+    const responseBody = {
+      userId: user.id,
+      accessToken,
+    };
+
+    res.cookie('jid', refreshToken, {
+      httpOnly: true,
+    });
+
+    if (req.query?.refreshTokenLocation === 'body') {
+      responseBody.refreshToken = refreshToken;
+    }
+
+    res.status(200).json(responseBody);
+  },
   async find({ params: { id } }, res) {
-    const user = await User.findById(id).select();
+    const user = await User.findById(id).select('-password');
     if (!user) throw new AppError('Resource not found!', 400);
     res.status(200).json(user);
   },
