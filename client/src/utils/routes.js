@@ -1,6 +1,6 @@
 export default {
   INDEX: '/',
-  HOME: '/home',
+  HOME: '/',
   LOGIN: '/login',
   LOGOUT: '/logout',
   REGISTER: '/register',

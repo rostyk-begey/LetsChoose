@@ -16,20 +16,14 @@ import UpdateContestPage from 'app/pages/UpdateContestPage';
 const useRoutes = (isAuthenticated) => {
   const routes = [
     {
-      path: ROUTES.INDEX,
+      path: ROUTES.HOME,
       allowed: true,
-      component: IndexPage,
+      component: HomePage,
       exact: true,
     },
     {
-      path: ROUTES.HOME,
-      allowed: isAuthenticated,
-      component: HomePage,
-      exact: false,
-    },
-    {
       path: `${ROUTES.USERS}/:username`,
-      allowed: isAuthenticated,
+      allowed: true,
       component: UserPage,
       exact: false,
     },
@@ -47,7 +41,7 @@ const useRoutes = (isAuthenticated) => {
     },
     {
       path: ROUTES.CONTESTS.SINGLE,
-      allowed: isAuthenticated,
+      allowed: true,
       component: ContestPage,
       exact: false,
     },

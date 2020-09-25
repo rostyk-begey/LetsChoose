@@ -12,7 +12,9 @@ import './index.scss';
 const App = () => {
   const { login, logout, isAuthenticated } = useAuth();
   const routes = useRoutes(isAuthenticated);
-  const { data: { data: { _id: id, ...user } = {} } = {} } = useUserFind('me');
+  const { data: { data: { _id: id, ...user } = {} } = {} } = useUserFind('me', {
+    enabled: isAuthenticated,
+  });
 
   return (
     <AuthContext.Provider value={{ login, logout, isAuthenticated }}>

@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import ROUTES from 'app/utils/routes';
 
 const STORAGE_KEY = 'AUTH';
@@ -35,14 +37,16 @@ const getToken = async () => {
   if (!_accessToken) return null;
 
   if (isExpired(getExpirationDate(_accessToken))) {
-    const { accessToken = null } = await fetch(
-      `/api/${ROUTES.API.AUTH.REFRESH_TOKEN}`,
-      {
-        method: 'POST',
-      },
-    ).then((r) => r.json());
-
-    setToken(accessToken);
+    try {
+      const {
+        data: { accessToken = null },
+      } = await axios.post(
+        `${ROUTES.API.INDEX}${ROUTES.API.AUTH.REFRESH_TOKEN}`,
+      );
+      setToken(accessToken);
+    } catch (e) {
+      setToken(null);
+    }
   }
 
   return _accessToken;

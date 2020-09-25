@@ -37,7 +37,7 @@ const CreateContestPage = () => {
   );
 
   return (
-    <Page isPrivate>
+    <Page>
       {/*<Prompt message="Are you sure you want to leave?" when={isStarted} />*/}
       <Dimmer active={createContestQuery.isLoading} loader={<Loader />}>
         <TablerPage.Content>
