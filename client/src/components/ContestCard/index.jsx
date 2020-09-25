@@ -14,7 +14,7 @@ const ContestCard = ({
     views,
     likes,
     dislikes,
-    author: { _id: authorId, username },
+    author: { username, avatar },
     thumbnail,
     isBookmarked = false,
     title,
@@ -62,7 +62,7 @@ const ContestCard = ({
         </p>
         <div className="d-flex align-items-center">
           <Link to={`${ROUTES.USERS}/${username}`}>
-            <Avatar icon="user" size="md" className="mr-3" />
+            <Avatar imageURL={avatar} size="md" className="mr-3" />
           </Link>
           <div>
             <Link to={`${ROUTES.USERS}/${username}`}>@{username}</Link>

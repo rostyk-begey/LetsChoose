@@ -57,7 +57,7 @@ const ContestPage = () => {
   const currentPair = [];
 
   return (
-    <Page isPrivate>
+    <Page>
       <Prompt message="Are you sure you want to leave?" when={isStarted} />
       <TablerPage.Content>
         <Grid.Row justifyContent="center">

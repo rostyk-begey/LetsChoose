@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const md5 = require('md5');
 const User = require('../models/User');
 const Contest = require('../models/Contest');
 const ContestItem = require('../models/ContestItem');
@@ -72,7 +73,13 @@ const UserController = {
     const { email, username, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 12);
-    const user = new User({ email, username, password: hashedPassword });
+    const user = new User({
+      email,
+      username,
+      password: hashedPassword,
+      avatar: `https://www.gravatar.com/avatar/${md5(email)}?s=200&d=identicon`,
+      bio: '',
+    });
     await user.save();
 
     res.status(201).json({ message: 'User successfully created!' });
@@ -117,15 +124,20 @@ const UserController = {
 
     res.status(200).json(responseBody);
   },
-  async find({ params: { id } }, res) {
-    const user = await User.findById(id).select('-password');
-    if (!user) throw new AppError('Resource not found!', 400);
+  async find({ userId, params: { username } }, res) {
+    let user;
+    if (username === 'me') {
+      user = await User.findById(userId).select('-password');
+    } else {
+      user = await User.findOne({ username }).select('-password');
+    }
+    if (!user) throw new AppError('Resource not found!', 404);
     res.status(200).json(user);
   },
   // todo: validate permissions
-  async remove({ params: { id } }, res) {
-    await User.deleteOne({ _id: id });
-    const contests = await Contest.find({ author: id });
+  async remove({ params: { username } }, res) {
+    const user = await User.findOne({ username });
+    const contests = await Contest.find({ author: user._id });
     const deletes = contests.map(async (contest) => {
       await ContestItem.deleteMany({ contestId: contest.id });
       await Contest.deleteOne({ _id: contest.id });

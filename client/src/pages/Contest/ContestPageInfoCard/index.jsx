@@ -25,12 +25,10 @@ const ContestPageInfoCard = ({
   const history = useHistory();
   const { _id: contestId } = contest;
   const deleteContest = useCallback(() => {
-    console.log(contestId);
     if (
       // eslint-disable-next-line no-alert
       window.confirm('Are you sure you want to delete?')
     ) {
-      console.log(contestId);
       remove(contestId)
         .then(() => history.push(ROUTES.HOME))
         .catch(() => {});

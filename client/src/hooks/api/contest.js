@@ -1,25 +1,10 @@
-import { useContext } from 'react';
 import { useMutation, useQuery, useInfiniteQuery } from 'react-query';
 
-import AuthContext from 'app/context/AuthContext';
 import api from 'app/providers/apiProvider';
 import ROUTES from 'app/utils/routes';
 
 export const useContestApi = () => {
   const baseURL = ROUTES.API.CONTESTS;
-  api.interceptors.response.use(
-    (response) => {
-      // Any status code that lie within the range of 2xx cause this function to trigger
-      // Do something with response data
-      return response;
-    },
-    (error) => {
-      // Any status codes that falls outside the range of 2xx cause this function to trigger
-      // Do something with response error
-      console.warn(error);
-      return Promise.reject(error);
-    },
-  );
   const all = (params) => api.get(baseURL, { params });
   const find = (id) => api.get(`${baseURL}/${id}`);
   const create = (data) => api.post(baseURL, data);

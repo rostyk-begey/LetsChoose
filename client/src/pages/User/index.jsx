@@ -1,13 +1,15 @@
 import React from 'react';
-import { Grid, Card, Loader } from 'tabler-react';
+import { Grid, Loader } from 'tabler-react';
 import { useParams } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroller';
 
 import ContestCard from 'app/components/ContestCard';
+import PageWithNavbar from 'app/components/PageWithNavbar';
+import ProfileCard from 'app/components/ProfileCard';
+import { useUserFind } from 'app/hooks/api/user';
 import { useContestAllInfinite } from 'app/hooks/api/contest';
 import useGetParams from 'app/hooks/getParams';
 import ROUTES from 'app/utils/routes';
-import PageWithNavbar from 'app/components/PageWithNavbar';
-import InfiniteScroll from 'react-infinite-scroller';
 
 const SORT_OPTIONS = {
   POPULAR: 'POPULAR',
@@ -16,6 +18,9 @@ const SORT_OPTIONS = {
 
 const UserPage = () => {
   const { username } = useParams();
+  const { data: { data: { _id: id, ...user } = {} } = {} } = useUserFind(
+    username,
+  );
   const { params, handleSearch, onInputChange } = useGetParams(
     `${ROUTES.USERS}/${username}`,
     {
@@ -36,23 +41,7 @@ const UserPage = () => {
     >
       <Grid.Row>
         <Grid.Col lg={4} width={12}>
-          <Card className="card-profile">
-            <Card.Header backgroundURL="https://preview.tabler.io/demo/photos/eberhard-grossgasteiger-311213-500.jpg" />
-            <Card.Body className="text-center">
-              <img
-                alt=""
-                className="card-profile-img"
-                src="https://preview.tabler.io/demo/faces/male/16.jpg"
-              />
-              <h3 className="mb-3">Peter Richards</h3>
-              <p className="mb-4">
-                Big belly rude boy, million dollar hustler. Unemployed.
-              </p>
-              <button type="button" className="btn btn-outline-primary btn-sm">
-                <span className="fa fa-twitter" /> Follow
-              </button>
-            </Card.Body>
-          </Card>
+          <ProfileCard user={user} />
         </Grid.Col>
         <Grid.Col lg={8} width={12}>
           <InfiniteScroll
