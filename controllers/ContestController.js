@@ -109,7 +109,6 @@ const ContestController = {
     if (!errors.isEmpty()) {
       throw new AppError('Invalid query', 400, {
         errors: errors.array(),
-        message: 'Invalid query',
       });
     }
 
@@ -149,6 +148,14 @@ const ContestController = {
     res.status(201).json({ message: 'Contest successfully created!' });
   },
   async update(req, res) {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      throw new AppError('Invalid query', 400, {
+        errors: errors.array(),
+      });
+    }
+
     const {
       files,
       params: { id: contestId },
