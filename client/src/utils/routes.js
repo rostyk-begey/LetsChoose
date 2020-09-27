@@ -21,7 +21,7 @@ export default {
       INDEX: '/auth',
       LOGIN: '/auth/login',
       REGISTER: '/auth/register',
-      REFRESH_TOKEN: '/auth/refresh_token',
+      REFRESH_TOKEN: '/auth/token',
       CONFIRM_EMAIL: '/auth/email/confirm',
       FORGOT_PASSWORD: '/auth/password/forgot',
       RESET_PASSWORD: '/auth/password/reset',

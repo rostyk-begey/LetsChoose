@@ -31,6 +31,6 @@ router.post('/register', registerSchema, catchAsync(UserController.register));
 
 router.post('/login', loginSchema, catchAsync(UserController.login));
 
-router.post('/refresh_token', catchAsync(UserController.refreshToken));
+router.post('/token', catchAsync(UserController.refreshToken));
 
 module.exports = router;
