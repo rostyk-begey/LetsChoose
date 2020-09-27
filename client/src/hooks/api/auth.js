@@ -13,16 +13,13 @@ const {
 } = ROUTES.API.AUTH;
 
 export const useAuthApi = () => {
-  const baseURL = INDEX;
-  const auth = () => api.post('/');
-  const login = (data) => api.post(`${baseURL}/${LOGIN}`, data);
-  const register = (data) => api.post(`${baseURL}/${REGISTER}`, data);
-  const confirmEmail = (token) =>
-    api.post(`${baseURL}/${CONFIRM_EMAIL}/${token}`);
-  const forgotPassword = (data) =>
-    api.post(`${baseURL}/${FORGOT_PASSWORD}`, data);
+  const auth = () => api.post(INDEX);
+  const login = (data) => api.post(LOGIN, data);
+  const register = (data) => api.post(REGISTER, data);
+  const confirmEmail = (token) => api.post(`${CONFIRM_EMAIL}/${token}`);
+  const forgotPassword = (data) => api.post(FORGOT_PASSWORD, data);
   const resetPassword = ({ token, data }) =>
-    api.post(`${baseURL}/${RESET_PASSWORD}/${token}`, data);
+    api.post(`${RESET_PASSWORD}/${token}`, data);
   return { auth, login, register, forgotPassword, resetPassword, confirmEmail };
 };
 
@@ -46,8 +43,8 @@ export const useApiLogin = () => {
 
 export const useApiRegister = () => {
   try {
-    const { auth } = useAuthApi();
-    return useMutation(auth);
+    const { register } = useAuthApi();
+    return useMutation(register);
   } catch (e) {
     console.log(e);
   }
