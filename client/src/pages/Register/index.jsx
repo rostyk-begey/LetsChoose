@@ -1,14 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { StandaloneFormPage } from 'tabler-react';
+import { Alert, Card, StandaloneFormPage } from 'tabler-react';
 
 import AuthForm from 'app/components/AuthForm';
-import AuthContext from 'app/context/AuthContext';
 import ROUTES from 'app/utils/routes';
-import { useApiLogin, useApiRegister } from 'app/hooks/api/auth';
+import { useApiRegister } from 'app/hooks/api/auth';
 
 import logo from 'assets/images/logo.svg';
-import useAuth from 'app/hooks/auth';
 
 const INPUTS = [
   {
@@ -54,38 +52,34 @@ const INPUTS = [
 ];
 
 const RegisterPage = () => {
-  const auth = useAuth();
-  const [register, ...registerQuery] = useApiRegister();
-  const [login, ...loginQuery] = useApiLogin();
+  const [register, registerQuery] = useApiRegister();
 
-  const onSubmit = async (form) => {
-    try {
-      setTimeout(() => {}, 5000);
-      await register(form);
-      const {
-        data: { accessToken },
-      } = await login({ login: form.username, password: form.password });
-      auth.login(accessToken);
-    } catch (e) {
-      console.log(e);
-      // M.toast({ html: e.message });
-    }
-  };
+  const onSubmit = (form) => register(form);
 
   return (
     <StandaloneFormPage imageURL={logo}>
-      <AuthForm
-        inputs={INPUTS}
-        title="Create New Account"
-        buttonText="Create Account"
-        onSubmit={onSubmit}
-        buttonLoading={registerQuery.isLoading || loginQuery.isLoading}
-        formAfter={
-          <div className="mt-2">
-            Already have an account? <Link to={ROUTES.LOGIN}>Login</Link>
-          </div>
-        }
-      />
+      {registerQuery.isSuccess ? (
+        <Card>
+          <Card.Body className="p-6">
+            <Alert type="success" icon="check">
+              User successfully registered, please check you email
+            </Alert>
+          </Card.Body>
+        </Card>
+      ) : (
+        <AuthForm
+          inputs={INPUTS}
+          title="Create New Account"
+          buttonText="Create Account"
+          onSubmit={onSubmit}
+          buttonLoading={registerQuery.isLoading}
+          formAfter={
+            <div className="mt-2">
+              Already have an account? <Link to={ROUTES.LOGIN}>Login</Link>
+            </div>
+          }
+        />
+      )}
     </StandaloneFormPage>
   );
 };

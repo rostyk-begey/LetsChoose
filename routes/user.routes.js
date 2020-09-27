@@ -5,7 +5,7 @@ const UserController = require('../controllers/UserController');
 
 const router = Router();
 
-router.get('/:username', auth, catchAsync(UserController.find));
+router.get('/:username', catchAsync(UserController.find));
 
 router.delete('/:username', auth, catchAsync(UserController.remove));
 

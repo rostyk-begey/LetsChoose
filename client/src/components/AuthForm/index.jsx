@@ -21,12 +21,7 @@ const AuthForm = ({
   const { handleSubmit, errors } = form;
 
   return (
-    <Form
-      className="card"
-      onSubmit={handleSubmit(onSubmit)}
-      method="POST"
-      title="Register new account"
-    >
+    <Form className="card" onSubmit={handleSubmit(onSubmit)} method="POST">
       <Card.Body className="p-6">
         <Card.Title RootComponent="div">{title}</Card.Title>
         <FormProvider {...form}>

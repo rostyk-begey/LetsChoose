@@ -2,8 +2,10 @@ export default {
   INDEX: '/',
   HOME: '/',
   LOGIN: '/login',
-  LOGOUT: '/logout',
   REGISTER: '/register',
+  FORGOT_PASSWORD: '/password/forgot',
+  RESET_PASSWORD: '/password/reset/:token',
+  CONFIRM_EMAIL: '/email/confirm/:token',
   USERS: '/users',
   CONTESTS: {
     INDEX: '/contests',
@@ -17,9 +19,11 @@ export default {
     USERS: '/users',
     AUTH: {
       INDEX: '/auth',
-      LOGIN: '/auth/login',
-      REGISTER: '/auth/register',
-      REFRESH_TOKEN: '/auth/refresh_token',
+      LOGIN: '/login',
+      REGISTER: '/register',
+      REFRESH_TOKEN: '/refresh_token',
+      FORGOT_PASSWORD: '/password/forgot',
+      RESET_PASSWORD: '/password/reset',
     },
   },
 };

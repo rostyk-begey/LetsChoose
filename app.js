@@ -6,6 +6,8 @@ const cloudinary = require('cloudinary').v2;
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const { handleError } = require('./usecases/error');
+const emailTransporter = require('./usecases/emailTransporter');
+const renderConfirmationEmail = require('./usecases/renderConfirmationEmail');
 
 const PORT = config.get('port');
 
