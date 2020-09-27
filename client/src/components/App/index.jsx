@@ -12,13 +12,13 @@ import './index.scss';
 const App = () => {
   const { login, logout, isAuthenticated } = useAuth();
   const routes = useRoutes(isAuthenticated);
-  const { data: { data: { _id: id, ...user } = {} } = {} } = useUserFind('me', {
+  const { data: { data: user = {} } = {} } = useUserFind('me', {
     enabled: isAuthenticated,
   });
 
   return (
     <AuthContext.Provider value={{ login, logout, isAuthenticated }}>
-      <UserProfileContext.Provider value={{ user: { id, ...user } }}>
+      <UserProfileContext.Provider value={user}>
         <BrowserRouter>{routes}</BrowserRouter>
       </UserProfileContext.Provider>
     </AuthContext.Provider>
