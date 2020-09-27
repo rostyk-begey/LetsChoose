@@ -17,7 +17,7 @@ const TABS = {
 const ContestPage = () => {
   const baseClassName = 'contest-page';
   const { id } = useParams();
-  const { userId } = useContext(UserProfileContext); // todo: replace
+  const { _id: userId } = useContext(UserProfileContext); // todo: replace
   const { data: { data: contest = {} } = {}, ...contestQuery } = useContestFind(
     id,
   );
@@ -34,7 +34,8 @@ const ContestPage = () => {
     },
   ];
   const [isStarted, setIsStarted] = useState(false);
-  const isCurrentUserAuthor = false; // todo: replace
+  const onStart = () => setIsStarted(true);
+  const isCurrentUserAuthor = userId === author;
   // useEffect(() => {
   //   setTotalScore(_.sum(items.map(({ score }) => score)));
   // }, [items]);
@@ -93,7 +94,7 @@ const ContestPage = () => {
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 isCurrentUserAuthor={isCurrentUserAuthor}
-                onStart={() => setIsStarted(true)}
+                onStart={onStart}
               />
             </Grid.Col>
           )}
