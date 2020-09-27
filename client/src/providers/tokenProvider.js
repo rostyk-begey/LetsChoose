@@ -34,9 +34,7 @@ const getExpirationDate = (token) => {
 const isExpired = (exp) => (exp ? Date.now() > exp : false);
 
 const getToken = async () => {
-  if (!_accessToken) return null;
-
-  if (isExpired(getExpirationDate(_accessToken))) {
+  if (!_accessToken || isExpired(getExpirationDate(_accessToken))) {
     try {
       const {
         data: { accessToken = null },
