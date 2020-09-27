@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="server" pattern="file[LetsChoose]:*/&amp;&amp;!file[LetsChoose]:client//*&amp;&amp;!file[LetsChoose]:.idea//*" />
+</component>

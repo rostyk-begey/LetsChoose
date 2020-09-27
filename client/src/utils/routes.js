@@ -1,9 +1,11 @@
 export default {
   INDEX: '/',
-  HOME: '/home',
+  HOME: '/',
   LOGIN: '/login',
-  LOGOUT: '/logout',
   REGISTER: '/register',
+  FORGOT_PASSWORD: '/password/forgot',
+  RESET_PASSWORD: '/password/reset/:token',
+  CONFIRM_EMAIL: '/email/confirm/:token',
   USERS: '/users',
   CONTESTS: {
     INDEX: '/contests',
@@ -12,11 +14,17 @@ export default {
     UPDATE: '/contests/:id/update',
   },
   API: {
-    CONTESTS: '/api/contests',
+    INDEX: '/api',
+    CONTESTS: '/contests',
+    USERS: '/users',
     AUTH: {
-      INDEX: '/api/auth',
-      LOGIN: '/api/auth/login',
-      REGISTER: '/api/auth/register',
+      INDEX: '/auth',
+      LOGIN: '/auth/login',
+      REGISTER: '/auth/register',
+      REFRESH_TOKEN: '/auth/refresh_token',
+      CONFIRM_EMAIL: '/auth/email/confirm',
+      FORGOT_PASSWORD: '/auth/password/forgot',
+      RESET_PASSWORD: '/auth/password/reset',
     },
   },
 };

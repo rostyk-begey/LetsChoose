@@ -1,46 +1,33 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
-const STORAGE_KEY = 'AUTH';
+import createTokenProvider from 'app/providers/tokenProvider';
+
+const tokenProvider = createTokenProvider();
+
+const login = (newTokens) => tokenProvider.setToken(newTokens);
+
+const logout = (redirectTo = null) => {
+  tokenProvider.setToken(null);
+  if (redirectTo) {
+    window.location.href = redirectTo;
+  } else {
+    window.location.reload();
+  }
+};
 
 const useAuth = () => {
-  const authData = JSON.parse(localStorage.getItem(STORAGE_KEY));
-  const history = useHistory();
-  const [token, setToken] = useState(authData?.token);
-  const [userId, setUserId] = useState(authData?.userId);
-
-  const login = useCallback((jwtToken, id) => {
-    setToken(jwtToken);
-    setUserId(id);
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ token: jwtToken, userId: id }),
-    );
-  }, []);
-
-  const logout = useCallback(
-    (redirectTo = null) => {
-      setToken(null);
-      setUserId(null);
-      localStorage.removeItem(STORAGE_KEY);
-      if (redirectTo) {
-        window.location.href = redirectTo;
-      } else {
-        window.location.reload();
-      }
-    },
-    [history],
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    tokenProvider.isLoggedIn(),
   );
 
   useEffect(() => {
-    const authData = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    const listener = (isLogged) => setIsAuthenticated(isLogged);
 
-    if (authData && authData.token && authData.userId) {
-      login(authData.token, authData.userId);
-    }
-  }, [login]);
+    tokenProvider.subscribe(listener);
+    return () => tokenProvider.unsubscribe(listener);
+  }, []);
 
-  return { login, logout, token, userId };
+  return { isAuthenticated, logout, login };
 };
 
 export default useAuth;

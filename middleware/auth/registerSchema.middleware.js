@@ -23,6 +23,7 @@ module.exports = checkSchema({
     in: 'body',
     errorMessage: 'Invalid username',
     isLength: { min: 3 },
+    exists: true,
     matches: /^[a-z._0-9]+$/,
     custom: {
       options: async (username) => {
@@ -39,5 +40,6 @@ module.exports = checkSchema({
     in: 'body',
     errorMessage: 'Invalid password',
     isLength: { min: 6 },
+    exists: true,
   },
 });

@@ -1,25 +1,15 @@
-import { useContext } from 'react';
 import { useMutation, useQuery, useInfiniteQuery } from 'react-query';
 
-import AuthContext from 'app/context/AuthContext';
-import axios from 'axios';
+import api from 'app/providers/apiProvider';
 import ROUTES from 'app/utils/routes';
 
 export const useContestApi = () => {
-  const auth = useContext(AuthContext);
-  const api = axios.create({
-    baseURL: ROUTES.API.CONTESTS,
-    headers: {
-      Authorization: `Bearer ${auth.token}`,
-      accepts: 'application/json',
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-  const all = (params) => api.get('/', { params });
-  const find = (id) => api.get(`/${id}`);
-  const create = (data) => api.post('/', data);
-  const update = (id, data) => api.post(`/${id}`, data);
-  const remove = (id) => api.delete(`/${id}`);
+  const baseURL = ROUTES.API.CONTESTS;
+  const all = (params) => api.get(baseURL, { params });
+  const find = (id) => api.get(`${baseURL}/${id}`);
+  const create = (data) => api.post(baseURL, data);
+  const update = (id, data) => api.post(`${baseURL}/${id}`, data);
+  const remove = (id) => api.delete(`${baseURL}/${id}`);
   return { all, find, create, update, remove };
 };
 

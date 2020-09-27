@@ -1,22 +1,22 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Site, Page as TablerPage, Button } from 'tabler-react';
-import useInterval from 'use-interval';
 
 import AuthContext from 'app/context/AuthContext';
+import UserProfileContext from 'app/context/UserProfileContext';
 import ROUTES from 'app/utils/routes';
-import { useApiAuth } from 'app/hooks/api/auth';
+import NavBar from 'app/components/NavBar';
 
 import './index.scss';
 
 import logo from '../../assets/images/logo.svg';
-import NavBar from 'app/components/NavBar';
 
-const newNavBarItem = (to, value, icon, useExact) => ({
+const newNavBarItem = (pathname, to, value, icon, useExact) => ({
   to,
   icon,
   value,
   useExact,
+  active: pathname === to,
   LinkComponent: Link,
 });
 
@@ -32,31 +32,41 @@ const AUTH_BUTTONS = [
   },
 ];
 
-export const Page = ({ isPrivate = false, children, navbarBefore }) => {
+export const Page = ({ children, navbarBefore }) => {
   const baseClassName = 'page-template';
-  const { logout, isAuthenticated, userId } = useContext(AuthContext);
-  const location = useLocation();
-  const [auth, authQuery] = useApiAuth();
+  const { pathname } = useLocation();
+  const { logout, isAuthenticated } = useContext(AuthContext);
+  const { user: { username = '', avatar = '' } = {} } = useContext(
+    UserProfileContext,
+  );
   const [navCollapse, setNavCollapse] = useState(true);
   const navBarItems = [
-    newNavBarItem(ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
+    newNavBarItem(pathname, ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
+    isAuthenticated &&
+      newNavBarItem(
+        pathname,
+        `${ROUTES.USERS}/${username}`,
+        'My profile',
+        'user',
+        ROUTES.CONTESTS.NEW,
+      ),
     newNavBarItem(
-      `${ROUTES.USERS}/${userId}`,
-      'My profile',
-      'user',
+      pathname,
+      ROUTES.CONTESTS.NEW,
+      'New',
+      'plus',
       ROUTES.CONTESTS.NEW,
     ),
-    newNavBarItem(ROUTES.CONTESTS.NEW, 'New', 'plus', ROUTES.CONTESTS.NEW),
-  ];
+  ].filter(Boolean);
   const accountDropdownProps = {
-    avatarURL: '/',
-    name: 'Jane Pearson',
+    avatarURL: avatar,
+    name: `@${username}`,
     // description: 'Administrator',
     options: [
       {
         icon: 'user',
         value: 'Profile',
-        to: `${ROUTES.USERS}/${userId}`,
+        to: `${ROUTES.USERS}/${username}`,
       },
       { icon: 'settings', value: 'Settings' },
       // { icon: 'mail', value: 'Inbox', badge: '6' },
@@ -72,20 +82,6 @@ export const Page = ({ isPrivate = false, children, navbarBefore }) => {
       },
     ],
   };
-
-  useInterval(
-    () => {
-      if (isPrivate) auth();
-    },
-    isPrivate ? 5 * 1000 : null,
-    true,
-  );
-
-  useEffect(() => {
-    if (isPrivate && authQuery.isError) {
-      logout(`${ROUTES.LOGIN}?redirectTo=${location.pathname}`);
-    }
-  }, [authQuery]);
 
   return (
     <TablerPage className={baseClassName}>
@@ -111,15 +107,13 @@ export const Page = ({ isPrivate = false, children, navbarBefore }) => {
           accountDropdown={isAuthenticated ? accountDropdownProps : undefined}
           onMenuToggleClick={() => setNavCollapse((prevState) => !prevState)}
         />
-        {isAuthenticated && (
-          <NavBar
-            tabbed
-            className={`${baseClassName}__navbar`}
-            collapse={navCollapse}
-            itemsObjects={navBarItems}
-            before={navbarBefore}
-          />
-        )}
+        <NavBar
+          tabbed
+          className={`${baseClassName}__navbar`}
+          collapse={navCollapse}
+          itemsObjects={navBarItems}
+          before={navbarBefore}
+        />
       </header>
       <TablerPage.Main className={`${baseClassName}__main`}>
         {children}

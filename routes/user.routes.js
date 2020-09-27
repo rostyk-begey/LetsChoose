@@ -5,8 +5,18 @@ const UserController = require('../controllers/UserController');
 
 const router = Router();
 
-router.get('/:id', auth, catchAsync(UserController.find));
+router.get(
+  '/me',
+  auth,
+  (req, res, next) => {
+    req.params.username = 'me';
+    next();
+  },
+  catchAsync(UserController.find),
+);
 
-router.delete('/:id', auth, catchAsync(UserController.remove));
+router.get('/:username', catchAsync(UserController.find));
+
+router.delete('/:username', auth, catchAsync(UserController.remove));
 
 module.exports = router;

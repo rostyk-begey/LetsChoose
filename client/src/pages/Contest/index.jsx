@@ -17,7 +17,7 @@ const TABS = {
 const ContestPage = () => {
   const baseClassName = 'contest-page';
   const { id } = useParams();
-  const { userId } = useAuth();
+  const { userId } = useAuth(); // todo: replace
   const { data: { data: contest = {} } = {}, ...contestQuery } = useContestFind(
     id,
   );
@@ -34,7 +34,7 @@ const ContestPage = () => {
     },
   ];
   const [isStarted, setIsStarted] = useState(false);
-  const isCurrentUserAuthor = userId === author;
+  const isCurrentUserAuthor = false; // todo: replace
   // useEffect(() => {
   //   setTotalScore(_.sum(items.map(({ score }) => score)));
   // }, [items]);
@@ -57,7 +57,7 @@ const ContestPage = () => {
   const currentPair = [];
 
   return (
-    <Page isPrivate>
+    <Page>
       <Prompt message="Are you sure you want to leave?" when={isStarted} />
       <TablerPage.Content>
         <Grid.Row justifyContent="center">
