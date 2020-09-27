@@ -70,7 +70,6 @@ router.post(
 
 router.get(
   '/:id',
-  auth,
   param('id').customSanitizer((value) => Mongoose.Types.ObjectId(value)),
   catchAsync(ContestController.find),
 );
