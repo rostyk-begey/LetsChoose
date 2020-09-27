@@ -41,7 +41,7 @@ const getToken = async () => {
       const {
         data: { accessToken = null },
       } = await axios.post(
-        `${ROUTES.API.INDEX}${ROUTES.API.AUTH.INDEX}${ROUTES.API.AUTH.REFRESH_TOKEN}`,
+        `${ROUTES.API.INDEX}${ROUTES.API.AUTH.REFRESH_TOKEN}`,
       );
       setToken(accessToken);
     } catch (e) {
