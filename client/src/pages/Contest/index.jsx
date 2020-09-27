@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Header, Card, Grid, Page as TablerPage } from 'tabler-react';
 import { Prompt, useParams } from 'react-router-dom';
 
 import Page from 'app/components/Page';
-import useAuth from 'app/hooks/auth';
 import { useContestFind } from 'app/hooks/api/contest';
 import ContestPageInfoCard from 'app/pages/Contest/ContestPageInfoCard';
+import UserProfileContext from 'app/context/UserProfileContext';
 
 import './index.scss';
 
@@ -17,7 +17,7 @@ const TABS = {
 const ContestPage = () => {
   const baseClassName = 'contest-page';
   const { id } = useParams();
-  const { userId } = useAuth(); // todo: replace
+  const { userId } = useContext(UserProfileContext); // todo: replace
   const { data: { data: contest = {} } = {}, ...contestQuery } = useContestFind(
     id,
   );

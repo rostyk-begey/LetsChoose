@@ -36,9 +36,7 @@ export const Page = ({ children, navbarBefore }) => {
   const baseClassName = 'page-template';
   const { pathname } = useLocation();
   const { logout, isAuthenticated } = useContext(AuthContext);
-  const { user: { username = '', avatar = '' } = {} } = useContext(
-    UserProfileContext,
-  );
+  const { username, avatar } = useContext(UserProfileContext);
   const [navCollapse, setNavCollapse] = useState(true);
   const navBarItems = [
     newNavBarItem(pathname, ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
