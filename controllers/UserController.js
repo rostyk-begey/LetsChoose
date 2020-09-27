@@ -218,10 +218,10 @@ const UserController = {
       const { userId } = jwt.verify(token, config.get('jwt.emailSecret'));
       await User.updateOne({ _id: userId }, { confirmed: true });
     } catch (e) {
-      throw new AppError('Invalid', 400);
+      throw new AppError('Invalid url', 400);
     }
 
-    res.status(200).json({});
+    res.status(200).json({ message: 'Email was successfully verified!' });
   },
   // todo: validate permissions
   async remove({ params: { username } }, res) {
