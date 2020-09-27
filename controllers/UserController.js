@@ -88,8 +88,7 @@ const UserController = {
       config.get('jwt.emailSecret'),
       {}, //{ expiresIn: '1d' }, // todo: check
       (err, emailToken) => {
-        const url = `${config.get('appUrl')}/confirmation/${emailToken}`;
-        // console.log('Confirm email address ', user.email, ' at ', url);
+        const url = `${config.get('appUrl')}/email/confirm/${emailToken}`;
 
         emailTransporter.sendMail({
           to: user.email,
