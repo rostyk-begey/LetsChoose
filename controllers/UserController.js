@@ -6,18 +6,19 @@ const md5 = require('md5');
 const User = require('../models/User');
 const Contest = require('../models/Contest');
 const ContestItem = require('../models/ContestItem');
+const emailTransporter = require('../usecases/emailTransporter');
+const renderConfirmationEmail = require('../usecases/renderConfirmationEmail');
+const renderResetPasswordEmail = require('../usecases/renderResetPasswordEmail');
 const { AppError } = require('../usecases/error');
 
-// todo: update token version
-const generateTokens = ({ _id, tokenVersion = 0 }) => {
-  const accessToken = jwt.sign({ userId: _id }, config.get('jwtAccessSecret'), {
+const generateTokens = ({ _id, passwordVersion = 0 }) => {
+  const payload = { userId: _id, passwordVersion };
+  const accessToken = jwt.sign(payload, config.get('jwt.accessSecret'), {
     expiresIn: '15s',
   });
-  const refreshToken = jwt.sign(
-    { userId: _id, tokenVersion },
-    config.get('jwtRefreshSecret'),
-    { expiresIn: '7d' },
-  );
+  const refreshToken = jwt.sign(payload, config.get('jwt.refreshSecret'), {
+    expiresIn: '7d',
+  });
   return { accessToken, refreshToken };
 };
 
@@ -28,7 +29,6 @@ const UserController = {
     if (!errors.isEmpty()) {
       throw new AppError('Incorrect login data', 400, {
         errors: errors.array(),
-        message: 'Incorrect login data',
       });
     }
 
@@ -42,6 +42,8 @@ const UserController = {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) throw new AppError('Incorrect login data', 400);
+
+    if (!user.confirmed) throw new AppError('Email confirmation needed', 403);
 
     const { accessToken, refreshToken } = generateTokens(user);
 
@@ -66,7 +68,6 @@ const UserController = {
     if (!errors.isEmpty()) {
       throw new AppError('Incorrect registration data', 400, {
         errors: errors.array(),
-        message: 'Incorrect registration data',
       });
     }
 
@@ -82,7 +83,87 @@ const UserController = {
     });
     await user.save();
 
+    jwt.sign(
+      { userId: user._id },
+      config.get('jwt.emailSecret'),
+      {}, //{ expiresIn: '1d' }, // todo: check
+      (err, emailToken) => {
+        const url = `${config.get('appUrl')}/confirmation/${emailToken}`;
+        // console.log('Confirm email address ', user.email, ' at ', url);
+
+        emailTransporter.sendMail({
+          to: user.email,
+          subject: 'Confirm Email',
+          html: renderConfirmationEmail(config.get('appUrl'), url),
+        });
+      },
+    );
+
     res.status(201).json({ message: 'User successfully created!' });
+  },
+  async forgotPassword(req, res) {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      throw new AppError('Incorrect email', 400, {
+        errors: errors.array(),
+      });
+    }
+
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    const resetPasswordToken = await jwt.sign(
+      { userId: user._id },
+      config.get('jwt.passwordResetSecret'),
+      { expiresIn: '10m' },
+    );
+
+    const url = `${config.get('appUrl')}/password/reset/${resetPasswordToken}`;
+
+    emailTransporter.sendMail({
+      to: user.email,
+      subject: 'Password reset',
+      html: renderResetPasswordEmail(config.get('appUrl'), url),
+    });
+
+    res
+      .status(201)
+      .json({ message: `Reset password link has been sent to ${email}!` });
+  },
+  async resetPassword(req, res) {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      throw new AppError('Incorrect data', 400, {
+        errors: errors.array(),
+      });
+    }
+
+    const { password } = req.body;
+    const { token } = req.params;
+
+    let userId = '';
+
+    try {
+      ({ userId } = jwt.verify(token, config.get('jwt.passwordResetSecret')));
+    } catch (e) {
+      throw new AppError('Reset password link expired', 403);
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) throw new AppError('User not found', 404);
+
+    const newPassword = await bcrypt.hash(password, 12);
+
+    await user.update({
+      password: newPassword,
+      passwordVersion: user.passwordVersion + 1,
+    });
+
+    res.status(201).json({ message: 'Password was successfully changed!' });
   },
   async refreshToken(req, res) {
     let token;
@@ -97,8 +178,7 @@ const UserController = {
     if (!token) throw new AppError('Invalid token', 400);
 
     try {
-      ({ userId } = jwt.verify(token, config.get('jwtRefreshSecret')));
-      req.userId = userId;
+      ({ userId } = jwt.verify(token, config.get('jwt.refreshSecret')));
     } catch (e) {
       throw new AppError('Invalid signature', 400);
     }
@@ -133,6 +213,16 @@ const UserController = {
     }
     if (!user) throw new AppError('Resource not found!', 404);
     res.status(200).json(user);
+  },
+  async confirmEmail({ params: { token } }, res) {
+    try {
+      const { userId } = jwt.verify(token, config.get('jwt.emailSecret'));
+      await User.updateOne({ _id: userId }, { confirmed: true });
+    } catch (e) {
+      throw new AppError('Invalid', 400);
+    }
+
+    res.status(200).json({});
   },
   // todo: validate permissions
   async remove({ params: { username } }, res) {

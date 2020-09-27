@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { StandaloneFormPage } from 'tabler-react';
+import { Alert, StandaloneFormPage } from 'tabler-react';
 import { Link, useHistory } from 'react-router-dom';
 
 import AuthContext from 'app/context/AuthContext';
@@ -59,10 +59,19 @@ const LoginPage = () => {
         onSubmit={onSubmit}
         buttonLoading={loginQuery.isLoading}
         formAfter={
-          <div className="mt-2">
-            Don&apos;t have an account?{' '}
-            <Link to={ROUTES.REGISTER}>Sign up</Link>
-          </div>
+          <>
+            <div className="mt-2">
+              <Link to={ROUTES.FORGOT_PASSWORD}>Forgot your password?</Link>
+              <br />
+              Don&apos;t have an account?{' '}
+              <Link to={ROUTES.REGISTER}>Sign up</Link>
+            </div>
+            {loginQuery.isError && loginQuery.error.response.status === 403 && (
+              <Alert type="warning" className="mt-2 mb-0">
+                Please confirm you email address
+              </Alert>
+            )}
+          </>
         }
       />
     </StandaloneFormPage>

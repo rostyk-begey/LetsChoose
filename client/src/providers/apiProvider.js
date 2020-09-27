@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 import ROUTES from 'app/utils/routes';
-
 import createTokenProvider from 'app/providers/tokenProvider';
 
 const tokenProvider = createTokenProvider();

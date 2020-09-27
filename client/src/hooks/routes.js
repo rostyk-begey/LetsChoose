@@ -5,13 +5,15 @@ import PrivateRoute from 'app/components/PrivateRoute';
 import HomePage from 'app/pages/Home';
 import LoginPage from 'app/pages/Login';
 import RegisterPage from 'app/pages/Register';
-import IndexPage from 'app/pages/Index';
+import ForgotPasswordPage from 'app/pages/ForgotPassword';
+import ResetPasswordPage from 'app/pages/PasswordReset';
+import ConfirmEmailPage from 'app/pages/ConfirmEmail';
 import UserPage from 'app/pages/User';
 import ContestPage from 'app/pages/Contest';
 import CreateContestPage from 'app/pages/CreateContest';
+import UpdateContestPage from 'app/pages/UpdateContestPage';
 
 import ROUTES from 'app/utils/routes';
-import UpdateContestPage from 'app/pages/UpdateContestPage';
 
 const useRoutes = (isAuthenticated) => {
   const routes = [
@@ -57,6 +59,27 @@ const useRoutes = (isAuthenticated) => {
       allowed: !isAuthenticated,
       redirectTo: ROUTES.HOME,
       component: RegisterPage,
+      exact: false,
+    },
+    {
+      path: ROUTES.FORGOT_PASSWORD,
+      allowed: !isAuthenticated,
+      redirectTo: ROUTES.HOME,
+      component: ForgotPasswordPage,
+      exact: true,
+    },
+    {
+      path: ROUTES.RESET_PASSWORD,
+      allowed: !isAuthenticated,
+      redirectTo: ROUTES.HOME,
+      component: ResetPasswordPage,
+      exact: false,
+    },
+    {
+      path: ROUTES.CONFIRM_EMAIL,
+      allowed: !isAuthenticated,
+      redirectTo: ROUTES.HOME,
+      component: ConfirmEmailPage,
       exact: false,
     },
   ];
