@@ -20,9 +20,9 @@ const useAuth = () => {
     tokenProvider.isLoggedIn(),
   );
 
-  useEffect(() => {
-    const listener = (isLogged) => setIsAuthenticated(isLogged);
+  const listener = (isLogged) => setIsAuthenticated(isLogged);
 
+  useEffect(() => {
     tokenProvider.subscribe(listener);
     return () => tokenProvider.unsubscribe(listener);
   }, []);
