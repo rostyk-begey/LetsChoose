@@ -8,6 +8,7 @@ const { catchAsync } = require('../usecases/error');
 const ContestController = require('../controllers/ContestController');
 const getContestSchema = require('../middleware/contest/getContestSchema.middleware');
 const createContestSchema = require('../middleware/contest/createContestSchema.middleware');
+const updateContestSchema = require('../middleware/contest/updateContestSchema.middleware');
 
 const storage = multer.diskStorage({
   filename: (req, file, callback) => {
@@ -79,6 +80,7 @@ router.post(
   upload.any(),
   auth,
   catchAsync(isAuthor),
+  updateContestSchema,
   catchAsync(ContestController.update),
 );
 
