@@ -88,6 +88,18 @@ const ContestController = {
       ...matchPipeline,
       getSortPipeline(search, sortBy),
       ...getPaginationPipelines(page, perPage),
+      {
+        $project: {
+          _id: 1,
+          thumbnail: 1,
+          title: 1,
+          excerpt: 1,
+          games: 1,
+          createdAt: 1,
+          'author.avatar': 1,
+          'author.username': 1,
+        },
+      },
     ]).exec();
     res.status(200).json({
       contests,
