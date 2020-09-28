@@ -48,6 +48,13 @@ const getSortPipeline = (search, sortBy) => {
   return { $sort: sortOptions };
 };
 
+const getItemsSortPipeline = (search) => {
+  const sortOptions = { rankScore: -1 };
+  if (search) sortOptions.score = -1;
+
+  return { $sort: sortOptions };
+};
+
 const fieldNameFilter = (key) => ({ fieldname }) => fieldname === key;
 
 const ContestController = {
@@ -67,7 +74,7 @@ const ContestController = {
     const count = await Contest.countDocuments();
     const totalPages = Math.ceil(count / perPage);
     if (page > totalPages) {
-      throw new AppError('Invalid page number', 403);
+      throw new AppError('Invalid page number', 400);
     }
     const matchPipeline = author
       ? [{ $match: { 'author.username': author } }]
@@ -109,11 +116,75 @@ const ContestController = {
   },
   async find({ params: { id } }, res) {
     const contest = await Contest.findById(id);
-    if (!contest) {
-      return new AppError('Resource not found!', 404);
-    }
-    contest.items = await ContestItem.find({ contestId: id });
+    if (!contest) throw new AppError('Resource not found!', 404);
     res.status(200).json(contest);
+  },
+  async getItems(req, res) {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      throw new AppError('Invalid query', 400, {
+        errors: errors.array(),
+        message: 'Invalid query',
+      });
+    }
+
+    const {
+      params: { id },
+      query: { page = 1, perPage = 10, search = '' },
+    } = req;
+
+    const contest = await Contest.findById(id);
+    if (!contest) throw new AppError('Resource not found!', 404);
+
+    const count = await ContestItem.countDocuments();
+    const totalPages = Math.ceil(count / perPage);
+    if (page > totalPages) {
+      throw new AppError('Invalid page number', 400);
+    }
+    const items = await ContestItem.aggregate([
+      ...getSearchPipelines(search), // should be a first stage
+      { $match: { contestId: id } },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          image: 1,
+          compares: 1,
+          wins: 1,
+          games: 1,
+          finalWins: 1,
+          winRate: {
+            $cond: {
+              if: { $gt: ['$compares', 0] },
+              then: { $divide: ['$wins', '$compares'] },
+              else: 0,
+            },
+          },
+          finalWinRate: {
+            $cond: {
+              if: { $gt: ['$compares', 0] },
+              then: { $divide: ['$wins', '$compares'] },
+              else: 0,
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          rankScore: {
+            $add: ['$winRate', '$finalWinRate'],
+          },
+        },
+      },
+      getItemsSortPipeline(search),
+      ...getPaginationPipelines(page, perPage),
+    ]).exec();
+    res.status(200).json({
+      items,
+      totalPages,
+      currentPage: page,
+    });
   },
   async create(req, res) {
     const errors = validationResult(req);

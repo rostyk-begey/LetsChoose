@@ -7,6 +7,7 @@ const isAuthor = require('../middleware/isAuthor.middleware');
 const { catchAsync } = require('../usecases/error');
 const ContestController = require('../controllers/ContestController');
 const getContestSchema = require('../middleware/contest/getContestSchema.middleware');
+const getContestItemsSchema = require('../middleware/contest/getContestItemsSchema.middleware');
 const createContestSchema = require('../middleware/contest/createContestSchema.middleware');
 const updateContestSchema = require('../middleware/contest/updateContestSchema.middleware');
 
@@ -40,6 +41,12 @@ router.get(
   '/:id',
   param('id').customSanitizer((value) => Mongoose.Types.ObjectId(value)),
   catchAsync(ContestController.find),
+);
+
+router.get(
+  '/:id/items',
+  getContestItemsSchema,
+  catchAsync(ContestController.getItems),
 );
 
 router.post(

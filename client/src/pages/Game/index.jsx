@@ -21,7 +21,7 @@ const GamePage = () => {
     await gameStateQuery.refetch();
   };
   useEffect(() => {
-    if (finished) history.push(`/contests/${contestId}`);
+    if (finished) history.push(`/contests/${contestId}?activeTab=RANKING`);
   }, [finished]);
 
   return (

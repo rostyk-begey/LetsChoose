@@ -7,6 +7,8 @@ import { useContestFind } from 'app/hooks/api/contest';
 import ContestPageInfoCard from 'app/pages/Contest/ContestPageInfoCard';
 import UserProfileContext from 'app/context/UserProfileContext';
 import { useGameStart } from 'app/hooks/api/game';
+import useGetParams from 'app/hooks/getParams';
+import ROUTES from 'app/utils/routes';
 
 const TABS = {
   GENERAL: 'GENERAL',
@@ -22,7 +24,13 @@ const ContestPage = () => {
   );
   const [startGame] = useGameStart();
   const { author } = contest;
-  const [activeTab, setActiveTab] = useState(TABS.GENERAL);
+  const { params, updateParam } = useGetParams(
+    `${ROUTES.CONTESTS.INDEX}/${id}`,
+    {
+      activeTab: TABS.GENERAL,
+    },
+  );
+  const setActiveTab = (tab) => updateParam('activeTab', tab);
   const tabs = [
     {
       label: 'General',
@@ -43,11 +51,11 @@ const ContestPage = () => {
     <Page>
       <TablerPage.Content>
         <Grid.Row justifyContent="center">
-          <Grid.Col lg={activeTab === TABS.GENERAL ? 8 : 12}>
+          <Grid.Col lg={params.activeTab === TABS.GENERAL ? 8 : 12}>
             <ContestPageInfoCard
               tabs={tabs}
               contest={contest}
-              activeTab={activeTab}
+              activeTab={params.activeTab}
               setActiveTab={setActiveTab}
               isCurrentUserAuthor={isCurrentUserAuthor}
               onStart={onStart}
