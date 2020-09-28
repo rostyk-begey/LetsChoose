@@ -1,7 +1,7 @@
 const { checkSchema } = require('express-validator');
 
 const SORT_OPTIONS = {
-  // POPULAR: 'views', // todo: implement views counting
+  POPULAR: 'games',
   NEWEST: '_id',
 };
 

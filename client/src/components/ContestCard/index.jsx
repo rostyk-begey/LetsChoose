@@ -11,9 +11,7 @@ import './index.scss';
 const ContestCard = ({
   data: {
     _id: id,
-    views,
-    likes,
-    dislikes,
+    games,
     author: { username, avatar },
     thumbnail,
     isBookmarked = false,
@@ -24,18 +22,10 @@ const ContestCard = ({
   },
 }) => {
   const baseClassName = 'contest-card';
-  const COUNTERS = [
+  const counters = [
     {
-      icon: 'eye',
-      data: views,
-    },
-    {
-      icon: 'thumbs-up',
-      data: likes,
-    },
-    {
-      icon: 'thumbs-down',
-      data: dislikes,
+      icon: 'play',
+      data: games,
     },
   ];
 
@@ -71,7 +61,7 @@ const ContestCard = ({
             </small>
           </div>
           <div className="ml-auto text-muted">
-            {COUNTERS.map(({ icon, data }) => (
+            {counters.map(({ icon, data }) => (
               <span className="icon d-none d-md-inline-block ml-3" key={icon}>
                 <Icon name={icon} className="mr-1" />
                 {data}

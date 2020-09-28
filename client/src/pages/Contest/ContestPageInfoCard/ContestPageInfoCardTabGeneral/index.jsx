@@ -6,29 +6,12 @@ import { Grid, Header, Icon, Media, Tag } from 'tabler-react';
 import ROUTES from 'app/utils/routes';
 
 const ContestPageInfoCardTabGeneral = ({
-  contest: {
-    title,
-    thumbnail,
-    excerpt,
-    tags = [],
-    views,
-    likes,
-    dislikes,
-    createdAt,
-  },
+  contest: { title, thumbnail, excerpt, tags = [], games, createdAt },
 }) => {
   const counters = [
     {
-      icon: 'eye',
-      data: views,
-    },
-    {
-      icon: 'thumbs-up',
-      data: likes,
-    },
-    {
-      icon: 'thumbs-down',
-      data: dislikes,
+      icon: 'play',
+      data: games,
     },
   ];
 

@@ -9,6 +9,7 @@ import ForgotPasswordPage from 'app/pages/ForgotPassword';
 import ResetPasswordPage from 'app/pages/PasswordReset';
 import ConfirmEmailPage from 'app/pages/ConfirmEmail';
 import UserPage from 'app/pages/User';
+import GamePage from 'app/pages/Game';
 import ContestPage from 'app/pages/Contest';
 import CreateContestPage from 'app/pages/CreateContest';
 import UpdateContestPage from 'app/pages/UpdateContestPage';
@@ -80,6 +81,13 @@ const useRoutes = (isAuthenticated) => {
       allowed: !isAuthenticated,
       redirectTo: ROUTES.HOME,
       component: ConfirmEmailPage,
+      exact: false,
+    },
+    {
+      path: ROUTES.GAME,
+      allowed: true,
+      redirectTo: ROUTES.HOME,
+      component: GamePage,
       exact: false,
     },
   ];
