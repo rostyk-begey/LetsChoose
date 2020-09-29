@@ -1,11 +1,13 @@
 const { checkSchema } = require('express-validator');
-
-const SORT_OPTIONS = {
-  POPULAR: 'games',
-  NEWEST: '_id',
-};
+const Mongoose = require('mongoose');
 
 module.exports = checkSchema({
+  id: {
+    in: 'params',
+    customSanitizer: {
+      options: (value) => Mongoose.Types.ObjectId(value),
+    },
+  },
   page: {
     in: 'query',
     toInt: true,
@@ -23,15 +25,5 @@ module.exports = checkSchema({
   search: {
     in: 'query',
     trim: true,
-  },
-  author: {
-    in: 'query',
-    trim: true,
-  },
-  sortBy: {
-    in: 'query',
-    customSanitizer: {
-      options: (value) => SORT_OPTIONS[value] || SORT_OPTIONS.NEWEST,
-    },
   },
 });

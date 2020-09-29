@@ -45,7 +45,7 @@ const useGetParams = (baseUrl, defaultParams) => {
   );
   const handleSearch = ({ target: { name, value } }) => throttled(name, value);
 
-  return { params, handleSearch, onInputChange };
+  return { params, handleSearch, onInputChange, updateParam };
 };
 
 export default useGetParams;

@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { Button, Card, Nav } from 'tabler-react';
 import { Link, useHistory } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ import ContestPageInfoCardTabStatistics from 'app/pages/Contest/ContestPageInfoC
 
 const TABS = {
   GENERAL: 'GENERAL',
-  STATISTIC: 'STATISTIC',
+  RANKING: 'RANKING',
 };
 
 const ContestPageInfoCard = ({
@@ -70,12 +70,12 @@ const ContestPageInfoCard = ({
           </Button>
         </Button.List>
       </Card.Header>
-      {!_.isEmpty(contest) && (
+      {!isEmpty(contest) && (
         <Card.Body>
           {activeTab === TABS.GENERAL && (
             <ContestPageInfoCardTabGeneral contest={contest} />
           )}
-          {activeTab === TABS.STATISTIC && (
+          {activeTab === TABS.RANKING && (
             <ContestPageInfoCardTabStatistics contest={contest} />
           )}
         </Card.Body>

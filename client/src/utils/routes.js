@@ -13,10 +13,12 @@ export default {
     SINGLE: '/contests/:id',
     UPDATE: '/contests/:id/update',
   },
+  GAME: '/games/:id',
   API: {
     INDEX: '/api',
     CONTESTS: '/contests',
     USERS: '/users',
+    GAME: '/games',
     AUTH: {
       INDEX: '/auth',
       LOGIN: '/auth/login',

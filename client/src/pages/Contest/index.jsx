@@ -1,102 +1,66 @@
 import React, { useState, useContext } from 'react';
-import { Header, Card, Grid, Page as TablerPage } from 'tabler-react';
-import { Prompt, useParams } from 'react-router-dom';
+import { Grid, Page as TablerPage } from 'tabler-react';
+import { useHistory, useParams } from 'react-router-dom';
 
 import Page from 'app/components/Page';
 import { useContestFind } from 'app/hooks/api/contest';
 import ContestPageInfoCard from 'app/pages/Contest/ContestPageInfoCard';
 import UserProfileContext from 'app/context/UserProfileContext';
-
-import './index.scss';
+import { useGameStart } from 'app/hooks/api/game';
+import useGetParams from 'app/hooks/getParams';
+import ROUTES from 'app/utils/routes';
 
 const TABS = {
   GENERAL: 'GENERAL',
-  STATISTIC: 'STATISTIC',
+  RANKING: 'RANKING',
 };
 
 const ContestPage = () => {
-  const baseClassName = 'contest-page';
   const { id } = useParams();
-  const { userId } = useContext(UserProfileContext); // todo: replace
+  const history = useHistory();
+  const { _id: userId } = useContext(UserProfileContext);
   const { data: { data: contest = {} } = {}, ...contestQuery } = useContestFind(
     id,
   );
+  const [startGame] = useGameStart();
   const { author } = contest;
-  const [activeTab, setActiveTab] = useState(TABS.GENERAL);
+  const { params, updateParam } = useGetParams(
+    `${ROUTES.CONTESTS.INDEX}/${id}`,
+    {
+      activeTab: TABS.GENERAL,
+    },
+  );
+  const setActiveTab = (tab) => updateParam('activeTab', tab);
   const tabs = [
     {
       label: 'General',
       tab: TABS.GENERAL,
     },
     {
-      label: 'Statistic',
-      tab: TABS.STATISTIC,
+      label: 'Ranking',
+      tab: TABS.RANKING,
     },
   ];
-  const [isStarted, setIsStarted] = useState(false);
-  const isCurrentUserAuthor = false; // todo: replace
-  // useEffect(() => {
-  //   setTotalScore(_.sum(items.map(({ score }) => score)));
-  // }, [items]);
-  // const { currentPair, currentRound } = useContest(
-  //   items,
-  //   ({ scores, compares: totalCompares }) => {
-  //     setItems(
-  //       items.map(({ id, score, compares, ...item }) => ({
-  //         id,
-  //         ...item,
-  //         score: score + scores.filter((el) => el === id).length,
-  //         compares: compares + totalCompares.filter((el) => el === id).length,
-  //       })),
-  //     );
-  //     setActiveTab(TABS.STATISTIC);
-  //     setIsStarted(false);
-  //   },
-  // );
-  const currentRound = 0;
-  const currentPair = [];
+  const onStart = () =>
+    startGame(id).then(({ data: { gameId } }) =>
+      history.push(`/games/${gameId}`),
+    );
+  const isCurrentUserAuthor = userId === author;
 
   return (
     <Page>
-      <Prompt message="Are you sure you want to leave?" when={isStarted} />
       <TablerPage.Content>
         <Grid.Row justifyContent="center">
-          {isStarted ? (
-            <Card>
-              <Card.Body>
-                <Header.H2 className="text-center">
-                  Round {currentRound}
-                </Header.H2>
-                <Grid.Row>
-                  {currentPair.map(({ id, title, image, onSelect }, i) => (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <Grid.Col lg={6} key={i}>
-                      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-                      <div className="media mb-3" onClick={onSelect}>
-                        <img
-                          className={`d-flex rounded w-100 ${baseClassName}__compare-item-image`}
-                          src={image}
-                          alt="Generic placeholder"
-                        />
-                      </div>
-                      <Header.H3>{title}</Header.H3>
-                    </Grid.Col>
-                  ))}
-                </Grid.Row>
-              </Card.Body>
-            </Card>
-          ) : (
-            <Grid.Col lg={activeTab === TABS.GENERAL ? 8 : 12}>
-              <ContestPageInfoCard
-                tabs={tabs}
-                contest={contest}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                isCurrentUserAuthor={isCurrentUserAuthor}
-                onStart={() => setIsStarted(true)}
-              />
-            </Grid.Col>
-          )}
+          <Grid.Col lg={params.activeTab === TABS.GENERAL ? 8 : 12}>
+            <ContestPageInfoCard
+              tabs={tabs}
+              contest={contest}
+              activeTab={params.activeTab}
+              setActiveTab={setActiveTab}
+              isCurrentUserAuthor={isCurrentUserAuthor}
+              onStart={onStart}
+            />
+          </Grid.Col>
         </Grid.Row>
       </TablerPage.Content>
     </Page>
