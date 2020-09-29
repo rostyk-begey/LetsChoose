@@ -1,25 +1,36 @@
-const { Router } = require('express');
-const Mongoose = require('mongoose');
-const { param } = require('express-validator');
-const multer = require('multer');
-const auth = require('../middleware/auth.middleware');
-const isAuthor = require('../middleware/isAuthor.middleware');
-const { catchAsync } = require('../usecases/error');
-const ContestController = require('../controllers/ContestController');
-const getContestSchema = require('../middleware/contest/getContestSchema.middleware');
-const getContestItemsSchema = require('../middleware/contest/getContestItemsSchema.middleware');
-const createContestSchema = require('../middleware/contest/createContestSchema.middleware');
-const updateContestSchema = require('../middleware/contest/updateContestSchema.middleware');
+import { Router, Request } from 'express';
+import Mongoose from 'mongoose';
+import { param } from 'express-validator';
+import multer, { FileFilterCallback } from 'multer';
+
+import auth from '../middleware/auth.middleware';
+import isAuthor from '../middleware/isAuthor.middleware';
+import { catchAsync } from '../usecases/error';
+import ContestController from '../controllers/ContestController';
+import {
+  getContestSchema,
+  getContestItemsSchema,
+  createContestSchema,
+  updateContestSchema,
+} from '../schema/contest';
 
 const storage = multer.diskStorage({
-  filename: (req, file, callback) => {
+  filename: (
+    req: Request,
+    file: { originalname: string },
+    callback: (error: Error | null, filename: string) => void,
+  ): void => {
     callback(null, Date.now() + file.originalname);
   },
 });
-const fileFilter = (req, file, cb) => {
+const fileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback,
+) => {
   // accept image files only
   if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
-    return cb(new Error('Only image files are allowed!'), false);
+    return cb(new Error('Only image files are allowed!'));
   }
   cb(null, true);
 };
@@ -65,4 +76,4 @@ router.delete(
   catchAsync(ContestController.remove),
 );
 
-module.exports = router;
+export default router;

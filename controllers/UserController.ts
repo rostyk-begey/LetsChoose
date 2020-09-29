@@ -1,17 +1,51 @@
-const { validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const md5 = require('md5');
-const User = require('../models/User');
-const Contest = require('../models/Contest');
-const ContestItem = require('../models/ContestItem');
-const emailTransporter = require('../usecases/emailTransporter');
-const renderConfirmationEmail = require('../usecases/renderConfirmationEmail');
-const renderResetPasswordEmail = require('../usecases/renderResetPasswordEmail');
-const { AppError } = require('../usecases/error');
+import { Request, Response } from 'express';
+import { validationResult } from 'express-validator';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import config from 'config';
+import md5 from 'md5';
 
-const generateTokens = ({ _id, passwordVersion = 0 }) => {
+import User from '../models/User';
+import Contest from '../models/Contest';
+import ContestItem from '../models/ContestItem';
+import emailTransporter from '../usecases/emailTransporter';
+import renderConfirmationEmail from '../usecases/renderConfirmationEmail';
+import renderResetPasswordEmail from '../usecases/renderResetPasswordEmail';
+import { AppError } from '../usecases/error';
+
+type UserFindParams = { username: string };
+
+type ConfirmEmailParams = { token: string };
+
+interface FindRequest extends Request {
+  userId: any;
+  params: UserFindParams;
+}
+
+interface ConfirmEmailRequest extends Request {
+  params: ConfirmEmailParams;
+}
+
+interface RemoveRequest extends Request {
+  params: UserFindParams;
+}
+
+type LoginResponseBody = {
+  userId: any;
+  accessToken: string;
+  refreshToken?: string;
+};
+
+const generateTokens = ({
+  _id,
+  passwordVersion = 0,
+}: {
+  _id: string;
+  passwordVersion: number;
+}): {
+  accessToken: string;
+  refreshToken: string;
+} => {
   const payload = { userId: _id, passwordVersion };
   const accessToken = jwt.sign(payload, config.get('jwt.accessSecret'), {
     expiresIn: '15s',
@@ -23,7 +57,7 @@ const generateTokens = ({ _id, passwordVersion = 0 }) => {
 };
 
 const UserController = {
-  async login(req, res) {
+  async login(req: Request, res: Response): Promise<void> {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -47,8 +81,8 @@ const UserController = {
 
     const { accessToken, refreshToken } = generateTokens(user);
 
-    const responseBody = {
-      userId: user.id,
+    const responseBody: LoginResponseBody = {
+      userId: user._id,
       accessToken,
     };
 
@@ -62,7 +96,7 @@ const UserController = {
 
     res.status(200).json(responseBody);
   },
-  async register(req, res) {
+  async register(req: Request, res: Response): Promise<void> {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -100,7 +134,7 @@ const UserController = {
 
     res.status(201).json({ message: 'User successfully created!' });
   },
-  async forgotPassword(req, res) {
+  async forgotPassword(req: Request, res: Response): Promise<void> {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -112,6 +146,8 @@ const UserController = {
     const { email } = req.body;
 
     const user = await User.findOne({ email });
+
+    if (!user) throw new AppError('Invalid email', 404);
 
     const resetPasswordToken = await jwt.sign(
       { userId: user._id },
@@ -131,7 +167,7 @@ const UserController = {
       .status(201)
       .json({ message: `Reset password link has been sent to ${email}!` });
   },
-  async resetPassword(req, res) {
+  async resetPassword(req: Request, res: Response): Promise<void> {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -146,6 +182,7 @@ const UserController = {
     let userId = '';
 
     try {
+      // @ts-ignore
       ({ userId } = jwt.verify(token, config.get('jwt.passwordResetSecret')));
     } catch (e) {
       throw new AppError('Reset password link expired', 403);
@@ -164,7 +201,7 @@ const UserController = {
 
     res.status(201).json({ message: 'Password was successfully changed!' });
   },
-  async refreshToken(req, res) {
+  async refreshToken(req: Request, res: Response): Promise<void> {
     let token;
     let userId;
 
@@ -177,6 +214,7 @@ const UserController = {
     if (!token) throw new AppError('Invalid token', 400);
 
     try {
+      // @ts-ignore
       ({ userId } = jwt.verify(token, config.get('jwt.refreshSecret')));
     } catch (e) {
       throw new AppError('Invalid signature', 400);
@@ -188,7 +226,7 @@ const UserController = {
 
     const { accessToken, refreshToken } = generateTokens(user);
 
-    const responseBody = {
+    const responseBody: LoginResponseBody = {
       userId: user.id,
       accessToken,
     };
@@ -203,7 +241,11 @@ const UserController = {
 
     res.status(200).json(responseBody);
   },
-  async find({ userId, params: { username } }, res) {
+  async find(req: FindRequest, res: Response): Promise<void> {
+    const {
+      userId,
+      params: { username },
+    } = req;
     let user;
     if (username === 'me') {
       user = await User.findById(userId).select('-password');
@@ -213,8 +255,12 @@ const UserController = {
     if (!user) throw new AppError('Resource not found!', 404);
     res.status(200).json(user);
   },
-  async confirmEmail({ params: { token } }, res) {
+  async confirmEmail(req: ConfirmEmailRequest, res: Response): Promise<void> {
+    const {
+      params: { token },
+    } = req;
     try {
+      // @ts-ignore
       const { userId } = jwt.verify(token, config.get('jwt.emailSecret'));
       await User.updateOne({ _id: userId }, { confirmed: true });
     } catch (e) {
@@ -224,16 +270,24 @@ const UserController = {
     res.status(200).json({ message: 'Email was successfully verified!' });
   },
   // todo: validate permissions
-  async remove({ params: { username } }, res) {
+  async remove(req: RemoveRequest, res: Response): Promise<void> {
+    const {
+      params: { username },
+    } = req;
     const user = await User.findOne({ username });
+
+    if (!user) throw new AppError('User does not exists', 404);
+
     const contests = await Contest.find({ author: user._id });
-    const deletes = contests.map(async (contest) => {
-      await ContestItem.deleteMany({ contestId: contest.id });
-      await Contest.deleteOne({ _id: contest.id });
-    });
+    const deletes = contests.map(
+      async (contest): Promise<void> => {
+        await ContestItem.deleteMany({ contestId: contest.id });
+        await Contest.deleteOne({ _id: contest.id });
+      },
+    );
     await Promise.all(deletes);
     res.status(200).json({ message: 'User successfully deleted!' });
   },
 };
 
-module.exports = UserController;
+export default UserController;

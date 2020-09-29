@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model, Document } from 'mongoose';
 
 const schema = new Schema({
   image: { type: String, required: true },
@@ -10,4 +10,14 @@ const schema = new Schema({
   contestId: { type: Schema.Types.ObjectId, ref: 'Contest', required: true },
 });
 
-module.exports = model('ContestItem', schema);
+export interface IContestItem extends Document {
+  image: string;
+  title: string;
+  games: number;
+  compares: number;
+  wins: number;
+  finalWins: number;
+  contestId: string;
+}
+
+export default model<IContestItem>('ContestItem', schema);

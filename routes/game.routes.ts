@@ -1,6 +1,6 @@
-const { Router } = require('express');
-const { catchAsync } = require('../usecases/error');
-const GameController = require('../controllers/GameController');
+import { Router } from 'express';
+import { catchAsync } from '../usecases/error';
+import GameController from '../controllers/GameController';
 
 const router = Router();
 
@@ -10,4 +10,4 @@ router.get('/:id', catchAsync(GameController.getPair));
 
 router.post('/:id', catchAsync(GameController.choose));
 
-module.exports = router;
+export default router;

@@ -1,4 +1,5 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model, Document } from 'mongoose';
+import { IUser } from './User';
 
 const schema = new Schema(
   {
@@ -19,4 +20,20 @@ const schema = new Schema(
   { timestamps: true },
 );
 
-module.exports = model('Game', schema);
+export interface IGameItem {
+  itemId: any;
+  wins: number;
+  compares: number;
+}
+
+export interface IGame extends Document {
+  contestId: string;
+  winnerId: string;
+  items: IGameItem[];
+  pair: string[];
+  round: number;
+  finished: boolean;
+  totalRounds: number;
+}
+
+export default model<IGame>('Game', schema);

@@ -1,4 +1,6 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model, Document } from 'mongoose';
+
+import { IUser } from './User';
 
 const schema = new Schema(
   {
@@ -13,4 +15,13 @@ const schema = new Schema(
   { timestamps: true },
 );
 
-module.exports = model('Contest', schema);
+export interface IContest extends Document {
+  thumbnail: string;
+  title: string;
+  excerpt: string;
+  author: string | IUser;
+  games: number;
+  items: any[];
+}
+
+export default model<IContest>('Contest', schema);

@@ -1,33 +1,26 @@
-const { validationResult } = require('express-validator');
-const { shuffle, pick, map } = require('lodash');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const md5 = require('md5');
-const User = require('../models/User');
-const Game = require('../models/Game');
-const Contest = require('../models/Contest');
-const ContestItem = require('../models/ContestItem');
-const emailTransporter = require('../usecases/emailTransporter');
-const renderConfirmationEmail = require('../usecases/renderConfirmationEmail');
-const renderResetPasswordEmail = require('../usecases/renderResetPasswordEmail');
-const { AppError } = require('../usecases/error');
+import { Request, Response } from 'express';
+import { shuffle } from 'lodash';
 
-const getCurrentRoundItems = (gameItems, round) =>
+import Game, { IGameItem } from '../models/Game';
+import Contest from '../models/Contest';
+import ContestItem, { IContestItem } from '../models/ContestItem';
+import { AppError } from '../usecases/error';
+
+const getCurrentRoundItems = (gameItems: IGameItem[], round: number) =>
   gameItems.filter(
     ({ compares, wins }) => round === compares && round === wins,
   );
 
-const generatePair = (items) =>
+const generatePair = (items: IGameItem[]) =>
   shuffle(items)
     .slice(0, 2)
     .map(({ itemId }) => itemId);
 
-const populatePair = (pair) =>
+const populatePair = (pair: string[]): Promise<(IContestItem | null)[]> =>
   Promise.all(pair.map((id) => ContestItem.findById(id)));
 
 const GameController = {
-  async start(req, res) {
+  async start(req: Request, res: Response): Promise<void> {
     const {
       params: { contestId },
     } = req;
@@ -42,7 +35,7 @@ const GameController = {
 
     const totalRounds = items.length > 2 ? Math.sqrt(selectedItemsLength) : 1;
 
-    const gameItems = shuffle(items)
+    const gameItems: IGameItem[] = shuffle(items)
       .slice(0, selectedItemsLength)
       .map(({ _id }) => ({
         itemId: _id,
@@ -70,7 +63,7 @@ const GameController = {
       message: 'Game was successfully created',
     });
   },
-  async getPair(req, res) {
+  async getPair(req: Request, res: Response): Promise<void> {
     const {
       params: { id },
     } = req;
@@ -88,7 +81,7 @@ const GameController = {
       pair,
     });
   },
-  async choose(req, res) {
+  async choose(req: Request, res: Response): Promise<void> {
     const {
       params: { id },
       body: { winnerId },
@@ -130,17 +123,17 @@ const GameController = {
       game.winnerId = winnerId;
 
       const contest = await Contest.findById(game.contestId);
-      contest.games += 1;
-      await contest.save();
+      contest!.games += 1;
+      await contest!.save();
 
       await Promise.all(
         game.items.map(async ({ itemId, compares, wins }) => {
           const contestItem = await ContestItem.findById(itemId);
-          contestItem.compares += compares;
-          contestItem.wins += wins;
-          contestItem.games += 1;
-          if (winnerId === `${itemId}`) contestItem.finalWins += 1;
-          await contestItem.save();
+          contestItem!.compares += compares;
+          contestItem!.wins += wins;
+          contestItem!.games += 1;
+          if (winnerId === `${itemId}`) contestItem!.finalWins += 1;
+          await contestItem!.save();
         }),
       );
     }
@@ -158,4 +151,4 @@ const GameController = {
   },
 };
 
-module.exports = GameController;
+export default GameController;

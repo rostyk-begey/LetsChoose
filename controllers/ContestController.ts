@@ -1,9 +1,11 @@
-const Mongoose = require('mongoose');
-const cloudinary = require('cloudinary').v2;
-const { validationResult } = require('express-validator');
-const Contest = require('../models/Contest');
-const ContestItem = require('../models/ContestItem');
-const { AppError } = require('../usecases/error');
+import { Request, Response } from 'express';
+import Mongoose from 'mongoose';
+import cloudinary from 'cloudinary';
+import { validationResult } from 'express-validator';
+
+import Contest from '../models/Contest';
+import ContestItem from '../models/ContestItem';
+import { AppError } from '../usecases/error';
 
 const getPaginationPipelines = (page = 1, perPage = 10) => [
   {
@@ -38,27 +40,35 @@ const getSearchPipelines = (search = '') => {
   ];
 };
 
-const getCloudinaryImagePublicId = (url) =>
+const getCloudinaryImagePublicId = (url: string) =>
   url.split('/').slice(-1)[0].split('.')[0];
 
-const getSortPipeline = (search, sortBy) => {
+const getSortPipeline = (search: string, sortBy: string) => {
   const sortOptions = search ? { score: -1 } : {};
-  if (sortBy) sortOptions[sortBy] = -1;
+  if (sortBy) {
+    // @ts-ignore
+    sortOptions[sortBy] = -1;
+  }
 
   return { $sort: sortOptions };
 };
 
-const getItemsSortPipeline = (search) => {
+const getItemsSortPipeline = (search: string) => {
   const sortOptions = { rankScore: -1 };
-  if (search) sortOptions.score = -1;
+  if (search) {
+    // @ts-ignore
+    sortOptions.score = -1;
+  }
 
   return { $sort: sortOptions };
 };
 
-const fieldNameFilter = (key) => ({ fieldname }) => fieldname === key;
+// @ts-ignore
+const fieldNameFilter = (key: string) => ({ fieldname }): boolean =>
+  fieldname === key;
 
 const ContestController = {
-  async get(req, res) {
+  async get(req: Request, res: Response): Promise<void> {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -72,6 +82,7 @@ const ContestController = {
       query: { page = 1, perPage = 10, search = '', author = '', sortBy = '' },
     } = req;
     const count = await Contest.countDocuments();
+    // @ts-ignore
     const totalPages = Math.ceil(count / perPage);
     if (page > totalPages) {
       throw new AppError('Invalid page number', 400);
@@ -80,6 +91,7 @@ const ContestController = {
       ? [{ $match: { 'author.username': author } }]
       : [];
     const contests = await Contest.aggregate([
+      // @ts-ignore
       ...getSearchPipelines(search), // should be a first stage
       {
         $lookup: {
@@ -93,7 +105,9 @@ const ContestController = {
         $unwind: '$author',
       },
       ...matchPipeline,
+      // @ts-ignore
       getSortPipeline(search, sortBy),
+      // @ts-ignore
       ...getPaginationPipelines(page, perPage),
       {
         $project: {
@@ -114,12 +128,15 @@ const ContestController = {
       currentPage: page,
     });
   },
-  async find({ params: { id } }, res) {
+  async find(req: Request, res: Response): Promise<void> {
+    const {
+      params: { id },
+    } = req;
     const contest = await Contest.findById(id);
     if (!contest) throw new AppError('Resource not found!', 404);
     res.status(200).json(contest);
   },
-  async getItems(req, res) {
+  async getItems(req: Request, res: Response): Promise<void> {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -138,11 +155,13 @@ const ContestController = {
     if (!contest) throw new AppError('Resource not found!', 404);
 
     const count = await ContestItem.countDocuments({ contestId: id });
+    // @ts-ignore
     const totalPages = Math.ceil(count / perPage);
     if (page > totalPages) {
       throw new AppError('Invalid page number', 400);
     }
     const items = await ContestItem.aggregate([
+      // @ts-ignore
       ...getSearchPipelines(search), // should be a first stage
       { $match: { contestId: id } },
       {
@@ -177,7 +196,9 @@ const ContestController = {
           },
         },
       },
+      // @ts-ignore
       getItemsSortPipeline(search),
+      // @ts-ignore
       ...getPaginationPipelines(page, perPage),
     ]).exec();
     res.status(200).json({
@@ -186,7 +207,7 @@ const ContestController = {
       currentPage: page,
     });
   },
-  async create(req, res) {
+  async create(req: Request, res: Response): Promise<void> {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -196,13 +217,15 @@ const ContestController = {
     }
 
     const {
+      // @ts-ignore
       userId,
       files,
       body: { title, excerpt, items },
     } = req;
+    // @ts-ignore
     const thumbnail = files.find(fieldNameFilter('thumbnail'));
     const contestId = Mongoose.Types.ObjectId();
-    const { secure_url } = await cloudinary.uploader.upload(thumbnail.path, {
+    const { secure_url } = await cloudinary.v2.uploader.upload(thumbnail.path, {
       public_id: `contests/${contestId}/thumbnail`,
     });
     const contest = new Contest({
@@ -213,24 +236,27 @@ const ContestController = {
       author: userId,
     });
     contest.save();
-    const savingItems = items.map(async (item, i) => {
-      const contestItemId = Mongoose.Types.ObjectId();
-      const image = files.find(fieldNameFilter(`items[${i}][image]`));
-      const { secure_url } = await cloudinary.uploader.upload(image.path, {
-        public_id: `contests/${contestId}/items/${contestItemId}`,
-      });
-      const contestItem = new ContestItem({
-        ...item,
-        image: secure_url,
-        _id: contestItemId,
-        contestId,
-      });
-      await contestItem.save();
-    });
+    const savingItems = items.map(
+      async (item: object, i: number): Promise<void> => {
+        const contestItemId = Mongoose.Types.ObjectId();
+        // @ts-ignore
+        const image = files.find(fieldNameFilter(`items[${i}][image]`));
+        const { secure_url } = await cloudinary.v2.uploader.upload(image.path, {
+          public_id: `contests/${contestId}/items/${contestItemId}`,
+        });
+        const contestItem = new ContestItem({
+          ...item,
+          image: secure_url,
+          _id: contestItemId,
+          contestId,
+        });
+        await contestItem.save();
+      },
+    );
     await Promise.all(savingItems);
     res.status(201).json({ message: 'Contest successfully created!' });
   },
-  async update(req, res) {
+  async update(req: Request, res: Response): Promise<void> {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -245,17 +271,25 @@ const ContestController = {
       body: { title, excerpt },
     } = req;
     const contest = await Contest.findById(contestId);
-    const data = {};
+
+    if (!contest) throw new AppError('Contest not found', 404);
+
+    const data: {
+      title?: string;
+      excerpt?: string;
+      thumbnail?: string;
+    } = {};
     if (title) data.title = title;
     if (excerpt) data.excerpt = excerpt;
     if (files?.length) {
+      // @ts-ignore
       const thumbnailFile = files.find(fieldNameFilter('thumbnail'));
       if (contest.thumbnail) {
-        await cloudinary.uploader.destroy(
+        await cloudinary.v2.uploader.destroy(
           getCloudinaryImagePublicId(contest.thumbnail),
         );
       }
-      const { secure_url } = await cloudinary.uploader.upload(
+      const { secure_url } = await cloudinary.v2.uploader.upload(
         thumbnailFile.path,
         {
           public_id: `contests/${contestId}/thumbnail`,
@@ -266,11 +300,14 @@ const ContestController = {
     await Contest.updateOne({ _id: contestId }, data);
     res.status(200).json({ message: 'Contest successfully updated!' });
   },
-  async remove({ params: { id } }, res) {
+  async remove(req: Request, res: Response): Promise<void> {
+    const {
+      params: { id },
+    } = req;
     await Contest.deleteOne({ _id: id });
     await ContestItem.deleteMany({ contestId: id }); // todo: delete images
     res.status(200).json({ message: 'Contest successfully deleted!' });
   },
 };
 
-module.exports = ContestController;
+export default ContestController;

@@ -1,4 +1,4 @@
-module.exports = (appUrl, confirmUrl) => `
+export default (appUrl: string, confirmUrl: string) => `
 <!DOCTYPE html>
 <html>
 <head>

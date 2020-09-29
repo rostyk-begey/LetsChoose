@@ -1,15 +1,19 @@
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const { AppError } = require('../usecases/error');
+import jwt from 'jsonwebtoken';
+import config from 'config';
+import { NextFunction, Request, Response } from 'express';
 
-module.exports = (req, res, next) => {
+import { AppError } from '../usecases/error';
+
+export default (req: Request, res: Response, next: NextFunction): void => {
   if (req.method === 'OPTIONS') {
     next();
   }
 
   try {
     const token = req.headers?.authorization?.split(' ')[1];
+    // @ts-ignore
     const { userId } = jwt.verify(token, config.get('jwt.accessSecret'));
+    // @ts-ignore
     req.userId = userId;
     next();
   } catch (e) {
