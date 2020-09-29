@@ -59,7 +59,7 @@ export const useContestItemsInfinite = (
   const queryParams = {
     search: '',
     page: 1,
-    perPage: 1,
+    perPage: 20,
     ...params,
   };
   const { allItems } = useContestApi();

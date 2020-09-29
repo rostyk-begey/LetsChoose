@@ -7,7 +7,7 @@ import { useContestItemsInfinite } from 'app/hooks/api/contest';
 
 const ItemRow = ({ id, rank, image, title, winRate, finalWinRate }) => (
   <Table.Row key={id}>
-    <Table.Col className="w-1">#{rank}</Table.Col>
+    {/*<Table.Col className="w-1">#{rank}</Table.Col>*/}
     <Table.Col className="w-1">
       <Avatar imageURL={image} size="xxl" className="mr-3" />
     </Table.Col>
@@ -99,7 +99,6 @@ const ContestPageInfoCardTabStatistics = ({ contest: { _id: contestId } }) => {
       <Table cards responsive highlightRowOnHover className="table-vcenter">
         <Table.Header>
           <Table.Row>
-            <Table.ColHeader>Rank</Table.ColHeader>
             <Table.ColHeader />
             <Table.ColHeader>Title</Table.ColHeader>
             <Table.ColHeader>1:1 Win rate</Table.ColHeader>
@@ -108,11 +107,10 @@ const ContestPageInfoCardTabStatistics = ({ contest: { _id: contestId } }) => {
         </Table.Header>
         <Table.Body>
           {isSuccess &&
-            data?.map(({ data: { items } }, i) =>
+            data?.map(({ data: { items } }) =>
               items.map(({ _id: id, title, image, winRate, finalWinRate }) => (
                 <ItemRow
                   id={id}
-                  rank={i + 1}
                   title={title}
                   image={image}
                   winRate={winRate}

@@ -137,7 +137,7 @@ const ContestController = {
     const contest = await Contest.findById(id);
     if (!contest) throw new AppError('Resource not found!', 404);
 
-    const count = await ContestItem.countDocuments();
+    const count = await ContestItem.countDocuments({ contestId: id });
     const totalPages = Math.ceil(count / perPage);
     if (page > totalPages) {
       throw new AppError('Invalid page number', 400);
