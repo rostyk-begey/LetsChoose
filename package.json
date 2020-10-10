@@ -5,14 +5,12 @@
   "main": "app.js",
   "scripts": {
     "start": "NODE_ENV=production ts-node app.ts",
-    "server": "nodemon app.ts",
+    "server": "ts-node-dev app.ts",
     "client": "yarn --cwd client run start",
     "client:build": "yarn --cwd client build",
     "heroku-postbuild": "cd client && yarn install --production=false && yarn run build",
+    "postinstall": "tsc",
     "dev": "concurrently \"yarn run server\" \"yarn run client\""
-  },
-  "engines": {
-    "node": "14.9.0"
   },
   "keywords": [
     "choose",
@@ -62,6 +60,7 @@
     "nodemon": "^2.0.4",
     "prettier": "2.0.5",
     "ts-node": "^9.0.0",
+    "ts-node-dev": "^1.0.0-pre.63",
     "typescript": "^4.0.3"
   }
 }

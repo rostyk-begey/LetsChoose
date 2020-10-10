@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
 import Mongoose from 'mongoose';
 import cloudinary from 'cloudinary';
 import { validationResult } from 'express-validator';
 
-import Contest from '../models/Contest';
-import ContestItem from '../models/ContestItem';
-import { AppError } from '../usecases/error';
+import Contest, { IContest } from '../../models/Contest';
+import ContestItem from '../../models/ContestItem';
+import { AppError } from '../../usecases/error';
+import { IContestController, ISortOptions, SORT_OPTIONS } from './types';
 
 const getPaginationPipelines = (page = 1, perPage = 10) => [
   {
@@ -43,10 +43,9 @@ const getSearchPipelines = (search = '') => {
 const getCloudinaryImagePublicId = (url: string) =>
   url.split('/').slice(-1)[0].split('.')[0];
 
-const getSortPipeline = (search: string, sortBy: string) => {
-  const sortOptions = search ? { score: -1 } : {};
+const getSortPipeline = (search: string, sortBy: "" | keyof typeof SORT_OPTIONS): { $sort: ISortOptions } => {
+  const sortOptions: ISortOptions = search ? { score: -1 } : {};
   if (sortBy) {
-    // @ts-ignore
     sortOptions[sortBy] = -1;
   }
 
@@ -63,12 +62,11 @@ const getItemsSortPipeline = (search: string) => {
   return { $sort: sortOptions };
 };
 
-// @ts-ignore
-const fieldNameFilter = (key: string) => ({ fieldname }): boolean =>
+const fieldNameFilter = (key: string) => ({ fieldname }: { fieldname: string }): boolean =>
   fieldname === key;
 
-const ContestController = {
-  async get(req: Request, res: Response): Promise<void> {
+const ContestController: IContestController = {
+  async get(req, res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -82,7 +80,6 @@ const ContestController = {
       query: { page = 1, perPage = 10, search = '', author = '', sortBy = '' },
     } = req;
     const count = await Contest.countDocuments();
-    // @ts-ignore
     const totalPages = Math.ceil(count / perPage);
     if (page > totalPages) {
       throw new AppError('Invalid page number', 400);
@@ -105,9 +102,7 @@ const ContestController = {
         $unwind: '$author',
       },
       ...matchPipeline,
-      // @ts-ignore
       getSortPipeline(search, sortBy),
-      // @ts-ignore
       ...getPaginationPipelines(page, perPage),
       {
         $project: {
@@ -128,7 +123,7 @@ const ContestController = {
       currentPage: page,
     });
   },
-  async find(req: Request, res: Response): Promise<void> {
+  async find(req, res) {
     const {
       params: { id },
     } = req;
@@ -136,7 +131,7 @@ const ContestController = {
     if (!contest) throw new AppError('Resource not found!', 404);
     res.status(200).json(contest);
   },
-  async getItems(req: Request, res: Response): Promise<void> {
+  async getItems(req, res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -155,13 +150,11 @@ const ContestController = {
     if (!contest) throw new AppError('Resource not found!', 404);
 
     const count = await ContestItem.countDocuments({ contestId: id });
-    // @ts-ignore
     const totalPages = Math.ceil(count / perPage);
     if (page > totalPages) {
       throw new AppError('Invalid page number', 400);
     }
     const items = await ContestItem.aggregate([
-      // @ts-ignore
       ...getSearchPipelines(search), // should be a first stage
       { $match: { contestId: id } },
       {
@@ -196,9 +189,7 @@ const ContestController = {
           },
         },
       },
-      // @ts-ignore
       getItemsSortPipeline(search),
-      // @ts-ignore
       ...getPaginationPipelines(page, perPage),
     ]).exec();
     res.status(200).json({
@@ -207,7 +198,7 @@ const ContestController = {
       currentPage: page,
     });
   },
-  async create(req: Request, res: Response): Promise<void> {
+  async create(req, res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -235,9 +226,9 @@ const ContestController = {
       excerpt,
       author: userId,
     });
-    contest.save();
+    await contest.save();
     const savingItems = items.map(
-      async (item: object, i: number): Promise<void> => {
+      async (item, i: number): Promise<void> => {
         const contestItemId = Mongoose.Types.ObjectId();
         // @ts-ignore
         const image = files.find(fieldNameFilter(`items[${i}][image]`));
@@ -256,7 +247,7 @@ const ContestController = {
     await Promise.all(savingItems);
     res.status(201).json({ message: 'Contest successfully created!' });
   },
-  async update(req: Request, res: Response): Promise<void> {
+  async update(req, res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -274,11 +265,7 @@ const ContestController = {
 
     if (!contest) throw new AppError('Contest not found', 404);
 
-    const data: {
-      title?: string;
-      excerpt?: string;
-      thumbnail?: string;
-    } = {};
+    const data: Partial<IContest> = {};
     if (title) data.title = title;
     if (excerpt) data.excerpt = excerpt;
     if (files?.length) {
@@ -300,7 +287,7 @@ const ContestController = {
     await Contest.updateOne({ _id: contestId }, data);
     res.status(200).json({ message: 'Contest successfully updated!' });
   },
-  async remove(req: Request, res: Response): Promise<void> {
+  async remove(req, res) {
     const {
       params: { id },
     } = req;

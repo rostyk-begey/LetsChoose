@@ -1,40 +1,17 @@
-import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import config from 'config';
 import md5 from 'md5';
 
-import User from '../models/User';
-import Contest from '../models/Contest';
-import ContestItem from '../models/ContestItem';
-import emailTransporter from '../usecases/emailTransporter';
-import renderConfirmationEmail from '../usecases/renderConfirmationEmail';
-import renderResetPasswordEmail from '../usecases/renderResetPasswordEmail';
-import { AppError } from '../usecases/error';
-
-type UserFindParams = { username: string };
-
-type ConfirmEmailParams = { token: string };
-
-interface FindRequest extends Request {
-  userId: any;
-  params: UserFindParams;
-}
-
-interface ConfirmEmailRequest extends Request {
-  params: ConfirmEmailParams;
-}
-
-interface RemoveRequest extends Request {
-  params: UserFindParams;
-}
-
-type LoginResponseBody = {
-  userId: any;
-  accessToken: string;
-  refreshToken?: string;
-};
+import User from '../../models/User';
+import Contest from '../../models/Contest';
+import ContestItem from '../../models/ContestItem';
+import emailTransporter from '../../usecases/emailTransporter';
+import renderConfirmationEmail from '../../usecases/renderConfirmationEmail';
+import renderResetPasswordEmail from '../../usecases/renderResetPasswordEmail';
+import { AppError } from '../../usecases/error';
+import { IUserController, LoginResponseBody } from './types';
 
 const generateTokens = ({
   _id,
@@ -56,8 +33,8 @@ const generateTokens = ({
   return { accessToken, refreshToken };
 };
 
-const UserController = {
-  async login(req: Request, res: Response): Promise<void> {
+const UserController: IUserController = {
+  async login(req, res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -96,7 +73,7 @@ const UserController = {
 
     res.status(200).json(responseBody);
   },
-  async register(req: Request, res: Response): Promise<void> {
+  async register(req, res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -134,7 +111,7 @@ const UserController = {
 
     res.status(201).json({ message: 'User successfully created!' });
   },
-  async forgotPassword(req: Request, res: Response): Promise<void> {
+  async forgotPassword(req, res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -167,7 +144,7 @@ const UserController = {
       .status(201)
       .json({ message: `Reset password link has been sent to ${email}!` });
   },
-  async resetPassword(req: Request, res: Response): Promise<void> {
+  async resetPassword(req, res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -201,7 +178,7 @@ const UserController = {
 
     res.status(201).json({ message: 'Password was successfully changed!' });
   },
-  async refreshToken(req: Request, res: Response): Promise<void> {
+  async refreshToken(req, res) {
     let token;
     let userId;
 
@@ -241,7 +218,7 @@ const UserController = {
 
     res.status(200).json(responseBody);
   },
-  async find(req: FindRequest, res: Response): Promise<void> {
+  async find(req, res) {
     const {
       userId,
       params: { username },
@@ -255,7 +232,7 @@ const UserController = {
     if (!user) throw new AppError('Resource not found!', 404);
     res.status(200).json(user);
   },
-  async confirmEmail(req: ConfirmEmailRequest, res: Response): Promise<void> {
+  async confirmEmail(req, res) {
     const {
       params: { token },
     } = req;
@@ -270,7 +247,7 @@ const UserController = {
     res.status(200).json({ message: 'Email was successfully verified!' });
   },
   // todo: validate permissions
-  async remove(req: RemoveRequest, res: Response): Promise<void> {
+  async remove(req, res) {
     const {
       params: { username },
     } = req;

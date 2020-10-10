@@ -1,6 +1,7 @@
 import { Router } from 'express';
+
 import { catchAsync } from '../usecases/error';
-import GameController from '../controllers/GameController';
+import GameController from '../controllers/game/GameController';
 
 const router = Router();
 

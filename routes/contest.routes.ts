@@ -6,7 +6,7 @@ import multer, { FileFilterCallback } from 'multer';
 import auth from '../middleware/auth.middleware';
 import isAuthor from '../middleware/isAuthor.middleware';
 import { catchAsync } from '../usecases/error';
-import ContestController from '../controllers/ContestController';
+import ContestController from '../controllers/contest/ContestController';
 import {
   getContestSchema,
   getContestItemsSchema,

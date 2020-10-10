@@ -1,10 +1,10 @@
-import { Request, Response } from 'express';
 import { shuffle } from 'lodash';
 
-import Game, { IGameItem } from '../models/Game';
-import Contest from '../models/Contest';
-import ContestItem, { IContestItem } from '../models/ContestItem';
-import { AppError } from '../usecases/error';
+import Game, { IGameItem } from '../../models/Game';
+import Contest from '../../models/Contest';
+import ContestItem, { IContestItem } from '../../models/ContestItem';
+import { AppError } from '../../usecases/error';
+import { IGameController } from './types';
 
 const getCurrentRoundItems = (gameItems: IGameItem[], round: number) =>
   gameItems.filter(
@@ -19,8 +19,8 @@ const generatePair = (items: IGameItem[]) =>
 const populatePair = (pair: string[]): Promise<(IContestItem | null)[]> =>
   Promise.all(pair.map((id) => ContestItem.findById(id)));
 
-const GameController = {
-  async start(req: Request, res: Response): Promise<void> {
+const GameController: IGameController = {
+  async start(req, res) {
     const {
       params: { contestId },
     } = req;
@@ -63,11 +63,11 @@ const GameController = {
       message: 'Game was successfully created',
     });
   },
-  async getPair(req: Request, res: Response): Promise<void> {
+  async getPair(req, res) {
     const {
-      params: { id },
+      params: { gameId },
     } = req;
-    const game = await Game.findById(id);
+    const game = await Game.findById(gameId);
 
     if (!game) throw new AppError('Game not found!', 404);
 
@@ -81,7 +81,7 @@ const GameController = {
       pair,
     });
   },
-  async choose(req: Request, res: Response): Promise<void> {
+  async choose(req, res) {
     const {
       params: { id },
       body: { winnerId },

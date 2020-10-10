@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 
 export class AppError extends Error {
   public statusCode: number;
@@ -42,8 +42,10 @@ export const handleError = (err: AppError, res: Response): void => {
   res.status(err.statusCode).json(response);
 };
 
-type func = (req: any, res: Response, next: NextFunction) => any;
+interface func<T, R> {
+  (req: T, res: Response, next: NextFunction): R;
+}
 
-export const catchAsync = (fn: func): func => (req, res, next) => {
+export const catchAsync = (fn: func<any, Promise<void>>): func<any, void> => (req, res, next) => {
   fn(req, res, next).catch(next);
 };

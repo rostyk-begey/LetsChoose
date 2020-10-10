@@ -1,7 +1,8 @@
 import { Router, Request, Response, NextFunction } from 'express';
+
 import auth from '../middleware/auth.middleware';
 import { catchAsync } from '../usecases/error';
-import UserController from '../controllers/UserController';
+import UserController from '../controllers/user/UserController';
 
 const router = Router();
 

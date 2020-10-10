@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 
-import UserController from '../controllers/UserController';
+import UserController from '../controllers/user/UserController';
 import auth from '../middleware/auth.middleware';
 import { catchAsync } from '../usecases/error';
 import {

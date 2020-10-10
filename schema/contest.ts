@@ -1,11 +1,8 @@
 import { checkSchema } from 'express-validator';
 import { isArray } from 'lodash';
 import Mongoose from 'mongoose';
+import { SORT_OPTIONS } from '../controllers/contest/types';
 
-const SORT_OPTIONS = {
-  POPULAR: 'games',
-  NEWEST: '_id',
-};
 export const getContestSchema = checkSchema({
   page: {
     in: 'query',
@@ -32,8 +29,7 @@ export const getContestSchema = checkSchema({
   sortBy: {
     in: 'query',
     customSanitizer: {
-      // @ts-ignore
-      options: (value: string) => SORT_OPTIONS[value] || SORT_OPTIONS.NEWEST,
+      options: (value: keyof typeof SORT_OPTIONS): SORT_OPTIONS => SORT_OPTIONS[value] || SORT_OPTIONS.NEWEST,
     },
   },
 });
