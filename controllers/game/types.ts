@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { IContestItem } from '../../models/ContestItem';
+import { ContestItem } from '../../models/ContestItem';
 
 interface StartParams {
   contestId: string;
@@ -16,7 +16,7 @@ interface GetPairResponse {
   totalRounds: number,
   contestId: string,
   finished: boolean,
-  pair: (IContestItem | null)[],
+  pair: (ContestItem | null)[],
 }
 
 interface StartResponse {

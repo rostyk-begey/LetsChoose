@@ -2,7 +2,7 @@ import Mongoose from 'mongoose';
 import cloudinary from 'cloudinary';
 import { validationResult } from 'express-validator';
 
-import Contest, { IContest } from '../../models/Contest';
+import ContestModel, { Contest } from '../../models/Contest';
 import ContestItem from '../../models/ContestItem';
 import { AppError } from '../../usecases/error';
 import { IContestController, ISortOptions, SORT_OPTIONS } from './types';
@@ -79,7 +79,7 @@ const ContestController: IContestController = {
     const {
       query: { page = 1, perPage = 10, search = '', author = '', sortBy = '' },
     } = req;
-    const count = await Contest.countDocuments();
+    const count = await ContestModel.countDocuments();
     const totalPages = Math.ceil(count / perPage);
     if (page > totalPages) {
       throw new AppError('Invalid page number', 400);
@@ -87,7 +87,7 @@ const ContestController: IContestController = {
     const matchPipeline = author
       ? [{ $match: { 'author.username': author } }]
       : [];
-    const contests = await Contest.aggregate([
+    const contests = await ContestModel.aggregate([
       // @ts-ignore
       ...getSearchPipelines(search), // should be a first stage
       {
@@ -127,7 +127,7 @@ const ContestController: IContestController = {
     const {
       params: { id },
     } = req;
-    const contest = await Contest.findById(id);
+    const contest = await ContestModel.findById(id);
     if (!contest) throw new AppError('Resource not found!', 404);
     res.status(200).json(contest);
   },
@@ -146,7 +146,7 @@ const ContestController: IContestController = {
       query: { page = 1, perPage = 10, search = '' },
     } = req;
 
-    const contest = await Contest.findById(id);
+    const contest = await ContestModel.findById(id);
     if (!contest) throw new AppError('Resource not found!', 404);
 
     const count = await ContestItem.countDocuments({ contestId: id });
@@ -219,7 +219,7 @@ const ContestController: IContestController = {
     const { secure_url } = await cloudinary.v2.uploader.upload(thumbnail.path, {
       public_id: `contests/${contestId}/thumbnail`,
     });
-    const contest = new Contest({
+    const contest = new ContestModel({
       _id: contestId,
       thumbnail: secure_url,
       title,
@@ -261,11 +261,11 @@ const ContestController: IContestController = {
       params: { id: contestId },
       body: { title, excerpt },
     } = req;
-    const contest = await Contest.findById(contestId);
+    const contest = await ContestModel.findById(contestId);
 
     if (!contest) throw new AppError('Contest not found', 404);
 
-    const data: Partial<IContest> = {};
+    const data: Partial<Contest> = {};
     if (title) data.title = title;
     if (excerpt) data.excerpt = excerpt;
     if (files?.length) {
@@ -284,14 +284,14 @@ const ContestController: IContestController = {
       );
       data.thumbnail = secure_url;
     }
-    await Contest.updateOne({ _id: contestId }, data);
+    await ContestModel.updateOne({ _id: contestId }, data);
     res.status(200).json({ message: 'Contest successfully updated!' });
   },
   async remove(req, res) {
     const {
       params: { id },
     } = req;
-    await Contest.deleteOne({ _id: id });
+    await ContestModel.deleteOne({ _id: id });
     await ContestItem.deleteMany({ contestId: id }); // todo: delete images
     res.status(200).json({ message: 'Contest successfully deleted!' });
   },

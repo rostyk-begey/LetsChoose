@@ -1,26 +1,26 @@
-import { Schema, model, Document } from 'mongoose';
+import { prop, getModelForClass } from '@typegoose/typegoose';
 
-const schema = new Schema(
-  {
-    email: { type: String, required: true, unique: true },
-    avatar: { type: String, required: true, default: '' },
-    bio: { type: String, default: '', maxlength: 150 },
-    confirmed: { type: Boolean, required: true, default: false },
-    username: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    passwordVersion: { type: Number, default: 0 },
-  },
-  { timestamps: true },
-);
+export class User {
+  @prop({ type: String, required: true, unique: true })
+  email!: string;
 
-export interface IUser extends Document {
-  email: string;
-  avatar: string;
-  bio: string;
-  confirmed: boolean;
-  username: string;
-  password: string;
-  passwordVersion: number;
+  @prop({ type: String, required: true, default: '' })
+  avatar!: string;
+
+  @prop({ type: String, default: '', maxlength: 150 })
+  bio?: string;
+
+  @prop({ type: Boolean, required: true, default: false })
+  confirmed!: boolean;
+
+  @prop({ type: String, required: true, unique: true })
+  username!: string;
+
+  @prop({ type: String, required: true })
+  password!: string;
+
+  @prop({ type: Number, default: 0 })
+  passwordVersion!: number;
 }
 
-export default model<IUser>('User', schema);
+export default getModelForClass(User);

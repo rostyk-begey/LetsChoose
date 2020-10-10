@@ -1,39 +1,38 @@
-import { Schema, model, Document } from 'mongoose';
-import { IUser } from './User';
+import { Schema } from 'mongoose';
+import { prop, getModelForClass } from '@typegoose/typegoose';
 
-const schema = new Schema(
-  {
-    contestId: { type: Schema.Types.ObjectId, ref: 'Contest', required: true },
-    winnerId: { type: Schema.Types.ObjectId, ref: 'ContestItem' },
-    items: [
-      {
-        itemId: { type: Schema.Types.ObjectId, ref: 'ContestItem' },
-        wins: { type: Number, required: true },
-        compares: { type: Number, required: true },
-      },
-    ],
-    pair: [{ type: Schema.Types.ObjectId, ref: 'ContestItem' }],
-    round: { type: Number, required: true },
-    finished: { type: Boolean, required: true, default: false },
-    totalRounds: { type: Number, required: true },
-  },
-  { timestamps: true },
-);
+export class GameItem {
+  @prop({ type: Schema.Types.ObjectId, ref: 'ContestItem' })
+  itemId!: any;
 
-export interface IGameItem {
-  itemId: any;
-  wins: number;
-  compares: number;
+  @prop({ type: Number, required: true })
+  wins!: number;
+
+  @prop({ type: Number, required: true })
+  compares!: number;
 }
 
-export interface IGame extends Document {
-  contestId: string;
-  winnerId: string;
-  items: IGameItem[];
-  pair: string[];
-  round: number;
-  finished: boolean;
-  totalRounds: number;
+export class Game {
+  @prop({ type: Schema.Types.ObjectId, ref: 'Contest', required: true })
+  contestId!: string;
+
+  @prop({ type: Schema.Types.ObjectId, ref: 'ContestItem' })
+  winnerId?: string;
+
+  @prop({ type: () => [GameItem] })
+  items!: GameItem[];
+
+  @prop({ type: Schema.Types.ObjectId, ref: 'ContestItem' })
+  pair!: string[];
+
+  @prop({ type: Number, required: true })
+  round!: number;
+
+  @prop({ type: Boolean, required: true, default: false })
+  finished!: boolean;
+
+  @prop({ type: Number, required: true })
+  totalRounds!: number;
 }
 
-export default model<IGame>('Game', schema);
+export default getModelForClass(Game);

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ResponseMessage } from '../../types';
-import { IUser } from '../../models/User';
+import { User } from '../../models/User';
 
 type UserFindParams = { username: string };
 
@@ -26,7 +26,7 @@ export interface IUserController {
   forgotPassword(req: Request, res: Response<ResponseMessage>): Promise<void>;
   resetPassword(req: Request, res: Response<ResponseMessage>): Promise<void>;
   refreshToken(req: Request, res: Response<LoginResponseBody>): Promise<void>;
-  find(req: FindRequest, res: Response<IUser>): Promise<void>;
+  find(req: FindRequest, res: Response<User>): Promise<void>;
   confirmEmail(req: Request<ConfirmEmailParams>, res: Response<ResponseMessage>): Promise<void>;
   remove(req: Request<UserFindParams>, res: Response<ResponseMessage>): Promise<void>;
 }

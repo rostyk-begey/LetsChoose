@@ -21,6 +21,7 @@
   "author": "Rostyslav Begey <rostyk.begey@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@typegoose/typegoose": "^7.4.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.22.0",
     "config": "^3.3.1",

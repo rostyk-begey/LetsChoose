@@ -1,27 +1,27 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema } from 'mongoose';
+import { prop, getModelForClass } from '@typegoose/typegoose';
 
-import { IUser } from './User';
+import { User } from './User';
+import { ContestItem } from './ContestItem';
 
-const schema = new Schema(
-  {
-    thumbnail: { type: String, required: true },
-    title: { type: String, required: true },
-    excerpt: { type: String, required: true },
-    author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    games: { type: Number, default: 0 },
-    // tags: [{ type: String }],
-    items: [{ type: Schema.Types.ObjectId, ref: 'ContestItem' }],
-  },
-  { timestamps: true },
-);
+export class Contest {
+  @prop({ type: String, required: true })
+  thumbnail!: string;
 
-export interface IContest extends Document {
-  thumbnail: string;
-  title: string;
-  excerpt: string;
-  author: string | IUser;
-  games: number;
-  items: any[];
+  @prop({ type: String, required: true })
+  title!: string;
+
+  @prop({ type: String, required: true })
+  excerpt!: string;
+
+  @prop({ type: Schema.Types.ObjectId, ref: 'User', required: true })
+  author!: string | Partial<User>;
+
+  @prop({ type: Number, default: 0 })
+  games!: number;
+
+  @prop({ type: Schema.Types.ObjectId, ref: 'ContestItem' })
+  items!: ContestItem[];
 }
 
-export default model<IContest>('Contest', schema);
+export default getModelForClass(Contest);

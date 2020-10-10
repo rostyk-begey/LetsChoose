@@ -1,23 +1,23 @@
 import { shuffle } from 'lodash';
 
-import Game, { IGameItem } from '../../models/Game';
+import Game, { GameItem } from '../../models/Game';
 import Contest from '../../models/Contest';
-import ContestItem, { IContestItem } from '../../models/ContestItem';
+import ContestItemModel, { ContestItem } from '../../models/ContestItem';
 import { AppError } from '../../usecases/error';
 import { IGameController } from './types';
 
-const getCurrentRoundItems = (gameItems: IGameItem[], round: number) =>
+const getCurrentRoundItems = (gameItems: GameItem[], round: number) =>
   gameItems.filter(
     ({ compares, wins }) => round === compares && round === wins,
   );
 
-const generatePair = (items: IGameItem[]) =>
+const generatePair = (items: GameItem[]) =>
   shuffle(items)
     .slice(0, 2)
     .map(({ itemId }) => itemId);
 
-const populatePair = (pair: string[]): Promise<(IContestItem | null)[]> =>
-  Promise.all(pair.map((id) => ContestItem.findById(id)));
+const populatePair = (pair: string[]): Promise<(ContestItem | null)[]> =>
+  Promise.all(pair.map((id) => ContestItemModel.findById(id)));
 
 const GameController: IGameController = {
   async start(req, res) {
@@ -28,14 +28,14 @@ const GameController: IGameController = {
 
     if (!contest) throw new AppError('Contest not found', 404);
 
-    const items = await ContestItem.find({ contestId });
+    const items = await ContestItemModel.find({ contestId });
 
     const selectedItemsLength =
       items.length > 2 ? Math.floor(Math.log2(items.length)) ** 2 : 2;
 
     const totalRounds = items.length > 2 ? Math.sqrt(selectedItemsLength) : 1;
 
-    const gameItems: IGameItem[] = shuffle(items)
+    const gameItems: GameItem[] = shuffle(items)
       .slice(0, selectedItemsLength)
       .map(({ _id }) => ({
         itemId: _id,
@@ -128,7 +128,7 @@ const GameController: IGameController = {
 
       await Promise.all(
         game.items.map(async ({ itemId, compares, wins }) => {
-          const contestItem = await ContestItem.findById(itemId);
+          const contestItem = await ContestItemModel.findById(itemId);
           contestItem!.compares += compares;
           contestItem!.wins += wins;
           contestItem!.games += 1;
