@@ -1,10 +1,15 @@
-import { Schema } from 'mongoose';
-import { prop, getModelForClass } from '@typegoose/typegoose';
+import { Schema, Types } from 'mongoose';
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose';
+import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 
 import { User } from './User';
 import { ContestItem } from './ContestItem';
 
-export class Contest {
+interface IContest extends Base<string> {}
+export class Contest extends TimeStamps implements IContest {
+  @prop({ type: Types.ObjectId })
+  _id!: string;
+
   @prop({ type: String, required: true })
   thumbnail!: string;
 
@@ -24,4 +29,9 @@ export class Contest {
   items!: ContestItem[];
 }
 
-export default getModelForClass(Contest);
+export default getModelForClass(Contest, {
+  schemaOptions: {
+    id: true,
+    timestamps: true,
+  }
+});

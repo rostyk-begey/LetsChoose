@@ -2,16 +2,15 @@ import { Request, Response } from 'express';
 
 import { ContestItem } from '../../models/ContestItem';
 
-interface StartParams {
+export interface StartParams {
   contestId: string;
 }
 
-interface GetPairParams {
+export interface GetPairParams {
   gameId: string;
 }
 
-
-interface GetPairResponse {
+export interface GetPairResponse {
   round: number,
   totalRounds: number,
   contestId: string,
@@ -19,7 +18,7 @@ interface GetPairResponse {
   pair: (ContestItem | null)[],
 }
 
-interface StartResponse {
+export interface StartResponse {
   contestId: string;
   gameId: string;
   message: string;

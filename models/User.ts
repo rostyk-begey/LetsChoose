@@ -1,6 +1,9 @@
-import { prop, getModelForClass } from '@typegoose/typegoose';
+import { prop, getModelForClass, mongoose } from '@typegoose/typegoose';
 
 export class User {
+  @prop({ type: mongoose.Types.ObjectId })
+  _id!: string;
+
   @prop({ type: String, required: true, unique: true })
   email!: string;
 

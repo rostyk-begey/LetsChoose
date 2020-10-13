@@ -1,7 +1,10 @@
 import { Schema } from 'mongoose';
-import { prop, getModelForClass } from '@typegoose/typegoose';
+import { prop, getModelForClass, mongoose } from '@typegoose/typegoose';
 
 export class ContestItem {
+  @prop({ type: mongoose.Types.ObjectId })
+  _id!: string;
+
   @prop({ type: String, required: true })
   image!: string;
 
