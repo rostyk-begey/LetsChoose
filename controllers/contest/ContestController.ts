@@ -2,8 +2,8 @@ import Mongoose from 'mongoose';
 import cloudinary from 'cloudinary';
 import { validationResult } from 'express-validator';
 
-import ContestModel, { Contest } from '../../models/Contest';
-import ContestItem from '../../models/ContestItem';
+import { ContestModel, Contest } from '../../models/Contest';
+import { ContestItemModel } from '../../models/ContestItem';
 import { AppError } from '../../usecases/error';
 import { IContestController, ISortOptions, SORT_OPTIONS } from './types';
 
@@ -43,7 +43,10 @@ const getSearchPipelines = (search = '') => {
 const getCloudinaryImagePublicId = (url: string) =>
   url.split('/').slice(-1)[0].split('.')[0];
 
-const getSortPipeline = (search: string, sortBy: "" | keyof typeof SORT_OPTIONS): { $sort: ISortOptions } => {
+const getSortPipeline = (
+  search: string,
+  sortBy: '' | keyof typeof SORT_OPTIONS,
+): { $sort: ISortOptions } => {
   const sortOptions: ISortOptions = search ? { score: -1 } : {};
   if (sortBy) {
     sortOptions[sortBy] = -1;
@@ -62,8 +65,11 @@ const getItemsSortPipeline = (search: string) => {
   return { $sort: sortOptions };
 };
 
-const fieldNameFilter = (key: string) => ({ fieldname }: { fieldname: string }): boolean =>
-  fieldname === key;
+const fieldNameFilter = (key: string) => ({
+  fieldname,
+}: {
+  fieldname: string;
+}): boolean => fieldname === key;
 
 const ContestController: IContestController = {
   async get(req, res) {
@@ -149,12 +155,12 @@ const ContestController: IContestController = {
     const contest = await ContestModel.findById(id);
     if (!contest) throw new AppError('Resource not found!', 404);
 
-    const count = await ContestItem.countDocuments({ contestId: id });
+    const count = await ContestItemModel.countDocuments({ contestId: id });
     const totalPages = Math.ceil(count / perPage);
     if (page > totalPages) {
       throw new AppError('Invalid page number', 400);
     }
-    const items = await ContestItem.aggregate([
+    const items = await ContestItemModel.aggregate([
       ...getSearchPipelines(search), // should be a first stage
       { $match: { contestId: id } },
       {
@@ -235,7 +241,7 @@ const ContestController: IContestController = {
         const { secure_url } = await cloudinary.v2.uploader.upload(image.path, {
           public_id: `contests/${contestId}/items/${contestItemId}`,
         });
-        const contestItem = new ContestItem({
+        const contestItem = new ContestItemModel({
           ...item,
           image: secure_url,
           _id: contestItemId,
@@ -292,7 +298,7 @@ const ContestController: IContestController = {
       params: { id },
     } = req;
     await ContestModel.deleteOne({ _id: id });
-    await ContestItem.deleteMany({ contestId: id }); // todo: delete images
+    await ContestItemModel.deleteMany({ contestId: id }); // todo: delete images
     res.status(200).json({ message: 'Contest successfully deleted!' });
   },
 };

@@ -1,8 +1,8 @@
 import { shuffle } from 'lodash';
 
-import Game, { GameItem } from '../../models/Game';
-import Contest from '../../models/Contest';
-import ContestItemModel, { ContestItem } from '../../models/ContestItem';
+import { GameModel, GameItem } from '../../models/Game';
+import { ContestModel } from '../../models/Contest';
+import { ContestItemModel, ContestItem } from '../../models/ContestItem';
 import { AppError } from '../../usecases/error';
 import { IGameController } from './types';
 
@@ -24,7 +24,7 @@ const GameController: IGameController = {
     const {
       params: { contestId },
     } = req;
-    const contest = Contest.findById(contestId);
+    const contest = ContestModel.findById(contestId);
 
     if (!contest) throw new AppError('Contest not found', 404);
 
@@ -47,7 +47,7 @@ const GameController: IGameController = {
 
     const pair = generatePair(gameItems);
 
-    const game = new Game({
+    const game = new GameModel({
       contestId,
       items: gameItems,
       finished: false,
@@ -67,7 +67,7 @@ const GameController: IGameController = {
     const {
       params: { gameId },
     } = req;
-    const game = await Game.findById(gameId);
+    const game = await GameModel.findById(gameId);
 
     if (!game) throw new AppError('Game not found!', 404);
 
@@ -86,7 +86,7 @@ const GameController: IGameController = {
       params: { id },
       body: { winnerId },
     } = req;
-    const game = await Game.findById(id);
+    const game = await GameModel.findById(id);
 
     if (!game) throw new AppError('Game not found!', 404);
 
@@ -97,20 +97,22 @@ const GameController: IGameController = {
 
     // write results for participants
     game.items = game.items.map((item) => {
-      const { itemId: id } = item;
+      if (item instanceof GameItem) {
+        const { itemId: id } = item;
 
-      if (game.pair.includes(`${id}`)) item.compares += 1; // increment compares
-      if (winnerId === `${id}`) item.wins += 1; // increment wins
+        if (game.pair.includes(`${id}`)) item.compares += 1; // increment compares
+        if (winnerId === `${id}`) item.wins += 1; // increment wins
+      }
 
       return item;
     });
 
-    let roundItems = getCurrentRoundItems(game.items, game.round);
+    let roundItems = getCurrentRoundItems(game.items as GameItem[], game.round);
 
     // no items left on this round, go to next round
     if (roundItems.length === 0) {
       game.round += 1;
-      roundItems = getCurrentRoundItems(game.items, game.round);
+      roundItems = getCurrentRoundItems(game.items as GameItem[], game.round);
     }
 
     // game has finished
@@ -122,18 +124,21 @@ const GameController: IGameController = {
       game.finished = true;
       game.winnerId = winnerId;
 
-      const contest = await Contest.findById(game.contestId);
+      const contest = await ContestModel.findById(game.contestId);
       contest!.games += 1;
       await contest!.save();
 
       await Promise.all(
-        game.items.map(async ({ itemId, compares, wins }) => {
-          const contestItem = await ContestItemModel.findById(itemId);
-          contestItem!.compares += compares;
-          contestItem!.wins += wins;
-          contestItem!.games += 1;
-          if (winnerId === `${itemId}`) contestItem!.finalWins += 1;
-          await contestItem!.save();
+        game.items.map(async (gameItem) => {
+          if (gameItem instanceof GameItem) {
+            const { itemId, compares, wins } = gameItem;
+            const contestItem = await ContestItemModel.findById(itemId);
+            contestItem!.compares += compares;
+            contestItem!.wins += wins;
+            contestItem!.games += 1;
+            if (winnerId === `${itemId}`) contestItem!.finalWins += 1;
+            await contestItem!.save();
+          }
         }),
       );
     }

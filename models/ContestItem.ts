@@ -27,4 +27,4 @@ export class ContestItem {
   contestId!: string;
 }
 
-export default getModelForClass(ContestItem);
+export const ContestItemModel = getModelForClass(ContestItem);

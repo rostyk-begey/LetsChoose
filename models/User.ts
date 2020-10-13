@@ -1,6 +1,8 @@
 import { prop, getModelForClass, mongoose } from '@typegoose/typegoose';
+import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 
-export class User {
+type IContest = Base<string>;
+export class User extends TimeStamps implements IContest {
   @prop({ type: mongoose.Types.ObjectId })
   _id!: string;
 
@@ -26,4 +28,9 @@ export class User {
   passwordVersion!: number;
 }
 
-export default getModelForClass(User);
+export const UserModel = getModelForClass(User, {
+  schemaOptions: {
+    id: true,
+    timestamps: true,
+  },
+});

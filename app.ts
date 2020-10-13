@@ -1,5 +1,5 @@
-require('dotenv').config();
-import express, { Request, Response } from 'express';
+import dotenv from 'dotenv';
+import express, { ErrorRequestHandler, Request, Response } from 'express';
 import config from 'config';
 import mongoose from 'mongoose';
 import cloudinary from 'cloudinary';
@@ -11,6 +11,8 @@ import authRoutes from './routes/auth.routes';
 import contestRoutes from './routes/contest.routes';
 import userRoutes from './routes/user.routes';
 import gameRoutes from './routes/game.routes';
+
+dotenv.config();
 
 mongoose.set('debug', config.get('mongooseDebug'));
 
@@ -31,12 +33,13 @@ app.disable('etag');
 if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static(path.join(__dirname, 'client', 'dist')));
 
-  app.get('*', (req: Request, res: { sendFile: (arg0: any) => void }): void => {
+  app.get('*', (req: Request, res: Response): void => {
     res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
   });
 }
 
-app.use((err: any, req: Request, res: Response) => handleError(err, res));
+app.use(((err: any, req: Request, res: Response) =>
+  handleError(err, res)) as ErrorRequestHandler);
 
 (async (): Promise<void> => {
   try {

@@ -1,6 +1,7 @@
 import { checkSchema } from 'express-validator';
 import { isArray } from 'lodash';
 import Mongoose from 'mongoose';
+
 import { SORT_OPTIONS } from '../controllers/contest/types';
 
 export const getContestSchema = checkSchema({
@@ -29,7 +30,8 @@ export const getContestSchema = checkSchema({
   sortBy: {
     in: 'query',
     customSanitizer: {
-      options: (value: keyof typeof SORT_OPTIONS): SORT_OPTIONS => SORT_OPTIONS[value] || SORT_OPTIONS.NEWEST,
+      options: (value: keyof typeof SORT_OPTIONS): SORT_OPTIONS =>
+        SORT_OPTIONS[value] || SORT_OPTIONS.NEWEST,
     },
   },
 });

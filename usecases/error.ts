@@ -4,7 +4,7 @@ export class AppError extends Error {
   public statusCode: number;
   public status: string;
   public isOperational: boolean;
-  public data: object;
+  public data: any;
 
   constructor(message: string, statusCode: number, data = {}) {
     super(message);
@@ -42,10 +42,14 @@ export const handleError = (err: AppError, res: Response): void => {
   res.status(err.statusCode).json(response);
 };
 
-interface func<T, R> {
-  (req: T, res: Response, next: NextFunction): R;
+interface RequestHandler {
+  (req: any, res: Response, next: NextFunction): any;
 }
 
-export const catchAsync = (fn: func<any, Promise<void>>): func<any, void> => (req, res, next) => {
+export const catchAsync = (fn: RequestHandler): RequestHandler => (
+  req,
+  res,
+  next,
+) => {
   fn(req, res, next).catch(next);
 };

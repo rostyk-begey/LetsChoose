@@ -2,7 +2,7 @@ import { checkSchema } from 'express-validator';
 import validator from 'validator';
 
 import { AppError } from '../usecases/error';
-import User from '../models/User';
+import { UserModel } from '../models/User';
 
 export const forgotPasswordSchema = checkSchema({
   email: {
@@ -12,7 +12,7 @@ export const forgotPasswordSchema = checkSchema({
     },
     custom: {
       options: async (email) => {
-        const user = await User.findOne({ email });
+        const user = await UserModel.findOne({ email });
 
         if (!user) {
           throw new AppError('User not exists!', 404);
@@ -48,7 +48,7 @@ export const registerSchema = checkSchema({
     },
     custom: {
       options: async (email) => {
-        const candidate = await User.findOne({ email });
+        const candidate = await UserModel.findOne({ email });
 
         if (candidate) {
           throw new AppError(`User with email ${email} already exists!`, 400);
@@ -67,7 +67,7 @@ export const registerSchema = checkSchema({
     matches: /^[a-z._0-9]+$/,
     custom: {
       options: async (username): Promise<boolean> => {
-        const candidate = await User.findOne({ username });
+        const candidate = await UserModel.findOne({ username });
 
         if (candidate) {
           throw new AppError('Username already taken!', 400);

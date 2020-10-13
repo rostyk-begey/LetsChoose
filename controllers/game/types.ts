@@ -11,11 +11,11 @@ export interface GetPairParams {
 }
 
 export interface GetPairResponse {
-  round: number,
-  totalRounds: number,
-  contestId: string,
-  finished: boolean,
-  pair: (ContestItem | null)[],
+  round: number;
+  totalRounds: number;
+  contestId: string;
+  finished: boolean;
+  pair: (ContestItem | null)[];
 }
 
 export interface StartResponse {
@@ -26,6 +26,9 @@ export interface StartResponse {
 
 export interface IGameController {
   start(req: Request<StartParams>, res: Response<StartResponse>): Promise<void>;
-  getPair(req: Request<GetPairParams>, res: Response<GetPairResponse>): Promise<void>;
+  getPair(
+    req: Request<GetPairParams>,
+    res: Response<GetPairResponse>,
+  ): Promise<void>;
   choose(req: Request, res: Response<GetPairResponse>): Promise<void>;
 }

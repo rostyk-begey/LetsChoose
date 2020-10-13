@@ -5,7 +5,7 @@ import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { User } from './User';
 import { ContestItem } from './ContestItem';
 
-interface IContest extends Base<string> {}
+type IContest = Base<string>;
 export class Contest extends TimeStamps implements IContest {
   @prop({ type: Types.ObjectId })
   _id!: string;
@@ -20,18 +20,18 @@ export class Contest extends TimeStamps implements IContest {
   excerpt!: string;
 
   @prop({ type: Schema.Types.ObjectId, ref: 'User', required: true })
-  author!: string | Partial<User>;
+  author!: Ref<User>;
 
   @prop({ type: Number, default: 0 })
   games!: number;
 
   @prop({ type: Schema.Types.ObjectId, ref: 'ContestItem' })
-  items!: ContestItem[];
+  items!: Ref<ContestItem>[];
 }
 
-export default getModelForClass(Contest, {
+export const ContestModel = getModelForClass(Contest, {
   schemaOptions: {
     id: true,
     timestamps: true,
-  }
+  },
 });

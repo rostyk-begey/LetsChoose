@@ -38,4 +38,4 @@ export class Game {
   totalRounds!: number;
 }
 
-export default getModelForClass(Game);
+export const GameModel = getModelForClass(Game);
