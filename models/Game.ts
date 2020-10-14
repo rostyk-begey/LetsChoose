@@ -1,5 +1,6 @@
 import { Schema } from 'mongoose';
 import { prop, getModelForClass, Ref, mongoose } from '@typegoose/typegoose';
+import { ContestItem } from './ContestItem';
 
 export class GameItem {
   @prop({ type: Schema.Types.ObjectId, ref: 'ContestItem' })
@@ -25,8 +26,8 @@ export class Game {
   @prop({ type: () => [GameItem] })
   items!: Ref<GameItem>[];
 
-  @prop({ type: Schema.Types.ObjectId, ref: 'ContestItem' })
-  pair!: string[];
+  @prop({ type: () => [ContestItem], ref: 'ContestItem' })
+  pair!: Ref<ContestItem>[];
 
   @prop({ type: Number, required: true })
   round!: number;

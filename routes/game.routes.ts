@@ -7,8 +7,8 @@ const router = Router();
 
 router.post('/start/:contestId', catchAsync(GameController.start));
 
-router.get('/:id', catchAsync(GameController.getPair));
+router.get('/:id', catchAsync(GameController.get));
 
-router.post('/:id', catchAsync(GameController.choose));
+router.post('/:id', catchAsync(GameController.play));
 
 export default router;
