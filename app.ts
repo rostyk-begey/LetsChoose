@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import express, { ErrorRequestHandler, Request, Response } from 'express';
 import config from 'config';
 import mongoose from 'mongoose';
@@ -11,8 +10,6 @@ import authRoutes from './routes/auth.routes';
 import contestRoutes from './routes/contest.routes';
 import userRoutes from './routes/user.routes';
 import gameRoutes from './routes/game.routes';
-
-dotenv.config();
 
 mongoose.set('debug', config.get('mongooseDebug'));
 
