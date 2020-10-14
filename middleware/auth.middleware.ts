@@ -1,10 +1,10 @@
-import { NextFunction, Response } from 'express';
+import { NextFunction, RequestHandler, Response } from 'express';
 
 import { AppError } from '../usecases/error';
 import JwtService from '../services/JwtService';
 import { RequestWithUserId } from '../types';
 
-export default (
+const auth = (
   req: RequestWithUserId,
   res: Response,
   next: NextFunction,
@@ -22,3 +22,5 @@ export default (
     throw new AppError('Unauthorized', 401);
   }
 };
+
+export default auth as RequestHandler;

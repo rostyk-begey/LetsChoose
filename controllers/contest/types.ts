@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Contest } from '../../models/Contest';
 import { ContestItem } from '../../models/ContestItem';
-import { ResponseMessage } from '../../types';
+import { RequestWithUserId, ResponseMessage } from '../../types';
 
 export enum SORT_OPTIONS {
   POPULAR = 'games',
@@ -23,7 +23,7 @@ export interface FindParams {
 
 export interface GetQuery extends SearchQuery, PaginationQuery {
   author: string;
-  sortBy: keyof typeof SORT_OPTIONS;
+  sortBy: '' | keyof typeof SORT_OPTIONS;
 }
 
 export interface GetResponse {
@@ -49,28 +49,4 @@ export interface CreateBody {
 export interface ISortOptions
   extends Partial<Record<keyof typeof SORT_OPTIONS, number>> {
   score?: number;
-}
-
-export interface IContestController {
-  get(
-    req: Request<never, any, any, GetQuery>,
-    res: Response<GetResponse>,
-  ): Promise<void>;
-  find(req: Request<FindParams>, res: Response<Contest>): Promise<void>;
-  getItems(
-    req: Request<FindParams, any, any, GetItemsQuery>,
-    res: Response<GetItemsResponse>,
-  ): Promise<void>;
-  create(
-    req: Request<never, any, CreateBody>,
-    res: Response<ResponseMessage>,
-  ): Promise<void>;
-  update(
-    req: Request<FindParams, any, Omit<CreateBody, 'items'>>,
-    res: Response,
-  ): Promise<void>;
-  remove(
-    req: Request<FindParams>,
-    res: Response<ResponseMessage>,
-  ): Promise<void>;
 }
