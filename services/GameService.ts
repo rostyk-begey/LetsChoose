@@ -15,7 +15,7 @@ export default class GameService {
   private static generatePair(items: GameItem[]) {
     return shuffle(items)
       .slice(0, 2)
-      .map(({ itemId }) => itemId);
+      .map(({ itemId }) => itemId.toString());
   }
 
   private static populatePair(pair: string[]): Promise<(ContestItem | null)[]> {
@@ -33,7 +33,7 @@ export default class GameService {
     return shuffle(items)
       .slice(0, gameItemLength)
       .map(({ _id }) => ({
-        itemId: _id,
+        itemId: _id.toString(),
         wins: 0,
         compares: 0,
       }));
@@ -50,6 +50,15 @@ export default class GameService {
     const pair = GameService.generatePair(items);
 
     const totalRounds = GameService.calculateTotalRounds(items.length);
+
+    console.log({
+      contestId,
+      items,
+      finished: false,
+      round: 0,
+      totalRounds,
+      pair,
+    });
 
     const game = new GameModel({
       contestId,
@@ -76,7 +85,7 @@ export default class GameService {
   ): GameItem[] {
     return gameItems.map((item) => {
       const { itemId: id } = item;
-      if (GameService.inGamePair(currentPair, id)) item.compares += 1;
+      if (GameService.inGamePair(currentPair, id as string)) item.compares += 1;
       if (winnerId === `${id}`) item.wins += 1;
 
       return item;
@@ -92,7 +101,7 @@ export default class GameService {
     );
   }
 
-  public static async start(contestId: string): Promise<Game> {
+  public static async start(contestId: string): Promise<any> {
     await ContestService.findContestById(contestId);
 
     const contestItems = await ContestItemModel.find({ contestId }); // todo replace

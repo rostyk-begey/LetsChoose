@@ -1,4 +1,4 @@
-import { Schema, Types } from 'mongoose';
+import { Schema } from 'mongoose';
 import { prop, getModelForClass, Ref } from '@typegoose/typegoose';
 import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 
@@ -7,7 +7,7 @@ import { ContestItem } from './ContestItem';
 
 type IContest = Base<string>;
 export class Contest extends TimeStamps implements IContest {
-  @prop({ type: Types.ObjectId })
+  @prop({ type: Schema.Types.ObjectId })
   _id!: string;
 
   @prop({ type: String, required: true })
@@ -19,13 +19,13 @@ export class Contest extends TimeStamps implements IContest {
   @prop({ type: String, required: true })
   excerpt!: string;
 
-  @prop({ type: Schema.Types.ObjectId, ref: 'User', required: true })
+  @prop({ ref: () => User, refType: Schema.Types.ObjectId, required: true })
   author!: Ref<User>;
 
   @prop({ type: Number, default: 0 })
   games!: number;
 
-  @prop({ type: Schema.Types.ObjectId, ref: 'ContestItem' })
+  @prop({ ref: () => ContestItem, refType: Schema.Types.ObjectId })
   items!: Ref<ContestItem>[];
 }
 

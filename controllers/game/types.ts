@@ -1,5 +1,3 @@
-import { Request, Response } from 'express';
-
 import { ContestItem } from '../../models/ContestItem';
 
 export interface StartParams {

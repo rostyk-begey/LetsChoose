@@ -20,12 +20,11 @@ export class AppError extends Error {
 
 export const handleError = (err: AppError, res: Response): void => {
   err.statusCode = err.statusCode || 500;
-  let response = {
+  let response: any = {
     statusCode: err.statusCode,
     status: err.status || 'error',
   };
   if (err.isOperational) {
-    // @ts-ignore
     response.message = err.message;
   }
   if (err.data !== {}) {
