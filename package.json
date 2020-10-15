@@ -7,8 +7,7 @@
     "server": "yarn --cwd server run dev",
     "client": "yarn --cwd client run start",
     "client:build": "yarn --cwd client build",
-    "heroku-postbuild": "cd client && yarn install --production=false && yarn run build",
-    "postinstall": "tsc",
+    "postinstall": "cd client && yarn install --production=false && yarn run build && cd ../server && yarn install && tsc",
     "dev": "concurrently \"yarn run server\" \"yarn run client\""
   },
   "keywords": [
