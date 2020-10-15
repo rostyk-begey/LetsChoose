@@ -20,10 +20,10 @@ export class Game {
   @prop({ ref: () => ContestItem, type: mongoose.Types.ObjectId })
   winnerId?: Ref<ContestItem>;
 
-  @prop({ type: () => [GameItem] })
+  @prop({ type: () => [GameItem], _id: false })
   items?: Ref<GameItem>[];
 
-  @prop({ ref: 'ContestItem' })
+  @prop({ ref: () => ContestItem })
   pair!: Ref<ContestItem>[];
 
   @prop({ type: Number, required: true })
