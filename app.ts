@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.routes';
 import contestRoutes from './routes/contest.routes';
 import userRoutes from './routes/user.routes';
 import gameRoutes from './routes/game.routes';
+import GameService from './services/GameService';
 
 mongoose.set('debug', config.get('mongooseDebug'));
 
@@ -51,6 +52,7 @@ app.use(((err: any, req: Request, res: Response) =>
       api_secret: config.get('cloudinary.apiSecret'),
     });
     app.listen(PORT, () => console.log(`Listening localhost:${PORT}`));
+    // await GameService.start('5f332014c17a495019dbc2e9');
   } catch (e) {
     console.error(e);
     process.exit(1);

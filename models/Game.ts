@@ -1,25 +1,14 @@
 import mongoose from 'mongoose';
 import { prop, getModelForClass, Ref } from '@typegoose/typegoose';
+import 'reflect-metadata';
+
 import { ContestItem } from './ContestItem';
+import { GameItem } from './GameItem';
 import { Contest } from './Contest';
-
-export class GameItem {
-  @prop({
-    type: mongoose.Types.ObjectId,
-    ref: () => ContestItem,
-  })
-  itemId!: string;
-
-  @prop({ type: Number, required: true })
-  wins!: number;
-
-  @prop({ type: Number, required: true })
-  compares!: number;
-}
 
 export class Game {
   @prop({ type: mongoose.Types.ObjectId })
-  _id!: string;
+  _id?: string;
 
   @prop({
     ref: () => Contest,
@@ -32,12 +21,9 @@ export class Game {
   winnerId?: Ref<ContestItem>;
 
   @prop({ type: () => [GameItem] })
-  items!: GameItem[];
+  items?: Ref<GameItem>[];
 
-  @prop({
-    type: () => [mongoose.Types.ObjectId],
-    ref: () => ContestItem,
-  })
+  @prop({ ref: 'ContestItem' })
   pair!: Ref<ContestItem>[];
 
   @prop({ type: Number, required: true })

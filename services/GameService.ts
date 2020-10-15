@@ -1,5 +1,8 @@
-import { Game, GameItem, GameModel } from '../models/Game';
+import mongoose from 'mongoose';
 import { shuffle } from 'lodash';
+
+import { GameItem } from '../models/GameItem';
+import { Game, GameModel } from '../models/Game';
 import { ContestItem, ContestItemModel } from '../models/ContestItem';
 import ContestService from './ContestService';
 import { AppError } from '../usecases/error';
@@ -15,7 +18,7 @@ export default class GameService {
   private static generatePair(items: GameItem[]) {
     return shuffle(items)
       .slice(0, 2)
-      .map(({ itemId }) => itemId.toString());
+      .map(({ contestItem }) => contestItem!.toString());
   }
 
   private static populatePair(pair: string[]): Promise<(ContestItem | null)[]> {
@@ -33,7 +36,7 @@ export default class GameService {
     return shuffle(items)
       .slice(0, gameItemLength)
       .map(({ _id }) => ({
-        itemId: _id.toString(),
+        contestItem: _id.toString(),
         wins: 0,
         compares: 0,
       }));
@@ -51,16 +54,8 @@ export default class GameService {
 
     const totalRounds = GameService.calculateTotalRounds(items.length);
 
-    console.log({
-      contestId,
-      items,
-      finished: false,
-      round: 0,
-      totalRounds,
-      pair,
-    });
-
     const game = new GameModel({
+      _id: mongoose.Types.ObjectId(),
       contestId,
       items,
       finished: false,
@@ -84,9 +79,13 @@ export default class GameService {
     winnerId: string,
   ): GameItem[] {
     return gameItems.map((item) => {
-      const { itemId: id } = item;
-      if (GameService.inGamePair(currentPair, id as string)) item.compares += 1;
-      if (winnerId === `${id}`) item.wins += 1;
+      const { contestItem: contestItemId } = item;
+      if (GameService.inGamePair(currentPair, contestItemId as string)) {
+        item.compares += 1;
+      }
+      if (winnerId === `${contestItemId}`) {
+        item.wins += 1;
+      }
 
       return item;
     });
@@ -101,7 +100,7 @@ export default class GameService {
     );
   }
 
-  public static async start(contestId: string): Promise<any> {
+  public static async start(contestId: string): Promise<Game> {
     await ContestService.findContestById(contestId);
 
     const contestItems = await ContestItemModel.find({ contestId }); // todo replace
@@ -175,7 +174,7 @@ export default class GameService {
       await Promise.all(
         game.items.map(async (gameItem) => {
           if (gameItem instanceof GameItem) {
-            const { itemId, compares, wins } = gameItem;
+            const { contestItem: itemId, compares, wins } = gameItem;
             const contestItem = await ContestItemModel.findById(itemId);
             contestItem!.compares += compares;
             contestItem!.wins += wins;
