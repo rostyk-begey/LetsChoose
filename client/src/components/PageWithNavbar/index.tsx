@@ -3,7 +3,7 @@ import React, { PropsWithChildren, useState } from 'react';
 import { Page as TablerPage, Grid, Form } from 'tabler-react';
 import { useScrollPosition } from '@n8tb1t/use-scroll-position';
 
-import Page from 'app/components/Page';
+import Page from '../../components/Page';
 
 enum SORT_OPTIONS {
   POPULAR = 'POPULAR',

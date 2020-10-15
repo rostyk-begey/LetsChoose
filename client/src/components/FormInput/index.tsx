@@ -7,7 +7,7 @@ import cn from 'classnames';
 interface Props {
   type: string;
   name: string;
-  label: string;
+  label?: string;
   placeholder: string;
   defaultValue?: string;
   validation: any;
@@ -18,7 +18,7 @@ interface Props {
 const FormInput: React.FC<Props> = ({
   type,
   name,
-  label,
+  label = '',
   placeholder,
   defaultValue,
   validation,

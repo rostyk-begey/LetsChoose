@@ -3,7 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 // @ts-ignore
 import { Button, Card, Form } from 'tabler-react';
 
-import FormInput from 'app/components/FormInput';
+import FormInput from '../../components/FormInput';
 
 import './index.scss';
 
@@ -12,16 +12,16 @@ export interface InputElement {
   name: string;
   label: string;
   placeholder: string;
-  validation: {};
+  validation: any;
 }
 
 interface Props {
-  onSubmit: () => void;
+  onSubmit: any;
   inputs: InputElement[];
   title: string;
   buttonText: string;
   buttonLoading: boolean;
-  formAfter: React.ElementType;
+  formAfter: any;
 }
 
 const AuthForm: React.FC<Props> = ({

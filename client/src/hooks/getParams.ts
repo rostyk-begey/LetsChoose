@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
+// @ts-ignore
 import throttle from 'lodash/throttle';
 
-import useURLSearchParams from 'app/hooks/URLSearchParams';
+import useURLSearchParams from '../hooks/URLSearchParams';
+
+interface Params {
+  [key: string]: any;
+}
 
 type InputCallback = (e: React.ChangeEvent<HTMLInputElement>) => void;
 
-const useGetParams = (baseUrl: string, defaultParams: object) => {
+const useGetParams = (baseUrl: string, defaultParams: Params = {}) => {
   const history = useHistory();
   const query = useURLSearchParams();
-  const [params, setParams] = useState<object>(defaultParams);
+  const [params, setParams] = useState<Params>(defaultParams);
 
   // Restore params from URL
   useEffect(() => {
@@ -18,7 +23,7 @@ const useGetParams = (baseUrl: string, defaultParams: object) => {
       if (param) acc[key] = param;
       return acc;
     }, {} as any);
-    setParams((prevState) => ({
+    setParams((prevState: any) => ({
       ...prevState,
       ...newPrams,
     }));
@@ -45,7 +50,8 @@ const useGetParams = (baseUrl: string, defaultParams: object) => {
   const { current: throttled } = useRef(
     throttle(updateParam, 1000, { leading: false }),
   );
-  const handleSearch: InputCallback = ({ target: { name, value } }) => throttled(name, value);
+  const handleSearch: InputCallback = ({ target: { name, value } }) =>
+    throttled(name, value);
 
   return { params, handleSearch, onInputChange, updateParam };
 };

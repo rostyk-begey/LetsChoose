@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+// @ts-ignore
 import { Alert, Card, StandaloneFormPage } from 'tabler-react';
 
-import AuthForm from 'app/components/AuthForm';
-import ROUTES from 'app/utils/routes';
-import { useApiForgotPassword } from 'app/hooks/api/auth';
+import AuthForm from '../../components/AuthForm';
+import ROUTES from '../../utils/routes';
+import { useApiForgotPassword } from '../../hooks/api/auth';
 
+// @ts-ignore
 import logo from 'assets/images/logo.svg';
 
 const INPUTS = [
@@ -20,10 +22,10 @@ const INPUTS = [
   },
 ];
 
-const ForgotPassword = () => {
+const ForgotPassword: React.FC = () => {
   const [requestPasswordReset, forgotPasswordQuery] = useApiForgotPassword();
 
-  const onSubmit = (form) => requestPasswordReset(form);
+  const onSubmit = (form: any) => requestPasswordReset(form);
 
   return (
     <StandaloneFormPage imageURL={logo}>

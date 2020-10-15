@@ -1,22 +1,25 @@
 import React, { useEffect } from 'react';
+// @ts-ignore
 import { Header, Card, Grid, Page as TablerPage } from 'tabler-react';
 import { Prompt, useParams, useHistory } from 'react-router-dom';
 
-import Page from 'app/components/Page';
-import { useGameState, useGameChoose } from 'app/hooks/api/game';
+import Page from '../../components/Page';
+import { useGameState, useGameChoose } from '../../hooks/api/game';
 
 import './index.scss';
+import { ContestItem } from '../../../../server/models/ContestItem';
 
-const GamePage = () => {
+const GamePage: React.FC = () => {
   const baseClassName = 'game-page';
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const history = useHistory();
   const {
+    // @ts-ignore
     data: { data: { finished, pair, round, contestId } = {} } = {},
     ...gameStateQuery
   } = useGameState(id);
   const [choose] = useGameChoose(id);
-  const onChoose = async (winnerId) => {
+  const onChoose = async (winnerId: string) => {
     await choose(winnerId);
     await gameStateQuery.refetch();
   };
@@ -37,7 +40,7 @@ const GamePage = () => {
                   <Header.H3 className="text-center">Game over</Header.H3>
                 )}
                 <Grid.Row>
-                  {pair.map(({ _id, title, image }) => (
+                  {pair.map(({ _id, title, image }: ContestItem) => (
                     // eslint-disable-next-line react/no-array-index-key
                     <Grid.Col lg={6} key={_id}>
                       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}

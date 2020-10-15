@@ -1,14 +1,21 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
+// @ts-ignore
 import { Button, Card, Form, Grid } from 'tabler-react';
 import { useForm, FormProvider } from 'react-hook-form';
 import cn from 'classnames';
 
-import FormInput from 'app/components/FormInput';
-import DropzoneFileInput from 'app/components/DropzoneFileInput';
+import FormInput from '../../../components/FormInput';
+import DropzoneFileInput from '../../../components/DropzoneFileInput';
 
 import './index.scss';
 
-const EditContestForm = ({
+interface Props {
+  defaultValues?: any;
+  onSubmit: any;
+  buttonLoading?: boolean;
+}
+
+const EditContestForm: React.FC<Props> = ({
   defaultValues = {},
   onSubmit,
   buttonLoading = false,

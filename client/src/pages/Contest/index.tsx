@@ -1,28 +1,28 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
+// @ts-ignore
 import { Grid, Page as TablerPage } from 'tabler-react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import Page from 'app/components/Page';
-import { useContestFind } from 'app/hooks/api/contest';
-import ContestPageInfoCard from 'app/pages/Contest/ContestPageInfoCard';
-import UserProfileContext from 'app/context/UserProfileContext';
-import { useGameStart } from 'app/hooks/api/game';
-import useGetParams from 'app/hooks/getParams';
-import ROUTES from 'app/utils/routes';
+import Page from '../../components/Page';
+import { useContestFind } from '../../hooks/api/contest';
+import ContestPageInfoCard from '../../pages/Contest/ContestPageInfoCard';
+import UserProfileContext from '../../context/UserProfileContext';
+import { useGameStart } from '../../hooks/api/game';
+import useGetParams from '../../hooks/getParams';
+import ROUTES from '../../utils/routes';
 
-const TABS = {
-  GENERAL: 'GENERAL',
-  RANKING: 'RANKING',
-};
+enum TABS {
+  GENERAL = 'GENERAL',
+  RANKING = 'RANKING',
+}
 
-const ContestPage = () => {
-  const { id } = useParams();
+const ContestPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const history = useHistory();
   const { _id: userId } = useContext(UserProfileContext);
-  const { data: { data: contest = {} } = {}, ...contestQuery } = useContestFind(
-    id,
-  );
+  const { data: { data: contest = {} } = {} } = useContestFind(id);
   const [startGame] = useGameStart();
+  // @ts-ignore
   const { author } = contest;
   const { params, updateParam } = useGetParams(
     `${ROUTES.CONTESTS.INDEX}/${id}`,
@@ -30,7 +30,7 @@ const ContestPage = () => {
       activeTab: TABS.GENERAL,
     },
   );
-  const setActiveTab = (tab) => updateParam('activeTab', tab);
+  const setActiveTab = (tab: TABS) => updateParam('activeTab', tab);
   const tabs = [
     {
       label: 'General',
@@ -41,10 +41,12 @@ const ContestPage = () => {
       tab: TABS.RANKING,
     },
   ];
-  const onStart = () =>
+  const onStart = () => {
+    // @ts-ignore
     startGame(id).then(({ data: { gameId } }) =>
       history.push(`/games/${gameId}`),
     );
+  };
   const isCurrentUserAuthor = userId === author;
 
   return (

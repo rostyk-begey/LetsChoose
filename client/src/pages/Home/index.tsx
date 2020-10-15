@@ -1,12 +1,13 @@
 import React from 'react';
+// @ts-ignore
 import { Grid, Loader } from 'tabler-react';
 import InfiniteScroll from 'react-infinite-scroller';
 
-import ContestCard from 'app/components/ContestCard';
-import { useContestAllInfinite } from 'app/hooks/api/contest';
-import useGetParams from 'app/hooks/getParams';
-import ROUTES from 'app/utils/routes';
-import PageWithNavbar from 'app/components/PageWithNavbar';
+import ContestCard from '../../components/ContestCard';
+import { useContestAllInfinite } from '../../hooks/api/contest';
+import useGetParams from '../../hooks/getParams';
+import ROUTES from '../../utils/routes';
+import PageWithNavbar from '../../components/PageWithNavbar';
 import { Contest } from '../../../../server/models/Contest';
 
 const SORT_OPTIONS = {
@@ -14,7 +15,7 @@ const SORT_OPTIONS = {
   NEWEST: 'NEWEST',
 };
 
-const HomePage = () => {
+const HomePage: React.FC = () => {
   const { params, handleSearch, onInputChange } = useGetParams(ROUTES.HOME, {
     search: '',
     sortBy: SORT_OPTIONS.POPULAR,
@@ -25,6 +26,7 @@ const HomePage = () => {
 
   return (
     <PageWithNavbar
+      // @ts-ignore
       params={params}
       handleSearch={handleSearch}
       onInputChange={onInputChange}
@@ -45,6 +47,7 @@ const HomePage = () => {
               ({ data: { contests } }: { data: { contests: Contest[] } }) =>
                 contests.map((contest) => (
                   <Grid.Col width={12} md={6} lg={4} key={contest._id}>
+                    {/* @ts-ignore */}
                     <ContestCard data={contest} />
                   </Grid.Col>
                 )),

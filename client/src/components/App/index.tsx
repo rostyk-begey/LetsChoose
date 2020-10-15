@@ -1,11 +1,12 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
-import AuthContext from 'app/context/AuthContext';
-import UserProfileContext from 'app/context/UserProfileContext';
-import useRoutes from 'app/hooks/routes';
-import useAuth from 'app/hooks/auth';
-import { useUserFind } from 'app/hooks/api/user';
+import AuthContext from '../../context/AuthContext';
+import UserProfileContext from '../../context/UserProfileContext';
+import useRoutes from '../../hooks/routes';
+import useAuth from '../../hooks/auth';
+import { useUserFind } from '../../hooks/api/user';
+import { User } from '../../../../server/models/User';
 
 import './index.scss';
 
@@ -19,7 +20,7 @@ const App: React.FC = () => {
 
   return (
     <AuthContext.Provider value={{ login, logout, isAuthenticated }}>
-      <UserProfileContext.Provider value={user}>
+      <UserProfileContext.Provider value={user as User}>
         <BrowserRouter>{routes}</BrowserRouter>
       </UserProfileContext.Provider>
     </AuthContext.Provider>

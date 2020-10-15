@@ -1,21 +1,20 @@
 import React, { useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
+// @ts-ignore
 import jsonToFormData from 'json-form-data';
+// @ts-ignore
 import { Dimmer, Grid, Loader, Page as TablerPage } from 'tabler-react';
 
-import ROUTES from 'app/utils/routes';
-import Page from 'app/components/Page';
-import EditContestForm from 'app/components/ContestEditPage/EditContestForm';
-import { useContestFind, useContestUpdate } from 'app/hooks/api/contest';
+import ROUTES from '../../utils/routes';
+import Page from '../../components/Page';
+import EditContestForm from '../../components/ContestEditPage/EditContestForm';
+import { useContestFind, useContestUpdate } from '../../hooks/api/contest';
 
 const UpdateContestPage = () => {
-  const { id: contestId = null } = useParams();
+  const { id: contestId = '' } = useParams<{ id: string }>();
   const history = useHistory();
   if (!contestId) history.push(ROUTES.HOME);
-  const {
-    data: { data: contest = {} } = {},
-    ...getContestQuery
-  } = useContestFind(contestId);
+  const { data: { data: contest = {} } = {} }: any = useContestFind(contestId);
   const [updateContest, updateContestQuery] = useContestUpdate(contestId);
   const saveContest = useCallback(
     async ({ thumbnail, ...contestData }) => {

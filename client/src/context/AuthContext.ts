@@ -1,7 +1,8 @@
 import { createContext } from 'react';
+// @ts-ignore
 import noop from 'lodash/noop';
 
-import { LoginFunction, LogoutFunction } from 'app/hooks/auth';
+import { LoginFunction, LogoutFunction } from '../hooks/auth';
 
 interface IAuthContext {
   login: LoginFunction;

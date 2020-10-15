@@ -1,15 +1,17 @@
 import React, { useCallback } from 'react';
+// @ts-ignore
 import { Dimmer, Grid, Loader, Page as TablerPage } from 'tabler-react';
-import { Prompt, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+// @ts-ignore
 import jsonToFormData from 'json-form-data';
 
-import ROUTES from 'app/utils/routes';
-import Page from 'app/components/Page';
-import { useContestCreate } from 'app/hooks/api/contest';
-import useContestItems from 'app/hooks/contestItems';
-import EditContestForm from 'app/components/ContestEditPage/EditContestForm';
-import CreatedContestItem from 'app/components/ContestEditPage/EditSingleContestItemForm';
-import CreateContestItemForm from 'app/components/ContestEditPage/CreateContestItemForm';
+import ROUTES from '../../utils/routes';
+import Page from '../../components/Page';
+import { useContestCreate } from '../../hooks/api/contest';
+import useContestItems from '../../hooks/contestItems';
+import EditContestForm from '../../components/ContestEditPage/EditContestForm';
+import CreatedContestItem from '../../components/ContestEditPage/EditSingleContestItemForm';
+import CreateContestItemForm from '../../components/ContestEditPage/CreateContestItemForm';
 
 import './index.scss';
 
@@ -56,7 +58,7 @@ const CreateContestPage = () => {
                   key={title}
                   image={URL.createObjectURL(image)}
                   title={title}
-                  onUpdate={(item) => updateItem(i, item)}
+                  onUpdate={(item: any) => updateItem(i, item)}
                   onDelete={() => deleteItem(i)}
                 />
               ))}

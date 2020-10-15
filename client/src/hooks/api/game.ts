@@ -6,8 +6,8 @@ import {
 } from 'react-query';
 import { AxiosResponse } from 'axios';
 
-import api from 'app/providers/apiProvider';
-import ROUTES from 'app/utils/routes';
+import api from '../../providers/apiProvider';
+import ROUTES from '../../utils/routes';
 import {
   GetPairResponse,
   StartResponse,

@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+// @ts-ignore
 import { Alert, Card, StandaloneFormPage } from 'tabler-react';
 
-import AuthForm from 'app/components/AuthForm';
-import ROUTES from 'app/utils/routes';
-import { useApiRegister } from 'app/hooks/api/auth';
+import AuthForm from '../../components/AuthForm';
+import ROUTES from '../../utils/routes';
+import { useApiRegister } from '../../hooks/api/auth';
 
+// @ts-ignore
 import logo from 'assets/images/logo.svg';
 
 const INPUTS = [
@@ -51,10 +53,10 @@ const INPUTS = [
   },
 ];
 
-const RegisterPage = () => {
+const RegisterPage: React.FC = () => {
   const [register, registerQuery] = useApiRegister();
 
-  const onSubmit = (form) => register(form);
+  const onSubmit = (form: any) => register(form);
 
   return (
     <StandaloneFormPage imageURL={logo}>

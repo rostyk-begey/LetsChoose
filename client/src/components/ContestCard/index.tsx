@@ -16,7 +16,7 @@ import { User } from '../../../../server/models/User';
 interface Props {
   data: Contest & {
     author: User;
-    tags: string[] | undefined;
+    tags?: string[] | undefined;
   };
 }
 

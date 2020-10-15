@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+
 import { User } from '../../../server/models/User';
 
 const UserProfileContext = createContext<

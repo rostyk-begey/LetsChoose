@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
+// @ts-ignore
 import { Alert, Card, StandaloneFormPage } from 'tabler-react';
 
-import AuthForm from 'app/components/AuthForm';
-import ROUTES from 'app/utils/routes';
-import { useApiResetPassword } from 'app/hooks/api/auth';
+import AuthForm from '../../components/AuthForm';
+import ROUTES from '../../utils/routes';
+import { useApiResetPassword } from '../../hooks/api/auth';
 
+// @ts-ignore
 import logo from 'assets/images/logo.svg';
 
 const INPUTS = [
@@ -25,11 +27,11 @@ const INPUTS = [
   },
 ];
 
-const PasswordReset = () => {
-  const { token } = useParams();
+const PasswordReset: React.FC = () => {
+  const { token } = useParams<{ token: string }>();
   const [resetPassword, resetPasswordQuery] = useApiResetPassword();
 
-  const onSubmit = (form) => resetPassword({ token, data: form });
+  const onSubmit = (form: any) => resetPassword({ token, data: form });
 
   return (
     <StandaloneFormPage imageURL={logo}>

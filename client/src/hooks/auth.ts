@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import createTokenProvider, {
   AccessToken,
   Observer,
-} from 'app/providers/tokenProvider';
+} from '../providers/tokenProvider';
 
 const tokenProvider = createTokenProvider();
 

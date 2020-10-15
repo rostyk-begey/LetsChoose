@@ -1,17 +1,21 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  PropsWithChildren,
+} from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useFormContext } from 'react-hook-form';
 
 interface Props {
   name: string;
   accept: string;
-  children: string;
-  previewDefaultUrl: string;
+  previewDefaultUrl?: string;
   previewHolderClassName: string;
   previewClassName: string;
 }
 
-const DropzoneFileInput: React.FC<Props> = ({
+const DropzoneFileInput: React.FC<PropsWithChildren<Props>> = ({
   name,
   accept,
   children,

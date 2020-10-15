@@ -1,14 +1,16 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Alert, Card, StandaloneFormPage, Dimmer } from 'tabler-react';
+// @ts-ignore
+import { Alert, Card, StandaloneFormPage } from 'tabler-react';
 
-import ROUTES from 'app/utils/routes';
-import { useApiConfirmEmail } from 'app/hooks/api/auth';
+import ROUTES from '../../utils/routes';
+import { useApiConfirmEmail } from '../../hooks/api/auth';
 
+// @ts-ignore
 import logo from 'assets/images/logo.svg';
 
-const ConfirmEmail = () => {
-  const { token } = useParams();
+const ConfirmEmail: React.FC = () => {
+  const { token } = useParams<{ token: string }>();
   const { isSuccess } = useApiConfirmEmail(token);
 
   return (

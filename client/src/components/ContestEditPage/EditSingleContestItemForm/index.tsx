@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+// @ts-ignore
 import { Button } from 'tabler-react';
 import cn from 'classnames';
 
 import './index.scss';
 
-const CreatedContestItem = ({ image, title, onUpdate, onDelete }) => {
+interface Props {
+  image: string;
+  title: string;
+  onUpdate: any;
+  onDelete: any;
+}
+
+const CreatedContestItem: React.FC<Props> = ({
+  image,
+  title,
+  onUpdate,
+  onDelete,
+}) => {
   const baseClassName = 'created-contest-item';
   const fileInputName = 'image';
   const [imageUrl, setImageUrl] = useState(image);
@@ -20,8 +33,8 @@ const CreatedContestItem = ({ image, title, onUpdate, onDelete }) => {
     setImageUrl(image);
     reset();
   };
-  const onSubmit = ({ image: updatedImage, title: updatedTitle }) => {
-    const data = {};
+  const onSubmit = ({ image: updatedImage, title: updatedTitle }: any) => {
+    const data: any = {};
     if (updatedTitle) {
       data.title = updatedTitle;
     }
@@ -45,6 +58,7 @@ const CreatedContestItem = ({ image, title, onUpdate, onDelete }) => {
       <div className="d-flex align-items-center">
         <span
           className="avatar avatar-xxl mr-3 flex-shrink-0"
+          // @ts-ignore
           style={{ backgroundImage: `url(${imageUrl})`, flexShrink: '0' }}
         >
           <input

@@ -1,11 +1,21 @@
 import React, { useRef, useState } from 'react';
+// @ts-ignore
 import { Avatar, Loader, Table } from 'tabler-react';
 import InfiniteScroll from 'react-infinite-scroller';
+// @ts-ignore
 import { throttle } from 'lodash';
 
-import { useContestItemsInfinite } from 'app/hooks/api/contest';
+import { useContestItemsInfinite } from '../../../../hooks/api/contest';
+import { Contest } from '../../../../../../server/models/Contest';
 
-const ItemRow = ({ id, rank, image, title, winRate, finalWinRate }) => (
+const ItemRow: React.FC<any> = ({
+  id,
+  rank,
+  image,
+  title,
+  winRate,
+  finalWinRate,
+}) => (
   <Table.Row key={id}>
     {/*<Table.Col className="w-1">#{rank}</Table.Col>*/}
     <Table.Col className="w-1">
@@ -59,7 +69,9 @@ const ItemRow = ({ id, rank, image, title, winRate, finalWinRate }) => (
   </Table.Row>
 );
 
-const ContestPageInfoCardTabStatistics = ({ contest: { _id: contestId } }) => {
+const ContestPageInfoCardTabStatistics: React.FC<{
+  contest: Contest;
+}> = ({ contest: { _id: contestId } }) => {
   const [search, setSearch] = useState('');
   const {
     data,
@@ -71,7 +83,7 @@ const ContestPageInfoCardTabStatistics = ({ contest: { _id: contestId } }) => {
   const { current: throttled } = useRef(
     throttle(setSearch, 1000, { leading: false }),
   );
-  const handleSearch = ({ target: { value } }) => throttled(value);
+  const handleSearch = ({ target: { value } }: any) => throttled(value);
 
   return (
     <InfiniteScroll
@@ -108,15 +120,17 @@ const ContestPageInfoCardTabStatistics = ({ contest: { _id: contestId } }) => {
         <Table.Body>
           {isSuccess &&
             data?.map(({ data: { items } }) =>
-              items.map(({ _id: id, title, image, winRate, finalWinRate }) => (
-                <ItemRow
-                  id={id}
-                  title={title}
-                  image={image}
-                  winRate={winRate}
-                  finalWinRate={finalWinRate}
-                />
-              )),
+              items.map(
+                ({ _id: id, title, image, winRate, finalWinRate }: any) => (
+                  <ItemRow
+                    id={id}
+                    title={title}
+                    image={image}
+                    winRate={winRate}
+                    finalWinRate={finalWinRate}
+                  />
+                ),
+              ),
             )}
         </Table.Body>
       </Table>

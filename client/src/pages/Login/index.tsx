@@ -1,15 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
+// @ts-ignore
 import { Alert, StandaloneFormPage } from 'tabler-react';
 import { Link, useHistory } from 'react-router-dom';
 
-import AuthContext from 'app/context/AuthContext';
-import useURLSearchParams from 'app/hooks/URLSearchParams';
-import ROUTES from 'app/utils/routes';
-import AuthForm from 'app/components/AuthForm';
-import { useApiLogin } from 'app/hooks/api/auth';
+import useURLSearchParams from '../../hooks/URLSearchParams';
+import ROUTES from '../../utils/routes';
+import AuthForm from '../../components/AuthForm';
+import { useApiLogin } from '../../hooks/api/auth';
+import useAuth from '../../hooks/auth';
 
+// @ts-ignore
 import logo from 'assets/images/logo.svg';
-import useAuth from 'app/hooks/auth';
 
 const INPUTS = [
   {
@@ -37,7 +38,7 @@ const LoginPage = () => {
   const auth = useAuth();
   const [login, loginQuery] = useApiLogin();
   const history = useHistory();
-  const onSubmit = async (form) => {
+  const onSubmit = async (form: any) => {
     try {
       const {
         data: { accessToken },
@@ -66,6 +67,7 @@ const LoginPage = () => {
               Don&apos;t have an account?{' '}
               <Link to={ROUTES.REGISTER}>Sign up</Link>
             </div>
+            {/* @ts-ignore */}
             {loginQuery.isError && loginQuery.error.response.status === 403 && (
               <Alert type="warning" className="mt-2 mb-0">
                 Please confirm you email address

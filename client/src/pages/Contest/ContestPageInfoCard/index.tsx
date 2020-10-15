@@ -1,19 +1,21 @@
 import React, { useCallback } from 'react';
+// @ts-ignore
 import { isEmpty } from 'lodash';
+// @ts-ignore
 import { Button, Card, Nav } from 'tabler-react';
 import { Link, useHistory } from 'react-router-dom';
 
-import ROUTES from 'app/utils/routes';
-import { useContestApi } from 'app/hooks/api/contest';
-import ContestPageInfoCardTabGeneral from 'app/pages/Contest/ContestPageInfoCard/ContestPageInfoCardTabGeneral';
-import ContestPageInfoCardTabStatistics from 'app/pages/Contest/ContestPageInfoCard/ContestPageInfoCardTabStatistics';
+import ROUTES from '../../../utils/routes';
+import { useContestApi } from '../../../hooks/api/contest';
+import ContestPageInfoCardTabGeneral from '../../../pages/Contest/ContestPageInfoCard/ContestPageInfoCardTabGeneral';
+import ContestPageInfoCardTabStatistics from '../../../pages/Contest/ContestPageInfoCard/ContestPageInfoCardTabStatistics';
 
 const TABS = {
   GENERAL: 'GENERAL',
   RANKING: 'RANKING',
 };
 
-const ContestPageInfoCard = ({
+const ContestPageInfoCard: React.FC<any> = ({
   isCurrentUserAuthor,
   tabs,
   onStart,
@@ -31,7 +33,7 @@ const ContestPageInfoCard = ({
     ) {
       remove(contestId)
         .then(() => history.push(ROUTES.HOME))
-        .catch(() => {});
+        .catch();
     }
   }, [contestId]);
 
@@ -41,7 +43,7 @@ const ContestPageInfoCard = ({
         <div>
           <Nav
             tabbed
-            items={tabs.map(({ label, tab }) => (
+            items={tabs.map(({ label, tab }: any) => (
               <Nav.Item
                 key={tab}
                 value={label}

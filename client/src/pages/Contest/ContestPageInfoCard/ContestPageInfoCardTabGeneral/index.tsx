@@ -1,11 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+// @ts-ignore
 import humanTime from 'human-time';
+// @ts-ignore
 import { Grid, Header, Icon, Media, Tag } from 'tabler-react';
 
-import ROUTES from 'app/utils/routes';
+import ROUTES from '../../../../utils/routes';
+import { Contest } from '../../../../../../server/models/Contest';
 
-const ContestPageInfoCardTabGeneral = ({
+interface Props {
+  contest: Contest & {
+    tags: string[];
+  };
+}
+
+const ContestPageInfoCardTabGeneral: React.FC<Props> = ({
   contest: { title, thumbnail, excerpt, tags = [], games, createdAt },
 }) => {
   const counters = [
@@ -22,7 +31,9 @@ const ContestPageInfoCardTabGeneral = ({
       </Media>
       <Grid.Row>
         <Grid.Col className="col-6">
-          <div className="text-muted">{humanTime(new Date(createdAt))}</div>
+          <div className="text-muted">
+            {humanTime(new Date(createdAt as Date))}
+          </div>
         </Grid.Col>
         <Grid.Col className="col-6">
           {counters.map(({ icon, data }) => (
@@ -34,7 +45,7 @@ const ContestPageInfoCardTabGeneral = ({
         </Grid.Col>
       </Grid.Row>
       <Tag.List className="mt-2">
-        {tags.map((tag) => (
+        {tags.map((tag: string) => (
           <Link key={tag} to={ROUTES.HOME} className="tag expanded tag-rounded">
             #{tag}
           </Link>

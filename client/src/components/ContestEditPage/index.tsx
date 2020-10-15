@@ -9,17 +9,13 @@ import CreateContestItemForm from '../../components/ContestEditPage/CreateContes
 
 import '../../pages/CreateContest/index.scss';
 
-interface Func {
-  (): void;
-}
-
 interface Props {
-  save: Func;
+  save: any;
   items: [];
-  contestData: Func;
-  addItem: Func;
-  updateItem: Func;
-  deleteItem: Func;
+  contestData: any;
+  addItem: any;
+  updateItem: any;
+  deleteItem: any;
 }
 
 const ContestEditPage: React.FC<Props> = ({
@@ -53,7 +49,7 @@ const ContestEditPage: React.FC<Props> = ({
                   typeof image === 'string' ? image : URL.createObjectURL(image)
                 }
                 title={title}
-                onUpdate={(item) => updateItem(i, item)}
+                onUpdate={(item: any) => updateItem(i, item)}
                 onDelete={() => deleteItem(i)}
               />
             ))}

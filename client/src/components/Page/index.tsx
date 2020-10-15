@@ -8,10 +8,10 @@ import { Link, useLocation } from 'react-router-dom';
 // @ts-ignore
 import { Site, Page as TablerPage, Button } from 'tabler-react';
 
-import AuthContext from 'app/context/AuthContext';
-import UserProfileContext from 'app/context/UserProfileContext';
-import ROUTES from 'app/utils/routes';
-import NavBar from 'app/components/NavBar';
+import AuthContext from '../../context/AuthContext';
+import UserProfileContext from '../../context/UserProfileContext';
+import ROUTES from '../../utils/routes';
+import NavBar from '../../components/NavBar';
 
 import './index.scss';
 

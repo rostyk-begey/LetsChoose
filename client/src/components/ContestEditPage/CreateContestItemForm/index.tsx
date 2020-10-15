@@ -1,13 +1,22 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+// @ts-ignore
 import { Button, Card, Form, Grid } from 'tabler-react';
 
-import FormInput from 'app/components/FormInput';
-import DropzoneFileInput from 'app/components/DropzoneFileInput';
+import FormInput from '../../../components/FormInput';
+import DropzoneFileInput from '../../../components/DropzoneFileInput';
 
 import './index.scss';
 
-const CreateContestItemForm = ({ onSubmit, buttonLoading = false }) => {
+interface Props {
+  onSubmit: any;
+  buttonLoading?: boolean;
+}
+
+const CreateContestItemForm: React.FC<Props> = ({
+  onSubmit,
+  buttonLoading = false,
+}) => {
   const baseClassName = 'create-contest-item-form';
   const form = useForm({
     mode: 'onBlur',
@@ -16,7 +25,7 @@ const CreateContestItemForm = ({ onSubmit, buttonLoading = false }) => {
   const titleInputName = 'title';
   const fileInputName = 'image';
   const { errors, reset, handleSubmit, setValue } = form;
-  const submit = (item) => {
+  const submit = (item: any) => {
     onSubmit(item);
     reset({ [titleInputName]: '' });
     setValue(fileInputName, undefined);

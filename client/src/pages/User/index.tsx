@@ -1,15 +1,18 @@
 import React from 'react';
+// @ts-ignore
 import { Grid, Loader } from 'tabler-react';
 import { useParams } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroller';
 
-import ContestCard from 'app/components/ContestCard';
-import PageWithNavbar from 'app/components/PageWithNavbar';
-import ProfileCard from 'app/components/ProfileCard';
-import { useUserFind } from 'app/hooks/api/user';
-import { useContestAllInfinite } from 'app/hooks/api/contest';
-import useGetParams from 'app/hooks/getParams';
-import ROUTES from 'app/utils/routes';
+import ContestCard from '../../components/ContestCard';
+import PageWithNavbar from '../../components/PageWithNavbar';
+import ProfileCard from '../../components/ProfileCard';
+import { useUserFind } from '../../hooks/api/user';
+import { useContestAllInfinite } from '../../hooks/api/contest';
+import useGetParams from '../../hooks/getParams';
+import ROUTES from '../../utils/routes';
+import { User } from '../../../../server/models/User';
+import { Contest } from '../../../../server/models/Contest';
 
 const SORT_OPTIONS = {
   POPULAR: 'POPULAR',
@@ -18,9 +21,7 @@ const SORT_OPTIONS = {
 
 const UserPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
-  const { data: { data: { _id: id, ...user } = {} } = {} } = useUserFind(
-    username,
-  );
+  const { data: { data: user = {} } = {} } = useUserFind(username);
   const { params, handleSearch, onInputChange } = useGetParams(
     `${ROUTES.USERS}/${username}`,
     {
@@ -35,13 +36,14 @@ const UserPage: React.FC = () => {
 
   return (
     <PageWithNavbar
+      // @ts-ignore
       params={params}
       onInputChange={onInputChange}
       handleSearch={handleSearch}
     >
       <Grid.Row>
         <Grid.Col lg={4} width={12}>
-          <ProfileCard user={user} />
+          <ProfileCard user={user as User} />
         </Grid.Col>
         <Grid.Col lg={8} width={12}>
           <InfiniteScroll
@@ -59,7 +61,8 @@ const UserPage: React.FC = () => {
                 data?.map(({ data: { contests } }) =>
                   contests.map((contest) => (
                     <Grid.Col width={12} md={6} lg={6} key={contest._id}>
-                      <ContestCard data={contest} />
+                      {/* @ts-ignore */}
+                      <ContestCard data={contest as Contest} />
                     </Grid.Col>
                   )),
                 )}

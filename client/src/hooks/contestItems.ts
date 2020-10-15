@@ -1,13 +1,16 @@
 import { useState, useCallback } from 'react';
 
 interface IContestItem {
-  title: string,
-  image: File,
+  title: string;
+  image: File;
 }
 
 const useContestItems = () => {
   const [items, setItems] = useState<IContestItem[]>([]);
-  const addItem = useCallback((item: IContestItem) => setItems([...items, item]), [items]);
+  const addItem = useCallback(
+    (item: IContestItem) => setItems([...items, item]),
+    [items],
+  );
   const updateItem = useCallback(
     (index: number, updatedItem: Partial<IContestItem>) =>
       setItems(
