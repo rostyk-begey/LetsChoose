@@ -15,7 +15,7 @@ import CreateContestItemForm from '../../components/ContestEditPage/CreateContes
 
 import './index.scss';
 
-const CreateContestPage = () => {
+const CreateContestPage: React.FC = () => {
   const baseClassName = 'create-contest-page';
   const history = useHistory();
   const [createContest, createContestQuery] = useContestCreate();
@@ -28,7 +28,7 @@ const CreateContestPage = () => {
             ...contestData,
             thumbnail,
             items,
-          }),
+          } as any),
         );
         history.push(ROUTES.HOME);
       } catch (e) {

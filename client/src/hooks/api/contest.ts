@@ -90,7 +90,7 @@ export const useContestItemsInfinite = (
 
 export const useContestCreate = (): MutationResultPair<
   AxiosResponse<ResponseMessage>,
-  CreateBody,
+  any, //CreateBody,
   Error
 > => {
   const { create } = useContestApi();
@@ -101,7 +101,7 @@ export const useContestUpdate = (
   id: string,
 ): MutationResultPair<
   AxiosResponse<ResponseMessage>,
-  Partial<Omit<CreateBody, 'items'>>,
+  any, //Partial<Omit<CreateBody, 'items'>>,
   Error
 > => {
   const { update } = useContestApi();
