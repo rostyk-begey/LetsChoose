@@ -11,7 +11,7 @@ import ROUTES from 'app/utils/routes';
 import {
   GetPairResponse,
   StartResponse,
-} from '../../../../controllers/game/types';
+} from '../../../../server/controllers/game/types';
 
 export const useGameApi = () => {
   const baseURL = ROUTES.API.GAME;

@@ -7,7 +7,7 @@ import { useContestAllInfinite } from 'app/hooks/api/contest';
 import useGetParams from 'app/hooks/getParams';
 import ROUTES from 'app/utils/routes';
 import PageWithNavbar from 'app/components/PageWithNavbar';
-import { Contest } from '../../../../models/Contest';
+import { Contest } from '../../../../server/models/Contest';
 
 const SORT_OPTIONS = {
   POPULAR: 'POPULAR',

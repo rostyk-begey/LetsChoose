@@ -65,7 +65,7 @@ export const Page: React.FC<PropsWithChildren<Props>> = ({
   const baseClassName = 'page-template';
   const { pathname } = useLocation();
   const { logout, isAuthenticated } = useContext(AuthContext);
-  const { username, avatar } = useContext(UserProfileContext);
+  const { username, avatar } = useContext(UserProfileContext) || {};
   const [navCollapse, setNavCollapse] = useState(true);
   const navBarItems: any[] = [
     newNavBarItem(pathname, ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),

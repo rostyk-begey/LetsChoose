@@ -2,7 +2,7 @@ import React from 'react';
 // @ts-ignore
 import { Card } from 'tabler-react';
 
-import { User } from '../../../../models/User';
+import { User } from '../../../../server/models/User';
 
 interface Props {
   user: Pick<User, 'avatar' | 'username' | 'bio'>;

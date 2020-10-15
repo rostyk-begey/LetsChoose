@@ -1,8 +1,9 @@
 import { SentMessageInfo } from 'nodemailer';
+
 import emailTransporter from '../usecases/emailTransporter';
 import renderConfirmationEmail from '../usecases/renderConfirmationEmail';
-import config from 'config';
 import renderResetPasswordEmail from '../usecases/renderResetPasswordEmail';
+import config from '../config';
 
 export default class EmailService {
   public static sendRegistrationEmail(
@@ -12,10 +13,7 @@ export default class EmailService {
     return emailTransporter.sendMail({
       to,
       subject: 'Confirm Email',
-      html: renderConfirmationEmail(
-        config.get('appUrl'),
-        confirmRegistrationUrl,
-      ),
+      html: renderConfirmationEmail(config.appUrl, confirmRegistrationUrl),
     });
   }
 
@@ -26,7 +24,7 @@ export default class EmailService {
     return emailTransporter.sendMail({
       to,
       subject: 'Password reset',
-      html: renderResetPasswordEmail(config.get('appUrl'), resetPasswordUrl),
+      html: renderResetPasswordEmail(config.appUrl, resetPasswordUrl),
     });
   }
 }

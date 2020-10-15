@@ -50,6 +50,7 @@
         "groups": ["internal", "external"]
       }
     ],
+    "eslint-no-use-before-defining": 0,
     "no-use-before-define": [
       "error",
       {

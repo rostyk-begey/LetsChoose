@@ -8,8 +8,8 @@ import { AxiosResponse } from 'axios';
 
 import ROUTES from 'app/utils/routes';
 import api from 'app/providers/apiProvider';
-import { LoginResponseBody } from '../../../../controllers/user/types';
-import { ResponseMessage } from '../../../../types';
+import { LoginResponseBody } from '../../../../server/controllers/user/types';
+import { ResponseMessage } from '../../../../server/types';
 
 const {
   LOGIN,

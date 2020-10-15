@@ -15,9 +15,9 @@ import {
   GetResponse,
   GetItemsResponse,
   CreateBody,
-} from '../../../../controllers/contest/types';
-import { ResponseMessage } from '../../../../types';
-import { Contest } from '../../../../models/Contest';
+} from '../../../../server/controllers/contest/types';
+import { ResponseMessage } from '../../../../server/types';
+import { Contest } from '../../../../server/models/Contest';
 
 export const useContestApi = () => {
   const baseURL = ROUTES.API.CONTESTS;

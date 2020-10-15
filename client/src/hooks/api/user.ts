@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 
 import api from 'app/providers/apiProvider';
 import ROUTES from 'app/utils/routes';
-import { User } from '../../../../models/User';
+import { User } from '../../../../server/models/User';
 
 export const useUserApi = () => {
   const baseURL = ROUTES.API.USERS;

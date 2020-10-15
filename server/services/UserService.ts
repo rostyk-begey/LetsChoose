@@ -1,7 +1,5 @@
 import bcrypt from 'bcryptjs';
 import md5 from 'md5';
-import jwt from 'jsonwebtoken';
-import config from 'config';
 
 import { User, UserModel } from '../models/User';
 import { AppError } from '../usecases/error';
@@ -9,6 +7,7 @@ import { ContestModel } from '../models/Contest';
 import { ContestItemModel } from '../models/ContestItem';
 import EmailService from './EmailService';
 import JwtService from './JwtService';
+import config from '../config';
 
 interface RegisterUserData {
   email: string;
@@ -43,7 +42,7 @@ export class UserService {
 
     EmailService.sendRegistrationEmail(
       user.email,
-      `${config.get('appUrl')}/email/confirm/${emailToken}`,
+      `${config.appUrl}/email/confirm/${emailToken}`,
     );
   }
 
@@ -98,7 +97,7 @@ export class UserService {
 
     EmailService.sendResetPasswordEmail(
       user.email,
-      `${config.get('appUrl')}/password/reset/${resetPasswordToken}`,
+      `${config.appUrl}/password/reset/${resetPasswordToken}`,
     );
   }
 

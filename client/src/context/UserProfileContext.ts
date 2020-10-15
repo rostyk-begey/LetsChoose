@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { User } from '../../../models/User';
+import { User } from '../../../server/models/User';
 
 const UserProfileContext = createContext<
   Pick<User, '_id' | 'username' | 'email' | 'avatar'>
