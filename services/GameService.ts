@@ -70,7 +70,7 @@ export default class GameService {
   }
 
   private static inGamePair(gamePair: ContestItem[], id: string) {
-    return gamePair.some(({ _id }) => _id === id);
+    return gamePair.some(({ _id }) => _id.toString() === id);
   }
 
   private static updateGameItems(
@@ -133,7 +133,9 @@ export default class GameService {
   ): Promise<void> {
     const game = await GameService.findGameById(gameId);
 
-    if (game.finished) throw new AppError('Game has been finished', 400);
+    if (game.finished) {
+      throw new AppError('Game has been finished', 400);
+    }
 
     if (!GameService.inGamePair(game.pair as ContestItem[], winnerId)) {
       throw new AppError('Invalid winner id', 400);

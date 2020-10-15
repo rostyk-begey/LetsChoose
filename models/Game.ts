@@ -7,8 +7,9 @@ import { GameItem } from './GameItem';
 import { Contest } from './Contest';
 
 export class Game {
-  @prop({ type: mongoose.Types.ObjectId })
-  _id?: string;
+  @prop({ type: mongoose.Types.ObjectId, alias: 'id' })
+  readonly _id!: string;
+  readonly id!: string;
 
   @prop({
     ref: () => Contest,

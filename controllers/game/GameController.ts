@@ -34,11 +34,11 @@ export default class GameController {
   }
 
   public static async play(
-    req: Request,
+    req: Request<GetPairParams>,
     res: Response<GetPairResponse>,
   ): Promise<void> {
-    await GameService.playRound(req.params.id, req.body.winnerId);
-    const game = await GameService.findGameById(req.params.id);
+    await GameService.playRound(req.params.gameId, req.body.winnerId);
+    const game = await GameService.findGameById(req.params.gameId);
 
     res.status(200).json({
       round: game.round,
