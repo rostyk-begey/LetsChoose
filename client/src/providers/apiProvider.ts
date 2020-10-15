@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
-import ROUTES from 'app/utils/routes';
-import createTokenProvider from 'app/providers/tokenProvider';
+import ROUTES from '../utils/routes';
+import createTokenProvider from './tokenProvider';
 
 const tokenProvider = createTokenProvider();
 
-const options = {
+const options: AxiosRequestConfig = {
   baseURL: ROUTES.API.INDEX,
   headers: {
     accepts: 'application/json',

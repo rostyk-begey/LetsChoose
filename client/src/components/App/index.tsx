@@ -9,11 +9,12 @@ import { useUserFind } from 'app/hooks/api/user';
 
 import './index.scss';
 
-const App = () => {
+const App: React.FC = () => {
   const { login, logout, isAuthenticated } = useAuth();
   const routes = useRoutes(isAuthenticated);
-  const { data: { data: user = {} } = {} } = useUserFind('me', {
-    enabled: isAuthenticated,
+  // @ts-ignore
+  const { data: { data: user } = {} } = useUserFind('me', {
+    enabled: true,
   });
 
   return (

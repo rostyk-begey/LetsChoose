@@ -1,9 +1,21 @@
 import React from 'react';
+// @ts-ignore
 import { Form } from 'tabler-react';
 import { useFormContext } from 'react-hook-form';
 import cn from 'classnames';
 
-const FormInput = ({
+interface Props {
+  type: string;
+  name: string;
+  label: string;
+  placeholder: string;
+  defaultValue?: string;
+  validation: any;
+  wrapperClassName?: string;
+  className?: string;
+}
+
+const FormInput: React.FC<Props> = ({
   type,
   name,
   label,
@@ -27,6 +39,7 @@ const FormInput = ({
         type={type}
         defaultValue={defaultValue}
         placeholder={placeholder}
+        // @ts-ignore
         ref={register(validation)}
       />
       {error && <span className="invalid-feedback">{error.message}</span>}

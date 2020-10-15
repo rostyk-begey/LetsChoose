@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
 import { AppError } from '../../usecases/error';
@@ -7,7 +8,6 @@ import {
   RequestWithTokenParam,
 } from './types';
 import { UserService } from '../../services/UserService';
-import { Request, Response } from 'express';
 import { RequestWithUserId, ResponseMessage } from '../../types';
 import { User } from '../../models/User';
 
@@ -40,7 +40,7 @@ export default class UserController {
       httpOnly: true,
     });
 
-    if (req.query?.refreshTokenLocation === 'body') {
+    if (req.query.refreshTokenLocation === 'body') {
       responseBody.refreshToken = refreshToken;
     }
 
@@ -110,7 +110,7 @@ export default class UserController {
   ): Promise<void> {
     let token;
 
-    if (req.query?.refreshTokenLocation === 'body') {
+    if (req.query.refreshTokenLocation === 'body') {
       token = req.body.refreshToken;
     } else {
       token = req.cookies?.jid;

@@ -1,10 +1,15 @@
 import { useState, useCallback } from 'react';
 
+interface IContestItem {
+  title: string,
+  image: File,
+}
+
 const useContestItems = () => {
-  const [items, setItems] = useState([]);
-  const addItem = useCallback((item) => setItems([...items, item]), [items]);
+  const [items, setItems] = useState<IContestItem[]>([]);
+  const addItem = useCallback((item: IContestItem) => setItems([...items, item]), [items]);
   const updateItem = useCallback(
-    (index, updatedItem) =>
+    (index: number, updatedItem: Partial<IContestItem>) =>
       setItems(
         items.map((item, i) =>
           i === index ? { ...item, ...updatedItem } : item,
@@ -13,7 +18,7 @@ const useContestItems = () => {
     [items],
   );
   const deleteItem = useCallback(
-    (index) => setItems(items.filter((_, i) => index !== i)),
+    (index: number) => setItems(items.filter((_, i) => index !== i)),
     [items],
   );
   return { items, setItems, addItem, deleteItem, updateItem };

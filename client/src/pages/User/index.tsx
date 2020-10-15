@@ -16,8 +16,8 @@ const SORT_OPTIONS = {
   NEWEST: 'NEWEST',
 };
 
-const UserPage = () => {
-  const { username } = useParams();
+const UserPage: React.FC = () => {
+  const { username } = useParams<{ username: string }>();
   const { data: { data: { _id: id, ...user } = {} } = {} } = useUserFind(
     username,
   );

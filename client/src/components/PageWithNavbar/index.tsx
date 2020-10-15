@@ -1,15 +1,30 @@
-import React, { useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
+// @ts-ignore
 import { Page as TablerPage, Grid, Form } from 'tabler-react';
 import { useScrollPosition } from '@n8tb1t/use-scroll-position';
 
 import Page from 'app/components/Page';
 
-const SORT_OPTIONS = {
-  POPULAR: 'POPULAR',
-  NEWEST: 'NEWEST',
-};
+enum SORT_OPTIONS {
+  POPULAR = 'POPULAR',
+  NEWEST = 'NEWEST',
+}
 
-const PageWithNavbar = ({ params, handleSearch, onInputChange, children }) => {
+interface Props {
+  params: {
+    sortBy: SORT_OPTIONS;
+    search: string;
+  };
+  handleSearch: any;
+  onInputChange: any;
+}
+
+const PageWithNavbar: React.FC<PropsWithChildren<Props>> = ({
+  params,
+  handleSearch,
+  onInputChange,
+  children,
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   useScrollPosition(
     ({ currPos }) => {
@@ -21,7 +36,6 @@ const PageWithNavbar = ({ params, handleSearch, onInputChange, children }) => {
 
   return (
     <Page
-      isPrivate
       navbarBefore={
         <Grid.Col lg={5} className="ml-auto mt-4 mt-lg-0" ignoreCol>
           <div className="page-options d-flex">

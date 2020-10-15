@@ -1,18 +1,21 @@
 import axios from 'axios';
 
-import ROUTES from 'app/utils/routes';
+import ROUTES from '../utils/routes';
+
+export type AccessToken = string | null;
+export type Observer = (accessToken: AccessToken) => void;
 
 const STORAGE_KEY = 'AUTH';
-let _accessToken = localStorage.getItem(STORAGE_KEY) || null;
-let observers = [];
+let _accessToken: AccessToken = localStorage.getItem(STORAGE_KEY) || null;
+let observers: Observer[] = [];
 
 const isLoggedIn = () => !!_accessToken;
 
-const notify = (accessToken) => {
+const notify = (accessToken: AccessToken) => {
   observers.forEach((observer) => observer(accessToken));
 };
 
-const setToken = (token) => {
+const setToken = (token: AccessToken) => {
   if (token) {
     localStorage.setItem(STORAGE_KEY, token);
   } else {
@@ -22,7 +25,7 @@ const setToken = (token) => {
   notify(_accessToken);
 };
 
-const getExpirationDate = (token) => {
+const getExpirationDate = (token: string): number | null => {
   if (!token) return null;
 
   const payload = JSON.parse(atob(token.split('.')[1]));
@@ -31,9 +34,9 @@ const getExpirationDate = (token) => {
   return (payload && payload.exp && payload.exp * 1000) || null;
 };
 
-const isExpired = (exp) => (exp ? Date.now() > exp : false);
+const isExpired = (exp: number | null) => (exp ? Date.now() > exp : false);
 
-const getToken = async () => {
+const getToken = async (): Promise<AccessToken> => {
   if (!_accessToken || isExpired(getExpirationDate(_accessToken))) {
     try {
       const {
@@ -50,11 +53,9 @@ const getToken = async () => {
   return _accessToken;
 };
 
-const subscribe = (observer) => {
-  observers.push(observer);
-};
+const subscribe = (observer: Observer) => observers.push(observer);
 
-const unsubscribe = (observer) => {
+const unsubscribe = (observer: Observer) => {
   observers = observers.filter((_observer) => _observer !== observer);
 };
 

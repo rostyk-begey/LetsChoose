@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
 import { AppError } from '../../usecases/error';
@@ -10,7 +11,6 @@ import {
   GetResponse,
 } from './types';
 import ContestService from '../../services/ContestService';
-import { Request, Response } from 'express';
 import { Contest } from '../../models/Contest';
 import { RequestWithUserId, ResponseMessage } from '../../types';
 

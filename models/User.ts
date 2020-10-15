@@ -1,10 +1,10 @@
-import { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import { prop, getModelForClass } from '@typegoose/typegoose';
 import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 
 type IContest = Base<string>;
 export class User extends TimeStamps implements IContest {
-  @prop({ type: Schema.Types.ObjectId })
+  @prop({ type: mongoose.Types.ObjectId })
   _id!: string;
 
   @prop({ type: String, required: true, unique: true })

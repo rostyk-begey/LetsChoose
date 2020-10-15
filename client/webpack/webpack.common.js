@@ -11,7 +11,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 module.exports = {
   context: sourcePath,
   entry: {
-    app: './index.jsx',
+    app: './index.tsx',
   },
   output: {
     filename: '[name].bundle.js',
@@ -36,9 +36,14 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.[jt]sx?$/,
         use: 'babel-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.js$/,
+        use: ["source-map-loader"],
+        enforce: "pre"
       },
       {
         test: /\.css$/,
@@ -115,7 +120,7 @@ module.exports = {
     new MiniCssExtractPlugin(),
   ],
   resolve: {
-    extensions: ['.jsx', '.js'],
+    extensions: ['.jsx', '.js', '.tsx', '.ts'],
     alias: {
       app: path.join(__dirname, '../src/'),
       assets: path.join(__dirname, '../src/assets/'),

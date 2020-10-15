@@ -1,12 +1,7 @@
 import { Request, Response } from 'express';
 
 import { ContestItem } from '../../models/ContestItem';
-import {
-  GetPairParams,
-  GetPairResponse,
-  StartParams,
-  StartResponse,
-} from './types';
+import { GetPairParams, GetPairResponse, StartParams } from './types';
 import GameService from '../../services/GameService';
 
 export default class GameController {

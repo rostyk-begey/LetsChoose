@@ -1,12 +1,30 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+// @ts-ignore
 import { Button, Card, Form } from 'tabler-react';
 
 import FormInput from 'app/components/FormInput';
 
 import './index.scss';
 
-const AuthForm = ({
+export interface InputElement {
+  type: string;
+  name: string;
+  label: string;
+  placeholder: string;
+  validation: {};
+}
+
+interface Props {
+  onSubmit: () => void;
+  inputs: InputElement[];
+  title: string;
+  buttonText: string;
+  buttonLoading: boolean;
+  formAfter: React.ElementType;
+}
+
+const AuthForm: React.FC<Props> = ({
   onSubmit,
   inputs,
   title,

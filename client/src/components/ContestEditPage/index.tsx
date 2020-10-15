@@ -1,14 +1,28 @@
 import React from 'react';
+// @ts-ignore
 import { Grid, Page as TablerPage } from 'tabler-react';
 
-import Page from 'app/components/Page';
-import EditContestForm from 'app/components/ContestEditPage/EditContestForm';
-import CreatedContestItem from 'app/components/ContestEditPage/EditSingleContestItemForm';
-import CreateContestItemForm from 'app/components/ContestEditPage/CreateContestItemForm';
+import Page from '../../components/Page';
+import EditContestForm from '../../components/ContestEditPage/EditContestForm';
+import CreatedContestItem from '../../components/ContestEditPage/EditSingleContestItemForm';
+import CreateContestItemForm from '../../components/ContestEditPage/CreateContestItemForm';
 
 import '../../pages/CreateContest/index.scss';
 
-const ContestEditPage = ({
+interface Func {
+  (): void;
+}
+
+interface Props {
+  save: Func;
+  items: [];
+  contestData: Func;
+  addItem: Func;
+  updateItem: Func;
+  deleteItem: Func;
+}
+
+const ContestEditPage: React.FC<Props> = ({
   save,
   items,
   contestData,

@@ -1,10 +1,21 @@
 import React from 'react';
 import cn from 'classnames';
-import { Container, Grid, Nav } from 'tabler-react/dist';
+// @ts-ignore
+import { Container, Grid, Nav } from 'tabler-react';
 
 import './index.scss';
 
-const NavBar = ({
+interface Props {
+  tabbed?: boolean;
+  items?: any[];
+  className?: string;
+  itemsObjects?: any[];
+  before?: React.ElementType;
+  collapse?: boolean;
+  routerContextComponentType?: any;
+}
+
+const NavBar: React.FC<Props> = ({
   items,
   itemsObjects,
   before,

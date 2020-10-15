@@ -1,23 +1,31 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import PrivateRoute from 'app/components/PrivateRoute';
-import HomePage from 'app/pages/Home';
-import LoginPage from 'app/pages/Login';
-import RegisterPage from 'app/pages/Register';
-import ForgotPasswordPage from 'app/pages/ForgotPassword';
-import ResetPasswordPage from 'app/pages/PasswordReset';
-import ConfirmEmailPage from 'app/pages/ConfirmEmail';
-import UserPage from 'app/pages/User';
-import GamePage from 'app/pages/Game';
-import ContestPage from 'app/pages/Contest';
-import CreateContestPage from 'app/pages/CreateContest';
-import UpdateContestPage from 'app/pages/UpdateContestPage';
+import PrivateRoute from '../components/PrivateRoute';
+import HomePage from '../pages/Home';
+import LoginPage from '../pages/Login';
+import RegisterPage from '../pages/Register';
+import ForgotPasswordPage from '../pages/ForgotPassword';
+import ResetPasswordPage from '../pages/PasswordReset';
+import ConfirmEmailPage from '../pages/ConfirmEmail';
+import UserPage from '../pages/User';
+import GamePage from '../pages/Game';
+import ContestPage from '../pages/Contest';
+import CreateContestPage from '../pages/CreateContest';
+import UpdateContestPage from '../pages/UpdateContestPage';
 
-import ROUTES from 'app/utils/routes';
+import ROUTES from '../utils/routes';
 
-const useRoutes = (isAuthenticated) => {
-  const routes = [
+export interface IRoute {
+  path: string;
+  redirectTo?: string;
+  allowed: boolean;
+  exact: boolean;
+  component: React.ElementType;
+}
+
+const useRoutes = (isAuthenticated: boolean): JSX.Element => {
+  const routes: IRoute[] = [
     {
       path: ROUTES.HOME,
       allowed: true,

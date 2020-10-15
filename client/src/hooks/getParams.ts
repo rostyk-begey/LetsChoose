@@ -1,13 +1,15 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import { throttle } from 'lodash';
+import throttle from 'lodash/throttle';
 
 import useURLSearchParams from 'app/hooks/URLSearchParams';
 
-const useGetParams = (baseUrl, defaultParams) => {
+type InputCallback = (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+const useGetParams = (baseUrl: string, defaultParams: object) => {
   const history = useHistory();
   const query = useURLSearchParams();
-  const [params, setParams] = useState(defaultParams);
+  const [params, setParams] = useState<object>(defaultParams);
 
   // Restore params from URL
   useEffect(() => {
@@ -15,18 +17,18 @@ const useGetParams = (baseUrl, defaultParams) => {
       const param = query.get(key);
       if (param) acc[key] = param;
       return acc;
-    }, {});
+    }, {} as any);
     setParams((prevState) => ({
       ...prevState,
       ...newPrams,
     }));
   }, []);
 
-  const updateParam = useCallback(
+  const updateParam = useCallback<(name: string, value: any) => void>(
     (name, value) => {
       const newParams = {
         ...params,
-        [name]: value,
+        [name]: encodeURI(value),
       };
       setParams(newParams);
       const urlParams = Object.entries(newParams).reduce((acc, [key, val]) => {
@@ -37,13 +39,13 @@ const useGetParams = (baseUrl, defaultParams) => {
     },
     [params],
   );
-  const onInputChange = ({ target: { name, value } }) =>
+  const onInputChange: InputCallback = ({ target: { name, value } }) =>
     updateParam(name, value);
 
   const { current: throttled } = useRef(
     throttle(updateParam, 1000, { leading: false }),
   );
-  const handleSearch = ({ target: { name, value } }) => throttled(name, value);
+  const handleSearch: InputCallback = ({ target: { name, value } }) => throttled(name, value);
 
   return { params, handleSearch, onInputChange, updateParam };
 };

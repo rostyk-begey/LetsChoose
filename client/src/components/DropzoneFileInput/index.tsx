@@ -2,7 +2,16 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useFormContext } from 'react-hook-form';
 
-const DropzoneFileInput = ({
+interface Props {
+  name: string;
+  accept: string;
+  children: string;
+  previewDefaultUrl: string;
+  previewHolderClassName: string;
+  previewClassName: string;
+}
+
+const DropzoneFileInput: React.FC<Props> = ({
   name,
   accept,
   children,

@@ -1,9 +1,9 @@
-import { Schema } from 'mongoose';
-import { prop, getModelForClass, mongoose, Ref } from '@typegoose/typegoose';
+import mongoose from 'mongoose';
+import { prop, getModelForClass, Ref } from '@typegoose/typegoose';
 import { Contest } from './Contest';
 
 export class ContestItem {
-  @prop({ type: Schema.Types.ObjectId })
+  @prop({ type: mongoose.Types.ObjectId })
   _id!: string;
 
   @prop({ type: String, required: true })
@@ -24,7 +24,7 @@ export class ContestItem {
   @prop({ type: Number, default: 0 })
   finalWins!: number;
 
-  @prop({ ref: () => Contest, refType: Schema.Types.ObjectId, required: true })
+  @prop({ ref: 'Contest', type: mongoose.Types.ObjectId, required: true })
   contestId!: Ref<Contest>;
 }
 

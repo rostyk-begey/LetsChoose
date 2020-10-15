@@ -1,5 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, {
+  useState,
+  useContext,
+  PropsWithChildren,
+  ElementType,
+} from 'react';
 import { Link, useLocation } from 'react-router-dom';
+// @ts-ignore
 import { Site, Page as TablerPage, Button } from 'tabler-react';
 
 import AuthContext from 'app/context/AuthContext';
@@ -9,9 +15,25 @@ import NavBar from 'app/components/NavBar';
 
 import './index.scss';
 
+// @ts-ignore
 import logo from '../../assets/images/logo.svg';
 
-const newNavBarItem = (pathname, to, value, icon, useExact) => ({
+interface INavBarItem {
+  to: string;
+  icon: string;
+  value: string;
+  useExact: string;
+  active: boolean;
+  LinkComponent: React.ElementType;
+}
+
+const newNavBarItem = (
+  pathname: string,
+  to: string,
+  value: string,
+  icon: string,
+  useExact: string,
+): INavBarItem => ({
   to,
   icon,
   value,
@@ -32,13 +54,20 @@ const AUTH_BUTTONS = [
   },
 ];
 
-export const Page = ({ children, navbarBefore }) => {
+interface Props {
+  navbarBefore?: ElementType | any;
+}
+
+export const Page: React.FC<PropsWithChildren<Props>> = ({
+  children,
+  navbarBefore,
+}) => {
   const baseClassName = 'page-template';
   const { pathname } = useLocation();
   const { logout, isAuthenticated } = useContext(AuthContext);
   const { username, avatar } = useContext(UserProfileContext);
   const [navCollapse, setNavCollapse] = useState(true);
-  const navBarItems = [
+  const navBarItems: any[] = [
     newNavBarItem(pathname, ROUTES.HOME, 'Feed', 'home', ROUTES.HOME),
     isAuthenticated &&
       newNavBarItem(

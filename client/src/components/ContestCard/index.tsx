@@ -1,20 +1,31 @@
+// eslint-disable-next-line no-use-before-define
 import React from 'react';
 import { Link } from 'react-router-dom';
+// @ts-ignore
 import { Card, Avatar, Icon, Tag } from 'tabler-react';
+// @ts-ignore
 import humanTime from 'human-time';
 import clip from 'text-clipper';
 
-import ROUTES from 'app/utils/routes';
+import ROUTES from '../../utils/routes';
 
 import './index.scss';
+import { Contest } from '../../../../models/Contest';
+import { User } from '../../../../models/User';
 
-const ContestCard = ({
+interface Props {
+  data: Contest & {
+    author: User;
+    tags: string[] | undefined;
+  };
+}
+
+const ContestCard: React.FC<Props> = ({
   data: {
     _id: id,
     games,
     author: { username, avatar },
     thumbnail,
-    isBookmarked = false,
     title,
     excerpt,
     createdAt,
@@ -57,7 +68,7 @@ const ContestCard = ({
           <div>
             <Link to={`${ROUTES.USERS}/${username}`}>@{username}</Link>
             <small className="d-block text-muted">
-              {humanTime(new Date(createdAt))}
+              {humanTime(new Date(createdAt as Date))}
             </small>
           </div>
           <div className="ml-auto text-muted">
@@ -70,7 +81,7 @@ const ContestCard = ({
           </div>
         </div>
         <Tag.List className="pt-4">
-          {tags.map((tag) => (
+          {tags.map((tag: string) => (
             <Link
               key={tag}
               to={ROUTES.HOME}

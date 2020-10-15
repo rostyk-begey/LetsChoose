@@ -2,8 +2,11 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
 import ROUTES from 'app/utils/routes';
+import { IRoute } from '../../hooks/routes';
 
-const PrivateRoute = ({
+interface Props extends IRoute {}
+
+const PrivateRoute: React.FC<Props> = ({
   allowed,
   redirectTo = ROUTES.LOGIN,
   component: Component,
