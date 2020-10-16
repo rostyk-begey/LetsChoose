@@ -7,7 +7,7 @@
     "server": "yarn --cwd server run dev",
     "client": "yarn --cwd client run start",
     "client:build": "yarn --cwd client build",
-    "postinstall": "cd client && yarn install --production=false && yarn run build && cd ../server && yarn install && tsc",
+    "postinstall": "cd client && yarn install --production=false && yarn run build && cd ../server && yarn install && cd ../ && tsc",
     "dev": "concurrently \"yarn run server\" \"yarn run client\""
   },
   "keywords": [
