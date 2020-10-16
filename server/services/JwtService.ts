@@ -10,26 +10,38 @@ interface AuthTokenPayload extends BaseTokenPayload {
   passwordVersion: number;
 }
 
+interface TokenPair {
+  accessToken: string;
+  refreshToken: string;
+}
+
 export default class JwtService {
-  public static generateAccessToken(payload: AuthTokenPayload): string {
+  public generateAuthTokenPair(userId: string, passwordVersion = 0): TokenPair {
+    const payload = { userId, passwordVersion };
+    const accessToken = this.generateAccessToken(payload);
+    const refreshToken = this.generateRefreshToken(payload);
+    return { accessToken, refreshToken };
+  }
+
+  public generateAccessToken(payload: AuthTokenPayload): string {
     return jwt.sign(payload, config.jwt.accessSecret, {
       expiresIn: '15s',
     });
   }
 
-  public static generateRefreshToken(payload: AuthTokenPayload): string {
+  public generateRefreshToken(payload: AuthTokenPayload): string {
     return jwt.sign(payload, config.jwt.refreshSecret, {
       expiresIn: '7d',
     });
   }
 
-  public static generateResetPasswordToken(userId: string): string {
+  public generateResetPasswordToken(userId: string): string {
     return jwt.sign({ userId }, config.jwt.passwordResetSecret, {
       expiresIn: '10m',
     });
   }
 
-  public static generateEmailToken(userId: string): string {
+  public generateEmailToken(userId: string): string {
     return jwt.sign(
       { userId },
       config.jwt.emailSecret,
@@ -37,19 +49,19 @@ export default class JwtService {
     );
   }
 
-  public static verifyAccessToken(token: string): AuthTokenPayload {
+  public verifyAccessToken(token: string): AuthTokenPayload {
     return jwt.verify(token, config.jwt.accessSecret) as AuthTokenPayload;
   }
 
-  public static verifyRefreshToken(token: string): AuthTokenPayload {
+  public verifyRefreshToken(token: string): AuthTokenPayload {
     return jwt.verify(token, config.jwt.refreshSecret) as AuthTokenPayload;
   }
 
-  public static verifyEmailToken(token: string): BaseTokenPayload {
+  public verifyEmailToken(token: string): BaseTokenPayload {
     return jwt.verify(token, config.jwt.emailSecret) as BaseTokenPayload;
   }
 
-  public static verifyPasswordResetToken(token: string): BaseTokenPayload {
+  public verifyPasswordResetToken(token: string): BaseTokenPayload {
     return jwt.verify(
       token,
       config.jwt.passwordResetSecret,

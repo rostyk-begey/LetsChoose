@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+import autobind from 'autobind-decorator';
 
 import { AppError } from '../../usecases/error';
 import {
@@ -10,9 +11,20 @@ import {
 import { UserService } from '../../services/UserService';
 import { RequestWithUserId, ResponseMessage } from '../../types';
 import { User } from '../../models/User';
+import UserRepository from '../../repositories/UserRepository';
+import JwtService from '../../services/JwtService';
+import EmailService from '../../services/EmailService';
+import PasswordHashService from '../../services/PasswordHashService';
 
-export default class UserController {
-  public static async login(
+@autobind
+class UserController {
+  private userService: UserService;
+
+  constructor(userService: UserService) {
+    this.userService = userService;
+  }
+
+  public async login(
     req: Request,
     res: Response<LoginResponseBody>,
   ): Promise<void> {
@@ -26,10 +38,11 @@ export default class UserController {
 
     const { login, password } = req.body;
 
-    const { userId, accessToken, refreshToken } = await UserService.loginUser(
-      login,
-      password,
-    );
+    const {
+      userId,
+      accessToken,
+      refreshToken,
+    } = await this.userService.loginUser(login, password);
 
     const responseBody: LoginResponseBody = {
       userId,
@@ -47,7 +60,7 @@ export default class UserController {
     res.status(200).json(responseBody);
   }
 
-  public static async register(
+  public async register(
     req: Request,
     res: Response<ResponseMessage>,
   ): Promise<void> {
@@ -61,12 +74,12 @@ export default class UserController {
 
     const { email, username, password } = req.body;
 
-    await UserService.registerUser({ email, username, password });
+    await this.userService.registerUser({ email, username, password });
 
     res.status(201).json({ message: 'User successfully created!' });
   }
 
-  public static async forgotPassword(
+  public async forgotPassword(
     req: Request,
     res: Response<ResponseMessage>,
   ): Promise<void> {
@@ -80,14 +93,14 @@ export default class UserController {
 
     const { email } = req.body;
 
-    await UserService.requestPasswordReset(email);
+    await this.userService.requestPasswordReset(email);
 
     res
       .status(201)
       .json({ message: `Reset password link has been sent to ${email}!` });
   }
 
-  public static async resetPassword(
+  public async resetPassword(
     req: RequestWithTokenParam,
     res: Response<ResponseMessage>,
   ): Promise<void> {
@@ -99,12 +112,15 @@ export default class UserController {
       });
     }
 
-    await UserService.resetUsersPassword(req.params.token, req.body.password);
+    await this.userService.resetUsersPassword(
+      req.params.token,
+      req.body.password,
+    );
 
     res.status(201).json({ message: 'Password was successfully changed!' });
   }
 
-  public static async refreshToken(
+  public async refreshToken(
     req: Request,
     res: Response<LoginResponseBody>,
   ): Promise<void> {
@@ -124,7 +140,7 @@ export default class UserController {
       userId,
       accessToken,
       refreshToken,
-    } = await UserService.refreshToken(token);
+    } = await this.userService.refreshToken(token);
 
     const responseBody: LoginResponseBody = {
       userId,
@@ -142,29 +158,45 @@ export default class UserController {
     res.status(200).json(responseBody);
   }
 
-  public static async find(
+  public async find(
     req: RequestWithUserId<UserFindParams>,
     res: Response<User>,
   ): Promise<void> {
-    const user = await UserService.findByUsernameOrReturnCurrentUser(
+    const user = await this.userService.findByUsernameOrReturnCurrentUser(
       req.params.username,
       req.userId,
     );
     res.status(200).json(user);
   }
-  public static async confirmEmail(
+
+  public async confirmEmail(
     req: RequestWithTokenParam,
     res: Response<ResponseMessage>,
   ): Promise<void> {
-    await UserService.confirmEmail(req.params.token);
+    await this.userService.confirmEmail(req.params.token);
     res.status(200).json({ message: 'Email was successfully verified!' });
   }
+
   // todo: validate permissions
-  public static async remove(
+  public async remove(
     req: Request<UserFindParams>,
     res: Response<ResponseMessage>,
   ): Promise<void> {
-    await UserService.removeUserByUsername(req.params.username);
+    await this.userService.removeUserByUsername(req.params.username);
     res.status(200).json({ message: 'User successfully deleted!' });
   }
 }
+
+const userRepository = new UserRepository();
+const jwtService = new JwtService();
+const emailService = new EmailService();
+const passwordHashService = new PasswordHashService();
+const userService = new UserService(
+  userRepository,
+  jwtService,
+  emailService,
+  passwordHashService,
+);
+const userController = new UserController(userService);
+
+export default userController;

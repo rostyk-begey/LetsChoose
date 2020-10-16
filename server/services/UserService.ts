@@ -1,13 +1,14 @@
-import bcrypt from 'bcryptjs';
 import md5 from 'md5';
 
-import { User, UserModel } from '../models/User';
+import { User } from '../models/User';
 import { AppError } from '../usecases/error';
 import { ContestModel } from '../models/Contest';
 import { ContestItemModel } from '../models/ContestItem';
 import EmailService from './EmailService';
 import JwtService from './JwtService';
 import config from '../config';
+import { IUserRepository } from '../repositories/UserRepository';
+import PasswordHashService from './PasswordHashService';
 
 interface RegisterUserData {
   email: string;
@@ -16,37 +17,53 @@ interface RegisterUserData {
 }
 
 export class UserService {
-  private static generateTokenPair(userId: string, passwordVersion = 0) {
-    const payload = { userId, passwordVersion };
-    const accessToken = JwtService.generateAccessToken(payload);
-    const refreshToken = JwtService.generateRefreshToken(payload);
-    return { accessToken, refreshToken };
+  private userRepository: IUserRepository;
+
+  private jwtService: JwtService;
+
+  private emailService: EmailService;
+
+  private passwordHashService: PasswordHashService;
+
+  constructor(
+    userRepository: IUserRepository,
+    jwtService: JwtService,
+    emailService: EmailService,
+    passwordHashService: PasswordHashService,
+  ) {
+    this.jwtService = jwtService;
+    this.emailService = emailService;
+    this.userRepository = userRepository;
+    this.passwordHashService = passwordHashService;
   }
 
-  public static async registerUser({
+  public async registerUser({
     email,
     username,
     password,
   }: RegisterUserData): Promise<void> {
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const user = new UserModel({
+    const hashedPassword: string = await this.passwordHashService.hash(
+      password,
+      12,
+    );
+
+    const user = await this.userRepository.createUser({
       email,
       username,
       password: hashedPassword,
       avatar: `https://www.gravatar.com/avatar/${md5(email)}?s=200&d=identicon`,
       bio: '',
     });
-    await user.save();
 
-    const emailToken = JwtService.generateEmailToken(user._id);
+    const emailToken = this.jwtService.generateEmailToken(user.id);
 
-    EmailService.sendRegistrationEmail(
+    this.emailService.sendRegistrationEmail(
       user.email,
       `${config.appUrl}/email/confirm/${emailToken}`,
     );
   }
 
-  public static async loginUser(
+  public async loginUser(
     login: string,
     password: string,
   ): Promise<{
@@ -54,17 +71,20 @@ export class UserService {
     accessToken: string;
     refreshToken: string;
   }> {
-    let user = await UserModel.findOne({ email: login });
+    let user = await this.userRepository.findOne({ email: login });
 
     if (!user) {
-      user = await UserModel.findOne({ username: login });
+      user = await this.userRepository.findOne({ username: login });
     }
 
     if (!user) {
       throw new AppError('User not exists!', 400);
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await this.passwordHashService.compare(
+      password,
+      user.password,
+    );
 
     if (!isMatch) {
       throw new AppError('Incorrect login data', 400);
@@ -74,60 +94,62 @@ export class UserService {
       throw new AppError('Email confirmation needed', 403);
     }
 
-    const { accessToken, refreshToken } = UserService.generateTokenPair(
-      user._id,
+    const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
+      user.id,
       user.passwordVersion,
     );
 
     return {
-      userId: user._id,
+      userId: user.id,
       accessToken,
       refreshToken,
     };
   }
 
-  public static async requestPasswordReset(email: string): Promise<void> {
-    const user = await UserModel.findOne({ email });
+  public async requestPasswordReset(email: string): Promise<void> {
+    const user = await this.userRepository.findOne({ email });
 
     if (!user) {
       throw new AppError('Invalid email', 404);
     }
 
-    const resetPasswordToken = JwtService.generateResetPasswordToken(user._id);
+    const resetPasswordToken = this.jwtService.generateResetPasswordToken(
+      user.id,
+    );
 
-    EmailService.sendResetPasswordEmail(
+    this.emailService.sendResetPasswordEmail(
       user.email,
       `${config.appUrl}/password/reset/${resetPasswordToken}`,
     );
   }
 
-  public static async resetUsersPassword(
+  public async resetUsersPassword(
     token: string,
     password: string,
-  ): Promise<void> {
+  ): Promise<User> {
     let userId = '';
 
     try {
-      ({ userId } = JwtService.verifyPasswordResetToken(token));
+      ({ userId } = this.jwtService.verifyPasswordResetToken(token));
     } catch (e) {
       throw new AppError('Reset password link expired', 403);
     }
 
-    const user = await UserModel.findById(userId);
+    const user = await this.userRepository.findById(userId);
 
     if (!user) {
       throw new AppError('User not found', 404);
     }
 
-    const newPassword = await bcrypt.hash(password, 12);
+    const newPassword = await this.passwordHashService.hash(password, 12);
 
-    await user.update({
+    return this.userRepository.findByIdAndUpdate(user.id, {
       password: newPassword,
       passwordVersion: user.passwordVersion + 1,
     });
   }
 
-  public static async refreshToken(
+  public async refreshToken(
     token: string,
   ): Promise<{
     userId: string;
@@ -139,19 +161,19 @@ export class UserService {
     if (!token) throw new AppError('Invalid token', 400);
 
     try {
-      ({ userId } = JwtService.verifyRefreshToken(token));
+      ({ userId } = this.jwtService.verifyRefreshToken(token));
     } catch (e) {
       throw new AppError('Invalid signature', 400);
     }
 
-    const user = await UserModel.findById(userId).select('-password');
+    const user = await this.userRepository.findById(userId);
 
     if (!user) {
       throw new AppError('Invalid token', 400);
     }
 
-    const { accessToken, refreshToken } = UserService.generateTokenPair(
-      user._id,
+    const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
+      user.id,
       user.passwordVersion,
     );
 
@@ -162,41 +184,37 @@ export class UserService {
     };
   }
 
-  public static async findByUsernameOrReturnCurrentUser(
+  public async findByUsernameOrReturnCurrentUser(
     username: string,
     currentUserId?: string,
   ): Promise<User> {
     let user: User;
-    if (username === 'me' || currentUserId) {
-      user = (await UserModel.findById(currentUserId).select(
-        '-password',
-      )) as User;
+    if (username === 'me' && currentUserId) {
+      user = await this.userRepository.findById(currentUserId as string);
     } else {
-      user = (await UserModel.findOne({ username }).select(
-        '-password',
-      )) as User;
+      user = await this.userRepository.findOne({ username });
     }
     if (!user) throw new AppError('Resource not found!', 404);
     return user;
   }
 
-  public static async confirmEmail(confirmEmailToken: string): Promise<void> {
+  public async confirmEmail(confirmEmailToken: string): Promise<void> {
     try {
-      const { userId } = JwtService.verifyEmailToken(confirmEmailToken);
-      await UserModel.findByIdAndUpdate(userId, { confirmed: true });
+      const { userId } = this.jwtService.verifyEmailToken(confirmEmailToken);
+      await this.userRepository.findByIdAndUpdate(userId, { confirmed: true });
     } catch (e) {
       throw new AppError('Invalid url', 400);
     }
   }
 
-  public static async removeUserByUsername(username: string): Promise<void> {
-    const user = await UserModel.findOne({ username });
+  public async removeUserByUsername(username: string): Promise<void> {
+    const user = await this.userRepository.findOne({ username });
 
     if (!user) {
       throw new AppError('User does not exists', 404);
     }
 
-    const contests = await ContestModel.find({ author: user._id });
+    const contests = await ContestModel.find({ author: user.id });
     const deletes = contests.map(async (contest) => {
       await ContestItemModel.deleteMany({ contestId: contest.id });
       await ContestModel.findByIdAndDelete(contest.id);

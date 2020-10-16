@@ -15,7 +15,7 @@ const auth = (
 
   try {
     const token = req.headers?.authorization?.split(' ')[1] as string;
-    const { userId } = JwtService.verifyAccessToken(token);
+    const { userId } = new JwtService().verifyAccessToken(token);
     req.userId = userId;
     next();
   } catch (e) {

@@ -6,7 +6,7 @@ import renderResetPasswordEmail from '../usecases/renderResetPasswordEmail';
 import config from '../config';
 
 export default class EmailService {
-  public static sendRegistrationEmail(
+  public sendRegistrationEmail(
     to: string,
     confirmRegistrationUrl: string,
   ): Promise<SentMessageInfo> {
@@ -17,7 +17,7 @@ export default class EmailService {
     });
   }
 
-  public static sendResetPasswordEmail(
+  public sendResetPasswordEmail(
     to: string,
     resetPasswordUrl: string,
   ): Promise<SentMessageInfo> {

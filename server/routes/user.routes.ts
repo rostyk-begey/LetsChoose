@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 
 import auth from '../middleware/auth.middleware';
 import { catchAsync } from '../usecases/error';
-import UserController from '../controllers/user/UserController';
+import userController from '../controllers/user/UserController';
 
 const router = Router();
 
@@ -13,11 +13,11 @@ router.get(
     req.params.username = 'me';
     next();
   },
-  catchAsync(UserController.find),
+  catchAsync(userController.find),
 );
 
-router.get('/:username', catchAsync(UserController.find));
+router.get('/:username', catchAsync(userController.find));
 
-router.delete('/:username', auth, catchAsync(UserController.remove));
+router.delete('/:username', auth, catchAsync(userController.remove));
 
 export default router;

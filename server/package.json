@@ -5,5 +5,8 @@
   "scripts": {
     "start": "NODE_ENV=production ts-node app.ts",
     "dev": "ts-node-dev app.ts"
+  },
+  "dependencies": {
+    "autobind-decorator": "^2.4.0"
   }
 }

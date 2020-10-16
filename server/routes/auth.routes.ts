@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 
-import UserController from '../controllers/user/UserController';
+import userController from '../controllers/user/UserController';
 import auth from '../middleware/auth.middleware';
 import { catchAsync } from '../usecases/error';
 import {
@@ -20,24 +20,24 @@ router.post(
   },
 );
 
-router.post('/email/confirm/:token', catchAsync(UserController.confirmEmail));
+router.post('/email/confirm/:token', catchAsync(userController.confirmEmail));
 
 router.post(
   '/password/forgot',
   forgotPasswordSchema,
-  catchAsync(UserController.forgotPassword),
+  catchAsync(userController.forgotPassword),
 );
 
 router.post(
   '/password/reset/:token',
   resetPasswordSchema,
-  catchAsync(UserController.resetPassword),
+  catchAsync(userController.resetPassword),
 );
 
-router.post('/register', registerSchema, catchAsync(UserController.register));
+router.post('/register', registerSchema, catchAsync(userController.register));
 
-router.post('/login', loginSchema, catchAsync(UserController.login));
+router.post('/login', loginSchema, catchAsync(userController.login));
 
-router.post('/token', catchAsync(UserController.refreshToken));
+router.post('/token', catchAsync(userController.refreshToken));
 
 export default router;
