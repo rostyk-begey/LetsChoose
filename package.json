@@ -4,11 +4,12 @@
   "description": "",
   "scripts": {
     "start": "yarn --cwd server run start",
-    "server": "yarn --cwd server run dev",
     "client": "yarn --cwd client run start",
+    "server": "yarn --cwd server run dev",
+    "client:install": "yarn --cwd client install",
+    "server:install": "yarn --cwd server install",
     "client:build": "yarn --cwd client build",
-    "tsc": "tsc",
-    "postinstall": "cd client && yarn install --production=false && yarn run build && cd ../server && yarn install && cd ../ && yarn run tsc",
+    "build-ts": "tsc",
     "dev": "concurrently \"yarn run server\" \"yarn run client\""
   },
   "keywords": [
