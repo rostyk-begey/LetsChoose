@@ -8,13 +8,13 @@ import humanTime from 'human-time';
 import clip from 'text-clipper';
 
 import ROUTES from '../../utils/routes';
-
-import './index.scss';
-import { ContestItem } from '../../../../server/models/Contest';
+import { Contest } from '../../../../server/models/Contest';
 import { User } from '../../../../server/models/User';
 
+import './index.scss';
+
 interface Props {
-  data: ContestItem & {
+  data: Contest & {
     author: User;
     tags?: string[] | undefined;
   };
@@ -22,7 +22,7 @@ interface Props {
 
 const ContestCard: React.FC<Props> = ({
   data: {
-    _id: id,
+    id,
     games,
     author: { username, avatar },
     thumbnail,

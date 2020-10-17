@@ -17,14 +17,14 @@ import {
   CreateBody,
 } from '../../../../server/controllers/contest/types';
 import { ResponseMessage } from '../../../../server/types';
-import { ContestItem } from '../../../../server/models/Contest';
+import { Contest } from '../../../../server/models/Contest';
 
 export const useContestApi = () => {
   const baseURL = ROUTES.API.CONTESTS;
   const all = (params: GetQuery) => api.get<GetResponse>(baseURL, { params });
   const allItems = (id: string, params: GetItemsQuery) =>
     api.get<GetItemsResponse>(`${baseURL}/${id}/items`, { params });
-  const find = (id: string) => api.get<ContestItem>(`${baseURL}/${id}`);
+  const find = (id: string) => api.get<Contest>(`${baseURL}/${id}`);
   const create = (data: CreateBody) => api.post<ResponseMessage>(baseURL, data);
   const update = (id: string, data: Partial<Omit<CreateBody, 'items'>>) =>
     api.post<ResponseMessage>(`${baseURL}/${id}`, data);

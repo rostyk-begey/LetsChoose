@@ -12,7 +12,6 @@ import { useContestAllInfinite } from '../../hooks/api/contest';
 import useGetParams from '../../hooks/getParams';
 import ROUTES from '../../utils/routes';
 import { User } from '../../../../server/models/User';
-import { ContestItem } from '../../../../server/models/Contest';
 
 const SORT_OPTIONS = {
   POPULAR: 'POPULAR',

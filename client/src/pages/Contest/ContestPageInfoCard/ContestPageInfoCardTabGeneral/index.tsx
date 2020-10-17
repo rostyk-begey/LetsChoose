@@ -6,10 +6,10 @@ import humanTime from 'human-time';
 import { Grid, Header, Icon, Media, Tag } from 'tabler-react';
 
 import ROUTES from '../../../../utils/routes';
-import { ContestItem } from '../../../../../../server/models/Contest';
+import { Contest } from '../../../../../../server/models/Contest';
 
 interface Props {
-  contest: ContestItem & {
+  contest: Contest & {
     tags: string[];
   };
 }

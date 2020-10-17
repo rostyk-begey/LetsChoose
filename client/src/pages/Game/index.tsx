@@ -5,9 +5,9 @@ import { Prompt, useParams, useHistory } from 'react-router-dom';
 
 import Page from '../../components/Page';
 import { useGameState, useGameChoose } from '../../hooks/api/game';
+import { ContestItem } from '../../../../server/models/ContestItem';
 
 import './index.scss';
-import { ContestItem } from '../../../../server/models/ContestItem';
 
 const GamePage: React.FC = () => {
   const baseClassName = 'game-page';
@@ -40,11 +40,11 @@ const GamePage: React.FC = () => {
                   <Header.H3 className="text-center">Game over</Header.H3>
                 )}
                 <Grid.Row>
-                  {pair.map(({ _id, title, image }: ContestItem) => (
+                  {pair.map(({ id, title, image }: ContestItem) => (
                     // eslint-disable-next-line react/no-array-index-key
-                    <Grid.Col lg={6} key={_id}>
+                    <Grid.Col lg={6} key={id}>
                       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-                      <div className="media mb-3" onClick={() => onChoose(_id)}>
+                      <div className="media mb-3" onClick={() => onChoose(id)}>
                         <img
                           className={`d-flex rounded w-100 ${baseClassName}__compare-item-image`}
                           src={image}
