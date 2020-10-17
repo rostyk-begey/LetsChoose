@@ -1,7 +1,5 @@
-import { Request, Response } from 'express';
 import { Contest } from '../../models/Contest';
 import { ContestItem } from '../../models/ContestItem';
-import { RequestWithUserId, ResponseMessage } from '../../types';
 
 export enum SORT_OPTIONS {
   POPULAR = 'games',

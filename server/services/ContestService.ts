@@ -1,6 +1,6 @@
 import Mongoose from 'mongoose';
 
-import { Contest, ContestModel } from '../models/Contest';
+import { Contest } from '../models/Contest';
 import { AppError } from '../usecases/error';
 import {
   CreateBody,
@@ -11,8 +11,9 @@ import {
   ISortOptions,
   SORT_OPTIONS,
 } from '../controllers/contest/types';
-import { ContestItemModel } from '../models/ContestItem';
 import CloudinaryService from './CloudinaryService';
+import { IContestRepository } from '../repositories/ContestRepository';
+import { IContestItemRepository } from '../repositories/ContestItemRepository';
 
 interface CreateContestsData extends CreateBody {
   files: Express.Multer.File[];
@@ -25,6 +26,22 @@ const fieldNameFilter = (key: string) => ({ fieldname }: Express.Multer.File) =>
   fieldname === key;
 
 export default class ContestService {
+  private readonly cloudinaryService: CloudinaryService;
+
+  private readonly contestRepository: IContestRepository;
+
+  private readonly contestItemRepository: IContestItemRepository;
+
+  constructor(
+    contestRepository: IContestRepository,
+    contestItemRepository: IContestItemRepository,
+    cloudinaryService: CloudinaryService,
+  ) {
+    this.contestRepository = contestRepository;
+    this.contestItemRepository = contestItemRepository;
+    this.cloudinaryService = cloudinaryService;
+  }
+
   private static getContestThumbnailPublicId(contestId: string) {
     return `contests/${contestId}/thumbnail`;
   }
@@ -86,14 +103,14 @@ export default class ContestService {
     return { $sort: sortOptions };
   }
 
-  public static async getContestsPaginate({
+  public async getContestsPaginate({
     page = 1,
     perPage = 10,
     search = '',
     sortBy = '',
     author = '',
   }: GetQuery): Promise<GetResponse> {
-    const count = await ContestModel.countDocuments();
+    const count = await this.contestRepository.countDocuments();
     const totalPages = Math.ceil(count / perPage);
 
     if (page > totalPages) {
@@ -104,7 +121,7 @@ export default class ContestService {
       ? [{ $match: { 'author.username': author } }]
       : [];
 
-    const contests: Contest[] = await ContestModel.aggregate([
+    const contests: Contest[] = await this.contestRepository.aggregate([
       ...ContestService.getSearchPipelines(search), // should be a first stage
       {
         $lookup: {
@@ -132,7 +149,7 @@ export default class ContestService {
           'author.username': 1,
         },
       },
-    ]).exec();
+    ]);
 
     return {
       contests,
@@ -141,23 +158,19 @@ export default class ContestService {
     };
   }
 
-  public static async findContestById(id: string): Promise<Contest> {
-    const contest = await ContestModel.findById(id);
-
-    if (!contest) {
-      throw new AppError('Resource not found!', 404);
-    }
-
-    return contest;
+  public findContestById(id: string): Promise<Contest> {
+    return this.contestRepository.findById(id);
   }
 
-  public static async getContestItemsPaginate(
+  public async getContestItemsPaginate(
     contestId: string,
     { page = 1, perPage = 10, search = '' }: GetItemsQuery,
   ): Promise<GetItemsResponse> {
-    await ContestService.findContestById(contestId);
+    await this.findContestById(contestId);
 
-    const count = await ContestItemModel.countDocuments({ contestId });
+    const count = await this.contestItemRepository.countDocuments({
+      contestId,
+    });
 
     const totalPages = Math.ceil(count / perPage);
 
@@ -165,7 +178,7 @@ export default class ContestService {
       throw new AppError('Invalid page number', 400);
     }
 
-    const items = await ContestItemModel.aggregate([
+    const items = await this.contestItemRepository.aggregate([
       ...ContestService.getSearchPipelines(search), // should be a first stage
       { $match: { contestId } },
       {
@@ -202,7 +215,7 @@ export default class ContestService {
       },
       ContestService.getItemsSortPipeline(search),
       ...ContestService.getPaginationPipelines(page, perPage),
-    ]).exec();
+    ]);
 
     return {
       items,
@@ -211,7 +224,7 @@ export default class ContestService {
     };
   }
 
-  public static async createContest(
+  public async createContest(
     userId: string,
     { files, title, excerpt, items }: CreateContestsData,
   ): Promise<void> {
@@ -219,58 +232,55 @@ export default class ContestService {
 
     const contestId = Mongoose.Types.ObjectId();
 
-    const { secure_url } = await CloudinaryService.upload(
+    const { secure_url } = await this.cloudinaryService.upload(
       thumbnail!.path,
       ContestService.getContestThumbnailPublicId(contestId.toString()),
     );
 
-    const contest = new ContestModel({
-      _id: contestId,
+    await this.contestRepository.createContest({
+      _id: `${contestId}`,
       thumbnail: secure_url,
       title,
       excerpt,
       author: userId,
     });
 
-    await contest.save();
-
     const savingItems = items.map(
-      async (item, i: number): Promise<void> => {
+      async ({ title }, i: number): Promise<void> => {
         const contestItemId = Mongoose.Types.ObjectId();
         const image = files.find(fieldNameFilter(`items[${i}][image]`));
-        const { secure_url } = await CloudinaryService.upload(
+        const { secure_url } = await this.cloudinaryService.upload(
           image!.path,
           `contests/${contestId}/items/${contestItemId}`,
         );
-        const contestItem = new ContestItemModel({
-          ...item,
+        await this.contestItemRepository.createContestItem({
+          title,
           image: secure_url,
-          _id: contestItemId,
-          contestId,
+          _id: `${contestItemId}`,
+          contestId: `${contestId}`,
         });
-        await contestItem.save();
       },
     );
 
     await Promise.all(savingItems);
   }
 
-  public static async updateContest(
+  public async updateContest(
     contestId: string,
     { files, title, excerpt }: Omit<CreateContestsData, 'items'>,
   ): Promise<Contest> {
-    const contest: Contest = await ContestService.findContestById(contestId);
+    const contest: Contest = await this.findContestById(contestId);
 
     if (title) contest.title = title;
     if (excerpt) contest.excerpt = excerpt;
     if (files?.length) {
       const thumbnailFile = files.find(fieldNameFilter('thumbnail'));
       if (contest.thumbnail) {
-        await CloudinaryService.destroy(
-          getCloudinaryImagePublicId(contest.thumbnail),
+        await this.cloudinaryService.destroy(
+          ContestService.getContestThumbnailPublicId(contestId),
         );
       }
-      const { secure_url } = await CloudinaryService.upload(
+      const { secure_url } = await this.cloudinaryService.upload(
         thumbnailFile!.path,
         ContestService.getContestThumbnailPublicId(contestId),
       );
@@ -283,8 +293,8 @@ export default class ContestService {
     return contest;
   }
 
-  public static async removeContest(contestId: string): Promise<void> {
-    await ContestModel.findByIdAndDelete(contestId);
-    await ContestItemModel.deleteMany({ contestId }); // todo: delete images
+  public async removeContest(contestId: string): Promise<void> {
+    await this.contestRepository.deleteContest(contestId);
+    await this.contestItemRepository.deleteContestItems(contestId); // todo: delete images
   }
 }

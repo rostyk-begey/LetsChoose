@@ -6,7 +6,7 @@ import multer, { FileFilterCallback } from 'multer';
 import auth from '../middleware/auth.middleware';
 import isAuthor from '../middleware/isAuthor.middleware';
 import { catchAsync } from '../usecases/error';
-import ContestController from '../controllers/contest/ContestController';
+import contestController from '../controllers/contest/ContestController';
 import {
   getContestSchema,
   getContestItemsSchema,
@@ -38,26 +38,26 @@ const upload = multer({ storage, fileFilter });
 
 const router = Router();
 
-router.get('/', getContestSchema, catchAsync(ContestController.get));
+router.get('/', getContestSchema, catchAsync(contestController.get));
 
 router.post(
   '/',
   upload.any(),
   auth,
   createContestSchema,
-  catchAsync(ContestController.create),
+  catchAsync(contestController.create),
 );
 
 router.get(
   '/:id',
   param('id').customSanitizer((value) => Mongoose.Types.ObjectId(value)),
-  catchAsync(ContestController.find),
+  catchAsync(contestController.find),
 );
 
 router.get(
   '/:id/items',
   getContestItemsSchema,
-  catchAsync(ContestController.getItems),
+  catchAsync(contestController.getItems),
 );
 
 router.post(
@@ -66,14 +66,14 @@ router.post(
   auth,
   catchAsync(isAuthor),
   updateContestSchema,
-  catchAsync(ContestController.update),
+  catchAsync(contestController.update),
 );
 
 router.delete(
   '/:id',
   auth,
   catchAsync(isAuthor),
-  catchAsync(ContestController.remove),
+  catchAsync(contestController.remove),
 );
 
 export default router;

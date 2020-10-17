@@ -1,7 +1,7 @@
 import cloudinary, { UploadApiResponse } from 'cloudinary';
 
 export default class CloudinaryService {
-  public static upload(
+  public upload(
     filePath: string,
     publicId: string,
   ): Promise<UploadApiResponse> {
@@ -10,7 +10,7 @@ export default class CloudinaryService {
     });
   }
 
-  public static destroy(publicId: string): Promise<any> {
+  public destroy(publicId: string): Promise<any> {
     return cloudinary.v2.uploader.destroy(publicId);
   }
 }

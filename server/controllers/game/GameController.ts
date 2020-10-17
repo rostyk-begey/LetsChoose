@@ -1,15 +1,23 @@
 import { Request, Response } from 'express';
+import autobind from 'autobind-decorator';
 
 import { ContestItem } from '../../models/ContestItem';
 import { GetPairParams, GetPairResponse, StartParams } from './types';
 import GameService from '../../services/GameService';
+import ContestRepository from '../../repositories/ContestRepository';
+import ContestItemRepository from '../../repositories/ContestItemRepository';
+import GameRepository from '../../repositories/GameRepository';
 
-export default class GameController {
-  public static async start(
-    req: Request<StartParams>,
-    res: Response,
-  ): Promise<void> {
-    const game = await GameService.start(req.params.contestId);
+@autobind
+class GameController {
+  private readonly gameService: GameService;
+
+  constructor(gameService: GameService) {
+    this.gameService = gameService;
+  }
+
+  public async start(req: Request<StartParams>, res: Response): Promise<void> {
+    const game = await this.gameService.start(req.params.contestId);
 
     res.status(201).json({
       contestId: game.contestId as string,
@@ -18,11 +26,11 @@ export default class GameController {
     });
   }
 
-  public static async get(
+  public async get(
     req: Request<GetPairParams>,
     res: Response<GetPairResponse>,
   ): Promise<void> {
-    const game = await GameService.findGameById(req.params.gameId);
+    const game = await this.gameService.findGameById(req.params.gameId);
 
     res.status(200).json({
       round: game.round,
@@ -33,12 +41,12 @@ export default class GameController {
     });
   }
 
-  public static async play(
+  public async play(
     req: Request<GetPairParams>,
     res: Response<GetPairResponse>,
   ): Promise<void> {
-    await GameService.playRound(req.params.gameId, req.body.winnerId);
-    const game = await GameService.findGameById(req.params.gameId);
+    await this.gameService.playRound(req.params.gameId, req.body.winnerId);
+    const game = await this.gameService.findGameById(req.params.gameId);
 
     res.status(200).json({
       round: game.round,
@@ -49,3 +57,15 @@ export default class GameController {
     });
   }
 }
+
+const contestRepository = new ContestRepository();
+const contestItemRepository = new ContestItemRepository();
+const gameRepository = new GameRepository();
+const gameService = new GameService(
+  contestRepository,
+  contestItemRepository,
+  gameRepository,
+);
+const gameController = new GameController(gameService);
+
+export default gameController;

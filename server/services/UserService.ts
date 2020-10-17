@@ -135,11 +135,7 @@ export class UserService {
       throw new AppError('Reset password link expired', 403);
     }
 
-    const user = await this.userRepository.findById(userId);
-
-    if (!user) {
-      throw new AppError('User not found', 404);
-    }
+    const user = await this.userRepository.findByIdOrFail(userId);
 
     const newPassword = await this.passwordHashService.hash(password, 12);
 
@@ -158,7 +154,9 @@ export class UserService {
   }> {
     let userId;
 
-    if (!token) throw new AppError('Invalid token', 400);
+    if (!token) {
+      throw new AppError('Invalid token', 400);
+    }
 
     try {
       ({ userId } = this.jwtService.verifyRefreshToken(token));
@@ -166,11 +164,7 @@ export class UserService {
       throw new AppError('Invalid signature', 400);
     }
 
-    const user = await this.userRepository.findById(userId);
-
-    if (!user) {
-      throw new AppError('Invalid token', 400);
-    }
+    const user = await this.userRepository.findByIdOrFail(userId);
 
     const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
       user.id,
@@ -190,7 +184,7 @@ export class UserService {
   ): Promise<User> {
     let user: User;
     if (username === 'me' && currentUserId) {
-      user = await this.userRepository.findById(currentUserId as string);
+      user = await this.userRepository.findByIdOrFail(currentUserId as string);
     } else {
       user = await this.userRepository.findOne({ username });
     }

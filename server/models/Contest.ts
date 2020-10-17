@@ -8,7 +8,7 @@ import { ContestItem } from './ContestItem';
 type IContest = Base<string>;
 export class Contest extends TimeStamps implements IContest {
   @prop({ type: mongoose.Types.ObjectId, alias: 'id' })
-  readonly _id!: string;
+  _id!: string;
   readonly id!: string;
 
   @prop({ type: String, required: true })

@@ -18,7 +18,7 @@ import PasswordHashService from '../../services/PasswordHashService';
 
 @autobind
 class UserController {
-  private userService: UserService;
+  private readonly userService: UserService;
 
   constructor(userService: UserService) {
     this.userService = userService;

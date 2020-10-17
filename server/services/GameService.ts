@@ -2,14 +2,31 @@ import mongoose from 'mongoose';
 import { shuffle } from 'lodash';
 
 import { GameItem } from '../models/GameItem';
-import { Game, GameModel } from '../models/Game';
+import { Game } from '../models/Game';
 import { ContestItem, ContestItemModel } from '../models/ContestItem';
-import ContestService from './ContestService';
 import { AppError } from '../usecases/error';
-import { ContestModel } from '../models/Contest';
+import { IContestRepository } from '../repositories/ContestRepository';
+import { IContestItemRepository } from '../repositories/ContestItemRepository';
+import { IGameRepository } from '../repositories/GameRepository';
 
 export default class GameService {
-  private static getCurrentRoundItems(gameItems: GameItem[], round: number) {
+  private readonly gameRepository: IGameRepository;
+
+  private readonly contestRepository: IContestRepository;
+
+  private readonly contestItemRepository: IContestItemRepository;
+
+  constructor(
+    contestRepository: IContestRepository,
+    contestItemRepository: IContestItemRepository,
+    gameRepository: IGameRepository,
+  ) {
+    this.gameRepository = gameRepository;
+    this.contestRepository = contestRepository;
+    this.contestItemRepository = contestItemRepository;
+  }
+
+  private getCurrentRoundItems(gameItems: GameItem[], round: number) {
     return gameItems.filter(
       ({ compares, wins }) => round === compares && round === wins,
     );
@@ -21,7 +38,7 @@ export default class GameService {
       .map(({ contestItem }) => contestItem!.toString());
   }
 
-  private static populatePair(pair: string[]): Promise<(ContestItem | null)[]> {
+  private populatePair(pair: string[]): Promise<(ContestItem | null)[]> {
     return Promise.all(pair.map((id) => ContestItemModel.findById(id)));
   }
 
@@ -46,41 +63,18 @@ export default class GameService {
     return gameItemsLength > 2 ? Math.sqrt(gameItemsLength) : 1;
   }
 
-  private static async createGame(
-    contestId: string,
-    items: GameItem[],
-  ): Promise<Game> {
-    const pair = GameService.generatePair(items);
-
-    const totalRounds = GameService.calculateTotalRounds(items.length);
-
-    const game = new GameModel({
-      _id: mongoose.Types.ObjectId(),
-      contestId,
-      items,
-      finished: false,
-      round: 0,
-      totalRounds,
-      pair,
-    });
-
-    await game.save();
-
-    return game;
-  }
-
-  private static inGamePair(gamePair: ContestItem[], id: string) {
+  private inGamePair(gamePair: ContestItem[], id: string) {
     return gamePair.some(({ _id }) => _id.toString() === id);
   }
 
-  private static updateGameItems(
+  private updateGameItems(
     gameItems: GameItem[],
     currentPair: ContestItem[],
     winnerId: string,
   ): GameItem[] {
     return gameItems.map((item) => {
       const { contestItem: contestItemId } = item;
-      if (GameService.inGamePair(currentPair, contestItemId as string)) {
+      if (this.inGamePair(currentPair, contestItemId as string)) {
         item.compares += 1;
       }
       if (winnerId === `${contestItemId}`) {
@@ -91,19 +85,18 @@ export default class GameService {
     });
   }
 
-  private static getRoundItems(
-    gameItems: GameItem[],
-    round: number,
-  ): GameItem[] {
+  private getRoundItems(gameItems: GameItem[], round: number): GameItem[] {
     return gameItems.filter(
       ({ compares, wins }) => round === compares && round === wins,
     );
   }
 
-  public static async start(contestId: string): Promise<Game> {
-    await ContestService.findContestById(contestId);
+  public async start(contestId: string): Promise<Game> {
+    await this.contestRepository.findById(contestId);
 
-    const contestItems = await ContestItemModel.find({ contestId }); // todo replace
+    const contestItems = await this.contestItemRepository.findByContestId(
+      contestId,
+    );
 
     const gameItemLength = GameService.calculateGameItemsLength(
       contestItems.length,
@@ -114,30 +107,33 @@ export default class GameService {
       gameItemLength,
     );
 
-    return GameService.createGame(contestId, gameItems);
+    const pair = GameService.generatePair(gameItems);
+
+    const totalRounds = GameService.calculateTotalRounds(gameItems.length);
+
+    return this.gameRepository.createGame({
+      _id: mongoose.Types.ObjectId().toString(),
+      contestId,
+      items: gameItems,
+      finished: false,
+      round: 0,
+      totalRounds,
+      pair,
+    });
   }
 
-  public static async findGameById(gameId: string): Promise<Game> {
-    const game = await GameModel.findById(gameId).populate('pair');
-
-    if (!game) {
-      throw new AppError('Game not found!', 404);
-    }
-
-    return game;
+  public findGameById(gameId: string): Promise<Game> {
+    return this.gameRepository.findById(gameId);
   }
 
-  public static async playRound(
-    gameId: string,
-    winnerId: string,
-  ): Promise<void> {
-    const game = await GameService.findGameById(gameId);
+  public async playRound(gameId: string, winnerId: string): Promise<void> {
+    const game = await this.gameRepository.findById(gameId);
 
     if (game.finished) {
       throw new AppError('Game has been finished', 400);
     }
 
-    if (!GameService.inGamePair(game.pair as ContestItem[], winnerId)) {
+    if (!this.inGamePair(game.pair as ContestItem[], winnerId)) {
       throw new AppError('Invalid winner id', 400);
     }
 
@@ -147,18 +143,12 @@ export default class GameService {
       winnerId,
     );
 
-    let roundItems = GameService.getRoundItems(
-      game.items as GameItem[],
-      game.round,
-    );
+    let roundItems = this.getRoundItems(game.items as GameItem[], game.round);
 
     // no items left on this round, go to next round
     if (roundItems.length === 0) {
       game.round += 1;
-      roundItems = GameService.getRoundItems(
-        game.items as GameItem[],
-        game.round,
-      );
+      roundItems = this.getRoundItems(game.items as GameItem[], game.round);
     }
 
     if (roundItems.length > 1) {
@@ -169,20 +159,26 @@ export default class GameService {
       game.finished = true;
       game.winnerId = winnerId;
 
-      const contest = await ContestModel.findById(game.contestId);
-      contest!.games += 1;
-      await contest!.save();
+      const contest = await this.contestRepository.findById(
+        game.contestId as string,
+      );
+      contest.games += 1;
+      // @ts-ignore
+      await contest.save();
 
       await Promise.all(
         game.items.map(async (gameItem) => {
           if (gameItem instanceof GameItem) {
             const { contestItem: itemId, compares, wins } = gameItem;
-            const contestItem = await ContestItemModel.findById(itemId);
-            contestItem!.compares += compares;
-            contestItem!.wins += wins;
-            contestItem!.games += 1;
-            if (winnerId === `${itemId}`) contestItem!.finalWins += 1;
-            await contestItem!.save();
+            const contestItem = await this.contestItemRepository.findById(
+              itemId as string,
+            );
+            contestItem.compares += compares;
+            contestItem.wins += wins;
+            contestItem.games += 1;
+            if (winnerId === `${itemId}`) contestItem.finalWins += 1;
+            // @ts-ignore
+            await contestItem.save();
           }
         }),
       );

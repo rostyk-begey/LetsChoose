@@ -6,7 +6,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { throttle } from 'lodash';
 
 import { useContestItemsInfinite } from '../../../../hooks/api/contest';
-import { Contest } from '../../../../../../server/models/Contest';
+import { ContestItem } from '../../../../../../server/models/Contest';
 
 const ItemRow: React.FC<any> = ({
   id,
@@ -70,7 +70,7 @@ const ItemRow: React.FC<any> = ({
 );
 
 const ContestPageInfoCardTabStatistics: React.FC<{
-  contest: Contest;
+  contest: ContestItem;
 }> = ({ contest: { _id: contestId } }) => {
   const [search, setSearch] = useState('');
   const {

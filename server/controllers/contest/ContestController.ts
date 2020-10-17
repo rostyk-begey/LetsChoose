@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+import autobind from 'autobind-decorator';
 
 import { AppError } from '../../usecases/error';
 import {
@@ -13,9 +14,19 @@ import {
 import ContestService from '../../services/ContestService';
 import { Contest } from '../../models/Contest';
 import { RequestWithUserId, ResponseMessage } from '../../types';
+import ContestRepository from '../../repositories/ContestRepository';
+import ContestItemRepository from '../../repositories/ContestItemRepository';
+import CloudinaryService from '../../services/CloudinaryService';
 
-export default class ContestController {
-  public static async get(
+@autobind
+class ContestController {
+  private readonly contestService: ContestService;
+
+  constructor(contestService: ContestService) {
+    this.contestService = contestService;
+  }
+
+  public async get(
     req: Request<never, any, any, GetQuery>,
     res: Response<GetResponse>,
   ): Promise<void> {
@@ -32,7 +43,7 @@ export default class ContestController {
       query: { page, perPage, search, author, sortBy },
     } = req;
 
-    const response = await ContestService.getContestsPaginate({
+    const response = await this.contestService.getContestsPaginate({
       page,
       perPage,
       search,
@@ -43,15 +54,15 @@ export default class ContestController {
     res.status(200).json(response);
   }
 
-  public static async find(
+  public async find(
     req: Request<FindParams>,
     res: Response<Contest>,
   ): Promise<void> {
-    const contest = await ContestService.findContestById(req.params.id);
+    const contest = await this.contestService.findContestById(req.params.id);
     res.status(200).json(contest);
   }
 
-  public static async getItems(
+  public async getItems(
     req: Request<FindParams, any, any, GetItemsQuery>,
     res: Response<GetItemsResponse>,
   ): Promise<void> {
@@ -69,7 +80,7 @@ export default class ContestController {
       query: { page, perPage, search },
     } = req;
 
-    const response = await ContestService.getContestItemsPaginate(id, {
+    const response = await this.contestService.getContestItemsPaginate(id, {
       page,
       perPage,
       search,
@@ -78,7 +89,7 @@ export default class ContestController {
     res.status(200).json(response);
   }
 
-  public static async create(
+  public async create(
     req: RequestWithUserId<never, any, CreateBody>,
     res: Response<ResponseMessage>,
   ): Promise<void> {
@@ -96,7 +107,7 @@ export default class ContestController {
       body: { title, excerpt, items },
     } = req;
 
-    await ContestService.createContest(userId as string, {
+    await this.contestService.createContest(userId as string, {
       title,
       excerpt,
       items,
@@ -106,7 +117,7 @@ export default class ContestController {
     res.status(201).json({ message: 'Contest successfully created!' });
   }
 
-  public static async update(
+  public async update(
     req: Request<FindParams, any, Omit<CreateBody, 'items'>>,
     res: Response,
   ): Promise<void> {
@@ -124,7 +135,7 @@ export default class ContestController {
       body: { title, excerpt },
     } = req;
 
-    await ContestService.updateContest(contestId, {
+    await this.contestService.updateContest(contestId, {
       title,
       excerpt,
       files: files as Express.Multer.File[],
@@ -133,12 +144,25 @@ export default class ContestController {
     res.status(200).json({ message: 'Contest successfully updated!' });
   }
 
-  public static async remove(
+  public async remove(
     req: Request<FindParams>,
     res: Response<ResponseMessage>,
   ): Promise<void> {
-    await ContestService.removeContest(req.params.id);
+    await this.contestService.removeContest(req.params.id);
 
     res.status(200).json({ message: 'Contest successfully deleted!' });
   }
 }
+
+const contestRepository = new ContestRepository();
+const contestItemRepository = new ContestItemRepository();
+const cloudinaryService = new CloudinaryService();
+const contestService = new ContestService(
+  contestRepository,
+  contestItemRepository,
+  cloudinaryService,
+);
+
+const contestController = new ContestController(contestService);
+
+export default contestController;

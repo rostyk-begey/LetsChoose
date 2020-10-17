@@ -8,11 +8,11 @@ import { Contest } from './Contest';
 
 export class Game {
   @prop({ type: mongoose.Types.ObjectId, alias: 'id' })
-  readonly _id!: string;
+  _id!: string;
   readonly id!: string;
 
   @prop({
-    ref: () => Contest,
+    ref: () => ContestItem,
     type: mongoose.Types.ObjectId,
     required: true,
   })

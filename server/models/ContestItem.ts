@@ -4,7 +4,7 @@ import { Contest } from './Contest';
 
 export class ContestItem {
   @prop({ type: mongoose.Types.ObjectId, alias: 'id' })
-  readonly _id!: string;
+  _id!: string;
   readonly id!: string;
 
   @prop({ type: String, required: true })

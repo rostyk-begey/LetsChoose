@@ -8,7 +8,7 @@ import { useContestAllInfinite } from '../../hooks/api/contest';
 import useGetParams from '../../hooks/getParams';
 import ROUTES from '../../utils/routes';
 import PageWithNavbar from '../../components/PageWithNavbar';
-import { Contest } from '../../../../server/models/Contest';
+import { ContestItem } from '../../../../server/models/Contest';
 
 const SORT_OPTIONS = {
   POPULAR: 'POPULAR',
@@ -44,7 +44,7 @@ const HomePage: React.FC = () => {
         <Grid.Row>
           {isSuccess &&
             data?.map(
-              ({ data: { contests } }: { data: { contests: Contest[] } }) =>
+              ({ data: { contests } }: { data: { contests: ContestItem[] } }) =>
                 contests.map((contest) => (
                   <Grid.Col width={12} md={6} lg={4} key={contest._id}>
                     {/* @ts-ignore */}

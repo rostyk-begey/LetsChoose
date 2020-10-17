@@ -12,7 +12,7 @@ import { useContestAllInfinite } from '../../hooks/api/contest';
 import useGetParams from '../../hooks/getParams';
 import ROUTES from '../../utils/routes';
 import { User } from '../../../../server/models/User';
-import { Contest } from '../../../../server/models/Contest';
+import { ContestItem } from '../../../../server/models/Contest';
 
 const SORT_OPTIONS = {
   POPULAR: 'POPULAR',
@@ -62,7 +62,7 @@ const UserPage: React.FC = () => {
                   contests.map((contest) => (
                     <Grid.Col width={12} md={6} lg={6} key={contest._id}>
                       {/* @ts-ignore */}
-                      <ContestCard data={contest as Contest} />
+                      <ContestCard data={contest as ContestItem} />
                     </Grid.Col>
                   )),
                 )}

@@ -10,11 +10,11 @@ import clip from 'text-clipper';
 import ROUTES from '../../utils/routes';
 
 import './index.scss';
-import { Contest } from '../../../../server/models/Contest';
+import { ContestItem } from '../../../../server/models/Contest';
 import { User } from '../../../../server/models/User';
 
 interface Props {
-  data: Contest & {
+  data: ContestItem & {
     author: User;
     tags?: string[] | undefined;
   };
