@@ -8,5 +8,9 @@
   },
   "dependencies": {
     "autobind-decorator": "^2.4.0"
+  },
+  "devDependencies": {
+    "inversify": "^5.0.1",
+    "reflect-metadata": "^0.1.13"
   }
 }

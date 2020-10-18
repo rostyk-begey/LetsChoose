@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { shuffle } from 'lodash';
+import { injectable } from 'inversify';
 
 import { GameItem } from '../models/GameItem';
 import { Game } from '../models/Game';
@@ -21,6 +22,7 @@ export interface IGameService {
   playRound(gameId: string, winnerId: string): Promise<void>;
 }
 
+@injectable()
 export default class GameService {
   protected readonly gameRepository: IGameRepository;
 

@@ -1,4 +1,5 @@
 import md5 from 'md5';
+import { inject, injectable } from 'inversify';
 
 import { User } from '../models/User';
 import { AppError } from '../usecases/error';
@@ -40,6 +41,7 @@ export interface IUserService {
   removeUserByUsername(username: string): Promise<void>;
 }
 
+@injectable()
 export default class UserService implements IUserService {
   protected userRepository: IUserRepository;
 
@@ -50,9 +52,16 @@ export default class UserService implements IUserService {
   protected passwordHashService: IPasswordHashService;
 
   constructor(
+    @inject(UserRepository)
     userRepository: UserRepository,
+
+    @inject(JwtService)
     jwtService: JwtService,
+
+    @inject(EmailService)
     emailService: EmailService,
+
+    @inject(PasswordHashService)
     passwordHashService: PasswordHashService,
   ) {
     this.jwtService = jwtService;

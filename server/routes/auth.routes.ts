@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 
-import userController from '../controllers/user/UserController';
+import UserController from '../controllers/user/UserController';
 import auth from '../middleware/auth.middleware';
 import { catchAsync } from '../usecases/error';
 import {
@@ -9,8 +9,11 @@ import {
   forgotPasswordSchema,
   resetPasswordSchema,
 } from '../schema/auth';
+import container from '../container';
 
 const router = Router();
+
+const userController = container.get<UserController>(UserController);
 
 router.post(
   '/',

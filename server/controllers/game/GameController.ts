@@ -1,18 +1,20 @@
 import { Request, Response } from 'express';
 import autobind from 'autobind-decorator';
+import { inject, injectable } from 'inversify';
 
 import { ContestItem } from '../../models/ContestItem';
 import { GetPairParams, GetPairResponse, StartParams } from './types';
 import GameService, { IGameService } from '../../services/GameService';
-import ContestRepository from '../../repositories/ContestRepository';
-import ContestItemRepository from '../../repositories/ContestItemRepository';
-import GameRepository from '../../repositories/GameRepository';
 
 @autobind
-class GameController {
+@injectable()
+export default class GameController {
   private readonly gameService: IGameService;
 
-  constructor(gameService: GameService) {
+  constructor(
+    @inject(GameService)
+    gameService: IGameService,
+  ) {
     this.gameService = gameService;
   }
 
@@ -21,7 +23,7 @@ class GameController {
 
     res.status(201).json({
       contestId: game.contestId as string,
-      gameId: game._id,
+      gameId: game.id,
       message: 'Game was successfully created',
     });
   }
@@ -57,15 +59,3 @@ class GameController {
     });
   }
 }
-
-const contestRepository = new ContestRepository();
-const contestItemRepository = new ContestItemRepository();
-const gameRepository = new GameRepository();
-const gameService = new GameService(
-  contestRepository,
-  contestItemRepository,
-  gameRepository,
-);
-const gameController = new GameController(gameService);
-
-export default gameController;

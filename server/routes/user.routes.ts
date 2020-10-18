@@ -2,9 +2,12 @@ import { Router, Request, Response, NextFunction } from 'express';
 
 import auth from '../middleware/auth.middleware';
 import { catchAsync } from '../usecases/error';
-import userController from '../controllers/user/UserController';
+import UserController from '../controllers/user/UserController';
+import container from '../container';
 
 const router = Router();
+
+const userController = container.get<UserController>(UserController);
 
 router.get(
   '/me',

@@ -1,10 +1,13 @@
 import { Router } from 'express';
 
 import { catchAsync } from '../usecases/error';
-import gameController from '../controllers/game/GameController';
+import GameController from '../controllers/game/GameController';
 import { startGameSchema, getGameSchema, playGameSchema } from '../schema/game';
+import container from '../container';
 
 const router = Router();
+
+const gameController = container.get<GameController>(GameController);
 
 router.post(
   '/start/:contestId',

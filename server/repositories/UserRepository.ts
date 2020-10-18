@@ -1,5 +1,5 @@
-import { DocumentQuery } from 'mongoose';
-import { DocumentType } from '@typegoose/typegoose';
+import { injectable } from 'inversify';
+
 import { User, UserModel } from '../models/User';
 import { AppError } from '../usecases/error';
 
@@ -17,6 +17,7 @@ export interface IUserRepository {
   createUser(data: CreateUserData): Promise<User>;
 }
 
+@injectable()
 export default class UserRepository implements IUserRepository {
   public async findById(userId: string): Promise<User> {
     return (UserModel.findById(userId) as unknown) as User;

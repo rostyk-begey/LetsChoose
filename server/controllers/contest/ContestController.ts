@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import autobind from 'autobind-decorator';
+import { inject, injectable } from 'inversify';
 
 import { AppError } from '../../usecases/error';
 import {
@@ -14,15 +15,13 @@ import {
 import ContestService, { IContestService } from '../../services/ContestService';
 import { Contest } from '../../models/Contest';
 import { RequestWithUserId, ResponseMessage } from '../../types';
-import ContestRepository from '../../repositories/ContestRepository';
-import ContestItemRepository from '../../repositories/ContestItemRepository';
-import CloudinaryService from '../../services/CloudinaryService';
 
 @autobind
-class ContestController {
+@injectable()
+export default class ContestController {
   private readonly contestService: IContestService;
 
-  constructor(contestService: ContestService) {
+  constructor(@inject(ContestService) contestService: IContestService) {
     this.contestService = contestService;
   }
 
@@ -153,16 +152,3 @@ class ContestController {
     res.status(200).json({ message: 'Contest successfully deleted!' });
   }
 }
-
-const contestRepository = new ContestRepository();
-const contestItemRepository = new ContestItemRepository();
-const cloudinaryService = new CloudinaryService();
-const contestService = new ContestService(
-  contestRepository,
-  contestItemRepository,
-  cloudinaryService,
-);
-
-const contestController = new ContestController(contestService);
-
-export default contestController;

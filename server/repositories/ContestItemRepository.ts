@@ -3,6 +3,7 @@ import { DocumentType } from '@typegoose/typegoose';
 
 import { ContestItem, ContestItemModel } from '../models/ContestItem';
 import { AppError } from '../usecases/error';
+import { injectable } from 'inversify';
 
 export type CreateContestData = Omit<
   ContestItem,
@@ -22,6 +23,7 @@ export interface IContestItemRepository {
   createContestItem(data: CreateContestData): Promise<ContestItem>;
 }
 
+@injectable()
 export default class ContestItemRepository implements IContestItemRepository {
   public async countDocuments(
     criteria?: FilterQuery<ContestItem>,

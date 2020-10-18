@@ -1,4 +1,5 @@
 import Mongoose from 'mongoose';
+import { injectable } from 'inversify';
 
 import { Contest } from '../models/Contest';
 import { AppError } from '../usecases/error';
@@ -41,6 +42,7 @@ export interface IContestService {
   removeContest(contestId: string): Promise<void>;
 }
 
+@injectable()
 export default class ContestService implements IContestService {
   protected readonly cloudinaryService: ICloudinaryService;
 
@@ -156,6 +158,7 @@ export default class ContestService implements IContestService {
       {
         $project: {
           _id: 1,
+          id: '$_id',
           thumbnail: 1,
           title: 1,
           excerpt: 1,

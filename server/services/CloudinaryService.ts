@@ -1,10 +1,12 @@
 import cloudinary, { UploadApiResponse } from 'cloudinary';
+import { injectable } from 'inversify';
 
 export interface ICloudinaryService {
   upload(filePath: string, publicId: string): Promise<UploadApiResponse>;
   destroy(publicId: string): Promise<any>;
 }
 
+@injectable()
 export default class CloudinaryService implements ICloudinaryService {
   public upload(
     filePath: string,

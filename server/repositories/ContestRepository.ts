@@ -1,4 +1,4 @@
-import { Query } from 'mongoose';
+import { injectable } from 'inversify';
 
 import { Contest, ContestModel } from '../models/Contest';
 import { AppError } from '../usecases/error';
@@ -17,6 +17,7 @@ export interface IContestRepository {
   createContest(data: CreateContestData): Promise<Contest>;
 }
 
+@injectable()
 export default class ContestRepository implements IContestRepository {
   public async countDocuments(): Promise<number> {
     const res = await ContestModel.countDocuments();

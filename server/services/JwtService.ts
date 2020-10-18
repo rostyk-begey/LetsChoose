@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { injectable } from 'inversify';
 
 import config from '../config';
 
@@ -27,6 +28,7 @@ export interface IJwtService {
   verifyPasswordResetToken(token: string): BaseTokenPayload;
 }
 
+@injectable()
 export default class JwtService implements IJwtService {
   public generateAuthTokenPair(userId: string, passwordVersion = 0): TokenPair {
     const payload = { userId, passwordVersion };

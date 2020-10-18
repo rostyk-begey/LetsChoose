@@ -1,4 +1,4 @@
-import { Query } from 'mongoose';
+import { injectable } from 'inversify';
 
 import { Game, GameModel } from '../models/Game';
 import { AppError } from '../usecases/error';
@@ -14,6 +14,7 @@ export interface IGameRepository {
   createGame(data: CreateGameData): Promise<Game>;
 }
 
+@injectable()
 export default class GameRepository implements IGameRepository {
   public async countDocuments(): Promise<number> {
     const res = await GameModel.countDocuments();

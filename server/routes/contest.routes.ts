@@ -6,13 +6,14 @@ import multer, { FileFilterCallback } from 'multer';
 import auth from '../middleware/auth.middleware';
 import isAuthor from '../middleware/isAuthor.middleware';
 import { catchAsync } from '../usecases/error';
-import contestController from '../controllers/contest/ContestController';
+import ContestController from '../controllers/contest/ContestController';
 import {
   getContestSchema,
   getContestItemsSchema,
   createContestSchema,
   updateContestSchema,
 } from '../schema/contest';
+import container from '../container';
 
 const storage = multer.diskStorage({
   filename: (
@@ -37,6 +38,8 @@ const fileFilter = (
 const upload = multer({ storage, fileFilter });
 
 const router = Router();
+
+const contestController = container.get<ContestController>(ContestController);
 
 router.get('/', getContestSchema, catchAsync(contestController.get));
 

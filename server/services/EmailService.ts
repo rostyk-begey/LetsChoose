@@ -1,4 +1,5 @@
 import { SentMessageInfo } from 'nodemailer';
+import { injectable } from 'inversify';
 
 import emailTransporter from '../usecases/emailTransporter';
 import renderConfirmationEmail from '../usecases/renderConfirmationEmail';
@@ -16,6 +17,7 @@ export interface IEmailService {
   ): Promise<SentMessageInfo>;
 }
 
+@injectable()
 export default class EmailService implements IEmailService {
   public sendRegistrationEmail(
     to: string,

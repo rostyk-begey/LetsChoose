@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import autobind from 'autobind-decorator';
+import { inject, injectable } from 'inversify';
 
 import { AppError } from '../../usecases/error';
 import {
@@ -11,16 +12,16 @@ import {
 import UserService, { IUserService } from '../../services/UserService';
 import { RequestWithUserId, ResponseMessage } from '../../types';
 import { User } from '../../models/User';
-import UserRepository from '../../repositories/UserRepository';
-import JwtService from '../../services/JwtService';
-import EmailService from '../../services/EmailService';
-import PasswordHashService from '../../services/PasswordHashService';
 
 @autobind
-class UserController {
+@injectable()
+export default class UserController {
   private readonly userService: IUserService;
 
-  constructor(userService: UserService) {
+  constructor(
+    @inject(UserService)
+    userService: IUserService,
+  ) {
     this.userService = userService;
   }
 
@@ -186,17 +187,3 @@ class UserController {
     res.status(200).json({ message: 'User successfully deleted!' });
   }
 }
-
-const userRepository = new UserRepository();
-const jwtService = new JwtService();
-const emailService = new EmailService();
-const passwordHashService = new PasswordHashService();
-const userService = new UserService(
-  userRepository,
-  jwtService,
-  emailService,
-  passwordHashService,
-);
-const userController = new UserController(userService);
-
-export default userController;
