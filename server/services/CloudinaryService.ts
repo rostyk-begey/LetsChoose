@@ -1,6 +1,11 @@
 import cloudinary, { UploadApiResponse } from 'cloudinary';
 
-export default class CloudinaryService {
+export interface ICloudinaryService {
+  upload(filePath: string, publicId: string): Promise<UploadApiResponse>;
+  destroy(publicId: string): Promise<any>;
+}
+
+export default class CloudinaryService implements ICloudinaryService {
   public upload(
     filePath: string,
     publicId: string,

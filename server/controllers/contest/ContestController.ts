@@ -11,7 +11,7 @@ import {
   GetQuery,
   GetResponse,
 } from './types';
-import ContestService from '../../services/ContestService';
+import ContestService, { IContestService } from '../../services/ContestService';
 import { Contest } from '../../models/Contest';
 import { RequestWithUserId, ResponseMessage } from '../../types';
 import ContestRepository from '../../repositories/ContestRepository';
@@ -20,7 +20,7 @@ import CloudinaryService from '../../services/CloudinaryService';
 
 @autobind
 class ContestController {
-  private readonly contestService: ContestService;
+  private readonly contestService: IContestService;
 
   constructor(contestService: ContestService) {
     this.contestService = contestService;

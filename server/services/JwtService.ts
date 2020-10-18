@@ -2,20 +2,32 @@ import jwt from 'jsonwebtoken';
 
 import config from '../config';
 
-interface BaseTokenPayload {
+export interface BaseTokenPayload {
   userId: string;
 }
 
-interface AuthTokenPayload extends BaseTokenPayload {
+export interface AuthTokenPayload extends BaseTokenPayload {
   passwordVersion: number;
 }
 
-interface TokenPair {
+export interface TokenPair {
   accessToken: string;
   refreshToken: string;
 }
 
-export default class JwtService {
+export interface IJwtService {
+  generateAuthTokenPair(userId: string, passwordVersion: number): TokenPair;
+  generateAccessToken(payload: AuthTokenPayload): string;
+  generateRefreshToken(payload: AuthTokenPayload): string;
+  generateResetPasswordToken(userId: string): string;
+  generateEmailToken(userId: string): string;
+  verifyAccessToken(token: string): AuthTokenPayload;
+  verifyRefreshToken(token: string): AuthTokenPayload;
+  verifyEmailToken(token: string): BaseTokenPayload;
+  verifyPasswordResetToken(token: string): BaseTokenPayload;
+}
+
+export default class JwtService implements IJwtService {
   public generateAuthTokenPair(userId: string, passwordVersion = 0): TokenPair {
     const payload = { userId, passwordVersion };
     const accessToken = this.generateAccessToken(payload);

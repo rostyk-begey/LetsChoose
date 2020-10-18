@@ -10,13 +10,10 @@ export type CreateContestData = Omit<
 >;
 
 export interface IContestItemRepository {
-  countDocuments(criteria?: FilterQuery<ContestItem>): Query<number>;
+  countDocuments(criteria?: FilterQuery<ContestItem>): Promise<number>;
   aggregate(aggregations?: any[]): Promise<ContestItem[]>;
   findById(itemId: string): Promise<ContestItem>;
-
-  findByContestId(
-    contestId: string,
-  ): DocumentQuery<DocumentType<ContestItem>[], DocumentType<ContestItem>>;
+  findByContestId(contestId: string): Promise<ContestItem[]>;
   findByIdAndUpdate(
     itemId: string,
     data: Partial<ContestItem>,
@@ -26,9 +23,12 @@ export interface IContestItemRepository {
 }
 
 export default class ContestItemRepository implements IContestItemRepository {
-  public countDocuments(criteria?: FilterQuery<ContestItem>): Query<number> {
+  public async countDocuments(
+    criteria?: FilterQuery<ContestItem>,
+  ): Promise<number> {
     if (criteria) return ContestItemModel.countDocuments(criteria);
-    return ContestItemModel.countDocuments();
+    const res = await ContestItemModel.countDocuments();
+    return res as number;
   }
 
   public aggregate(aggregations?: any[]): Promise<ContestItem[]> {
@@ -43,10 +43,9 @@ export default class ContestItemRepository implements IContestItemRepository {
     return contestItem;
   }
 
-  public findByContestId(
-    contestId: string,
-  ): DocumentQuery<DocumentType<ContestItem>[], DocumentType<ContestItem>> {
-    return ContestItemModel.find({ contestId });
+  public async findByContestId(contestId: string): Promise<ContestItem[]> {
+    const res = await ContestItemModel.find({ contestId });
+    return res as ContestItem[];
   }
 
   public async findByIdAndUpdate(

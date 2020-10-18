@@ -6,7 +6,7 @@ import { AppError } from '../usecases/error';
 export type CreateContestData = Omit<Contest, 'id' | 'items' | 'games'>;
 
 export interface IContestRepository {
-  countDocuments(): Query<number>;
+  countDocuments(): Promise<number>;
   aggregate(aggregations?: any[]): Promise<Contest[]>;
   findById(contestId: string): Promise<Contest>;
   findByIdAndUpdate(
@@ -18,8 +18,9 @@ export interface IContestRepository {
 }
 
 export default class ContestRepository implements IContestRepository {
-  public countDocuments(): Query<number> {
-    return ContestModel.countDocuments();
+  public async countDocuments(): Promise<number> {
+    const res = await ContestModel.countDocuments();
+    return res as number;
   }
 
   public aggregate(aggregations?: any[]): Promise<Contest[]> {

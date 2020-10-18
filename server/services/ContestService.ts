@@ -11,30 +11,46 @@ import {
   ISortOptions,
   SORT_OPTIONS,
 } from '../controllers/contest/types';
-import CloudinaryService from './CloudinaryService';
-import { IContestRepository } from '../repositories/ContestRepository';
-import { IContestItemRepository } from '../repositories/ContestItemRepository';
+import CloudinaryService, { ICloudinaryService } from './CloudinaryService';
+import ContestRepository, {
+  IContestRepository,
+} from '../repositories/ContestRepository';
+import ContestItemRepository, {
+  IContestItemRepository,
+} from '../repositories/ContestItemRepository';
 
 interface CreateContestsData extends CreateBody {
   files: Express.Multer.File[];
 }
 
-const getCloudinaryImagePublicId = (url: string) =>
-  url.split('/').slice(-1)[0].split('.')[0];
-
 const fieldNameFilter = (key: string) => ({ fieldname }: Express.Multer.File) =>
   fieldname === key;
 
-export default class ContestService {
-  private readonly cloudinaryService: CloudinaryService;
+export interface IContestService {
+  getContestsPaginate(query: GetQuery): Promise<GetResponse>;
+  findContestById(id: string): Promise<Contest>;
+  getContestItemsPaginate(
+    contestId: string,
+    query: GetItemsQuery,
+  ): Promise<GetItemsResponse>;
+  createContest(userId: string, data: CreateContestsData): Promise<void>;
+  updateContest(
+    contestId: string,
+    data: Omit<CreateContestsData, 'items'>,
+  ): Promise<Contest>;
+  removeContest(contestId: string): Promise<void>;
+}
 
-  private readonly contestRepository: IContestRepository;
+export default class ContestService implements IContestService {
+  protected readonly cloudinaryService: ICloudinaryService;
 
-  private readonly contestItemRepository: IContestItemRepository;
+  protected readonly contestRepository: IContestRepository;
+
+  protected readonly contestItemRepository: IContestItemRepository;
 
   constructor(
-    contestRepository: IContestRepository,
-    contestItemRepository: IContestItemRepository,
+    contestRepository: ContestRepository,
+    contestItemRepository: ContestItemRepository,
     cloudinaryService: CloudinaryService,
   ) {
     this.contestRepository = contestRepository;
@@ -42,11 +58,11 @@ export default class ContestService {
     this.cloudinaryService = cloudinaryService;
   }
 
-  private static getContestThumbnailPublicId(contestId: string) {
+  protected static getContestThumbnailPublicId(contestId: string): string {
     return `contests/${contestId}/thumbnail`;
   }
 
-  private static getPaginationPipelines(page = 1, perPage = 10) {
+  protected static getPaginationPipelines(page = 1, perPage = 10): any {
     return [
       {
         $skip: (page - 1) * perPage,
@@ -57,7 +73,7 @@ export default class ContestService {
     ];
   }
 
-  private static getSearchPipelines(search = '') {
+  protected static getSearchPipelines(search = ''): any {
     const query = search.trim();
     if (!query) return [];
 
@@ -81,7 +97,7 @@ export default class ContestService {
     ];
   }
 
-  private static getSortPipeline(
+  protected static getSortPipeline(
     search: string,
     sortBy: '' | keyof typeof SORT_OPTIONS,
   ): { $sort: ISortOptions } {
@@ -93,7 +109,7 @@ export default class ContestService {
     return { $sort: sortOptions };
   }
 
-  private static getItemsSortPipeline(search: string) {
+  protected static getItemsSortPipeline(search: string): any {
     const sortOptions = { rankScore: -1 };
     if (search) {
       // @ts-ignore

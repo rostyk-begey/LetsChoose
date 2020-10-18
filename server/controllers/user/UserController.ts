@@ -8,7 +8,7 @@ import {
   LoginResponseBody,
   RequestWithTokenParam,
 } from './types';
-import { UserService } from '../../services/UserService';
+import UserService, { IUserService } from '../../services/UserService';
 import { RequestWithUserId, ResponseMessage } from '../../types';
 import { User } from '../../models/User';
 import UserRepository from '../../repositories/UserRepository';
@@ -18,7 +18,7 @@ import PasswordHashService from '../../services/PasswordHashService';
 
 @autobind
 class UserController {
-  private readonly userService: UserService;
+  private readonly userService: IUserService;
 
   constructor(userService: UserService) {
     this.userService = userService;

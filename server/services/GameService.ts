@@ -3,50 +3,61 @@ import { shuffle } from 'lodash';
 
 import { GameItem } from '../models/GameItem';
 import { Game } from '../models/Game';
-import { ContestItem, ContestItemModel } from '../models/ContestItem';
+import { ContestItem } from '../models/ContestItem';
 import { AppError } from '../usecases/error';
-import { IContestRepository } from '../repositories/ContestRepository';
-import { IContestItemRepository } from '../repositories/ContestItemRepository';
-import { IGameRepository } from '../repositories/GameRepository';
+import ContestRepository, {
+  IContestRepository,
+} from '../repositories/ContestRepository';
+import ContestItemRepository, {
+  IContestItemRepository,
+} from '../repositories/ContestItemRepository';
+import GameRepository, {
+  IGameRepository,
+} from '../repositories/GameRepository';
+
+export interface IGameService {
+  start(contestId: string): Promise<Game>;
+  findGameById(gameId: string): Promise<Game>;
+  playRound(gameId: string, winnerId: string): Promise<void>;
+}
 
 export default class GameService {
-  private readonly gameRepository: IGameRepository;
+  protected readonly gameRepository: IGameRepository;
 
-  private readonly contestRepository: IContestRepository;
+  protected readonly contestRepository: IContestRepository;
 
-  private readonly contestItemRepository: IContestItemRepository;
+  protected readonly contestItemRepository: IContestItemRepository;
 
   constructor(
-    contestRepository: IContestRepository,
-    contestItemRepository: IContestItemRepository,
-    gameRepository: IGameRepository,
+    contestRepository: ContestRepository,
+    contestItemRepository: ContestItemRepository,
+    gameRepository: GameRepository,
   ) {
     this.gameRepository = gameRepository;
     this.contestRepository = contestRepository;
     this.contestItemRepository = contestItemRepository;
   }
 
-  private getCurrentRoundItems(gameItems: GameItem[], round: number) {
+  protected getCurrentRoundItems(
+    gameItems: GameItem[],
+    round: number,
+  ): GameItem[] {
     return gameItems.filter(
       ({ compares, wins }) => round === compares && round === wins,
     );
   }
 
-  private static generatePair(items: GameItem[]) {
+  protected static generatePair(items: GameItem[]): string[] {
     return shuffle(items)
       .slice(0, 2)
       .map(({ contestItem }) => contestItem!.toString());
   }
 
-  private populatePair(pair: string[]): Promise<(ContestItem | null)[]> {
-    return Promise.all(pair.map((id) => ContestItemModel.findById(id)));
-  }
-
-  private static calculateGameItemsLength(allItemsLength: number) {
+  protected static calculateGameItemsLength(allItemsLength: number): number {
     return allItemsLength > 2 ? Math.floor(Math.log2(allItemsLength)) ** 2 : 2;
   }
 
-  private static produceGameItems(
+  protected static produceGameItems(
     items: ContestItem[],
     gameItemLength: number,
   ): GameItem[] {
@@ -59,15 +70,15 @@ export default class GameService {
       }));
   }
 
-  private static calculateTotalRounds(gameItemsLength: number) {
+  protected static calculateTotalRounds(gameItemsLength: number): number {
     return gameItemsLength > 2 ? Math.sqrt(gameItemsLength) : 1;
   }
 
-  private inGamePair(gamePair: ContestItem[], id: string) {
+  protected inGamePair(gamePair: ContestItem[], id: string): boolean {
     return gamePair.some(({ _id }) => _id.toString() === id);
   }
 
-  private updateGameItems(
+  protected updateGameItems(
     gameItems: GameItem[],
     currentPair: ContestItem[],
     winnerId: string,
@@ -85,7 +96,7 @@ export default class GameService {
     });
   }
 
-  private getRoundItems(gameItems: GameItem[], round: number): GameItem[] {
+  protected getRoundItems(gameItems: GameItem[], round: number): GameItem[] {
     return gameItems.filter(
       ({ compares, wins }) => round === compares && round === wins,
     );

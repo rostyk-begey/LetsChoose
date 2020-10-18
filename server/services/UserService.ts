@@ -4,11 +4,15 @@ import { User } from '../models/User';
 import { AppError } from '../usecases/error';
 import { ContestModel } from '../models/Contest';
 import { ContestItemModel } from '../models/ContestItem';
-import EmailService from './EmailService';
-import JwtService from './JwtService';
+import EmailService, { IEmailService } from './EmailService';
+import JwtService, { IJwtService } from './JwtService';
 import config from '../config';
-import { IUserRepository } from '../repositories/UserRepository';
-import PasswordHashService from './PasswordHashService';
+import UserRepository, {
+  IUserRepository,
+} from '../repositories/UserRepository';
+import PasswordHashService, {
+  IPasswordHashService,
+} from './PasswordHashService';
 
 interface RegisterUserData {
   email: string;
@@ -16,17 +20,37 @@ interface RegisterUserData {
   password: string;
 }
 
-export class UserService {
-  private userRepository: IUserRepository;
+interface LoginData {
+  userId: string;
+  accessToken: string;
+  refreshToken: string;
+}
 
-  private jwtService: JwtService;
+export interface IUserService {
+  registerUser({ email, username, password }: RegisterUserData): Promise<void>;
+  loginUser(login: string, password: string): Promise<LoginData>;
+  findByUsernameOrReturnCurrentUser(
+    username: string,
+    currentUserId?: string,
+  ): Promise<User>;
+  requestPasswordReset(email: string): Promise<void>;
+  resetUsersPassword(token: string, password: string): Promise<User>;
+  refreshToken(token: string): Promise<LoginData>;
+  confirmEmail(confirmEmailToken: string): Promise<void>;
+  removeUserByUsername(username: string): Promise<void>;
+}
 
-  private emailService: EmailService;
+export default class UserService implements IUserService {
+  protected userRepository: IUserRepository;
 
-  private passwordHashService: PasswordHashService;
+  protected jwtService: IJwtService;
+
+  protected emailService: IEmailService;
+
+  protected passwordHashService: IPasswordHashService;
 
   constructor(
-    userRepository: IUserRepository,
+    userRepository: UserRepository,
     jwtService: JwtService,
     emailService: EmailService,
     passwordHashService: PasswordHashService,

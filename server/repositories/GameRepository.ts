@@ -6,7 +6,7 @@ import { AppError } from '../usecases/error';
 export type CreateGameData = Omit<Game, 'id'>;
 
 export interface IGameRepository {
-  countDocuments(): Query<number>;
+  countDocuments(): Promise<number>;
   aggregate(aggregations?: any[]): Promise<Game[]>;
   findById(gameId: string): Promise<Game>;
   findByIdAndUpdate(gameId: string, data: Partial<Game>): Promise<Game>;
@@ -15,8 +15,9 @@ export interface IGameRepository {
 }
 
 export default class GameRepository implements IGameRepository {
-  public countDocuments(): Query<number> {
-    return GameModel.countDocuments();
+  public async countDocuments(): Promise<number> {
+    const res = await GameModel.countDocuments();
+    return res as number;
   }
 
   public aggregate(aggregations?: any[]): Promise<Game[]> {

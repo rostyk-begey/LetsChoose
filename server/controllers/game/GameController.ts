@@ -3,14 +3,14 @@ import autobind from 'autobind-decorator';
 
 import { ContestItem } from '../../models/ContestItem';
 import { GetPairParams, GetPairResponse, StartParams } from './types';
-import GameService from '../../services/GameService';
+import GameService, { IGameService } from '../../services/GameService';
 import ContestRepository from '../../repositories/ContestRepository';
 import ContestItemRepository from '../../repositories/ContestItemRepository';
 import GameRepository from '../../repositories/GameRepository';
 
 @autobind
 class GameController {
-  private readonly gameService: GameService;
+  private readonly gameService: IGameService;
 
   constructor(gameService: GameService) {
     this.gameService = gameService;

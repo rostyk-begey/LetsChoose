@@ -5,7 +5,18 @@ import renderConfirmationEmail from '../usecases/renderConfirmationEmail';
 import renderResetPasswordEmail from '../usecases/renderResetPasswordEmail';
 import config from '../config';
 
-export default class EmailService {
+export interface IEmailService {
+  sendRegistrationEmail(
+    to: string,
+    confirmRegistrationUrl: string,
+  ): Promise<SentMessageInfo>;
+  sendResetPasswordEmail(
+    to: string,
+    resetPasswordUrl: string,
+  ): Promise<SentMessageInfo>;
+}
+
+export default class EmailService implements IEmailService {
   public sendRegistrationEmail(
     to: string,
     confirmRegistrationUrl: string,

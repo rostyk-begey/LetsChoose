@@ -9,9 +9,7 @@ export type CreateUserData = Omit<
 >;
 
 export interface IUserRepository {
-  findById(
-    userId: string,
-  ): Promise<DocumentQuery<DocumentType<User> | null, DocumentType<User>>>;
+  findById(userId: string): Promise<User>;
   findByIdOrFail(userId: string): Promise<User>;
   findByIdAndUpdate(userId: string, data: Partial<User>): Promise<User>;
   findOne(query: Partial<User>): Promise<User>;
@@ -20,10 +18,8 @@ export interface IUserRepository {
 }
 
 export default class UserRepository implements IUserRepository {
-  public async findById(
-    userId: string,
-  ): Promise<DocumentQuery<DocumentType<User> | null, DocumentType<User>>> {
-    return UserModel.findById(userId);
+  public async findById(userId: string): Promise<User> {
+    return (UserModel.findById(userId) as unknown) as User;
   }
   public async findByIdOrFail(userId: string): Promise<User> {
     const user = await this.findById(userId);
