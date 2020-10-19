@@ -40,11 +40,11 @@ const GamePage: React.FC = () => {
                   <Header.H3 className="text-center">Game over</Header.H3>
                 )}
                 <Grid.Row>
-                  {pair.map(({ id, title, image }: ContestItem) => (
+                  {pair.map(({ _id, title, image }: ContestItem) => (
                     // eslint-disable-next-line react/no-array-index-key
-                    <Grid.Col lg={6} key={id}>
+                    <Grid.Col lg={6} key={_id}>
                       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-                      <div className="media mb-3" onClick={() => onChoose(id)}>
+                      <div className="media mb-3" onClick={() => onChoose(_id)}>
                         <img
                           className={`d-flex rounded w-100 ${baseClassName}__compare-item-image`}
                           src={image}
