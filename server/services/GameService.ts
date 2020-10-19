@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { shuffle } from 'lodash';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 
 import { GameItem } from '../models/GameItem';
 import { Game } from '../models/Game';
@@ -24,21 +24,16 @@ export interface IGameService {
 
 @injectable()
 export default class GameService {
-  protected readonly gameRepository: IGameRepository;
-
-  protected readonly contestRepository: IContestRepository;
-
-  protected readonly contestItemRepository: IContestItemRepository;
-
   constructor(
-    contestRepository: ContestRepository,
-    contestItemRepository: ContestItemRepository,
-    gameRepository: GameRepository,
-  ) {
-    this.gameRepository = gameRepository;
-    this.contestRepository = contestRepository;
-    this.contestItemRepository = contestItemRepository;
-  }
+    @inject(ContestRepository)
+    protected readonly contestRepository: IContestRepository,
+
+    @inject(ContestItemRepository)
+    protected readonly contestItemRepository: IContestItemRepository,
+
+    @inject(GameRepository)
+    protected readonly gameRepository: IGameRepository,
+  ) {}
 
   protected getCurrentRoundItems(
     gameItems: GameItem[],
@@ -77,7 +72,7 @@ export default class GameService {
   }
 
   protected inGamePair(gamePair: ContestItem[], id: string): boolean {
-    return gamePair.some(({ _id }) => _id.toString() === id);
+    return gamePair.some(({ _id }) => _id.toString() === id.toString());
   }
 
   protected updateGameItems(
@@ -181,18 +176,16 @@ export default class GameService {
 
       await Promise.all(
         game.items.map(async (gameItem) => {
-          if (gameItem instanceof GameItem) {
-            const { contestItem: itemId, compares, wins } = gameItem;
-            const contestItem = await this.contestItemRepository.findById(
-              itemId as string,
-            );
-            contestItem.compares += compares;
-            contestItem.wins += wins;
-            contestItem.games += 1;
-            if (winnerId === `${itemId}`) contestItem.finalWins += 1;
-            // @ts-ignore
-            await contestItem.save();
-          }
+          const { contestItem: itemId, compares, wins } = gameItem as GameItem;
+          const contestItem = await this.contestItemRepository.findById(
+            itemId as string,
+          );
+          contestItem.compares += compares;
+          contestItem.wins += wins;
+          contestItem.games += 1;
+          if (winnerId === `${itemId}`) contestItem.finalWins += 1;
+          // @ts-ignore
+          await contestItem.save();
         }),
       );
     }

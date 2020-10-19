@@ -1,5 +1,5 @@
 import Mongoose from 'mongoose';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 
 import { Contest } from '../models/Contest';
 import { AppError } from '../usecases/error';
@@ -44,21 +44,16 @@ export interface IContestService {
 
 @injectable()
 export default class ContestService implements IContestService {
-  protected readonly cloudinaryService: ICloudinaryService;
-
-  protected readonly contestRepository: IContestRepository;
-
-  protected readonly contestItemRepository: IContestItemRepository;
-
   constructor(
-    contestRepository: ContestRepository,
-    contestItemRepository: ContestItemRepository,
-    cloudinaryService: CloudinaryService,
-  ) {
-    this.contestRepository = contestRepository;
-    this.contestItemRepository = contestItemRepository;
-    this.cloudinaryService = cloudinaryService;
-  }
+    @inject(ContestRepository)
+    protected readonly contestRepository: IContestRepository,
+
+    @inject(ContestItemRepository)
+    protected readonly contestItemRepository: IContestItemRepository,
+
+    @inject(CloudinaryService)
+    protected readonly cloudinaryService: ICloudinaryService,
+  ) {}
 
   protected static getContestThumbnailPublicId(contestId: string): string {
     return `contests/${contestId}/thumbnail`;
@@ -235,6 +230,15 @@ export default class ContestService implements IContestService {
       ContestService.getItemsSortPipeline(search),
       ...ContestService.getPaginationPipelines(page, perPage),
     ]);
+
+    console.log(JSON.stringify(items, null, 2));
+    console.log(
+      JSON.stringify(
+        await this.contestItemRepository.findByContestId(contestId),
+        null,
+        2,
+      ),
+    );
 
     return {
       items,

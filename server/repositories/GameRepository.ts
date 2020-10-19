@@ -26,7 +26,9 @@ export default class GameRepository implements IGameRepository {
   }
 
   public async findById(gameId: string): Promise<Game> {
-    const user = await GameModel.findById(gameId).populate('items');
+    const user = await GameModel.findById(gameId)
+      .populate('items')
+      .populate('pair');
     if (!user) {
       throw new AppError('Game not found', 404);
     }

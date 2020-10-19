@@ -44,7 +44,7 @@ export default class GameController {
   }
 
   public async play(
-    req: Request<GetPairParams>,
+    req: Request<GetPairParams, any, { winnerId: string }>,
     res: Response<GetPairResponse>,
   ): Promise<void> {
     await this.gameService.playRound(req.params.gameId, req.body.winnerId);

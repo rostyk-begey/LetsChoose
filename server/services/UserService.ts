@@ -43,32 +43,19 @@ export interface IUserService {
 
 @injectable()
 export default class UserService implements IUserService {
-  protected userRepository: IUserRepository;
-
-  protected jwtService: IJwtService;
-
-  protected emailService: IEmailService;
-
-  protected passwordHashService: IPasswordHashService;
-
   constructor(
     @inject(UserRepository)
-    userRepository: UserRepository,
+    protected readonly userRepository: UserRepository,
 
     @inject(JwtService)
-    jwtService: JwtService,
+    protected readonly jwtService: JwtService,
 
     @inject(EmailService)
-    emailService: EmailService,
+    protected readonly emailService: EmailService,
 
     @inject(PasswordHashService)
-    passwordHashService: PasswordHashService,
-  ) {
-    this.jwtService = jwtService;
-    this.emailService = emailService;
-    this.userRepository = userRepository;
-    this.passwordHashService = passwordHashService;
-  }
+    protected readonly passwordHashService: PasswordHashService,
+  ) {}
 
   public async registerUser({
     email,
