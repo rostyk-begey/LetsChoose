@@ -9,6 +9,7 @@ export interface IContestRepository {
   countDocuments(): Promise<number>;
   aggregate(aggregations?: any[]): Promise<Contest[]>;
   findById(contestId: string): Promise<Contest>;
+  findByAuthor(author: string): Promise<Contest[]>;
   findByIdAndUpdate(
     contestId: string,
     data: Partial<Contest>,
@@ -34,6 +35,14 @@ export default class ContestRepository implements IContestRepository {
       throw new AppError('Contest not found', 404);
     }
     return contest;
+  }
+
+  public async findByAuthor(author: string): Promise<Contest[]> {
+    const contests = await ContestModel.find({ author });
+    if (!contests) {
+      throw new AppError('Contest not found', 404);
+    }
+    return contests;
   }
 
   public async findByIdAndUpdate(

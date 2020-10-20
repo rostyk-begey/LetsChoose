@@ -1,17 +1,17 @@
-import { Request } from 'express';
 import { inject } from 'inversify';
 import {
   BaseHttpController,
   controller,
   httpDelete,
   httpGet,
+  requestParam,
   results,
 } from 'inversify-express-utils';
 
 import { UserFindParams } from './types';
 import UserService, { IUserService } from '../../services/UserService';
 import { RequestWithUserId } from '../../types';
-import auth from '../../middleware/auth.middleware';
+import AuthMiddleware from '../../middleware/AuthMiddleware';
 
 @controller('/api/users')
 export default class UserController extends BaseHttpController {
@@ -22,7 +22,7 @@ export default class UserController extends BaseHttpController {
     super();
   }
 
-  @httpGet('/me', auth)
+  @httpGet('/me', AuthMiddleware)
   public async me(
     req: RequestWithUserId<UserFindParams>,
   ): Promise<results.JsonResult> {
@@ -41,12 +41,18 @@ export default class UserController extends BaseHttpController {
     return this.json(user, 200);
   }
 
+  @httpDelete('/me', AuthMiddleware)
+  public async removeMe(req: RequestWithUserId): Promise<results.JsonResult> {
+    await this.userService.removeUserById(req.userId as string);
+    return this.json({ message: 'User successfully deleted!' }, 200);
+  }
+
   // todo: validate permissions
-  @httpDelete('/:username')
+  @httpDelete('/:username', AuthMiddleware)
   public async remove(
-    req: Request<UserFindParams>,
+    @requestParam('username') username: string,
   ): Promise<results.JsonResult> {
-    await this.userService.removeUserByUsername(req.params.username);
+    await this.userService.removeUserByUsername(username);
     return this.json({ message: 'User successfully deleted!' }, 200);
   }
 }

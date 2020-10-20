@@ -19,7 +19,7 @@ export interface IContestItemRepository {
     itemId: string,
     data: Partial<ContestItem>,
   ): Promise<ContestItem>;
-  deleteContestItems(itemId: string): Promise<void>;
+  deleteContestItems(contestId: string): Promise<void>;
   createContestItem(data: CreateContestData): Promise<ContestItem>;
 }
 
@@ -61,8 +61,8 @@ export default class ContestItemRepository implements IContestItemRepository {
     return contestItem;
   }
 
-  public async deleteContestItems(itemId: string): Promise<void> {
-    await ContestItemModel.deleteMany({ itemId });
+  public async deleteContestItems(contestId: string): Promise<void> {
+    await ContestItemModel.deleteMany({ contestId });
   }
 
   public async createContestItem(

@@ -21,15 +21,18 @@ import ContestItemRepository, {
 } from '../repositories/ContestItemRepository';
 
 interface CreateContestsData extends CreateBody {
+  // @ts-ignore
   files: Express.Multer.File[];
 }
 
+// @ts-ignore
 const fieldNameFilter = (key: string) => ({ fieldname }: Express.Multer.File) =>
   fieldname === key;
 
 export interface IContestService {
   getContestsPaginate(query: GetQuery): Promise<GetResponse>;
   findContestById(id: string): Promise<Contest>;
+  findContestsByAuthor(author: string): Promise<Contest[]>;
   getContestItemsPaginate(
     contestId: string,
     query: GetItemsQuery,
@@ -174,6 +177,10 @@ export default class ContestService implements IContestService {
 
   public findContestById(id: string): Promise<Contest> {
     return this.contestRepository.findById(id);
+  }
+
+  public findContestsByAuthor(author: string): Promise<Contest[]> {
+    return this.contestRepository.findByAuthor(author);
   }
 
   public async getContestItemsPaginate(

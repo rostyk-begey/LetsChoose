@@ -18,7 +18,8 @@ import ContestController from './controllers/contest/ContestController';
 import GameController from './controllers/game/GameController';
 import AuthController from './controllers/auth/AuthController';
 import AuthService from './services/AuthService';
-// import { AuthMiddleware } from './middleware/auth.middleware';
+import IsAuthorMiddleware from './middleware/IsAuthorMiddleware';
+import AuthMiddleware from './middleware/AuthMiddleware';
 
 let container: interfaces.Container = new Container();
 export const middlewares = new Container();
@@ -43,7 +44,8 @@ repositories.bind(GameRepository).to(GameRepository);
 repositories.bind(ContestItemRepository).to(ContestItemRepository);
 
 // Middleware
-// middlewares.bind(AuthMiddleware).to(AuthMiddleware);
+middlewares.bind(AuthMiddleware).to(AuthMiddleware);
+middlewares.bind(IsAuthorMiddleware).to(IsAuthorMiddleware);
 
 // Controllers
 controllers.bind(AuthController).to(AuthController);

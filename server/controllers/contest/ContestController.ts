@@ -12,23 +12,17 @@ import {
 import { inject } from 'inversify';
 
 import { AppError } from '../../usecases/error';
-import {
-  CreateBody,
-  FindParams,
-  GetItemsQuery,
-  GetQuery,
-  SORT_OPTIONS,
-} from './types';
+import { CreateBody, FindParams, GetItemsQuery, GetQuery } from './types';
 import ContestService, { IContestService } from '../../services/ContestService';
 import { RequestWithUserId, ResponseMessage } from '../../types';
-import auth from '../../middleware/auth.middleware';
 import {
   createContestSchema,
   getContestItemsSchema,
   getContestSchema,
   updateContestSchema,
 } from '../../schema/contest';
-// import isAuthor from '../../middleware/auth.middleware';
+import IsAuthorMiddleware from '../../middleware/IsAuthorMiddleware';
+import AuthMiddleware from '../../middleware/AuthMiddleware';
 
 @controller('/api/contests')
 export default class ContestController extends BaseHttpController {
@@ -102,7 +96,7 @@ export default class ContestController extends BaseHttpController {
     return this.json(response, 200);
   }
 
-  @httpPost('/', auth, ...createContestSchema)
+  @httpPost('/', AuthMiddleware, ...createContestSchema)
   public async create(
     req: RequestWithUserId<never, any, CreateBody>,
     res: Response<ResponseMessage>,
@@ -117,6 +111,7 @@ export default class ContestController extends BaseHttpController {
 
     const {
       userId,
+      // @ts-ignore
       files,
       body: { title, excerpt, items },
     } = req;
@@ -125,13 +120,13 @@ export default class ContestController extends BaseHttpController {
       title,
       excerpt,
       items,
-      files: files as Express.Multer.File[],
+      files,
     });
 
     res.status(201).json({ message: 'Contest successfully created!' });
   }
 
-  @httpPost('/:id', auth, ...updateContestSchema)
+  @httpPost('/:id', AuthMiddleware, ...updateContestSchema)
   public async update(
     req: Request<FindParams, any, Omit<CreateBody, 'items'>>,
   ): Promise<results.JsonResult> {
@@ -144,6 +139,7 @@ export default class ContestController extends BaseHttpController {
     }
 
     const {
+      // @ts-ignore
       files,
       params: { id: contestId },
       body: { title, excerpt },
@@ -152,13 +148,13 @@ export default class ContestController extends BaseHttpController {
     await this.contestService.updateContest(contestId, {
       title,
       excerpt,
-      files: files as Express.Multer.File[],
+      files,
     });
 
     return this.json({ message: 'Contest successfully updated!' }, 200);
   }
 
-  @httpDelete('/:id', auth)
+  @httpDelete('/:id', AuthMiddleware, IsAuthorMiddleware)
   public async remove(req: Request<FindParams>): Promise<results.JsonResult> {
     await this.contestService.removeContest(req.params.id);
 
