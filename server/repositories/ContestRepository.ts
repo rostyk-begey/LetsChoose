@@ -29,35 +29,35 @@ export default class ContestRepository implements IContestRepository {
   }
 
   public async findById(contestId: string): Promise<Contest> {
-    const user = await ContestModel.findById(contestId);
-    if (!user) {
+    const contest = await ContestModel.findById(contestId);
+    if (!contest) {
       throw new AppError('Contest not found', 404);
     }
-    return user;
+    return contest;
   }
 
   public async findByIdAndUpdate(
     contestId: string,
     data: Partial<Contest>,
   ): Promise<Contest> {
-    const user = await ContestModel.findByIdAndUpdate(contestId, data);
-    if (!user) {
+    const contest = await ContestModel.findByIdAndUpdate(contestId, data);
+    if (!contest) {
       throw new AppError('Contest not found', 404);
     }
-    return user;
+    return contest;
   }
 
   public async deleteContest(contestId: string): Promise<Contest> {
-    const user = await ContestModel.findByIdAndRemove(contestId);
-    if (!user) {
+    const contest = await ContestModel.findByIdAndRemove(contestId);
+    if (!contest) {
       throw new AppError('Contest not found', 404);
     }
-    return user;
+    return contest;
   }
 
   public async createContest(data: CreateContestData): Promise<Contest> {
-    const user = new ContestModel(data);
-    await user.save();
-    return user;
+    const contest = new ContestModel(data);
+    await contest.save();
+    return contest;
   }
 }
