@@ -14,13 +14,23 @@ mongoose.set('debug', config.mongooseDebug);
 
 const PORT = config.port;
 
-const app = express();
-// add body parser
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const server = new InversifyExpressServer(container, null, null);
 
-app.disable('etag');
+server.setConfig((app) => {
+  app.use(cookieParser());
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  app.disable('etag');
+});
+
+server.setErrorConfig((app) => {
+  app.use(((err: any, req: Request, res: Response, _) => {
+    return handleError(err, res);
+  }) as ErrorRequestHandler);
+});
+
+const app = server.build();
 
 if (process.env.NODE_ENV === 'production') {
   app.use('/', express.static(path.join(__dirname, '../', 'client', 'dist')));
@@ -29,13 +39,6 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, '../', 'client', 'dist', 'index.html'));
   });
 }
-
-const server = new InversifyExpressServer(container, null, null, app);
-server.setErrorConfig((app) => {
-  app.use(((err: any, req: Request, res: Response) => {
-    return handleError(err, res);
-  }) as ErrorRequestHandler);
-});
 
 (async (): Promise<void> => {
   try {
@@ -49,9 +52,7 @@ server.setErrorConfig((app) => {
       api_key: config.cloudinary.apiKey,
       api_secret: config.cloudinary.apiSecret,
     });
-    server
-      .build()
-      .listen(PORT, () => console.log(`Listening localhost:${PORT}`));
+    app.listen(PORT, () => console.log(`Listening localhost:${PORT}`));
     const routeInfo = getRouteInfo(container);
     console.log(JSON.stringify(routeInfo, null, 2));
   } catch (e) {
