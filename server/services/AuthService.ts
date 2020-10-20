@@ -3,15 +3,12 @@ import { inject, injectable } from 'inversify';
 
 import { User } from '../models/User';
 import { AppError } from '../usecases/error';
-import EmailService, { IEmailService } from './EmailService';
-import JwtService, { IJwtService } from './JwtService';
+import { IEmailService } from './EmailService';
+import { IJwtService } from './JwtService';
 import config from '../config';
-import UserRepository, {
-  IUserRepository,
-} from '../repositories/UserRepository';
-import PasswordHashService, {
-  IPasswordHashService,
-} from './PasswordHashService';
+import { IUserRepository } from '../repositories/UserRepository';
+import { IPasswordHashService } from './PasswordHashService';
+import { TYPES } from '../inversify.types';
 
 interface RegisterUserData {
   email: string;
@@ -37,16 +34,16 @@ export interface IAuthService {
 @injectable()
 export default class AuthService implements IAuthService {
   constructor(
-    @inject(UserRepository)
+    @inject(TYPES.UserRepository)
     protected readonly userRepository: IUserRepository,
 
-    @inject(JwtService)
+    @inject(TYPES.JwtService)
     protected readonly jwtService: IJwtService,
 
-    @inject(EmailService)
+    @inject(TYPES.EmailService)
     protected readonly emailService: IEmailService,
 
-    @inject(PasswordHashService)
+    @inject(TYPES.PasswordHashService)
     protected readonly passwordHashService: IPasswordHashService,
   ) {}
 

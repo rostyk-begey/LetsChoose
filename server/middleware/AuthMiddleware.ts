@@ -3,12 +3,13 @@ import { inject, injectable } from 'inversify';
 import { BaseMiddleware } from 'inversify-express-utils';
 
 import { AppError } from '../usecases/error';
-import JwtService, { IJwtService } from '../services/JwtService';
+import { IJwtService } from '../services/JwtService';
 import { RequestWithUserId } from '../types';
+import { TYPES } from '../inversify.types';
 
 @injectable()
 export default class AuthMiddleware extends BaseMiddleware {
-  @inject(JwtService) // @ts-ignore
+  @inject(TYPES.JwtService) // @ts-ignore
   private readonly jwtService: IJwtService;
 
   public async handler(

@@ -12,13 +12,10 @@ import {
   ISortOptions,
   SORT_OPTIONS,
 } from '../controllers/contest/types';
-import CloudinaryService, { ICloudinaryService } from './CloudinaryService';
-import ContestRepository, {
-  IContestRepository,
-} from '../repositories/ContestRepository';
-import ContestItemRepository, {
-  IContestItemRepository,
-} from '../repositories/ContestItemRepository';
+import { ICloudinaryService } from './CloudinaryService';
+import { IContestRepository } from '../repositories/ContestRepository';
+import { IContestItemRepository } from '../repositories/ContestItemRepository';
+import { TYPES } from '../inversify.types';
 
 interface CreateContestsData extends CreateBody {
   // @ts-ignore
@@ -48,13 +45,13 @@ export interface IContestService {
 @injectable()
 export default class ContestService implements IContestService {
   constructor(
-    @inject(ContestRepository)
+    @inject(TYPES.ContestRepository)
     protected readonly contestRepository: IContestRepository,
 
-    @inject(ContestItemRepository)
+    @inject(TYPES.ContestItemRepository)
     protected readonly contestItemRepository: IContestItemRepository,
 
-    @inject(CloudinaryService)
+    @inject(TYPES.CloudinaryService)
     protected readonly cloudinaryService: ICloudinaryService,
   ) {}
 
@@ -193,8 +190,6 @@ export default class ContestService implements IContestService {
       contestId,
     });
 
-    console.log({ contestId, page, perPage, search });
-
     const totalPages = Math.ceil(count / perPage);
 
     if (page > totalPages) {
@@ -207,9 +202,11 @@ export default class ContestService implements IContestService {
       {
         $project: {
           _id: 1,
+          id: '$_id',
           title: 1,
           image: 1,
           compares: 1,
+          contestId: 1,
           wins: 1,
           games: 1,
           finalWins: 1,

@@ -13,7 +13,7 @@ import { inject } from 'inversify';
 
 import { AppError } from '../../usecases/error';
 import { CreateBody, FindParams, GetItemsQuery, GetQuery } from './types';
-import ContestService, { IContestService } from '../../services/ContestService';
+import { IContestService } from '../../services/ContestService';
 import { RequestWithUserId, ResponseMessage } from '../../types';
 import {
   createContestSchema,
@@ -23,11 +23,12 @@ import {
 } from '../../schema/contest';
 import IsAuthorMiddleware from '../../middleware/IsAuthorMiddleware';
 import AuthMiddleware from '../../middleware/AuthMiddleware';
+import { TYPES } from '../../inversify.types';
 
 @controller('/api/contests')
 export default class ContestController extends BaseHttpController {
   constructor(
-    @inject(ContestService)
+    @inject(TYPES.ContestService)
     private readonly contestService: IContestService,
   ) {
     super();

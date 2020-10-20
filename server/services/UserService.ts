@@ -1,19 +1,10 @@
 import { inject, injectable } from 'inversify';
 
 import { User } from '../models/User';
-import { AppError } from '../usecases/error';
-import { ContestModel } from '../models/Contest';
-import { ContestItemModel } from '../models/ContestItem';
-import UserRepository, {
-  IUserRepository,
-} from '../repositories/UserRepository';
-import ContestRepository, {
-  IContestRepository,
-} from '../repositories/ContestRepository';
-import ContestItemRepository, {
-  IContestItemRepository,
-} from '../repositories/ContestItemRepository';
-import ContestService, { IContestService } from './ContestService';
+import { IUserRepository } from '../repositories/UserRepository';
+import { IContestRepository } from '../repositories/ContestRepository';
+import { IContestService } from './ContestService';
+import { TYPES } from '../inversify.types';
 
 export interface IUserService {
   findById(userId: string): Promise<User>;
@@ -25,13 +16,13 @@ export interface IUserService {
 @injectable()
 export default class UserService implements IUserService {
   constructor(
-    @inject(UserRepository)
+    @inject(TYPES.UserRepository)
     protected readonly userRepository: IUserRepository,
 
-    @inject(ContestRepository)
+    @inject(TYPES.ContestRepository)
     protected readonly contestRepository: IContestRepository,
 
-    @inject(ContestService)
+    @inject(TYPES.ContestService)
     protected readonly contestService: IContestService,
   ) {}
 

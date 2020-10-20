@@ -11,18 +11,19 @@ import {
 
 import { AppError } from '../../usecases/error';
 import { LoginResponseBody, RequestWithTokenParam } from './types';
-import AuthService, { IAuthService } from '../../services/AuthService';
+import { IAuthService } from '../../services/AuthService';
 import {
   forgotPasswordSchema,
   loginSchema,
   registerSchema,
   resetPasswordSchema,
 } from '../../schema/auth';
+import { TYPES } from '../../inversify.types';
 
 @controller('/api/auth')
 export default class AuthController extends BaseHttpController {
   constructor(
-    @inject(AuthService)
+    @inject(TYPES.AuthService)
     protected readonly authService: IAuthService,
   ) {
     super();

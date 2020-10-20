@@ -6,15 +6,10 @@ import { GameItem } from '../models/GameItem';
 import { Game } from '../models/Game';
 import { ContestItem } from '../models/ContestItem';
 import { AppError } from '../usecases/error';
-import ContestRepository, {
-  IContestRepository,
-} from '../repositories/ContestRepository';
-import ContestItemRepository, {
-  IContestItemRepository,
-} from '../repositories/ContestItemRepository';
-import GameRepository, {
-  IGameRepository,
-} from '../repositories/GameRepository';
+import { IContestRepository } from '../repositories/ContestRepository';
+import { IContestItemRepository } from '../repositories/ContestItemRepository';
+import { IGameRepository } from '../repositories/GameRepository';
+import { TYPES } from '../inversify.types';
 
 export interface IGameService {
   start(contestId: string): Promise<Game>;
@@ -25,13 +20,13 @@ export interface IGameService {
 @injectable()
 export default class GameService {
   constructor(
-    @inject(ContestRepository)
+    @inject(TYPES.ContestRepository)
     protected readonly contestRepository: IContestRepository,
 
-    @inject(ContestItemRepository)
+    @inject(TYPES.ContestItemRepository)
     protected readonly contestItemRepository: IContestItemRepository,
 
-    @inject(GameRepository)
+    @inject(TYPES.GameRepository)
     protected readonly gameRepository: IGameRepository,
   ) {}
 

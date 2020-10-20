@@ -4,13 +4,12 @@ import { BaseMiddleware } from 'inversify-express-utils';
 
 import { AppError } from '../usecases/error';
 import { RequestWithUserId } from '../types';
-import ContestRepository, {
-  IContestRepository,
-} from '../repositories/ContestRepository';
+import { IContestRepository } from '../repositories/ContestRepository';
+import { TYPES } from '../inversify.types';
 
 @injectable()
 export default class IsAuthorMiddleware extends BaseMiddleware {
-  @inject(ContestRepository) // @ts-ignore
+  @inject(TYPES.ContestRepository) // @ts-ignore
   private readonly contestRepository: IContestRepository;
 
   public async handler(

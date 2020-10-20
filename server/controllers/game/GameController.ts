@@ -10,18 +10,19 @@ import {
 } from 'inversify-express-utils';
 
 import { ContestItem } from '../../models/ContestItem';
-import { GetPairParams, StartParams } from './types';
-import GameService, { IGameService } from '../../services/GameService';
+import { GetPairParams } from './types';
+import { IGameService } from '../../services/GameService';
 import {
   getGameSchema,
   playGameSchema,
   startGameSchema,
 } from '../../schema/game';
+import { TYPES } from '../../inversify.types';
 
 @controller('/api/games')
 export default class GameController extends BaseHttpController {
   constructor(
-    @inject(GameService)
+    @inject(TYPES.GameService)
     protected readonly gameService: IGameService,
   ) {
     super();

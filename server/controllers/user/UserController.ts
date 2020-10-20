@@ -9,14 +9,15 @@ import {
 } from 'inversify-express-utils';
 
 import { UserFindParams } from './types';
-import UserService, { IUserService } from '../../services/UserService';
+import { IUserService } from '../../services/UserService';
 import { RequestWithUserId } from '../../types';
 import AuthMiddleware from '../../middleware/AuthMiddleware';
+import { TYPES } from '../../inversify.types';
 
 @controller('/api/users')
 export default class UserController extends BaseHttpController {
   constructor(
-    @inject(UserService)
+    @inject(TYPES.UserService)
     protected readonly userService: IUserService,
   ) {
     super();
