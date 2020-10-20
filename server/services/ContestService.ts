@@ -59,7 +59,7 @@ export default class ContestService implements IContestService {
     return `contests/${contestId}/thumbnail`;
   }
 
-  protected static getPaginationPipelines(page = 1, perPage = 10): any {
+  protected static getPaginationPipelines(page = 1, perPage = 10): any[] {
     return [
       {
         $skip: (page - 1) * perPage,
@@ -70,7 +70,7 @@ export default class ContestService implements IContestService {
     ];
   }
 
-  protected static getSearchPipelines(search = ''): any {
+  protected static getSearchPipelines(search = ''): any[] {
     const query = search.trim();
     if (!query) return [];
 
@@ -186,6 +186,8 @@ export default class ContestService implements IContestService {
       contestId,
     });
 
+    console.log({ contestId, page, perPage, search });
+
     const totalPages = Math.ceil(count / perPage);
 
     if (page > totalPages) {
@@ -194,7 +196,7 @@ export default class ContestService implements IContestService {
 
     const items = await this.contestItemRepository.aggregate([
       ...ContestService.getSearchPipelines(search), // should be a first stage
-      { $match: { contestId } },
+      { $match: { contestId: Mongoose.Types.ObjectId(contestId) } },
       {
         $project: {
           _id: 1,
@@ -230,15 +232,6 @@ export default class ContestService implements IContestService {
       ContestService.getItemsSortPipeline(search),
       ...ContestService.getPaginationPipelines(page, perPage),
     ]);
-
-    console.log(JSON.stringify(items, null, 2));
-    console.log(
-      JSON.stringify(
-        await this.contestItemRepository.findByContestId(contestId),
-        null,
-        2,
-      ),
-    );
 
     return {
       items,

@@ -1,4 +1,4 @@
-import { Container } from 'inversify';
+import { Container, interfaces } from 'inversify';
 import 'reflect-metadata';
 
 import UserService from './services/UserService';
@@ -16,31 +16,44 @@ import GameRepository from './repositories/GameRepository';
 import UserController from './controllers/user/UserController';
 import ContestController from './controllers/contest/ContestController';
 import GameController from './controllers/game/GameController';
+import AuthController from './controllers/auth/AuthController';
+import AuthService from './services/AuthService';
+// import { AuthMiddleware } from './middleware/auth.middleware';
 
-const container = new Container();
+let container: interfaces.Container = new Container();
+export const middlewares = new Container();
+export const controllers = new Container();
+export const services = new Container();
+export const repositories = new Container();
 
 // Services
-container.bind<UserService>(UserService).to(UserService);
-container.bind<CloudinaryService>(CloudinaryService).to(CloudinaryService);
-container.bind<JwtService>(JwtService).to(JwtService);
-container.bind<GameService>(GameService).to(GameService);
-container.bind<EmailService>(EmailService).to(EmailService);
-container.bind<ContestService>(ContestService).to(ContestService);
-container
-  .bind<PasswordHashService>(PasswordHashService)
-  .to(PasswordHashService);
+services.bind(AuthService).to(AuthService);
+services.bind(UserService).to(UserService);
+services.bind(CloudinaryService).to(CloudinaryService);
+services.bind(JwtService).to(JwtService);
+services.bind(GameService).to(GameService);
+services.bind(EmailService).to(EmailService);
+services.bind(ContestService).to(ContestService);
+services.bind(PasswordHashService).to(PasswordHashService);
 
 // Repositories
-container.bind<UserRepository>(UserRepository).to(UserRepository);
-container.bind<ContestRepository>(ContestRepository).to(ContestRepository);
-container.bind<GameRepository>(GameRepository).to(GameRepository);
-container
-  .bind<ContestItemRepository>(ContestItemRepository)
-  .to(ContestItemRepository);
+repositories.bind(UserRepository).to(UserRepository);
+repositories.bind(ContestRepository).to(ContestRepository);
+repositories.bind(GameRepository).to(GameRepository);
+repositories.bind(ContestItemRepository).to(ContestItemRepository);
+
+// Middleware
+// middlewares.bind(AuthMiddleware).to(AuthMiddleware);
 
 // Controllers
-container.bind<UserController>(UserController).to(UserController);
-container.bind<ContestController>(ContestController).to(ContestController);
-container.bind<GameController>(GameController).to(GameController);
+controllers.bind(AuthController).to(AuthController);
+controllers.bind(UserController).to(UserController);
+controllers.bind(ContestController).to(ContestController);
+controllers.bind(GameController).to(GameController);
+
+container = Container.merge(container, controllers);
+container = Container.merge(container, middlewares);
+container = Container.merge(container, repositories);
+container = Container.merge(container, services);
 
 export default container;

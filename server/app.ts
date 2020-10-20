@@ -2,28 +2,23 @@ import express, { ErrorRequestHandler, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import cloudinary from 'cloudinary';
 import cookieParser from 'cookie-parser';
+import 'reflect-metadata';
+import { getRouteInfo, InversifyExpressServer } from 'inversify-express-utils';
 import path from 'path';
 
 import { handleError } from './usecases/error';
-import authRoutes from './routes/auth.routes';
-import contestRoutes from './routes/contest.routes';
-import userRoutes from './routes/user.routes';
-import gameRoutes from './routes/game.routes';
 import config from './config';
+import container from './container';
 
 mongoose.set('debug', config.mongooseDebug);
 
 const PORT = config.port;
 
 const app = express();
-
+// add body parser
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api/auth', authRoutes);
-app.use('/api/contests', contestRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/games', gameRoutes);
 
 app.disable('etag');
 
@@ -35,8 +30,12 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-app.use(((err: any, req: Request, res: Response) =>
-  handleError(err, res)) as ErrorRequestHandler);
+const server = new InversifyExpressServer(container, null, null, app);
+server.setErrorConfig((app) => {
+  app.use(((err: any, req: Request, res: Response) => {
+    return handleError(err, res);
+  }) as ErrorRequestHandler);
+});
 
 (async (): Promise<void> => {
   try {
@@ -50,8 +49,11 @@ app.use(((err: any, req: Request, res: Response) =>
       api_key: config.cloudinary.apiKey,
       api_secret: config.cloudinary.apiSecret,
     });
-    app.listen(PORT, () => console.log(`Listening localhost:${PORT}`));
-    // await GameService.start('5f332014c17a495019dbc2e9');
+    server
+      .build()
+      .listen(PORT, () => console.log(`Listening localhost:${PORT}`));
+    const routeInfo = getRouteInfo(container);
+    console.log(JSON.stringify(routeInfo, null, 2));
   } catch (e) {
     console.error(e);
     process.exit(1);
