@@ -44,7 +44,11 @@ const HomePage: React.FC = () => {
         <Grid.Row>
           {isSuccess &&
             data?.map(
-              ({ data: { contests } }: { data: { contests: Contest[] } }) =>
+              ({
+                data: { contests = [] },
+              }: {
+                data: { contests: Contest[] };
+              }) =>
                 contests.map((contest) => (
                   <Grid.Col width={12} md={6} lg={4} key={contest._id}>
                     {/* @ts-ignore */}
