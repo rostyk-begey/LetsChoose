@@ -1,11 +1,10 @@
-import { DocumentQuery, FilterQuery, Query } from 'mongoose';
-import { DocumentType } from '@typegoose/typegoose';
+import { FilterQuery } from 'mongoose';
+import { injectable } from 'inversify';
 
 import { ContestItem, ContestItemModel } from '../models/ContestItem';
 import { AppError } from '../usecases/error';
-import { injectable } from 'inversify';
 
-export type CreateContestData = Omit<
+export type CreateContestItemData = Omit<
   ContestItem,
   'id' | 'games' | 'compares' | 'wins' | 'finalWins'
 >;
@@ -15,12 +14,8 @@ export interface IContestItemRepository {
   aggregate(aggregations?: any[]): Promise<ContestItem[]>;
   findById(itemId: string): Promise<ContestItem>;
   findByContestId(contestId: string): Promise<ContestItem[]>;
-  findByIdAndUpdate(
-    itemId: string,
-    data: Partial<ContestItem>,
-  ): Promise<ContestItem>;
-  deleteContestItems(itemId: string): Promise<void>;
-  createContestItem(data: CreateContestData): Promise<ContestItem>;
+  deleteContestItems(contestId: string): Promise<void>;
+  createContestItem(data: CreateContestItemData): Promise<ContestItem>;
 }
 
 @injectable()
@@ -61,12 +56,12 @@ export default class ContestItemRepository implements IContestItemRepository {
     return contestItem;
   }
 
-  public async deleteContestItems(itemId: string): Promise<void> {
-    await ContestItemModel.deleteMany({ itemId });
+  public async deleteContestItems(contestId: string): Promise<void> {
+    await ContestItemModel.deleteMany({ contestId });
   }
 
   public async createContestItem(
-    data: CreateContestData,
+    data: CreateContestItemData,
   ): Promise<ContestItem> {
     const contestItem = new ContestItemModel(data);
     await contestItem.save();

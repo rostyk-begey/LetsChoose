@@ -12,24 +12,24 @@ import {
   ISortOptions,
   SORT_OPTIONS,
 } from '../controllers/contest/types';
-import CloudinaryService, { ICloudinaryService } from './CloudinaryService';
-import ContestRepository, {
-  IContestRepository,
-} from '../repositories/ContestRepository';
-import ContestItemRepository, {
-  IContestItemRepository,
-} from '../repositories/ContestItemRepository';
+import { ICloudinaryService } from './CloudinaryService';
+import { IContestRepository } from '../repositories/ContestRepository';
+import { IContestItemRepository } from '../repositories/ContestItemRepository';
+import { TYPES } from '../inversify.types';
 
 interface CreateContestsData extends CreateBody {
+  // @ts-ignore
   files: Express.Multer.File[];
 }
 
+// @ts-ignore
 const fieldNameFilter = (key: string) => ({ fieldname }: Express.Multer.File) =>
   fieldname === key;
 
 export interface IContestService {
   getContestsPaginate(query: GetQuery): Promise<GetResponse>;
   findContestById(id: string): Promise<Contest>;
+  findContestsByAuthor(author: string): Promise<Contest[]>;
   getContestItemsPaginate(
     contestId: string,
     query: GetItemsQuery,
@@ -45,13 +45,13 @@ export interface IContestService {
 @injectable()
 export default class ContestService implements IContestService {
   constructor(
-    @inject(ContestRepository)
+    @inject(TYPES.ContestRepository)
     protected readonly contestRepository: IContestRepository,
 
-    @inject(ContestItemRepository)
+    @inject(TYPES.ContestItemRepository)
     protected readonly contestItemRepository: IContestItemRepository,
 
-    @inject(CloudinaryService)
+    @inject(TYPES.CloudinaryService)
     protected readonly cloudinaryService: ICloudinaryService,
   ) {}
 
@@ -59,7 +59,7 @@ export default class ContestService implements IContestService {
     return `contests/${contestId}/thumbnail`;
   }
 
-  protected static getPaginationPipelines(page = 1, perPage = 10): any {
+  protected static getPaginationPipelines(page = 1, perPage = 10): any[] {
     return [
       {
         $skip: (page - 1) * perPage,
@@ -70,7 +70,7 @@ export default class ContestService implements IContestService {
     ];
   }
 
-  protected static getSearchPipelines(search = ''): any {
+  protected static getSearchPipelines(search = ''): any[] {
     const query = search.trim();
     if (!query) return [];
 
@@ -176,6 +176,10 @@ export default class ContestService implements IContestService {
     return this.contestRepository.findById(id);
   }
 
+  public findContestsByAuthor(author: string): Promise<Contest[]> {
+    return this.contestRepository.findByAuthor(author);
+  }
+
   public async getContestItemsPaginate(
     contestId: string,
     { page = 1, perPage = 10, search = '' }: GetItemsQuery,
@@ -194,13 +198,15 @@ export default class ContestService implements IContestService {
 
     const items = await this.contestItemRepository.aggregate([
       ...ContestService.getSearchPipelines(search), // should be a first stage
-      { $match: { contestId } },
+      { $match: { contestId: Mongoose.Types.ObjectId(contestId) } },
       {
         $project: {
           _id: 1,
+          id: '$_id',
           title: 1,
           image: 1,
           compares: 1,
+          contestId: 1,
           wins: 1,
           games: 1,
           finalWins: 1,
@@ -230,15 +236,6 @@ export default class ContestService implements IContestService {
       ContestService.getItemsSortPipeline(search),
       ...ContestService.getPaginationPipelines(page, perPage),
     ]);
-
-    console.log(JSON.stringify(items, null, 2));
-    console.log(
-      JSON.stringify(
-        await this.contestItemRepository.findByContestId(contestId),
-        null,
-        2,
-      ),
-    );
 
     return {
       items,

@@ -1,34 +1,43 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import autobind from 'autobind-decorator';
-import { inject, injectable } from 'inversify';
+import {
+  BaseHttpController,
+  controller,
+  httpDelete,
+  httpGet,
+  httpPost,
+  requestParam,
+  results,
+} from 'inversify-express-utils';
+import { inject } from 'inversify';
 
 import { AppError } from '../../usecases/error';
-import {
-  CreateBody,
-  FindParams,
-  GetItemsQuery,
-  GetItemsResponse,
-  GetQuery,
-  GetResponse,
-} from './types';
-import ContestService, { IContestService } from '../../services/ContestService';
-import { Contest } from '../../models/Contest';
+import { CreateBody, FindParams, GetItemsQuery, GetQuery } from './types';
+import { IContestService } from '../../services/ContestService';
 import { RequestWithUserId, ResponseMessage } from '../../types';
+import {
+  createContestSchema,
+  getContestItemsSchema,
+  getContestSchema,
+  updateContestSchema,
+} from '../../schema/contest';
+import IsAuthorMiddleware from '../../middleware/IsAuthorMiddleware';
+import AuthMiddleware from '../../middleware/AuthMiddleware';
+import { TYPES } from '../../inversify.types';
 
-@autobind
-@injectable()
-export default class ContestController {
-  private readonly contestService: IContestService;
-
-  constructor(@inject(ContestService) contestService: IContestService) {
-    this.contestService = contestService;
+@controller('/api/contests')
+export default class ContestController extends BaseHttpController {
+  constructor(
+    @inject(TYPES.ContestService)
+    private readonly contestService: IContestService,
+  ) {
+    super();
   }
 
+  @httpGet('/', ...getContestSchema)
   public async get(
     req: Request<never, any, any, GetQuery>,
-    res: Response<GetResponse>,
-  ): Promise<void> {
+  ): Promise<results.JsonResult> {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -50,21 +59,21 @@ export default class ContestController {
       author,
     });
 
-    res.status(200).json(response);
+    return this.json(response, 200);
   }
 
+  @httpGet('/:contestId')
   public async find(
-    req: Request<FindParams>,
-    res: Response<Contest>,
-  ): Promise<void> {
-    const contest = await this.contestService.findContestById(req.params.id);
-    res.status(200).json(contest);
+    @requestParam('contestId') contestId: string,
+  ): Promise<results.JsonResult> {
+    const contest = await this.contestService.findContestById(contestId);
+    return this.json(contest, 200);
   }
 
+  @httpGet('/:id/items', ...getContestItemsSchema)
   public async getItems(
     req: Request<FindParams, any, any, GetItemsQuery>,
-    res: Response<GetItemsResponse>,
-  ): Promise<void> {
+  ): Promise<results.JsonResult> {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -85,9 +94,10 @@ export default class ContestController {
       search,
     });
 
-    res.status(200).json(response);
+    return this.json(response, 200);
   }
 
+  @httpPost('/', AuthMiddleware, ...createContestSchema)
   public async create(
     req: RequestWithUserId<never, any, CreateBody>,
     res: Response<ResponseMessage>,
@@ -102,6 +112,7 @@ export default class ContestController {
 
     const {
       userId,
+      // @ts-ignore
       files,
       body: { title, excerpt, items },
     } = req;
@@ -110,16 +121,16 @@ export default class ContestController {
       title,
       excerpt,
       items,
-      files: files as Express.Multer.File[],
+      files,
     });
 
     res.status(201).json({ message: 'Contest successfully created!' });
   }
 
+  @httpPost('/:id', AuthMiddleware, ...updateContestSchema)
   public async update(
     req: Request<FindParams, any, Omit<CreateBody, 'items'>>,
-    res: Response,
-  ): Promise<void> {
+  ): Promise<results.JsonResult> {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -129,6 +140,7 @@ export default class ContestController {
     }
 
     const {
+      // @ts-ignore
       files,
       params: { id: contestId },
       body: { title, excerpt },
@@ -137,18 +149,16 @@ export default class ContestController {
     await this.contestService.updateContest(contestId, {
       title,
       excerpt,
-      files: files as Express.Multer.File[],
+      files,
     });
 
-    res.status(200).json({ message: 'Contest successfully updated!' });
+    return this.json({ message: 'Contest successfully updated!' }, 200);
   }
 
-  public async remove(
-    req: Request<FindParams>,
-    res: Response<ResponseMessage>,
-  ): Promise<void> {
+  @httpDelete('/:id', AuthMiddleware, IsAuthorMiddleware)
+  public async remove(req: Request<FindParams>): Promise<results.JsonResult> {
     await this.contestService.removeContest(req.params.id);
 
-    res.status(200).json({ message: 'Contest successfully deleted!' });
+    return this.json({ message: 'Contest successfully deleted!' }, 200);
   }
 }
