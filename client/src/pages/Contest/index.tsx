@@ -19,7 +19,7 @@ enum TABS {
 const ContestPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
-  const { _id: userId } = useContext(UserProfileContext);
+  const { _id: userId } = useContext(UserProfileContext) || {};
   const { data: { data: contest = {} } = {} } = useContestFind(id);
   const [startGame] = useGameStart();
   // @ts-ignore
