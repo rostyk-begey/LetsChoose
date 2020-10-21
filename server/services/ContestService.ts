@@ -289,13 +289,19 @@ export default class ContestService implements IContestService {
     contestId: string,
     { files, title, excerpt }: Omit<CreateContestsData, 'items'>,
   ): Promise<Contest> {
-    const contest: Contest = await this.findContestById(contestId);
+    const data: Partial<Contest> = {};
 
-    if (title) contest.title = title;
-    if (excerpt) contest.excerpt = excerpt;
+    if (title) {
+      data.title = title;
+    }
+
+    if (excerpt) {
+      data.excerpt = excerpt;
+    }
+
     if (files?.length) {
       const thumbnailFile = files.find(fieldNameFilter('thumbnail'));
-      if (contest.thumbnail) {
+      if (data.thumbnail) {
         await this.cloudinaryService.destroy(
           ContestService.getContestThumbnailPublicId(contestId),
         );
@@ -304,13 +310,10 @@ export default class ContestService implements IContestService {
         thumbnailFile!.path,
         ContestService.getContestThumbnailPublicId(contestId),
       );
-      contest.thumbnail = secure_url;
+      data.thumbnail = secure_url;
     }
 
-    // @ts-ignore
-    await contest.save();
-
-    return contest;
+    return this.contestRepository.findByIdAndUpdate(contestId, data);
   }
 
   public async removeContest(contestId: string): Promise<void> {

@@ -6,9 +6,13 @@ import {
 import { Contest } from '../../../models/Contest';
 import contests from './data/contests';
 
+const test = jest.fn();
+
 @injectable()
 export default class ContestRepository implements IContestRepository {
   private contests = contests;
+
+  // countDocuments = jest.fn(async () => this.contests.length);
 
   async countDocuments(): Promise<number> {
     return this.contests.length;

@@ -1,5 +1,6 @@
 import { injectable } from 'inversify';
 import { Types } from 'mongoose';
+import chunk from 'lodash/chunk';
 
 import {
   CreateContestItemData,

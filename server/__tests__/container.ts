@@ -7,13 +7,13 @@ import AuthService from '../services/AuthService';
 import GameService from '../services/GameService';
 import EmailService from '../services/EmailService';
 import ContestService from '../services/ContestService';
-import CloudinaryService from '../services/CloudinaryService';
+import CloudinaryService from './__mocks__/services/CloudinaryService';
 import PasswordHashService from '../services/PasswordHashService';
 
 import GameRepository from '../repositories/GameRepository';
 import UserRepository from '../repositories/UserRepository';
-import ContestRepository from './mocks/repositories/ContestRepository';
-import ContestItemRepository from './mocks/repositories/ContestItemRepository';
+import ContestRepository from './__mocks__/repositories/ContestRepository';
+import ContestItemRepository from './__mocks__/repositories/ContestItemRepository';
 
 import UserController from '../controllers/user/UserController';
 import GameController from '../controllers/game/GameController';
