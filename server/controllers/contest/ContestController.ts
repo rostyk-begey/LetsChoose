@@ -97,7 +97,7 @@ export default class ContestController extends BaseHttpController {
     return this.json(response, 200);
   }
 
-  @httpPost('/', AuthMiddleware, ...createContestSchema)
+  @httpPost('/', TYPES.AuthMiddleware, ...createContestSchema)
   public async create(
     req: RequestWithUserId<never, any, CreateBody>,
     res: Response<ResponseMessage>,
@@ -127,7 +127,7 @@ export default class ContestController extends BaseHttpController {
     res.status(201).json({ message: 'Contest successfully created!' });
   }
 
-  @httpPost('/:id', AuthMiddleware, ...updateContestSchema)
+  @httpPost('/:id', TYPES.AuthMiddleware, ...updateContestSchema)
   public async update(
     req: Request<FindParams, any, Omit<CreateBody, 'items'>>,
   ): Promise<results.JsonResult> {
@@ -155,7 +155,7 @@ export default class ContestController extends BaseHttpController {
     return this.json({ message: 'Contest successfully updated!' }, 200);
   }
 
-  @httpDelete('/:id', AuthMiddleware, IsAuthorMiddleware)
+  @httpDelete('/:id', TYPES.AuthMiddleware, IsAuthorMiddleware)
   public async remove(req: Request<FindParams>): Promise<results.JsonResult> {
     await this.contestService.removeContest(req.params.id);
 

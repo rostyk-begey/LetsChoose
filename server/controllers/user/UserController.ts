@@ -23,7 +23,7 @@ export default class UserController extends BaseHttpController {
     super();
   }
 
-  @httpGet('/me', AuthMiddleware)
+  @httpGet('/me', TYPES.AuthMiddleware)
   public async me(
     req: RequestWithUserId<UserFindParams>,
   ): Promise<results.JsonResult> {
@@ -42,14 +42,14 @@ export default class UserController extends BaseHttpController {
     return this.json(user, 200);
   }
 
-  @httpDelete('/me', AuthMiddleware)
+  @httpDelete('/me', TYPES.AuthMiddleware)
   public async removeMe(req: RequestWithUserId): Promise<results.JsonResult> {
     await this.userService.removeUserById(req.userId as string);
     return this.json({ message: 'User successfully deleted!' }, 200);
   }
 
   // todo: validate permissions
-  @httpDelete('/:username', AuthMiddleware)
+  @httpDelete('/:username', TYPES.AuthMiddleware)
   public async remove(
     @requestParam('username') username: string,
   ): Promise<results.JsonResult> {
