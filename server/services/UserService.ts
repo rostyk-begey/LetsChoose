@@ -31,7 +31,7 @@ export default class UserService implements IUserService {
   }
 
   public findByUsername(username: string): Promise<User> {
-    return this.userRepository.findOne({ username });
+    return this.userRepository.findByUsername(username);
   }
 
   public async removeUserById(id: string): Promise<void> {
@@ -40,7 +40,7 @@ export default class UserService implements IUserService {
   }
 
   public async removeUserByUsername(username: string): Promise<void> {
-    const user = await this.userRepository.findOne({ username });
+    const user = await this.userRepository.findByUsername(username);
     await this.removeUserData(user.id);
   }
 

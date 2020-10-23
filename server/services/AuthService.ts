@@ -81,10 +81,10 @@ export default class AuthService implements IAuthService {
     accessToken: string;
     refreshToken: string;
   }> {
-    let user = await this.userRepository.findOne({ email: login });
+    let user = await this.userRepository.findByEmail(login);
 
     if (!user) {
-      user = await this.userRepository.findOne({ username: login });
+      user = await this.userRepository.findByUsername(login);
     }
 
     if (!user) {
@@ -117,7 +117,7 @@ export default class AuthService implements IAuthService {
   }
 
   public async requestPasswordReset(email: string): Promise<void> {
-    const user = await this.userRepository.findOne({ email });
+    const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
       throw new AppError('Invalid email', 404);

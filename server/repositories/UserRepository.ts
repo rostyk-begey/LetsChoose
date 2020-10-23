@@ -12,7 +12,8 @@ export interface IUserRepository {
   findById(userId: string): Promise<User>;
   findByIdOrFail(userId: string): Promise<User>;
   findByIdAndUpdate(userId: string, data: Partial<User>): Promise<User>;
-  findOne(query: Partial<User>): Promise<User>;
+  findByUsername(username: string): Promise<User>;
+  findByEmail(email: string): Promise<User>;
   deleteUser(userId: string): Promise<User>;
   createUser(data: CreateUserData): Promise<User>;
 }
@@ -41,12 +42,17 @@ export default class UserRepository implements IUserRepository {
     return user;
   }
 
-  public async findOne(query: Partial<User>): Promise<User> {
+  protected async findOne(query: Partial<User>): Promise<User> {
     const user = await UserModel.findOne(query);
-    if (!user) {
-      throw new AppError('User not found', 404);
-    }
-    return user;
+    return user as User;
+  }
+
+  public findByUsername(username: string): Promise<User> {
+    return this.findOne({ username });
+  }
+
+  public findByEmail(email: string): Promise<User> {
+    return this.findOne({ email });
   }
 
   public async deleteUser(userId: string): Promise<User> {
