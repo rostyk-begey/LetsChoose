@@ -7,7 +7,7 @@ export interface IPasswordHashService {
 }
 
 @injectable()
-export default class PasswordHashService {
+export default class PasswordHashService implements IPasswordHashService {
   public hash(password: string, salt: number | string): Promise<string> {
     return bcrypt.hash(password, salt);
   }
