@@ -4,8 +4,11 @@ import { TYPES } from '../../inversify.types';
 import ContestService from '../../services/ContestService';
 import { GetResponse } from '../../controllers/contest/types';
 import { Contest } from '../../models/Contest';
+import CloudinaryService from '../__mocks__/services/CloudinaryService';
 
-let contestService: ContestService;
+let contestService: ContestService = container.get<ContestService>(
+  TYPES.ContestService,
+);
 
 beforeEach(() => {
   contestService = container.get<ContestService>(TYPES.ContestService);
@@ -87,6 +90,13 @@ describe('Test ContestService createContest', () => {
   test('test new contest thumbnail', () => {
     expect(contest.thumbnail).toEqual(`contests/${contest.id}/thumbnail`);
   });
+
+  test('test called cloudinary service', () => {
+    expect(CloudinaryService.upload).toBeCalledWith(
+      'path',
+      `contests/${contest.id}/thumbnail`,
+    );
+  });
 });
 
 describe('Test ContestService updateContest', () => {
@@ -109,6 +119,13 @@ describe('Test ContestService updateContest', () => {
 
   test('test updated contest thumbnail', () => {
     expect(contest.thumbnail).toEqual(`contests/${contest.id}/thumbnail`);
+  });
+
+  test('test called cloudinary service', () => {
+    expect(CloudinaryService.upload).toBeCalledWith(
+      'path',
+      `contests/${contest.id}/thumbnail`,
+    );
   });
 });
 

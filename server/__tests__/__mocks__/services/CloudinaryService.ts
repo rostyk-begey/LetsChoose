@@ -1,15 +1,10 @@
 import { UploadApiResponse } from 'cloudinary';
-import { injectable } from 'inversify';
 
 import { ICloudinaryService } from '../../../services/CloudinaryService';
 
-@injectable()
-export default class CloudinaryService implements ICloudinaryService {
-  public async upload(
-    filePath: string,
-    publicId: string,
-  ): Promise<UploadApiResponse> {
-    return {
+const CloudinaryService: ICloudinaryService = {
+  upload: (filePath: string, publicId: string): Promise<UploadApiResponse> =>
+    Promise.resolve({
       public_id: publicId,
       version: 0,
       signature: '',
@@ -32,10 +27,12 @@ export default class CloudinaryService implements ICloudinaryService {
       access_control: [],
       context: {},
       metadata: {},
-    };
-  }
+    }),
 
-  public async destroy(): Promise<any> {
-    return null;
-  }
-}
+  destroy: () => Promise.resolve(),
+};
+
+CloudinaryService.upload = jest.fn(CloudinaryService.upload);
+CloudinaryService.destroy = jest.fn(CloudinaryService.destroy);
+
+export default CloudinaryService;
