@@ -11,7 +11,6 @@ import {
 import { UserFindParams } from './types';
 import { IUserService } from '../../services/UserService';
 import { RequestWithUserId } from '../../types';
-import AuthMiddleware from '../../middleware/AuthMiddleware';
 import { TYPES } from '../../inversify.types';
 
 @controller('/api/users')
