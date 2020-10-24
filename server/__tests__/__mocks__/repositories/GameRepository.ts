@@ -51,12 +51,9 @@ const GameRepository: IGameRepository = {
   },
 
   async createGame(data: CreateGameData): Promise<Game> {
-    console.log({ create: data.pair });
     const game = {
       id: data._id,
       ...data,
-      // @ts-ignore
-      // pair: data.pair.map(({ id }) => id),
     };
     mockGames.push(game);
     return this.findById(game.id);

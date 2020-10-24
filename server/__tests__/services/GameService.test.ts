@@ -23,7 +23,6 @@ describe('Test GameService start', () => {
   });
 
   test('test new game contestId', () => {
-    console.log(game);
     expect(game.contestId).toEqual(contestId);
   });
 
