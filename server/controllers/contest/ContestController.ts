@@ -155,7 +155,7 @@ export default class ContestController extends BaseHttpController {
     return this.json({ message: 'Contest successfully updated!' }, 200);
   }
 
-  @httpDelete('/:id', TYPES.AuthMiddleware, IsAuthorMiddleware)
+  @httpDelete('/:id', TYPES.AuthMiddleware, TYPES.IsAuthorMiddleware)
   public async remove(req: Request<FindParams>): Promise<results.JsonResult> {
     await this.contestService.removeContest(req.params.id);
 
