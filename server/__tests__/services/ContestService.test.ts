@@ -1,18 +1,14 @@
 import container from '../container';
 import mockContests from '../__mocks__/repositories/data/contests';
 import { TYPES } from '../../inversify.types';
-import ContestService from '../../services/ContestService';
+import { IContestService } from '../../services/ContestService';
 import { GetResponse } from '../../controllers/contest/types';
 import { Contest } from '../../models/Contest';
 import CloudinaryService from '../__mocks__/services/CloudinaryService';
 
-let contestService: ContestService = container.get<ContestService>(
+const contestService: IContestService = container.get<IContestService>(
   TYPES.ContestService,
 );
-
-beforeEach(() => {
-  contestService = container.get<ContestService>(TYPES.ContestService);
-});
 
 test('Test ContestService findById', async () => {
   const contest = await contestService.findContestById(mockContests[0].id);

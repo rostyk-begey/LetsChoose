@@ -1,6 +1,4 @@
-import { injectable } from 'inversify';
 import { Types } from 'mongoose';
-import chunk from 'lodash/chunk';
 
 import {
   CreateContestItemData,
@@ -8,32 +6,32 @@ import {
 } from '../../../repositories/ContestItemRepository';
 import contestItems, { ExtendedContestItem } from './data/contestItems';
 import { ContestItem } from '../../../models/ContestItem';
+import { AppError } from '../../../usecases/error';
 
-@injectable()
-export default class ContestRepository implements IContestItemRepository {
-  private contestItems = contestItems;
+export let mockContestItems = [...contestItems];
 
+const ContestItemRepository: IContestItemRepository = {
   async countDocuments(): Promise<number> {
-    return this.contestItems.length;
-  }
+    return mockContestItems.length;
+  },
   async aggregate(aggregations?: any[]): Promise<ContestItem[]> {
-    return this.contestItems;
-  }
-  async findById(contestId: string): Promise<ContestItem> {
-    const contestItem = this.contestItems.find(({ id }) => contestId === id);
+    return mockContestItems;
+  },
+  async findById(itemId: string): Promise<ContestItem> {
+    const contestItem = mockContestItems.find(({ id }) => itemId === id);
     if (!contestItem) {
-      throw new Error('contest not found');
+      throw new AppError('contest item not found', 404);
     }
     return contestItem;
-  }
+  },
   async findByContestId(contestId: string): Promise<ContestItem[]> {
-    return this.contestItems.filter(({ contestId: cId }) => contestId === cId);
-  }
+    return mockContestItems.filter(({ contestId: cId }) => contestId === cId);
+  },
   async deleteContestItems(contestId: string): Promise<void> {
-    this.contestItems = this.contestItems.filter(
+    mockContestItems = mockContestItems.filter(
       ({ contestId: cId }) => contestId !== cId,
     );
-  }
+  },
   async createContestItem(data: CreateContestItemData): Promise<ContestItem> {
     const id = new Types.ObjectId().toString();
     const contest: ExtendedContestItem = {
@@ -46,7 +44,24 @@ export default class ContestRepository implements IContestItemRepository {
       finalWins: 0,
       ...data,
     };
-    this.contestItems.push(contest);
+    mockContestItems.push(contest);
     return contest;
-  }
-}
+  },
+};
+
+ContestItemRepository.countDocuments = jest.fn(
+  ContestItemRepository.countDocuments,
+);
+ContestItemRepository.aggregate = jest.fn(ContestItemRepository.aggregate);
+ContestItemRepository.findById = jest.fn(ContestItemRepository.findById);
+ContestItemRepository.findByContestId = jest.fn(
+  ContestItemRepository.findByContestId,
+);
+ContestItemRepository.deleteContestItems = jest.fn(
+  ContestItemRepository.deleteContestItems,
+);
+ContestItemRepository.createContestItem = jest.fn(
+  ContestItemRepository.createContestItem,
+);
+
+export default ContestItemRepository;

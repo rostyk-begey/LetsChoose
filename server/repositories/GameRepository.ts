@@ -26,37 +26,37 @@ export default class GameRepository implements IGameRepository {
   }
 
   public async findById(gameId: string): Promise<Game> {
-    const user = await GameModel.findById(gameId)
+    const game = await GameModel.findById(gameId)
       .populate('items')
       .populate('pair');
-    if (!user) {
+    if (!game) {
       throw new AppError('Game not found', 404);
     }
-    return user;
+    return game;
   }
 
   public async findByIdAndUpdate(
     gameId: string,
     data: Partial<Game>,
   ): Promise<Game> {
-    const user = await GameModel.findByIdAndUpdate(gameId, data);
-    if (!user) {
+    const game = await GameModel.findByIdAndUpdate(gameId, data);
+    if (!game) {
       throw new AppError('Game not found', 404);
     }
-    return user;
+    return game;
   }
 
   public async deleteGame(gameId: string): Promise<Game> {
-    const user = await GameModel.findByIdAndRemove(gameId);
-    if (!user) {
+    const game = await GameModel.findByIdAndRemove(gameId);
+    if (!game) {
       throw new AppError('Game not found', 404);
     }
-    return user;
+    return game;
   }
 
   public async createGame(data: CreateGameData): Promise<Game> {
-    const user = new GameModel(data);
-    await user.save();
-    return user;
+    const game = new GameModel(data);
+    await game.save();
+    return game;
   }
 }
