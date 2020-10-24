@@ -1,17 +1,17 @@
 import { Container, interfaces } from 'inversify';
 import 'reflect-metadata';
 
-import JwtService from '../services/JwtService';
+import JwtService from './__mocks__/services/JwtService';
 import UserService from '../services/UserService';
 import AuthService from '../services/AuthService';
 import GameService from '../services/GameService';
-import EmailService from '../services/EmailService';
+import EmailService from './__mocks__/services/EmailService';
 import ContestService from '../services/ContestService';
 import CloudinaryService from './__mocks__/services/CloudinaryService';
-import PasswordHashService from '../services/PasswordHashService';
+import PasswordHashService from './__mocks__/services/PasswordHashService';
 
-import GameRepository from '../repositories/GameRepository';
-import UserRepository from '../repositories/UserRepository';
+import GameRepository from './__mocks__/repositories/GameRepository';
+import UserRepository from './__mocks__/repositories/UserRepository';
 import ContestRepository from './__mocks__/repositories/ContestRepository';
 import ContestItemRepository from './__mocks__/repositories/ContestItemRepository';
 
@@ -29,18 +29,20 @@ const container: interfaces.Container = new Container();
 // Services
 container.bind(TYPES.AuthService).to(AuthService);
 container.bind(TYPES.UserService).to(UserService);
-container.bind(TYPES.CloudinaryService).to(CloudinaryService);
-container.bind(TYPES.JwtService).to(JwtService);
+container.bind(TYPES.CloudinaryService).toConstantValue(CloudinaryService);
+container.bind(TYPES.JwtService).toConstantValue(JwtService);
 container.bind(TYPES.GameService).to(GameService);
-container.bind(TYPES.EmailService).to(EmailService);
+container.bind(TYPES.EmailService).toConstantValue(EmailService);
 container.bind(TYPES.ContestService).to(ContestService);
-container.bind(TYPES.PasswordHashService).to(PasswordHashService);
+container.bind(TYPES.PasswordHashService).toConstantValue(PasswordHashService);
 
 // Repositories
-container.bind(TYPES.UserRepository).to(UserRepository);
-container.bind(TYPES.ContestRepository).to(ContestRepository);
-container.bind(TYPES.GameRepository).to(GameRepository);
-container.bind(TYPES.ContestItemRepository).to(ContestItemRepository);
+container.bind(TYPES.UserRepository).toConstantValue(UserRepository);
+container.bind(TYPES.ContestRepository).toConstantValue(ContestRepository);
+container.bind(TYPES.GameRepository).toConstantValue(GameRepository);
+container
+  .bind(TYPES.ContestItemRepository)
+  .toConstantValue(ContestItemRepository);
 
 // Middleware
 container.bind(TYPES.AuthMiddleware).to(AuthMiddleware);

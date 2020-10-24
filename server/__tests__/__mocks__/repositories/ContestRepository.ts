@@ -1,40 +1,35 @@
-import { injectable } from 'inversify';
 import {
   CreateContestData,
   IContestRepository,
 } from '../../../repositories/ContestRepository';
 import { Contest } from '../../../models/Contest';
 import contests from './data/contests';
+import { AppError } from '../../../usecases/error';
 
-const test = jest.fn();
+export let mockContests = [...contests];
 
-@injectable()
-export default class ContestRepository implements IContestRepository {
-  private contests = contests;
-
-  // countDocuments = jest.fn(async () => this.contests.length);
-
+const ContestRepository: IContestRepository = {
   async countDocuments(): Promise<number> {
-    return this.contests.length;
-  }
+    return mockContests.length;
+  },
   async aggregate(aggregations?: any[]): Promise<Contest[]> {
-    return this.contests;
-  }
+    return mockContests;
+  },
   async findById(contestId: string): Promise<Contest> {
-    const contest = this.contests.find(({ id }) => contestId === id);
+    const contest = mockContests.find(({ id }) => contestId === id);
     if (!contest) {
-      throw new Error('contest not found');
+      throw new AppError('Contest not found', 404);
     }
     return contest;
-  }
+  },
   async findByAuthor(author: string): Promise<Contest[]> {
-    return this.contests.filter(({ author: a }) => author === a) as Contest[];
-  }
+    return mockContests.filter(({ author: a }) => author === a) as Contest[];
+  },
   async findByIdAndUpdate(
     contestId: string,
     data: Partial<Contest>,
   ): Promise<Contest> {
-    this.contests = contests.map((contest) => {
+    mockContests = contests.map((contest) => {
       if (contest.id === contestId) {
         return {
           ...contest,
@@ -44,12 +39,12 @@ export default class ContestRepository implements IContestRepository {
       return contest;
     });
     return this.findById(contestId);
-  }
+  },
   async deleteContest(contestId: string): Promise<Contest> {
     const contest = await this.findById(contestId);
-    this.contests = this.contests.filter(({ id }) => contestId !== id);
+    mockContests = mockContests.filter(({ id }) => contestId !== id);
     return contest;
-  }
+  },
   async createContest(data: CreateContestData): Promise<Contest> {
     const contest: Contest = {
       id: data._id,
@@ -58,7 +53,18 @@ export default class ContestRepository implements IContestRepository {
       items: [],
       ...data,
     };
-    this.contests.push(contest);
+    mockContests.push(contest);
     return contest;
-  }
-}
+  },
+};
+
+ContestRepository.countDocuments = jest.fn(ContestRepository.countDocuments);
+ContestRepository.aggregate = jest.fn(ContestRepository.aggregate);
+ContestRepository.findById = jest.fn(ContestRepository.findById);
+ContestRepository.findByAuthor = jest.fn(ContestRepository.findByAuthor);
+ContestRepository.findByIdAndUpdate = jest.fn(
+  ContestRepository.findByIdAndUpdate,
+);
+ContestRepository.deleteContest = jest.fn(ContestRepository.deleteContest);
+
+export default ContestRepository;

@@ -18,7 +18,7 @@ export interface IGameService {
 }
 
 @injectable()
-export default class GameService {
+export default class GameService implements IGameService {
   constructor(
     @inject(TYPES.ContestRepository)
     protected readonly contestRepository: IContestRepository,
@@ -29,15 +29,6 @@ export default class GameService {
     @inject(TYPES.GameRepository)
     protected readonly gameRepository: IGameRepository,
   ) {}
-
-  protected getCurrentRoundItems(
-    gameItems: GameItem[],
-    round: number,
-  ): GameItem[] {
-    return gameItems.filter(
-      ({ compares, wins }) => round === compares && round === wins,
-    );
-  }
 
   protected static generatePair(items: GameItem[]): string[] {
     return shuffle(items)
@@ -130,7 +121,7 @@ export default class GameService {
   }
 
   public async playRound(gameId: string, winnerId: string): Promise<void> {
-    const game = await this.gameRepository.findById(gameId);
+    const game = await this.findGameById(gameId);
 
     if (game.finished) {
       throw new AppError('Game has been finished', 400);
@@ -185,7 +176,6 @@ export default class GameService {
       );
     }
 
-    // @ts-ignore
-    await game.save();
+    await this.gameRepository.findByIdAndUpdate(game.id, game);
   }
 }
