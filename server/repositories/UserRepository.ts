@@ -1,4 +1,5 @@
 import { injectable } from 'inversify';
+import { Types } from 'mongoose';
 
 import { User, UserModel } from '../models/User';
 import { AppError } from '../usecases/error';
@@ -64,7 +65,7 @@ export default class UserRepository implements IUserRepository {
   }
 
   public async createUser(data: CreateUserData): Promise<User> {
-    const user = new UserModel(data);
+    const user = new UserModel({ _id: Types.ObjectId(), ...data });
     await user.save();
     return user;
   }
