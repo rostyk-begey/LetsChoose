@@ -28,7 +28,7 @@ const CreateContestPage: React.FC = () => {
             ...contestData,
             thumbnail,
             items,
-          } as any),
+          }),
         );
         history.push(ROUTES.HOME);
       } catch (e) {

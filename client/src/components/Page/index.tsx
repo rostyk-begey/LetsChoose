@@ -84,6 +84,13 @@ export const Page: React.FC<PropsWithChildren<Props>> = ({
       'plus',
       ROUTES.CONTESTS.NEW,
     ),
+    newNavBarItem(
+      pathname,
+      ROUTES.PRIME_NUMBER_CHECKER,
+      'Prime number checker',
+      'server',
+      ROUTES.PRIME_NUMBER_CHECKER,
+    ),
   ].filter(Boolean);
   const accountDropdownProps = {
     avatarURL: avatar,

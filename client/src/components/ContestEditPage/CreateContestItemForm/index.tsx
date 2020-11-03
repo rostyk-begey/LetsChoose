@@ -33,7 +33,6 @@ const CreateContestItemForm: React.FC<Props> = ({
 
   return (
     <Form className="card" onSubmit={handleSubmit(submit)} title="Add new item">
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <FormProvider {...form}>
         <Card.Body className="p-4 p-md-5 p-xl-6">
           <Grid.Row>

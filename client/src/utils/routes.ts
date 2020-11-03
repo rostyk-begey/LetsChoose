@@ -13,10 +13,12 @@ export default {
     SINGLE: '/contests/:id',
     UPDATE: '/contests/:id/update',
   },
+  PRIME_NUMBER_CHECKER: '/prime-number-checker',
   GAME: '/games/:id',
   API: {
     INDEX: '/api',
     CONTESTS: '/contests',
+    PRIME_NUMBER_CHECK: '/prime-number-check',
     USERS: '/users',
     GAME: '/games',
     AUTH: {

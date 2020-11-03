@@ -15,6 +15,7 @@ import CreateContestPage from '../pages/CreateContest';
 import UpdateContestPage from '../pages/UpdateContestPage';
 
 import ROUTES from '../utils/routes';
+import PrimeNumberChecker from 'app/pages/PrimeNumberChecker';
 
 export interface IRoute {
   path: string;
@@ -55,6 +56,12 @@ const useRoutes = (isAuthenticated: boolean): JSX.Element => {
       allowed: true,
       component: ContestPage,
       exact: false,
+    },
+    {
+      path: ROUTES.PRIME_NUMBER_CHECKER,
+      allowed: true,
+      component: PrimeNumberChecker,
+      exact: true,
     },
     {
       path: ROUTES.LOGIN,
