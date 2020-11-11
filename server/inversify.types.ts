@@ -17,4 +17,5 @@ export enum TYPES {
   UserController = 'UserController',
   ContestController = 'ContestController',
   GameController = 'GameController',
+  TaskController = 'TaskController',
 }

@@ -39,6 +39,7 @@ const FormInput: React.FC<Props> = ({
         type={type}
         defaultValue={defaultValue}
         placeholder={placeholder}
+        autoComplete="test"
         // @ts-ignore
         ref={register(validation)}
       />

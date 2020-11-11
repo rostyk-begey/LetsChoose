@@ -21,6 +21,7 @@ import UserController from './controllers/user/UserController';
 import ContestController from './controllers/contest/ContestController';
 import GameController from './controllers/game/GameController';
 import AuthController from './controllers/auth/AuthController';
+import TaskController from './controllers/task/TaskController';
 
 import IsAuthorMiddleware from './middleware/IsAuthorMiddleware';
 import AuthMiddleware from './middleware/AuthMiddleware';
@@ -56,6 +57,7 @@ controllers.bind(TYPES.AuthController).to(AuthController);
 controllers.bind(TYPES.UserController).to(UserController);
 controllers.bind(TYPES.ContestController).to(ContestController);
 controllers.bind(TYPES.GameController).to(GameController);
+controllers.bind(TYPES.TaskController).to(TaskController);
 
 container = Container.merge(container, controllers);
 container = Container.merge(container, middlewares);

@@ -13,12 +13,12 @@ export default {
     SINGLE: '/contests/:id',
     UPDATE: '/contests/:id/update',
   },
-  PRIME_NUMBER_CHECKER: '/prime-number-checker',
+  LOAD_BALANCER: '/load-balancer',
   GAME: '/games/:id',
   API: {
     INDEX: '/api',
     CONTESTS: '/contests',
-    PRIME_NUMBER_CHECK: '/prime-number-check',
+    TASKS: '/tasks',
     USERS: '/users',
     GAME: '/games',
     AUTH: {

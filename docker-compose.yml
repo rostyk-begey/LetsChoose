@@ -1,11 +1,35 @@
 version: "3.8"
 services:
   web:
+    image: lets-choose-web:latest
     build: .
     ports:
       - "5000:5000"
     env_file: .env
     volumes:
       - .:/app
+    depends_on:
+      - redis
+  worker:
+    image: lets-choose-worker:latest
+    build: ./worker
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      PORT: 3000
+    volumes:
+      - ./worker:/worker
+  redis:
+    image: "redis:alpine"
+    command: redis-server --requirepass sOmE_sEcUrE_pAsS
+    ports:
+      - "6379:6379"
+#    volumes:
+#      - $PWD/redis-data:/var/lib/redis
+#      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+
+    environment:
+      - REDIS_REPLICATION_MODE=master
 volumes:
   logvolume01: {}

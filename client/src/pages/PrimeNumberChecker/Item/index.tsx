@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
 // @ts-ignore
-import { Button, Badge } from 'tabler-react';
+import { Button, Badge, Table } from 'tabler-react';
 import cn from 'classnames';
 
 import './index.scss';
 import api from '../../../providers/apiProvider';
 import routes from '../../../utils/routes';
+import { useTaskRemove } from '../../../hooks/api/task';
+
+type Status = 'CREATED' | 'IS_CALCULATING' | 'FINISHED';
 
 interface Props {
-  title: number;
-  onDelete: any;
+  id: string;
+  title: string;
+  hardness: number;
+  status: Status;
+  solution?: string;
+  onDelete?: (id?: string) => void;
 }
 
 interface State {
@@ -37,32 +44,57 @@ const usePrimeCheck = (number: number): State => {
   };
 };
 
-const Item: React.FC<Props> = ({ title, onDelete }) => {
+const Item: React.FC<Props> = ({
+  id,
+  title,
+  hardness,
+  solution,
+  status,
+  onDelete = () => null,
+}) => {
   const baseClassName = 'created-contest-item';
-  const { isPrime, isCalculating } = usePrimeCheck(title);
-  const getOption = (
-    onCalculating: string,
-    onPrime: string,
-    onNotPrime: string,
-  ) => {
-    return isCalculating ? onCalculating : isPrime ? onPrime : onNotPrime;
+  const getStatusColor = (status: Status) => {
+    if (status === 'CREATED') return 'warning';
+    if (status === 'IS_CALCULATING') return 'warning';
+    if (status === 'FINISHED') return 'success';
   };
+  const [removeTask] = useTaskRemove();
+  // const { isPrime, isCalculating } = usePrimeCheck(title);
 
-  return (
+  /*return (
     <div className={cn(baseClassName, 'p-3')}>
       <div className="d-flex align-items-center justify-content-between">
         <h5 className="h5 mb-0">{title}</h5>
-        <Badge
-          className="ml-3 mr-auto"
-          color={getOption('warning', 'success', 'danger')}
-        >
-          {getOption('loading', 'prime', 'not prime')}
+        <p className="ml-3">Hardness: {hardness}</p>
+        <Badge className="ml-3 mr-auto" color="warning">
+          {status}
         </Badge>
         <Button.List className="d-flex ml-3">
           <Button color="danger" icon="trash" onClick={onDelete} />
         </Button.List>
       </div>
     </div>
+  );*/
+  return (
+    <Table.Row>
+      <Table.Col className="w-1">{title}</Table.Col>
+      <Table.Col>{hardness}</Table.Col>
+      <Table.Col>
+        <Badge className="ml-0" color={getStatusColor(status)}>
+          {status}
+        </Badge>
+      </Table.Col>
+      <Table.Col>
+        <Button
+          color="danger"
+          icon="trash"
+          onClick={async () => {
+            await removeTask(id);
+            onDelete(id);
+          }}
+        />
+      </Table.Col>
+    </Table.Row>
   );
 };
 

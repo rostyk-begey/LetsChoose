@@ -13,9 +13,9 @@ import GamePage from '../pages/Game';
 import ContestPage from '../pages/Contest';
 import CreateContestPage from '../pages/CreateContest';
 import UpdateContestPage from '../pages/UpdateContestPage';
+import PrimeNumberChecker from '../pages/PrimeNumberChecker';
 
 import ROUTES from '../utils/routes';
-import PrimeNumberChecker from 'app/pages/PrimeNumberChecker';
 
 export interface IRoute {
   path: string;
@@ -58,7 +58,7 @@ const useRoutes = (isAuthenticated: boolean): JSX.Element => {
       exact: false,
     },
     {
-      path: ROUTES.PRIME_NUMBER_CHECKER,
+      path: ROUTES.LOAD_BALANCER,
       allowed: true,
       component: PrimeNumberChecker,
       exact: true,

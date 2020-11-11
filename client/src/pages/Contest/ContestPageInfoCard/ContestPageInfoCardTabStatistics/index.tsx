@@ -55,7 +55,6 @@ const ItemRow: React.FC<any> = ({
         {/*</div>*/}
       </div>
       <div className="progress progress-xs">
-        {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
         <div
           className="progress-bar bg-yellow"
           role="progressbar"

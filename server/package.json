@@ -21,7 +21,12 @@
     "md5": "^2.3.0",
     "mongoose": "^5.10.4",
     "multer": "^1.4.2",
+    "node-fetch": "^2.6.1",
+    "node-hashcash": "^1.0.1",
+    "node-resque": "^8.0.3",
     "nodemailer": "^6.4.11",
+    "socket.io": "^3.0.1",
+    "socket.io-client": "^3.0.1",
     "validator": "^13.1.1"
   },
   "devDependencies": {
@@ -37,7 +42,9 @@
     "@types/mongoose": "^5.7.36",
     "@types/multer": "^1.4.4",
     "@types/node": "^14.14.0",
+    "@types/node-fetch": "^2.5.7",
     "@types/nodemailer": "^6.4.0",
+    "@types/request": "^2.48.5",
     "@types/validator": "^13.1.0",
     "concurrently": "^5.2.0",
     "inversify": "^5.0.1",

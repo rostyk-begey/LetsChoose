@@ -17,10 +17,6 @@ const {
   GMAIL_USER,
   GMAIL_PASSWORD,
   REDIS_HOST,
-  WORKER_URL_1,
-  WORKER_URL_2,
-  WORKER_URL_3,
-  WORKER_URL_4,
 } = process.env;
 
 interface Config {
@@ -46,7 +42,6 @@ interface Config {
   redis: {
     host: string;
   };
-  workerUrls: string[];
 }
 
 const config: Config = {
@@ -63,7 +58,6 @@ const config: Config = {
   redis: {
     host: REDIS_HOST as string,
   },
-  workerUrls: [WORKER_URL_1, WORKER_URL_2, WORKER_URL_3] as string[],
   gmail: {
     user: GMAIL_USER as string,
     password: GMAIL_PASSWORD as string,

@@ -27,6 +27,7 @@ export default class AuthMiddleware extends BaseMiddleware {
       req.userId = userId;
       next();
     } catch (e) {
+      console.log(e);
       next(new AppError('Unauthorized', 401));
     }
   }
