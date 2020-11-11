@@ -8,7 +8,7 @@ import createTokenProvider, {
 const tokenProvider = createTokenProvider();
 
 export type LoginFunction = (newToken: string) => void;
-export type LogoutFunction = (newToken: string) => void;
+export type LogoutFunction = (redirectTo: string) => void;
 
 const login: LoginFunction = (newToken) => tokenProvider.setToken(newToken);
 

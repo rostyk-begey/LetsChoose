@@ -66,6 +66,16 @@ export default class AuthController extends BaseHttpController {
     return this.json(responseBody, 200);
   }
 
+  @httpPost('/logout', TYPES.AuthMiddleware)
+  public async logout(
+    req: Request,
+    res: Response<LoginResponseBody>,
+  ): Promise<results.JsonResult> {
+    res.clearCookie('jid');
+
+    return this.json({ message: 'Successfully logged out' }, 200);
+  }
+
   @httpPost('/register', ...registerSchema)
   public async register(req: Request): Promise<results.JsonResult> {
     const errors = validationResult(req);

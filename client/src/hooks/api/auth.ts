@@ -13,6 +13,7 @@ import { ResponseMessage } from '../../../../server/types';
 
 const {
   LOGIN,
+  LOGOUT,
   REGISTER,
   CONFIRM_EMAIL,
   FORGOT_PASSWORD,
@@ -44,6 +45,7 @@ interface ResetPasswordData {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useAuthApi = () => {
   const login = (data: LoginData) => api.post<LoginResponseBody>(LOGIN, data);
+  const logout = (data: LoginData) => api.post<ResponseMessage>(LOGOUT, data);
   const register = (data: RegisterData) =>
     api.post<ResponseMessage>(REGISTER, data);
   const confirmEmail = (token: string) =>
@@ -52,7 +54,14 @@ export const useAuthApi = () => {
     api.post<ResponseMessage>(FORGOT_PASSWORD, data);
   const resetPassword = ({ token, data }: ResetPasswordData) =>
     api.post<ResponseMessage>(`${RESET_PASSWORD}/${token}`, data);
-  return { login, register, forgotPassword, resetPassword, confirmEmail };
+  return {
+    login,
+    logout,
+    register,
+    forgotPassword,
+    resetPassword,
+    confirmEmail,
+  };
 };
 
 export const useApiLogin = (): MutationResultPair<
@@ -62,6 +71,15 @@ export const useApiLogin = (): MutationResultPair<
 > => {
   const { login } = useAuthApi();
   return useMutation(login);
+};
+
+export const useApiLogout = (): MutationResultPair<
+  AxiosResponse<ResponseMessage>,
+  LoginData,
+  Error
+> => {
+  const { logout } = useAuthApi();
+  return useMutation(logout);
 };
 
 export const useApiRegister = (): MutationResultPair<

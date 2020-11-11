@@ -12,6 +12,7 @@ import AuthContext from '../../context/AuthContext';
 import UserProfileContext from '../../context/UserProfileContext';
 import ROUTES from '../../utils/routes';
 import NavBar from '../../components/NavBar';
+import { useApiLogout } from '../../hooks/api/auth';
 
 import './index.scss';
 
@@ -64,6 +65,7 @@ export const Page: React.FC<PropsWithChildren<Props>> = ({
 }) => {
   const baseClassName = 'page-template';
   const { pathname } = useLocation();
+  const [httpLogout] = useApiLogout();
   const { logout, isAuthenticated } = useContext(AuthContext);
   const { username, avatar } = useContext(UserProfileContext) || {};
   const [navCollapse, setNavCollapse] = useState(true);
@@ -86,10 +88,10 @@ export const Page: React.FC<PropsWithChildren<Props>> = ({
     ),
     newNavBarItem(
       pathname,
-      ROUTES.PRIME_NUMBER_CHECKER,
-      'Prime number checker',
+      ROUTES.LOAD_BALANCER,
+      'Load balancing example',
       'server',
-      ROUTES.PRIME_NUMBER_CHECKER,
+      ROUTES.LOAD_BALANCER,
     ),
   ].filter(Boolean);
   const accountDropdownProps = {
@@ -110,7 +112,8 @@ export const Page: React.FC<PropsWithChildren<Props>> = ({
       {
         icon: 'log-out',
         value: 'Sign out',
-        onClick: () => {
+        onClick: async () => {
+          await httpLogout();
           logout(ROUTES.LOGIN);
         },
       },
