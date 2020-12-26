@@ -12,12 +12,14 @@ export interface ContestItem {
 
 export interface Contest {
   _id: string;
+  id: string;
   thumbnail: string;
   title: string;
   excerpt: string;
   author: string;
   games: number;
   items: ContestItem[];
+  createdAt: string;
 }
 
 export enum SORT_OPTIONS {

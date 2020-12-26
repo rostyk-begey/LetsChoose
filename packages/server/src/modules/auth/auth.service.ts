@@ -7,6 +7,12 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import md5 from 'md5';
+import {
+  AuthForgotPasswordDto,
+  AuthLoginDto,
+  AuthRegisterDto,
+  AuthTokenDto,
+} from '@lets-choose/common';
 
 import { TYPES } from '../../injectable.types';
 import { IUserRepository } from '../../abstract/user.repository.interface';
@@ -14,12 +20,6 @@ import { IPasswordHashService } from '../common/password/password.service';
 import { IAuthService } from '../../abstract/auth.service.interface';
 import { IJwtService } from '../../abstract/jwt.service.interface';
 import { IEmailService } from '../../abstract/email.service.interface';
-import {
-  AuthForgotPasswordDto,
-  AuthLoginDto,
-  AuthRegisterDto,
-  AuthTokenDto,
-} from '@lets-choose/common';
 
 @Injectable()
 export class AuthService implements IAuthService {

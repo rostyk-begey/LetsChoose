@@ -1,1 +1,5 @@
 /dist
+/packages/client/webpack
+packages/client/webpack.config.js
+packages/client/.babelrc.js
+packages/client/postcss.config.js

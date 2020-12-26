@@ -19,3 +19,17 @@ export interface Game {
 }
 
 export type CreateGameDto = Omit<Game, 'id'>;
+
+export interface GetPairResponse {
+  round: number;
+  totalRounds: number;
+  contestId: string;
+  finished: boolean;
+  pair: ContestItem[];
+}
+
+export interface GameStartResponse {
+  contestId: string;
+  gameId: string;
+  message: string;
+}
