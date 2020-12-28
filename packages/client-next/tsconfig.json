@@ -1,0 +1,45 @@
+{
+  "extends": "../../tsconfig.packages.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "jsx": "preserve",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "outDir": "dist",
+    "baseUrl": "src",
+    "paths": {
+      "*": [
+        "node_modules/*"
+      ],
+      "app/*": [
+        "src/*"
+      ]
+    },
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+  ],
+  "references": [
+    {
+      "path": "../common/tsconfig.json"
+    }
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { RenderModule } from 'nest-next';
+import Next from 'next';
 import * as path from 'path';
 
 import { AppController } from './app.controller';
@@ -13,11 +16,15 @@ import { UserModule } from '../user/user.module';
 import config from '../../config';
 import { GameModule } from '../game/game.module';
 
+const packagesPath = path.join(__dirname, '..', '..', '..', '..');
+const rootPath = path.join(packagesPath, '..');
+const clientPath = path.join(packagesPath, 'client-next');
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: path.join(__dirname, '..', '..', '..', '..', '..', '.env'),
+      envFilePath: path.join(rootPath, '.env'),
       load: [config],
     }),
     MongooseModule.forRootAsync({
@@ -25,6 +32,20 @@ import { GameModule } from '../game/game.module';
         uri: configService.get<string>('MONGO_URI'),
       }),
       inject: [ConfigService],
+    }),
+    RenderModule.forRootAsync(
+      Next({
+        dev: process.env.NODE_ENV !== 'production',
+        dir: clientPath,
+        conf: require(path.resolve(clientPath, 'next.config.js')),
+      }),
+      {
+        dev: process.env.NODE_ENV !== 'production',
+        viewsDir: '',
+      },
+    ),
+    ServeStaticModule.forRoot({
+      rootPath: path.join(clientPath, 'public'),
     }),
     CommonModule,
     AuthModule,

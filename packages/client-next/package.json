@@ -1,0 +1,25 @@
+{
+  "name": "@lets-choose/client-next",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@lets-choose/common": "1.0.0",
+    "@zeit/next-sass": "^1.0.1",
+    "next": "10.0.4",
+    "next-compose-plugins": "^2.2.1",
+    "next-optimized-images": "^2.6.2",
+    "node-sass": "^5.0.0",
+    "react": "17.0.1",
+    "react-dom": "17.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.16",
+    "@types/react": "^17.0.0",
+    "typescript": "^4.1.3"
+  }
+}
