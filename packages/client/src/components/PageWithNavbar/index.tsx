@@ -1,5 +1,4 @@
 import React, { PropsWithChildren, useState } from 'react';
-// @ts-ignore
 import { Page as TablerPage, Grid, Form } from 'tabler-react';
 import { useScrollPosition } from '@n8tb1t/use-scroll-position';
 

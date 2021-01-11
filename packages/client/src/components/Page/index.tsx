@@ -122,6 +122,7 @@ export const Page: React.FC<PropsWithChildren<Props>> = ({
               <Button.List>
                 {AUTH_BUTTONS.map(({ value, to, outline = false }) => (
                   <Link
+                    key={to}
                     to={to}
                     className={`btn btn-${outline ? 'outline-' : ''}primary`}
                   >

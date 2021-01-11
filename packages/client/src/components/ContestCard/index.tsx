@@ -3,14 +3,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+// eslint-disable-next-line import/no-unresolved
 import { Card, Avatar, Icon, Tag } from 'tabler-react';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import humanTime from 'human-time';
 import clip from 'text-clipper';
 
-import ROUTES from '../../utils/routes';
 import { UserDto, Contest } from '@lets-choose/common';
+import ROUTES from '../../utils/routes';
 
 import './index.scss';
 

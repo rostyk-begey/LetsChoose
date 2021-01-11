@@ -1,6 +1,9 @@
 import { Contest } from '../modules/contest/contest.schema';
 
-export type CreateContestData = Omit<Contest, 'id' | 'items' | 'games'>;
+export type CreateContestData = Omit<
+  Contest,
+  'id' | 'items' | 'games' | 'createdAt'
+>;
 
 export interface IContestRepository {
   countDocuments(): Promise<number>;

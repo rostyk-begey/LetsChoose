@@ -2,18 +2,13 @@ import React from 'react';
 // @ts-ignore
 import { Grid, Loader } from 'tabler-react';
 import InfiniteScroll from 'react-infinite-scroller';
+import { Contest, SORT_OPTIONS } from '@lets-choose/common';
 
 import ContestCard from '../../components/ContestCard';
 import { useContestAllInfinite } from '../../hooks/api/contest';
 import useGetParams from '../../hooks/getParams';
 import ROUTES from '../../utils/routes';
 import PageWithNavbar from '../../components/PageWithNavbar';
-import { Contest } from '../../../../server/models/Contest';
-
-const SORT_OPTIONS = {
-  POPULAR: 'POPULAR',
-  NEWEST: 'NEWEST',
-};
 
 const HomePage: React.FC = () => {
   const { params, handleSearch, onInputChange } = useGetParams(ROUTES.HOME, {
@@ -26,7 +21,6 @@ const HomePage: React.FC = () => {
 
   return (
     <PageWithNavbar
-      // @ts-ignore
       params={params}
       handleSearch={handleSearch}
       onInputChange={onInputChange}
@@ -51,7 +45,6 @@ const HomePage: React.FC = () => {
               }) =>
                 contests.map((contest) => (
                   <Grid.Col width={12} md={6} lg={4} key={contest._id}>
-                    {/* @ts-ignore */}
                     <ContestCard data={contest} />
                   </Grid.Col>
                 )),

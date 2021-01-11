@@ -19,6 +19,9 @@ import { GameModule } from '../game/game.module';
 const packagesPath = path.join(__dirname, '..', '..', '..', '..');
 const rootPath = path.join(packagesPath, '..');
 const clientPath = path.join(packagesPath, 'client-next');
+const pagesPath = path.join(clientPath, 'src');
+
+import nextConfig from './next.config';
 
 @Module({
   imports: [
@@ -37,7 +40,7 @@ const clientPath = path.join(packagesPath, 'client-next');
       Next({
         dev: process.env.NODE_ENV !== 'production',
         dir: clientPath,
-        conf: require(path.resolve(clientPath, 'next.config.js')),
+        // conf: nextConfig, //require(path.resolve(clientPath, 'next.config.js')),
       }),
       {
         dev: process.env.NODE_ENV !== 'production',
@@ -58,4 +61,9 @@ const clientPath = path.join(packagesPath, 'client-next');
   providers: [AppService],
   exports: [ConfigModule],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {
+    console.log(clientPath);
+    console.log('../../../../client-next');
+  }
+}

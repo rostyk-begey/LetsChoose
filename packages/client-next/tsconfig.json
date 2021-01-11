@@ -12,6 +12,9 @@
     ],
     "module": "esnext",
     "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
     "noEmit": false,
     "skipLibCheck": true,
     "resolveJsonModule": true,
@@ -40,6 +43,6 @@
     }
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
   ]
 }

@@ -1,12 +1,12 @@
-import { Contest } from '../modules/contest/contest.schema';
 import {
-  CreateContestRequest,
+  CreateContestDTO,
   GetContestQuery,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
-  UpdateContestRequest,
+  UpdateContestDTO,
 } from '@lets-choose/common';
+import { Contest } from '../modules/contest/contest.schema';
 
 export interface IContestService {
   getContestsPaginate(query: GetContestQuery): Promise<GetContestsResponse>;
@@ -16,10 +16,7 @@ export interface IContestService {
     contestId: string,
     query: GetItemsQuery,
   ): Promise<GetItemsResponse>;
-  createContest(userId: string, data: CreateContestRequest): Promise<void>;
-  updateContest(
-    contestId: string,
-    data: UpdateContestRequest,
-  ): Promise<Contest>;
+  createContest(userId: string, data: CreateContestDTO): Promise<void>;
+  updateContest(contestId: string, data: UpdateContestDTO): Promise<Contest>;
   removeContest(contestId: string): Promise<void>;
 }

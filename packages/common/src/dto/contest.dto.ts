@@ -7,8 +7,10 @@ export interface ContestItem {
   compares: number;
   wins: number;
   finalWins: number;
-  contestId: string;
+  contestId: string | Contest;
 }
+
+type User = any;
 
 export interface Contest {
   _id: string;
@@ -16,7 +18,7 @@ export interface Contest {
   thumbnail: string;
   title: string;
   excerpt: string;
-  author: string;
+  author: User | string;
   games: number;
   items: ContestItem[];
   createdAt: string;
@@ -45,28 +47,33 @@ export interface GetContestQuery extends SearchQuery, PaginationQuery {
   sortBy: '' | keyof typeof SORT_OPTIONS;
 }
 
-export interface GetContestsResponse {
-  contests: Contest[];
+interface PaginatedResponse {
   totalPages: number;
   currentPage: number;
+}
+
+export interface GetContestsResponse extends PaginatedResponse {
+  contests: Contest[];
 }
 
 export interface GetItemsQuery extends SearchQuery, PaginationQuery {}
 
-export interface GetItemsResponse {
+export interface GetItemsResponse extends PaginatedResponse {
   items: ContestItem[];
-  totalPages: number;
-  currentPage: number;
 }
 
-export interface CreateContestRequest {
+export interface CreateContestDTO {
   title: string;
   excerpt: string;
   items: Pick<ContestItem, 'title'>[];
   files: any[];
 }
 
-export type UpdateContestRequest = Omit<CreateContestRequest, 'items'>;
+export type CreateContestData = Omit<CreateContestDTO, 'files'>;
+
+export type UpdateContestDTO = Omit<CreateContestDTO, 'items'>;
+
+export type UpdateContestData = Partial<Omit<UpdateContestDTO, 'files'>>;
 
 export interface ISortOptions
   extends Partial<Record<keyof typeof SORT_OPTIONS, number>> {

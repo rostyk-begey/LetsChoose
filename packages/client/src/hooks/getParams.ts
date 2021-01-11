@@ -10,10 +10,22 @@ interface Params {
 
 type InputCallback = (e: React.ChangeEvent<HTMLInputElement>) => void;
 
-const useGetParams = (baseUrl: string, defaultParams: Params = {}) => {
+type UpdateParam = (name: string, value: any) => void;
+
+interface UserGetParamsValues<T extends Params> {
+  params: T;
+  handleSearch: InputCallback;
+  onInputChange: InputCallback;
+  updateParam: UpdateParam;
+}
+
+const useGetParams = <T extends Params>(
+  baseUrl: string,
+  defaultParams: T,
+): UserGetParamsValues<T> => {
   const history = useHistory();
   const query = useURLSearchParams();
-  const [params, setParams] = useState<Params>(defaultParams);
+  const [params, setParams] = useState<T>(defaultParams);
 
   // Restore params from URL
   useEffect(() => {
@@ -28,7 +40,7 @@ const useGetParams = (baseUrl: string, defaultParams: Params = {}) => {
     }));
   }, []);
 
-  const updateParam = useCallback<(name: string, value: any) => void>(
+  const updateParam = useCallback<UpdateParam>(
     (name, value) => {
       const newParams = {
         ...params,

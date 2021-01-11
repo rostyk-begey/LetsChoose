@@ -38,6 +38,8 @@ export class Contest {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: ContestItem.name }],
   })
   items: ContestItem[];
+
+  readonly createdAt: string;
 }
 
 export const ContestSchema = SchemaFactory.createForClass<Contest>(Contest);

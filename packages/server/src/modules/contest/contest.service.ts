@@ -2,11 +2,9 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 
 import * as mongoose from 'mongoose';
 
-import { Contest } from './contest.schema';
-import { ICloudinaryService } from '../cloudinary/cloudinary.service';
-import { IContestItemRepository } from './contest-item.repository';
 import {
-  CreateContestRequest,
+  Contest,
+  CreateContestDTO,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
@@ -14,11 +12,23 @@ import {
   ISortOptions,
   SORT_OPTIONS,
 } from '@lets-choose/common';
+import { Contest as ContestSchema } from './contest.schema';
+import { ICloudinaryService } from '../cloudinary/cloudinary.service';
+import { IContestItemRepository } from './contest-item.repository';
 import { TYPES } from '../../injectable.types';
 import { IContestService } from '../../abstract/contest.service.interface';
 import { IContestRepository } from '../../abstract/contest.repository.interface';
 
-interface CreateContestsData extends CreateContestRequest {
+interface SortOptions {
+  rankScore: number;
+  score?: number;
+}
+
+interface SortPipeline {
+  $sort: ISortOptions;
+}
+
+interface CreateContestsData extends CreateContestDTO {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   files: Express.Multer.File[];
@@ -93,11 +103,9 @@ export class ContestService implements IContestService {
     return { $sort: sortOptions };
   }
 
-  protected static getItemsSortPipeline(search: string): any {
-    const sortOptions = { rankScore: -1 };
+  protected static getItemsSortPipeline(search: string): SortPipeline {
+    const sortOptions: SortOptions = { rankScore: -1 };
     if (search) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       sortOptions.score = -1;
     }
 
@@ -154,8 +162,8 @@ export class ContestService implements IContestService {
     ]);
 
     return {
-      contests: contests as any, // todo refactor
-      currentPage: page,
+      contests,
+      currentPage: +page,
       totalPages,
     };
   }
@@ -226,7 +234,7 @@ export class ContestService implements IContestService {
     ]);
 
     return {
-      items: items as any, // todo refactor
+      items,
       totalPages,
       currentPage: page,
     };
