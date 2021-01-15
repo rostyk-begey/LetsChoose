@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -6,6 +6,7 @@ import { RenderModule } from 'nest-next';
 import Next from 'next';
 import * as path from 'path';
 
+import { RedirectAuthenticatedMiddleware } from '../../middlewares/redirect-authenticated.middleware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ContestModule } from '../contest/contest.module';
@@ -19,9 +20,6 @@ import { GameModule } from '../game/game.module';
 const packagesPath = path.join(__dirname, '..', '..', '..', '..');
 const rootPath = path.join(packagesPath, '..');
 const clientPath = path.join(packagesPath, 'client-next');
-const pagesPath = path.join(clientPath, 'src');
-
-import nextConfig from './next.config';
 
 @Module({
   imports: [
@@ -36,20 +34,19 @@ import nextConfig from './next.config';
       }),
       inject: [ConfigService],
     }),
-    RenderModule.forRootAsync(
-      Next({
-        dev: process.env.NODE_ENV !== 'production',
-        dir: clientPath,
-        // conf: nextConfig, //require(path.resolve(clientPath, 'next.config.js')),
-      }),
-      {
-        dev: process.env.NODE_ENV !== 'production',
-        viewsDir: '',
-      },
-    ),
-    ServeStaticModule.forRoot({
-      rootPath: path.join(clientPath, 'public'),
-    }),
+    // RenderModule.forRootAsync(
+    //   Next({
+    //     dev: process.env.NODE_ENV !== 'production',
+    //     dir: clientPath,
+    //   }),
+    //   {
+    //     dev: process.env.NODE_ENV !== 'production',
+    //     viewsDir: '',
+    //   },
+    // ),
+    // ServeStaticModule.forRoot({
+    //   rootPath: path.join(clientPath, 'public'),
+    // }),
     CommonModule,
     AuthModule,
     UserModule,
@@ -57,13 +54,12 @@ import nextConfig from './next.config';
     ContestModule,
     CloudinaryModule,
   ],
-  controllers: [AppController],
+  controllers: [], //[AppController],
   providers: [AppService],
   exports: [ConfigModule],
 })
 export class AppModule {
-  constructor() {
-    console.log(clientPath);
-    console.log('../../../../client-next');
-  }
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer.apply(RedirectAuthenticatedMiddleware).forRoutes(AppController);
+  // }
 }

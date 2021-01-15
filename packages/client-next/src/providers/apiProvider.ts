@@ -15,10 +15,11 @@ const options: AxiosRequestConfig = {
 
 const api = axios.create(options);
 
-api.interceptors.request.use(async (request) => {
-  const accessToken = await tokenProvider.getToken();
-  if (accessToken) request.headers.Authorization = `Bearer ${accessToken}`;
-  return request;
-});
+// api.interceptors.request.use(async (request) => {
+//   const accessToken = await tokenProvider.getToken();
+//   console.log(accessToken);
+//   if (accessToken) request.headers.Authorization = `Bearer ${accessToken}`;
+//   return request;
+// });
 
 export default api;

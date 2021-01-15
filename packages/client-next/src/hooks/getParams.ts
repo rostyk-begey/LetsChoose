@@ -1,70 +1,19 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-// import { useHistory } from 'react-router-dom';
-import throttle from 'lodash/throttle';
+import { useRouter } from 'next/router';
 
-import useURLSearchParams from '../hooks/URLSearchParams';
+type QueryValue = string | string[] | undefined;
 
-interface Params {
-  [key: string]: any;
-}
+const useQueryState = (
+  key: string,
+  initialValue?: QueryValue,
+): [QueryValue, (value: QueryValue) => void] => {
+  const { push, pathname, query } = useRouter();
 
-type InputCallback = (e: React.ChangeEvent<HTMLInputElement>) => void;
-
-type UpdateParam = (name: string, value: any) => void;
-
-interface UseGetParamsValues<T extends Params> {
-  params: T;
-  handleSearch: InputCallback;
-  onInputChange: InputCallback;
-  updateParam: UpdateParam;
-}
-
-const useGetParams = <T extends Params>(
-  baseUrl: string,
-  defaultParams: T,
-): UseGetParamsValues<T> => {
-  // const history = useHistory();
-  const query = useURLSearchParams();
-  const [params, setParams] = useState<T>(defaultParams);
-
-  // Restore params from URL
-  useEffect(() => {
-    const newPrams = Object.keys(defaultParams).reduce((acc, key) => {
-      const param = query.get(key);
-      if (param) acc[key] = param;
-      return acc;
-    }, {} as any);
-    setParams((prevState: any) => ({
-      ...prevState,
-      ...newPrams,
-    }));
-  }, []);
-
-  const updateParam = useCallback<UpdateParam>(
-    (name, value) => {
-      const newParams = {
-        ...params,
-        [name]: encodeURI(value),
-      };
-      setParams(newParams);
-      const urlParams = Object.entries(newParams).reduce((acc, [key, val]) => {
-        if (val) acc.append(key, val);
-        return acc;
-      }, new URLSearchParams());
-      // history.push(`${baseUrl}?${urlParams}`);
+  return [
+    query[key] || initialValue,
+    (value: QueryValue) => {
+      push({ pathname, query: { ...query, [key]: value } });
     },
-    [params],
-  );
-  const onInputChange: InputCallback = ({ target: { name, value } }) =>
-    updateParam(name, value);
-
-  const { current: throttled } = useRef(
-    throttle(updateParam, 1000, { leading: false }),
-  );
-  const handleSearch: InputCallback = ({ target: { name, value } }) =>
-    throttled(name, value);
-
-  return { params, handleSearch, onInputChange, updateParam };
+  ];
 };
 
-export default useGetParams;
+export default useQueryState;

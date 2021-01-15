@@ -1,10 +1,15 @@
-import { useMutation, useQuery } from 'react-query';
+import { AxiosResponse, AxiosError } from 'axios';
+import {
+  useMutation,
+  useQuery,
+  MutationFunction,
+  MutationConfig,
+} from 'react-query';
 
 import {
   AuthForgotPasswordDto,
   AuthLoginDto,
   AuthRegisterDto,
-  AuthResetPasswordDto,
   HttpResponseMessageDto,
   AuthTokenDto,
 } from '@lets-choose/common';
@@ -13,6 +18,7 @@ import ROUTES from '../../utils/routes';
 
 const {
   LOGIN,
+  LOGOUT,
   REGISTER,
   CONFIRM_EMAIL,
   FORGOT_PASSWORD,
@@ -27,42 +33,46 @@ interface ResetPasswordData {
   };
 }
 
-export const useAuthApi = () => {
-  const login = (data: AuthLoginDto) => api.post<AuthTokenDto>(LOGIN, data);
-  const register = (data: AuthRegisterDto) =>
-    api.post<HttpResponseMessageDto>(REGISTER, data);
-  const confirmEmail = (token: string) =>
-    api.post<HttpResponseMessageDto>(`${CONFIRM_EMAIL}/${token}`);
-  const forgotPassword = (data: AuthForgotPasswordDto) =>
-    api.post<HttpResponseMessageDto>(FORGOT_PASSWORD, data);
-  const resetPassword = ({ token, data }: ResetPasswordData) =>
-    api.post<HttpResponseMessageDto>(`${RESET_PASSWORD}/${token}`, data);
-  return { login, register, forgotPassword, resetPassword, confirmEmail };
+export const authApi = {
+  login: (data: AuthLoginDto) => api.post<AuthTokenDto>(LOGIN, data),
+  logout: () => api.post<HttpResponseMessageDto>(LOGOUT, {}),
+  register: (data: AuthRegisterDto) =>
+    api.post<HttpResponseMessageDto>(REGISTER, data),
+  confirmEmail: (token: string) =>
+    api.post<HttpResponseMessageDto>(`${CONFIRM_EMAIL}/${token}`),
+  forgotPassword: (data: AuthForgotPasswordDto) =>
+    api.post<HttpResponseMessageDto>(FORGOT_PASSWORD, data),
+  resetPassword: ({ token, data }: ResetPasswordData) =>
+    api.post<HttpResponseMessageDto>(`${RESET_PASSWORD}/${token}`, data),
 };
 
+const useAxiosMutation = <TResult, TVariables>(
+  mutationFn: MutationFunction<AxiosResponse<TResult>, TVariables>,
+  config?: MutationConfig<
+    AxiosResponse<TResult>,
+    AxiosError<TResult>,
+    TVariables
+  >,
+) =>
+  useMutation<AxiosResponse<TResult>, AxiosError<TResult>, TVariables>(
+    mutationFn,
+    config,
+  );
+
 export const useApiLogin = () => {
-  const { login } = useAuthApi();
-  return useMutation(login);
+  return useMutation(authApi.login);
 };
 
 export const useApiRegister = () => {
-  const { register } = useAuthApi();
-  return useMutation(register);
+  return useAxiosMutation(authApi.register);
 };
 
-export const useApiForgotPassword = () => {
-  const { forgotPassword } = useAuthApi();
-  return useMutation(forgotPassword);
-};
+export const useApiForgotPassword = () => useMutation(authApi.forgotPassword);
 
-export const useApiResetPassword = () => {
-  const { resetPassword } = useAuthApi();
-  return useMutation(resetPassword);
-};
+export const useApiResetPassword = () => useMutation(authApi.resetPassword);
 
 export const useApiConfirmEmail = (token: string, config = {}) => {
-  const { confirmEmail } = useAuthApi();
-  return useQuery(['confirm_email', token], () => confirmEmail(token), {
+  return useQuery(['confirm_email', token], () => authApi.confirmEmail(token), {
     retry: 0,
     ...config,
   });

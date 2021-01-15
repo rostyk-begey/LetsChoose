@@ -1,4 +1,4 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Render, Response } from '@nestjs/common';
 
 import { AppService } from './app.service';
 
@@ -12,15 +12,15 @@ export class AppController {
     return {};
   }
 
-  @Render('blog')
-  @Get('/blog')
-  public blog() {
+  @Render('register')
+  @Get('/register')
+  public register() {
     return {};
   }
 
   @Render('login')
   @Get('/login')
-  public login() {
+  public login(@Response({ passthrough: true }) res: any) {
     return {};
   }
 }

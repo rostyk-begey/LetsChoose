@@ -9,6 +9,7 @@ export class EmailService implements IEmailService {
   private readonly config: GmailConfig;
 
   constructor(private readonly configService: ConfigService) {
+    // TODO: update
     // @Inject() private readonly emailTransporter,
     this.config = configService.get<GmailConfig>('gmail');
   }
@@ -17,6 +18,7 @@ export class EmailService implements IEmailService {
     to: string,
     confirmRegistrationUrl: string,
   ): Promise<void> {
+    // TODO: update
     // await this.emailTransporter.sendMail({
     //   to,
     //   subject: 'Confirm Email',
@@ -28,6 +30,7 @@ export class EmailService implements IEmailService {
     to: string,
     resetPasswordUrl: string,
   ): Promise<void> {
+    // TODO: update
     // await this.emailTransporter.sendMail({
     //   to,
     //   subject: 'Password reset',

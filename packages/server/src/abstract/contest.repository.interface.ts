@@ -1,4 +1,6 @@
-import { Contest } from '../modules/contest/contest.schema';
+// import { Contest } from '../modules/contest/contest.schema';
+
+import { Contest } from '@lets-choose/common';
 
 export type CreateContestData = Omit<
   Contest,

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import ROUTES from '../utils/routes';
 
-export type AccessToken = string | null;
+export type AccessToken = string | null | undefined;
 export type Observer = (accessToken: AccessToken) => void;
 
 const STORAGE_KEY = 'AUTH';
@@ -26,7 +26,9 @@ const setToken = (token: AccessToken) => {
 };
 
 const getExpirationDate = (token: string): number | null => {
-  if (!token) return null;
+  if (!token) {
+    return null;
+  }
 
   const payload = JSON.parse(atob(token.split('.')[1]));
 

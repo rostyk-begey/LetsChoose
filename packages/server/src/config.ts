@@ -2,6 +2,8 @@ const {
   APP_URL,
   PORT,
   MONGOOSE_DEBUG,
+  ACCESS_TOKEN_KEY,
+  REFRESH_TOKEN_KEY,
   JWT_ACCESS_SECRET,
   JWT_REFRESH_SECRET,
   JWT_EMAIL_SECRET,
@@ -15,6 +17,8 @@ const {
 } = process.env;
 
 export interface JwtConfig {
+  accessTokenKey: string;
+  refreshTokenKey: string;
   accessSecret: string;
   refreshSecret: string;
   emailSecret: string;
@@ -45,6 +49,8 @@ export interface Config {
 const config: Config = {
   port: (PORT || 5000) as number,
   jwt: {
+    accessTokenKey: ACCESS_TOKEN_KEY || 'accessToken',
+    refreshTokenKey: REFRESH_TOKEN_KEY || 'refreshToken',
     accessSecret: JWT_ACCESS_SECRET || 'default_jwt_secret',
     refreshSecret: JWT_REFRESH_SECRET || 'default_jwt_secret',
     emailSecret: JWT_EMAIL_SECRET || 'default_jwt_secret',

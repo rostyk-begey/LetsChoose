@@ -8,9 +8,22 @@ import {
   Query,
   Request,
   Response,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 
+import {
+  AuthForgotPasswordDto,
+  AuthLoginDto,
+  AuthTokenDto,
+  AuthRegisterDto,
+  AuthResetPasswordDto,
+  RefreshTokenLocation,
+  HttpResponseMessageDto,
+} from '@lets-choose/common';
+import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtConfig } from '../../config';
 import { TYPES } from '../../injectable.types';
 import { IAuthService } from '../../abstract/auth.service.interface';
 import { JoiValidationPipe } from '../../pipes/JoiValidationPipe';
@@ -19,27 +32,61 @@ import {
   registerSchema,
   refreshTokenLocation,
 } from './auth.schema';
-import {
-  AuthForgotPasswordDto,
-  AuthLoginDto,
-  AuthTokenDto,
-  AuthRegisterDto,
-  AuthResetPasswordDto,
-  RefreshTokenLocation,
-} from '@lets-choose/common';
-import { HttpResponseMessageDto } from '@lets-choose/common';
+
+const MAX_AGE = 60 * 60 * 8; // 8 hours
+const getCookieOptions = () => ({
+  maxAge: MAX_AGE,
+  expires: new Date(Date.now() + MAX_AGE * 1000),
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  path: '/',
+  sameSite: 'lax',
+});
 
 @Controller('/api/auth')
 export class AuthController {
+  config: JwtConfig;
+
   constructor(
     @Inject(TYPES.AuthService)
     private readonly authService: IAuthService,
-  ) {}
+
+    protected readonly configService: ConfigService,
+  ) {
+    this.config = configService.get<JwtConfig>('jwt');
+  }
 
   @Post('/login')
   @UsePipes(new JoiValidationPipe(loginSchema))
-  async login(@Body() dto: AuthLoginDto): Promise<AuthTokenDto> {
-    return await this.authService.loginUser(dto);
+  async login(
+    @Response({ passthrough: true }) res: any,
+    @Body() dto: AuthLoginDto,
+  ): Promise<AuthTokenDto> {
+    const result = await this.authService.loginUser(dto);
+
+    res.cookie(
+      this.config.accessTokenKey,
+      result.accessToken,
+      getCookieOptions(),
+    );
+    res.cookie(
+      this.config.refreshTokenKey,
+      result.refreshToken,
+      getCookieOptions(),
+    );
+
+    return result;
+  }
+
+  @Post('/logout')
+  @UseGuards(AuthGuard('jwt'))
+  async logout(
+    @Response({ passthrough: true }) res: any,
+  ): Promise<HttpResponseMessageDto> {
+    res.clearCookie(this.config.accessTokenKey);
+    res.clearCookie(this.config.refreshTokenKey);
+
+    return { message: 'You have logged out' };
   }
 
   @Post('/register')
@@ -83,7 +130,7 @@ export class AuthController {
     if (refreshTokenLocation === 'body') {
       token = req.body.refreshToken;
     } else {
-      token = req.cookies?.jid;
+      token = req.cookies?.refreshToken;
     }
 
     if (!token) {
@@ -101,9 +148,8 @@ export class AuthController {
       accessToken,
     };
 
-    res.cookie('jid', refreshToken, {
-      httpOnly: true,
-    });
+    res.cookie(this.config.accessTokenKey, accessToken, getCookieOptions());
+    res.cookie(this.config.refreshTokenKey, refreshToken, getCookieOptions());
 
     if (refreshTokenLocation === 'body') {
       responseBody.refreshToken = refreshToken;

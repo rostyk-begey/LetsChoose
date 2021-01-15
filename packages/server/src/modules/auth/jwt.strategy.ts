@@ -12,6 +12,14 @@ import {
   IJwtService,
 } from '../../abstract/jwt.service.interface';
 
+const cookieExtractor = (req) => {
+  console.log(req.cookies);
+  if (req?.cookies) {
+    return req.cookies['accessToken'];
+  }
+  return null;
+};
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -24,7 +32,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly jwtService: IJwtService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+        cookieExtractor,
+      ]),
       ignoreExpiration: false,
       secretOrKey: configService.get<JwtConfig>('jwt').accessSecret,
     });

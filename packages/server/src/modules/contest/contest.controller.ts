@@ -15,14 +15,15 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { TYPES } from '../../injectable.types';
 import {
+  Contest,
   GetContestQuery,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
 } from '@lets-choose/common';
-import { Contest } from './contest.schema';
+import { TYPES } from '../../injectable.types';
+// import { Contest } from './contest.schema';
 import { ContestItem } from './contest-item.schema';
 import { IContestService } from '../../abstract/contest.service.interface';
 

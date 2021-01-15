@@ -7,8 +7,8 @@ import createTokenProvider, {
 
 const tokenProvider = createTokenProvider();
 
-export type LoginFunction = (newToken: string) => void;
-export type LogoutFunction = (newToken: string) => void;
+export type LoginFunction = (newToken: AccessToken) => void;
+export type LogoutFunction = (newToken: AccessToken) => void;
 
 const login: LoginFunction = (newToken) => tokenProvider.setToken(newToken);
 
@@ -21,7 +21,7 @@ const logout: LogoutFunction = (redirectTo) => {
   }
 };
 
-const useAuth = () => {
+const useClientAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     tokenProvider.isLoggedIn(),
   );
@@ -38,4 +38,4 @@ const useAuth = () => {
   return { isAuthenticated, logout, login };
 };
 
-export default useAuth;
+export default useClientAuth;

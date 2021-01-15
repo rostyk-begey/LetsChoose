@@ -1,3 +1,5 @@
+import { UserDto } from './user.dto';
+
 export interface ContestItem {
   _id: string;
   readonly id: string;
@@ -10,15 +12,13 @@ export interface ContestItem {
   contestId: string | Contest;
 }
 
-type User = any;
-
 export interface Contest {
   _id: string;
   id: string;
   thumbnail: string;
   title: string;
   excerpt: string;
-  author: User | string;
+  author: UserDto | string;
   games: number;
   items: ContestItem[];
   createdAt: string;

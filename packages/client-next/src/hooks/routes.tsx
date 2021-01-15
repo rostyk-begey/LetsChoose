@@ -1,7 +1,8 @@
+/*
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import PrivateRoute from '../components/PrivateRoute';
+import PrivateRoute from '../components/common/PrivateRoute';
 import HomePage from '../pages/Home';
 import LoginPage from '../pages/Login';
 import RegisterPage from '../pages/Register';
@@ -112,3 +113,6 @@ const useRoutes = (isAuthenticated: boolean): JSX.Element => {
 };
 
 export default useRoutes;
+*/
+
+export {};

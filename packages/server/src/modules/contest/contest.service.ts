@@ -12,7 +12,6 @@ import {
   ISortOptions,
   SORT_OPTIONS,
 } from '@lets-choose/common';
-import { Contest as ContestSchema } from './contest.schema';
 import { ICloudinaryService } from '../cloudinary/cloudinary.service';
 import { IContestItemRepository } from './contest-item.repository';
 import { TYPES } from '../../injectable.types';
@@ -116,7 +115,7 @@ export class ContestService implements IContestService {
     page = 1,
     perPage = 10,
     search = '',
-    sortBy,
+    sortBy = 'POPULAR',
     author = '',
   }: GetContestQuery): Promise<GetContestsResponse> {
     const count = await this.contestRepository.countDocuments();
@@ -144,7 +143,7 @@ export class ContestService implements IContestService {
         $unwind: '$author',
       },
       ...matchPipeline,
-      ContestService.getSortPipeline(search, sortBy),
+      ContestService.getSortPipeline(search, SORT_OPTIONS[sortBy]),
       ...ContestService.getPaginationPipelines(page, perPage),
       {
         $project: {

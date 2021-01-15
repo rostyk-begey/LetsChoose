@@ -13,7 +13,7 @@ import api from '../../providers/apiProvider';
 import ROUTES from '../../utils/routes';
 import { ResponseMessage } from '../../../../../legacy/server/types';
 
-export const useContestApi = () => {
+export const contestApi = () => {
   const baseURL = ROUTES.API.CONTESTS;
   const all = (params: GetContestQuery) =>
     api.get<GetContestsResponse>(baseURL, { params });
@@ -31,7 +31,7 @@ export const useContestApi = () => {
 };
 
 export const useContestFind = (id: string, config = {}) => {
-  const { find } = useContestApi();
+  const { find } = contestApi();
   return useQuery(['contest', id], () => find(id), { retry: 0, ...config });
 };
 
@@ -47,7 +47,7 @@ export const useContestAllInfinite = (
     perPage: 10,
     ...params,
   };
-  const { all } = useContestApi();
+  const { all } = contestApi();
   return useInfiniteQuery<
     { data: GetContestsResponse },
     [string, GetContestQuery],
@@ -58,7 +58,6 @@ export const useContestAllInfinite = (
     {
       ...config,
       getFetchMore: (lastPage) => {
-        console.log(lastPage.data);
         const {
           data: { currentPage, totalPages },
         } = lastPage;
@@ -80,7 +79,7 @@ export const useContestItemsInfinite = (
     perPage: 20,
     ...params,
   };
-  const { allItems } = useContestApi();
+  const { allItems } = contestApi();
   return useInfiniteQuery(
     ['contestItems', queryParams],
     (key, _, page: number) => allItems(contestId, { ...queryParams, page }),
@@ -95,11 +94,11 @@ export const useContestItemsInfinite = (
 };
 
 export const useContestCreate = () => {
-  const { create } = useContestApi();
+  const { create } = contestApi();
   return useMutation(create);
 };
 
 export const useContestUpdate = (id: string) => {
-  const { update } = useContestApi();
+  const { update } = contestApi();
   return useMutation((data: UpdateContestData) => update(id, data));
 };

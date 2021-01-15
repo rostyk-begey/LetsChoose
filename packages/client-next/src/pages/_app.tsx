@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { AppProps } from 'next/app';
+import { ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-// import '../assets/styles/globals.scss';
+import theme from '../theme';
+
 import '../assets/scss/material-kit-react.scss';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
@@ -12,11 +14,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       jssStyles?.parentElement?.removeChild(jssStyles);
     }
   });
+
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Component {...pageProps} />
-    </>
+    </ThemeProvider>
   );
 };
 

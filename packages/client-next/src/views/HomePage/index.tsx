@@ -1,28 +1,27 @@
+import Router, { useRouter } from 'next/router';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { Contest, GetContestQuery, SORT_OPTIONS } from '@lets-choose/common';
+import { useLocationState } from 'use-location-state';
 
-import ContestCard from '../../components/ContestCard';
-import Page from '../../components/Page';
-import useGetParams from '../../hooks/getParams';
+import ContestCard from '../../components/common/ContestCard';
+import Menu from '../../components/common/Menu';
+import Page from '../../components/common/Page';
+import useQueryState from '../../hooks/getParams';
 import { useContestAllInfinite } from '../../hooks/api/contest';
-import ROUTES from '../../utils/routes';
 
 const HomePage: React.FC = () => {
-  const { params, handleSearch, onInputChange } = useGetParams<
-    Partial<GetContestQuery>
-  >(ROUTES.HOME, {
-    search: '',
-    sortBy: 'POPULAR',
+  const [sortBy] = useQueryState('sortBy', 'POPULAR');
+  const [search] = useQueryState('search', '');
+  const { data, fetchMore, canFetchMore, isSuccess } = useContestAllInfinite({
+    search: search as string,
+    sortBy: sortBy as any,
   });
-  const { data, fetchMore, canFetchMore, isSuccess } = useContestAllInfinite(
-    params,
-  );
 
   return (
-    <Page>
+    <Page subMenu={<Menu />}>
       <Container>
         <InfiniteScroll
           pageStart={0}
