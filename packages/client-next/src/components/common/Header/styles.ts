@@ -11,9 +11,9 @@ import {
   successColor,
   transition,
   warningColor,
-} from '../../material-kit-react';
+} from '../../../assets/jss/material-kit-react';
 
-const headerStyle = createStyles({
+const styles = createStyles({
   appBar: {
     display: 'flex',
     border: '0',
@@ -120,7 +120,6 @@ const headerStyle = createStyles({
   },
   white: {
     border: '0',
-    // padding: '0.625rem 0',
     marginBottom: '20px',
     color: '#555',
     backgroundColor: '#fff !important',
@@ -151,4 +150,4 @@ const headerStyle = createStyles({
   },
 });
 
-export default headerStyle;
+export default styles;

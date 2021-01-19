@@ -22,6 +22,7 @@ const ROUTES = {
     AUTH: {
       INDEX: '/auth',
       LOGIN: '/auth/login',
+      LOGIN_GOOGLE: '/auth/login/google',
       LOGOUT: '/auth/logout',
       REGISTER: '/auth/register',
       REFRESH_TOKEN: '/auth/token',

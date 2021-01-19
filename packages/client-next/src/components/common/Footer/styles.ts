@@ -1,8 +1,11 @@
 import { createStyles } from '@material-ui/core/styles';
 
-import { container, primaryColor } from '../../material-kit-react';
+import {
+  container,
+  primaryColor,
+} from '../../../assets/jss/material-kit-react';
 
-const footerStyle = createStyles({
+const styles = createStyles({
   block: {
     color: 'inherit',
     padding: '0.9375rem',
@@ -58,4 +61,4 @@ const footerStyle = createStyles({
     top: '3px',
   },
 });
-export default footerStyle;
+export default styles;

@@ -1,16 +1,18 @@
 import React from 'react';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { Alert, StandaloneFormPage } from 'tabler-react';
 import { Link, useHistory } from 'react-router-dom';
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import logo from 'assets/images/logo.svg';
 import useURLSearchParams from '../../hooks/URLSearchParams';
 import ROUTES from '../../utils/routes';
 import AuthForm from '../../components/AuthForm';
 import { useApiLogin } from '../../hooks/api/auth';
 import useAuth from '../../hooks/auth';
-
-// @ts-ignore
-import logo from 'assets/images/logo.svg';
 
 const INPUTS = [
   {
@@ -40,6 +42,8 @@ const LoginPage = () => {
   const history = useHistory();
   const onSubmit = async (form: any) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       const {
         data: { accessToken },
       } = await login(form);

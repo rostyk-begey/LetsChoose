@@ -1,3 +1,8 @@
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+dotenv.config({ path: path.join(__dirname, '..', '..', '..', '.env') });
+
 const {
   APP_URL,
   PORT,
@@ -14,6 +19,8 @@ const {
   CLOUDINARY_API_SECRET,
   GMAIL_USER,
   GMAIL_PASSWORD,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
 } = process.env;
 
 export interface JwtConfig {
@@ -36,6 +43,11 @@ export interface GmailConfig {
   password: string;
 }
 
+export interface GoogleOAuth {
+  clientId: string;
+  clientSecret: string;
+}
+
 export interface Config {
   port: number;
   jwt: JwtConfig;
@@ -44,6 +56,7 @@ export interface Config {
   appUrl: string;
   gmail: GmailConfig;
   cloudinary: CloudinaryConfig;
+  googleOAuth: GoogleOAuth;
 }
 
 const config: Config = {
@@ -62,6 +75,10 @@ const config: Config = {
   gmail: {
     user: GMAIL_USER as string,
     password: GMAIL_PASSWORD as string,
+  },
+  googleOAuth: {
+    clientId: GOOGLE_CLIENT_ID as string,
+    clientSecret: GOOGLE_CLIENT_SECRET as string,
   },
   cloudinary: {
     cloudName: CLOUDINARY_CLOUD_NAME as string,

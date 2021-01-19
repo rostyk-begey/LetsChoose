@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { NextPageContext } from 'next';
 import { AppProps } from 'next/app';
 import { ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';

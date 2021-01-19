@@ -16,7 +16,7 @@ import NavBar from '../../components/NavBar';
 import './index.scss';
 
 // @ts-ignore
-import logo from '../../assets/images/logo.svg';
+// import logo from '../../assets/images/logo.svg';
 
 interface INavBarItem {
   to: string;
@@ -116,7 +116,7 @@ export const Page: React.FC<PropsWithChildren<Props>> = ({
         <Site.Header
           href={ROUTES.HOME}
           alt="Let's Choose"
-          imageURL={logo}
+          // imageURL={logo}
           navItems={
             !isAuthenticated && (
               <Button.List>

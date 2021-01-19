@@ -1,26 +1,29 @@
 import React from 'react';
+import { useGoogleLogin } from 'react-google-login';
+import { useForm, FormProvider } from 'react-hook-form';
+import { useMutation } from 'react-query';
+import RouterLink from 'next/link';
 import { AuthLoginDto } from '@lets-choose/common';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import RouterLink from 'next/link';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
-import { useForm, FormProvider } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import classNames from 'classnames';
 
-import Button from '../../components/common/CustomButtons/Button';
 import Page from '../../components/common/Page';
 import FormTextInput, {
   FormTextInputProps,
 } from '../../components/common/FormTextInput';
 import { useCurrentUser } from '../../hooks/api/user';
-import useClientAuth from '../../hooks/auth';
 import ROUTES from '../../utils/routes';
-import { authApi, useApiLogin } from '../../hooks/api/auth';
+import { authApi } from '../../hooks/api/auth';
+import GoogleButtonLogo from '../../assets/icons/google-button-dark-logo.svg?sprite';
 
 const useStyles = makeStyles(() => ({
   cardContent: {
@@ -33,6 +36,23 @@ const useStyles = makeStyles(() => ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
+  },
+  loginBtn: {
+    width: '100%',
+    textTransform: 'none',
+  },
+  loginBtnGoogle: {
+    backgroundColor: '#4285F4',
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    color: 'white',
+    height: '36px',
+  },
+  loginBtnGoogleIcon: {
+    position: 'absolute',
+    left: -4,
+    height: 42,
   },
 }));
 
@@ -66,17 +86,28 @@ const inputs: Record<string, FormTextInputProps> = {
 
 const LoginPage: React.FC = () => {
   const classes = useStyles();
-  const clientAuth = useClientAuth();
   const { refetch: refetchCurrentUser } = useCurrentUser({
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,
   });
   const [httpLogin, httpLoginQuery] = useMutation(authApi.login);
+  const [googleLogin, googleLoginQuery] = useMutation(authApi.loginGoogle);
   const form = useForm<AuthLoginDto>({
     defaultValues: {
       login: '',
       password: '',
     },
+  });
+  const onOAuthSuccess = async (data) => {
+    await googleLogin(data);
+    await refetchCurrentUser();
+  };
+  const { signIn, loaded } = useGoogleLogin({
+    onSuccess: onOAuthSuccess,
+    clientId: process.env.googleOAuthClientId as string,
+    cookiePolicy: 'single_host_origin',
+    redirectUri: 'postmessage',
+    responseType: 'code',
   });
 
   return (
@@ -88,8 +119,7 @@ const LoginPage: React.FC = () => {
               <Card
                 component="form"
                 onSubmit={form.handleSubmit(async (data) => {
-                  const response = await httpLogin(data);
-                  // clientAuth.login(response?.data?.accessToken);
+                  await httpLogin(data);
                   await refetchCurrentUser();
                 })}
                 variant="outlined"
@@ -100,18 +130,47 @@ const LoginPage: React.FC = () => {
                 <CardContent className={classes.cardContent}>
                   <FormTextInput {...inputs.login} />
                   <FormTextInput {...inputs.password} />
-                  <Button
-                    color="primary"
-                    type="submit"
-                    disabled={httpLoginQuery.isLoading}
-                  >
-                    Log in
-                  </Button>
+                  <Box my={2} display="flex" justifyContent="stretch">
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      type="submit"
+                      disabled={
+                        httpLoginQuery.isLoading || googleLoginQuery.isLoading
+                      }
+                      style={{
+                        width: '100%',
+                        textTransform: 'none',
+                      }}
+                      className={classes.loginBtn}
+                    >
+                      Log in
+                    </Button>
+                  </Box>
                   <Typography variant="body1" align="center">
-                    OR
+                    Or
                   </Typography>
-                  <Button color="google">Sign in with google</Button>
-                  <Button color="facebook">Sign in with facebook</Button>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Button
+                        onClick={signIn}
+                        className={classNames(
+                          classes.loginBtn,
+                          classes.loginBtnGoogle,
+                        )}
+                        disabled={
+                          httpLoginQuery.isLoading || googleLoginQuery.isLoading
+                        }
+                      >
+                        <img
+                          alt=""
+                          src={GoogleButtonLogo}
+                          className={classes.loginBtnGoogleIcon}
+                        />
+                        Sign in with Google
+                      </Button>
+                    </Grid>
+                  </Grid>
                   <Grid container>
                     <Grid item xs>
                       <RouterLink href={ROUTES.FORGOT_PASSWORD} passHref>

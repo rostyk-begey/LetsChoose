@@ -1,4 +1,10 @@
 import {
+  AuthForgotPasswordDto,
+  AuthLoginDto,
+  AuthRegisterDto,
+  AuthTokenDto,
+} from '@lets-choose/common';
+import {
   BadRequestException,
   Inject,
   Injectable,
@@ -6,26 +12,25 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { OAuth2Client } from 'google-auth-library';
 import md5 from 'md5';
-import {
-  AuthForgotPasswordDto,
-  AuthLoginDto,
-  AuthRegisterDto,
-  AuthTokenDto,
-} from '@lets-choose/common';
 
-import { TYPES } from '../../injectable.types';
-import { IUserRepository } from '../../abstract/user.repository.interface';
-import { IPasswordHashService } from '../common/password/password.service';
 import { IAuthService } from '../../abstract/auth.service.interface';
-import { IJwtService } from '../../abstract/jwt.service.interface';
 import { IEmailService } from '../../abstract/email.service.interface';
+import { IJwtService } from '../../abstract/jwt.service.interface';
+import { IUserRepository } from '../../abstract/user.repository.interface';
+import { GoogleOAuth } from '../../config';
+import { TYPES } from '../../injectable.types';
+import { IPasswordHashService } from '../common/password/password.service';
 
 @Injectable()
 export class AuthService implements IAuthService {
   private readonly config: {
     appUrl: string;
+    googleOAuth: GoogleOAuth;
   };
+
+  private readonly OAuth2Client: OAuth2Client;
 
   constructor(
     @Inject(TYPES.UserRepository)
@@ -44,7 +49,19 @@ export class AuthService implements IAuthService {
   ) {
     this.config = {
       appUrl: configService.get('appUrl'),
+      googleOAuth: configService.get<GoogleOAuth>('googleOAuth'),
     };
+
+    this.OAuth2Client = new OAuth2Client(
+      this.config.googleOAuth.clientId,
+      this.config.googleOAuth.clientSecret,
+      /**
+       * To get access_token and refresh_token in server side,
+       * the data for redirect_uri should be postmessage.
+       * postmessage is magic value for redirect_uri to get credentials without actual redirect uri.
+       */
+      'postmessage',
+    );
   }
 
   public async registerUser({
@@ -110,6 +127,38 @@ export class AuthService implements IAuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  public async loginUserOAuth(code: string): Promise<AuthTokenDto> {
+    const { email } = await this.getOAuthProfile(code);
+    const user = await this.userRepository.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
+      user.id,
+      user.passwordVersion,
+    );
+
+    return {
+      userId: user.id,
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  private async getOAuthProfile(code: string) {
+    const r = await this.OAuth2Client.getToken(code);
+    const idToken = r.tokens.id_token;
+
+    const ticket = await this.OAuth2Client.verifyIdToken({
+      idToken,
+      audience: this.config.googleOAuth.clientId,
+    });
+
+    return ticket.getPayload();
   }
 
   public async requestPasswordReset({

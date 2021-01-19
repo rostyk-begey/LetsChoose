@@ -1,6 +1,5 @@
-import { ButtonGroup, TextField } from '@material-ui/core';
+import React, { useState, ReactNode } from 'react';
 import Divider from '@material-ui/core/Divider';
-import React, { useState, useEffect, ReactNode } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
@@ -11,7 +10,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Menu from '@material-ui/icons/Menu';
 import classNames from 'classnames';
 
-import styles from '../../../assets/jss/material-kit-react/components/headerStyle';
+import styles from './styles';
 import { getKeyValue } from '../../../utils/functions';
 
 const useStyles = makeStyles(styles);
@@ -51,40 +50,13 @@ const Header: React.FC<Props> = ({
   brand,
   fixed,
   absolute,
-  changeColorOnScroll,
   subMenu,
 }) => {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
-  // useEffect(() => {
-  //   window?.addEventListener('scroll', headerColorChange);
-  //   return () => window?.removeEventListener('scroll', headerColorChange);
-  // });
   const handleDrawerToggle = () => {
     setMobileOpen((x) => !x);
   };
-  // const headerColorChange = () => {
-  //   if (typeof window === 'undefined' || !changeColorOnScroll) {
-  //     return;
-  //   }
-  //
-  //   const windowsScrollTop = window.pageYOffset;
-  //   if (windowsScrollTop > changeColorOnScroll.height) {
-  //     document.body
-  //       .getElementsByTagName('header')[0]
-  //       .classList.remove(getKeyValue(classes)(color));
-  //     document.body
-  //       .getElementsByTagName('header')[0]
-  //       .classList.add(getKeyValue(classes)(changeColorOnScroll.color));
-  //   } else {
-  //     document.body
-  //       .getElementsByTagName('header')[0]
-  //       .classList.add(getKeyValue(classes)(color));
-  //     document.body
-  //       .getElementsByTagName('header')[0]
-  //       .classList.remove(getKeyValue(classes)(changeColorOnScroll.color));
-  //   }
-  // };
   const appBarClasses = classNames({
     [classes.appBar]: true,
     [getKeyValue(classes)(color)]: color,

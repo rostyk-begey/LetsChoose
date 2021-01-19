@@ -9,6 +9,7 @@ import {
 import {
   AuthForgotPasswordDto,
   AuthLoginDto,
+  AuthGoogleLoginDto,
   AuthRegisterDto,
   HttpResponseMessageDto,
   AuthTokenDto,
@@ -18,6 +19,7 @@ import ROUTES from '../../utils/routes';
 
 const {
   LOGIN,
+  LOGIN_GOOGLE,
   LOGOUT,
   REGISTER,
   CONFIRM_EMAIL,
@@ -35,6 +37,8 @@ interface ResetPasswordData {
 
 export const authApi = {
   login: (data: AuthLoginDto) => api.post<AuthTokenDto>(LOGIN, data),
+  loginGoogle: (data: AuthGoogleLoginDto) =>
+    api.post<AuthTokenDto>(LOGIN_GOOGLE, data),
   logout: () => api.post<HttpResponseMessageDto>(LOGOUT, {}),
   register: (data: AuthRegisterDto) =>
     api.post<HttpResponseMessageDto>(REGISTER, data),

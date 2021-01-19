@@ -3,6 +3,10 @@ export class AuthLoginDto {
   password: string;
 }
 
+export class AuthGoogleLoginDto {
+  code: string;
+}
+
 export class AuthTokenDto {
   userId: string;
   accessToken: string;

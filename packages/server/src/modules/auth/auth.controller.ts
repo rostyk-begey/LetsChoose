@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Inject,
   Param,
   Post,
@@ -11,7 +12,8 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-
+import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from '@nestjs/passport';
 import {
   AuthForgotPasswordDto,
   AuthLoginDto,
@@ -20,9 +22,9 @@ import {
   AuthResetPasswordDto,
   RefreshTokenLocation,
   HttpResponseMessageDto,
+  AuthGoogleLoginDto,
 } from '@lets-choose/common';
-import { ConfigService } from '@nestjs/config';
-import { AuthGuard } from '@nestjs/passport';
+
 import { JwtConfig } from '../../config';
 import { TYPES } from '../../injectable.types';
 import { IAuthService } from '../../abstract/auth.service.interface';
@@ -32,16 +34,6 @@ import {
   registerSchema,
   refreshTokenLocation,
 } from './auth.schema';
-
-const MAX_AGE = 60 * 60 * 8; // 8 hours
-const getCookieOptions = () => ({
-  maxAge: MAX_AGE,
-  expires: new Date(Date.now() + MAX_AGE * 1000),
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  path: '/',
-  sameSite: 'lax',
-});
 
 @Controller('/api/auth')
 export class AuthController {
@@ -56,6 +48,19 @@ export class AuthController {
     this.config = configService.get<JwtConfig>('jwt');
   }
 
+  private getCookieOptions(): any {
+    // TODO: update
+    const MAX_AGE = 0.5; //60 * 60 * 8; // 8 hours
+    return {
+      // maxAge: MAX_AGE,
+      // expires: new Date(Date.now() + MAX_AGE * 1000),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      // sameSite: 'lax',
+    };
+  }
+
   @Post('/login')
   @UsePipes(new JoiValidationPipe(loginSchema))
   async login(
@@ -67,12 +72,33 @@ export class AuthController {
     res.cookie(
       this.config.accessTokenKey,
       result.accessToken,
-      getCookieOptions(),
+      this.getCookieOptions(),
     );
     res.cookie(
       this.config.refreshTokenKey,
       result.refreshToken,
-      getCookieOptions(),
+      this.getCookieOptions(),
+    );
+
+    return result;
+  }
+
+  @Post('/login/google')
+  async loginGoogle(
+    @Response({ passthrough: true }) res: any,
+    @Body() { code }: AuthGoogleLoginDto,
+  ): Promise<AuthTokenDto> {
+    const result = await this.authService.loginUserOAuth(code);
+
+    res.cookie(
+      this.config.accessTokenKey,
+      result.accessToken,
+      this.getCookieOptions(),
+    );
+    res.cookie(
+      this.config.refreshTokenKey,
+      result.refreshToken,
+      this.getCookieOptions(),
     );
 
     return result;
@@ -122,7 +148,7 @@ export class AuthController {
   @UsePipes(new JoiValidationPipe(refreshTokenLocation, 'query'))
   public async refreshToken(
     @Request() req: any,
-    @Response() res: any,
+    @Response({ passthrough: true }) res: any,
     @Query('refreshTokenLocation') refreshTokenLocation: RefreshTokenLocation,
   ): Promise<HttpResponseMessageDto> {
     let token;
@@ -148,8 +174,16 @@ export class AuthController {
       accessToken,
     };
 
-    res.cookie(this.config.accessTokenKey, accessToken, getCookieOptions());
-    res.cookie(this.config.refreshTokenKey, refreshToken, getCookieOptions());
+    res.cookie(
+      this.config.accessTokenKey,
+      accessToken,
+      this.getCookieOptions(),
+    );
+    res.cookie(
+      this.config.refreshTokenKey,
+      refreshToken,
+      this.getCookieOptions(),
+    );
 
     if (refreshTokenLocation === 'body') {
       responseBody.refreshToken = refreshToken;

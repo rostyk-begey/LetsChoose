@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Favorite from '@material-ui/icons/Favorite';
 import classNames from 'classnames';
 
-import styles from '../../../assets/jss/material-kit-react/components/footerStyle';
+import styles from './styles';
 
 const useStyles = makeStyles(styles);
 
@@ -26,7 +26,7 @@ const Footer: React.FC<{ whiteFont?: boolean }> = ({ whiteFont }) => {
           <List className={classes.list}>
             <ListItem className={classes.inlineBlock}>
               <a
-                href="https://www.creative-tim.com/?ref=mkr-footer"
+                href="https://www.creative-tim.com/index.tsx?ref=mkr-footer"
                 className={classes.block}
                 target="_blank"
                 rel="noreferrer"
@@ -46,7 +46,7 @@ const Footer: React.FC<{ whiteFont?: boolean }> = ({ whiteFont }) => {
             </ListItem>
             <ListItem className={classes.inlineBlock}>
               <a
-                href="http://blog.creative-tim.com/?ref=mkr-footer"
+                href="http://blog.creative-tim.com/index.tsx?ref=mkr-footer"
                 className={classes.block}
                 target="_blank"
                 rel="noreferrer"
