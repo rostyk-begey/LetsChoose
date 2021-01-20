@@ -69,12 +69,14 @@ const Page: React.FC<Props> = ({ className, children, subMenu }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <ListItem button>
-                  <ListItemIcon>
-                    <AccountCircleOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={`@${user.username}`} />
-                </ListItem>
+                <RouterLink href={`${ROUTES.USERS}/${user.username}`}>
+                  <ListItem button>
+                    <ListItemIcon>
+                      <AccountCircleOutlinedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={`@${user.username}`} />
+                  </ListItem>
+                </RouterLink>
                 <Divider />
                 <MenuItem
                   onClick={async () => {

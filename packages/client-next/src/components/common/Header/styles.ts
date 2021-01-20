@@ -29,15 +29,6 @@ const styles = createStyles({
     alignItems: 'center',
     flexFlow: 'column nowrap',
     justifyContent: 'stretch',
-    position: 'relative',
-    zIndex: 'unset',
-  },
-  absolute: {
-    position: 'absolute',
-    zIndex: 1100,
-  },
-  fixed: {
-    position: 'fixed',
     zIndex: 1100,
   },
   container: {

@@ -17,29 +17,19 @@ const useStyles = makeStyles(styles);
 
 interface Props {
   color?:
-    | 'appBar'
-    | 'flex'
-    | 'fixed'
     | 'transparent'
     | 'white'
-    | 'absolute'
     | 'dark'
-    | 'container'
-    | 'title'
-    | 'appResponsive'
     | 'primary'
     | 'info'
     | 'success'
     | 'warning'
     | 'danger'
-    | 'rose'
-    | 'drawerPaper';
+    | 'rose';
   rightLinks?: ReactNode;
   leftLinks?: ReactNode;
   subMenu?: ReactNode;
   brand: ReactNode;
-  fixed?: boolean;
-  absolute?: boolean;
   changeColorOnScroll?: any;
 }
 
@@ -48,8 +38,6 @@ const Header: React.FC<Props> = ({
   rightLinks,
   leftLinks,
   brand,
-  fixed,
-  absolute,
   subMenu,
 }) => {
   const classes = useStyles();
@@ -60,59 +48,62 @@ const Header: React.FC<Props> = ({
   const appBarClasses = classNames({
     [classes.appBar]: true,
     [getKeyValue(classes)(color)]: color,
-    [classes.absolute]: absolute,
-    [classes.fixed]: fixed,
   });
   const brandComponent = <Button className={classes.title}>{brand}</Button>;
   return (
-    <AppBar className={appBarClasses}>
-      <Toolbar className={classes.container}>
-        {leftLinks !== undefined ? brandComponent : null}
-        <div className={classes.flex}>
-          {leftLinks !== undefined ? (
-            <Hidden smDown implementation="css">
-              {leftLinks}
-            </Hidden>
-          ) : (
-            brandComponent
-          )}
-        </div>
-        <Hidden smDown implementation="css">
-          {rightLinks}
-        </Hidden>
-        <Hidden mdUp>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerToggle}
-          >
-            <Menu />
-          </IconButton>
-        </Hidden>
-      </Toolbar>
-      {subMenu && (
-        <>
-          <Divider style={{ width: '100%' }} />
-          <Toolbar className={classes.subMenuContainer}>{subMenu}</Toolbar>
-        </>
-      )}
-      <Hidden mdUp implementation="js">
-        <Drawer
-          variant="temporary"
-          anchor="right"
-          open={mobileOpen}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          onClose={handleDrawerToggle}
-        >
-          <div className={classes.appResponsive}>
-            {leftLinks}
-            {rightLinks}
+    <>
+      <AppBar position="fixed" className={appBarClasses}>
+        <Toolbar className={classes.container}>
+          {leftLinks !== undefined ? brandComponent : null}
+          <div className={classes.flex}>
+            {leftLinks !== undefined ? (
+              <Hidden smDown implementation="css">
+                {leftLinks}
+              </Hidden>
+            ) : (
+              brandComponent
+            )}
           </div>
-        </Drawer>
-      </Hidden>
-    </AppBar>
+          <Hidden smDown implementation="css">
+            {rightLinks}
+          </Hidden>
+          <Hidden mdUp>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerToggle}
+            >
+              <Menu />
+            </IconButton>
+          </Hidden>
+        </Toolbar>
+        {subMenu && (
+          <>
+            <Divider style={{ width: '100%' }} />
+            <Toolbar className={classes.subMenuContainer}>{subMenu}</Toolbar>
+          </>
+        )}
+        <Hidden mdUp implementation="js">
+          <Drawer
+            variant="temporary"
+            anchor="right"
+            open={mobileOpen}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            onClose={handleDrawerToggle}
+          >
+            <div className={classes.appResponsive}>
+              {leftLinks}
+              {rightLinks}
+            </div>
+          </Drawer>
+        </Hidden>
+      </AppBar>
+      <Toolbar />
+      <Toolbar />
+      <Toolbar />
+    </>
   );
 };
 
