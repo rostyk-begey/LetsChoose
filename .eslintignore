@@ -3,4 +3,4 @@
 packages/client/webpack.config.js
 packages/client/.babelrc.js
 packages/client/postcss.config.js
-packages/client-next/next.config.ts
+packages/client-next/next.config.js
