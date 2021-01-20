@@ -1,11 +1,24 @@
 import React, { useRef } from 'react';
 import throttle from 'lodash/throttle';
-import { ButtonGroup, TextField } from '@material-ui/core';
+import { ButtonGroup, InputAdornment, TextField } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { SearchOutlined } from '@material-ui/icons';
 
 import useQueryState from '../../../hooks/getParams';
 
-interface Props {}
+const useStyles = makeStyles((theme) => ({
+  buttonGroup: {
+    marginLeft: 'auto',
+    height: '40px',
+  },
+  sortButton: {
+    width: '100px',
+  },
+  marginLeft: {
+    margin: theme.spacing(0, 0, 0, 1),
+  },
+}));
 
 enum SORT_OPTIONS {
   POPULAR = 'POPULAR',
@@ -14,7 +27,7 @@ enum SORT_OPTIONS {
 
 type InputCallback = (e: React.ChangeEvent<HTMLInputElement>) => void;
 
-const Menu: React.FC<Props> = () => {
+const Menu: React.FC = () => {
   const [sortBy, setSortBy] = useQueryState('sortBy', 'POPULAR');
   const [search, setSearch] = useQueryState('search', '');
   const { current: throttled } = useRef(
@@ -23,18 +36,20 @@ const Menu: React.FC<Props> = () => {
   const handleSearch: InputCallback = ({ target: { value } }) => {
     throttled(value);
   };
+  const classes = useStyles();
 
   return (
     <>
-      <ButtonGroup color="primary">
+      <ButtonGroup color="primary" className={classes.buttonGroup}>
         <Button
+          className={classes.sortButton}
           variant={sortBy === SORT_OPTIONS.POPULAR ? 'contained' : 'outlined'}
           onClick={() => setSortBy(SORT_OPTIONS.POPULAR)}
         >
           Popular
         </Button>
         <Button
-          size="small"
+          className={classes.sortButton}
           variant={sortBy === SORT_OPTIONS.NEWEST ? 'contained' : 'outlined'}
           onClick={() => setSortBy(SORT_OPTIONS.NEWEST)}
         >
@@ -46,7 +61,15 @@ const Menu: React.FC<Props> = () => {
         placeholder="Search"
         variant="outlined"
         size="small"
+        className={classes.marginLeft}
         defaultValue={search}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <SearchOutlined />
+            </InputAdornment>
+          ),
+        }}
         onChange={handleSearch}
       />
     </>

@@ -170,7 +170,7 @@ const customCheckboxRadioSwitch = createStyles({
       backgroundColor: 'rgba(156, 39, 176, 1) !important',
     },
     '& $switchIcon': {
-      borderColor: '#9c27b0',
+      borderColor: primaryColor,
     },
   },
   switchRoot: {

@@ -22,6 +22,7 @@ import { IUserRepository } from '../../abstract/user.repository.interface';
 import { GoogleOAuth } from '../../config';
 import { TYPES } from '../../injectable.types';
 import { IPasswordHashService } from '../common/password/password.service';
+import { User } from '../user/user.schema';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -64,22 +65,37 @@ export class AuthService implements IAuthService {
     );
   }
 
-  public async registerUser({
+  private async baseRegisterUser({
     email,
     username,
     password,
-  }: AuthRegisterDto): Promise<void> {
+    avatar,
+  }: { avatar?: string } & AuthRegisterDto): Promise<User> {
     const hashedPassword: string = await this.passwordHashService.hash(
       password,
       12,
     );
 
-    const user = await this.userRepository.createUser({
+    return await this.userRepository.createUser({
       email,
       username,
       password: hashedPassword,
-      avatar: `https://www.gravatar.com/avatar/${md5(email)}?s=200&d=identicon`,
+      avatar:
+        avatar ||
+        `https://www.gravatar.com/avatar/${md5(email)}?s=200&d=identicon`,
       bio: '',
+    });
+  }
+
+  public async registerUser({
+    email,
+    username,
+    password,
+  }: AuthRegisterDto): Promise<void> {
+    const user = await this.baseRegisterUser({
+      email,
+      username,
+      password,
     });
 
     const emailToken = this.jwtService.generateEmailToken(user.id);
@@ -130,8 +146,17 @@ export class AuthService implements IAuthService {
   }
 
   public async loginUserOAuth(code: string): Promise<AuthTokenDto> {
-    const { email } = await this.getOAuthProfile(code);
-    const user = await this.userRepository.findByEmail(email);
+    const { email, picture } = await this.getOAuthProfile(code);
+    let user = await this.userRepository.findByEmail(email);
+
+    if (!user) {
+      user = await this.baseRegisterUser({
+        email,
+        username: email.split('@')[0],
+        password: '',
+        avatar: picture,
+      });
+    }
 
     if (!user) {
       throw new NotFoundException('User not found');

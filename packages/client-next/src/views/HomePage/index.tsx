@@ -1,10 +1,8 @@
-import Router, { useRouter } from 'next/router';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { Contest, GetContestQuery, SORT_OPTIONS } from '@lets-choose/common';
-import { useLocationState } from 'use-location-state';
+import { Contest } from '@lets-choose/common';
 
 import ContestCard from '../../components/common/ContestCard';
 import Menu from '../../components/common/Menu';
@@ -34,7 +32,7 @@ const HomePage: React.FC = () => {
             </div>
           }
         >
-          <Grid container justify="space-evenly" spacing={5}>
+          <Grid container spacing={5}>
             {isSuccess &&
               data?.map(
                 ({

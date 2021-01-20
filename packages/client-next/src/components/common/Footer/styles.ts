@@ -27,6 +27,7 @@ const styles = createStyles({
     float: 'right!important' as any,
   },
   footer: {
+    marginTop: 'auto',
     padding: '0.9375rem 0',
     textAlign: 'center',
     display: 'flex',

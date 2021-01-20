@@ -12,10 +12,6 @@ module.exports = withPlugins(
     [withOptimizedImages],
   ],
   {
-    env: {
-      googleOAuthClientId:
-        '879953122724-r9be9h71qqdvnpslk6a13cv87mhh7oee.apps.googleusercontent.com',
-    },
     async rewrites() {
       return [
         {

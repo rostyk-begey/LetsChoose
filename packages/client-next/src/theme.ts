@@ -3,7 +3,7 @@ import {
   dangerColor,
   infoColor,
   primaryColor,
-  roseColor,
+  secondaryColor,
   successColor,
   warningColor,
 } from './assets/jss/material-kit-react';
@@ -14,7 +14,7 @@ const theme = createMuiTheme({
       main: primaryColor,
     },
     secondary: {
-      main: roseColor,
+      main: secondaryColor,
     },
     error: {
       main: dangerColor,

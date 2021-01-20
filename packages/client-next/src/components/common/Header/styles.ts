@@ -50,6 +50,15 @@ const styles = createStyles({
     display: 'flex',
     flexWrap: 'nowrap',
   },
+  subMenuContainer: {
+    ...container,
+    padding: '0.625rem 0',
+    minHeight: '50px',
+    flex: '1',
+    alignItems: 'center',
+    display: 'flex',
+    flexWrap: 'nowrap',
+  },
   flex: {
     flex: 1,
   },

@@ -2,33 +2,23 @@ import React from 'react';
 import { AuthRegisterDto } from '@lets-choose/common';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
-import Typography from '@material-ui/core/Typography';
 import RouterLink from 'next/link';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import Container from '@material-ui/core/Container';
-import Card from '@material-ui/core/Card';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useMutation } from 'react-query';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import AlternateEmailOutlinedIcon from '@material-ui/icons/AlternateEmailOutlined';
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 
-import Button from '../../components/common/CustomButtons/Button';
-import Page from '../../components/common/Page';
 import FormTextInput, {
   FormTextInputProps,
 } from '../../components/common/FormTextInput';
 import { authApi } from '../../hooks/api/auth';
 import { useCurrentUser } from '../../hooks/api/user';
 import ROUTES from '../../utils/routes';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    cardContent: {
-      display: 'flex',
-      flexDirection: 'column',
-    },
-  }),
-);
+import AuthFormCardWithOAuth from '../../components/common/AuthFormCardWithOAuth';
+import PasswordTextInput from '../../components/common/PasswordTextInput';
+import InputWithIcon from '../../components/common/InputWithIcon';
+import PageWithForm from '../../components/common/PageWithForm';
 
 const inputs: Record<keyof AuthRegisterDto, FormTextInputProps> = {
   email: {
@@ -40,7 +30,6 @@ const inputs: Record<keyof AuthRegisterDto, FormTextInputProps> = {
       type: 'email',
       label: 'Email',
       variant: 'outlined',
-      margin: 'normal',
     },
   },
   username: {
@@ -61,83 +50,77 @@ const inputs: Record<keyof AuthRegisterDto, FormTextInputProps> = {
       type: 'text',
       label: 'Username',
       variant: 'outlined',
-      margin: 'normal',
     },
   },
   password: {
     name: 'password',
     validation: {
       required: 'Please enter a password',
+      minLength: {
+        value: 6,
+        message: 'Password should have at least 6 characters',
+      },
     },
     fieldProps: {
       type: 'password',
       label: 'Password',
       variant: 'outlined',
-      margin: 'normal',
       autoComplete: 'current-password',
     },
   },
 };
 
 const RegisterPage: React.FC = () => {
-  const classes = useStyles();
-  const [register, registerQuery] = useMutation(authApi.register);
-  const form = useForm<AuthRegisterDto>({});
-  useCurrentUser({
+  const { refetch: refetchCurrentUser } = useCurrentUser({
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,
   });
+  const [register, registerQuery] = useMutation(authApi.register);
+  const form = useForm<AuthRegisterDto>({});
+  const [googleLogin, googleLoginQuery] = useMutation(authApi.loginGoogle);
+  const onOAuthSuccess = async (data) => {
+    await googleLogin(data);
+    await refetchCurrentUser();
+  };
 
   return (
-    <Page>
-      <Container>
-        <Grid container justify="center">
-          <Grid item xs={4}>
-            <FormProvider {...form}>
-              <Card
-                component="form"
-                onSubmit={form.handleSubmit((data) => {
-                  register(data);
-                })}
-                variant="outlined"
-              >
-                <CardHeader
-                  title={<Typography variant="h6">Sign up</Typography>}
-                />
-                <CardContent className={classes.cardContent}>
-                  <FormTextInput {...inputs.username} />
-                  <FormTextInput {...inputs.email} />
-                  <FormTextInput {...inputs.password} />
-                  <Button
-                    color="primary"
-                    type="submit"
-                    disabled={registerQuery.isLoading}
-                  >
-                    Sign up
-                  </Button>
-                  <Typography variant="body1" align="center">
-                    OR
-                  </Typography>
-                  <Button color="google">Sign up with google</Button>
-                  <Button color="facebook">Sign up with facebook</Button>
-                  <Grid container justify="flex-end">
-                    <Grid item>
-                      <Link
-                        component={RouterLink}
-                        href={ROUTES.LOGIN}
-                        variant="body2"
-                      >
-                        Already have an account? Log in
-                      </Link>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-            </FormProvider>
-          </Grid>
-        </Grid>
-      </Container>
-    </Page>
+    <PageWithForm>
+      <FormProvider {...form}>
+        <AuthFormCardWithOAuth
+          googleButtonLabel="Sign up with google"
+          onOAuthSuccess={onOAuthSuccess}
+          title="Sign up"
+          submitButtonText="Sign up"
+          onSubmit={form.handleSubmit((data) => {
+            register(data);
+          })}
+          submitDisabled={registerQuery.isLoading || googleLoginQuery.isLoading}
+          cardAfter={
+            <Grid container justify="flex-end">
+              <Grid item>
+                <Link
+                  component={RouterLink}
+                  href={ROUTES.LOGIN}
+                  variant="body2"
+                >
+                  Already have an account? Log in
+                </Link>
+              </Grid>
+            </Grid>
+          }
+        >
+          <InputWithIcon icon={AccountCircleOutlinedIcon}>
+            <FormTextInput {...inputs.username} />
+          </InputWithIcon>
+          <InputWithIcon icon={AlternateEmailOutlinedIcon}>
+            <FormTextInput {...inputs.email} />
+          </InputWithIcon>
+          <InputWithIcon icon={LockOutlinedIcon}>
+            <PasswordTextInput {...inputs.password} />
+          </InputWithIcon>
+        </AuthFormCardWithOAuth>
+      </FormProvider>
+    </PageWithForm>
   );
 };
 

@@ -93,7 +93,7 @@ const Header: React.FC<Props> = ({
       {subMenu && (
         <>
           <Divider style={{ width: '100%' }} />
-          <Toolbar className={classes.container}>{subMenu}</Toolbar>
+          <Toolbar className={classes.subMenuContainer}>{subMenu}</Toolbar>
         </>
       )}
       <Hidden mdUp implementation="js">

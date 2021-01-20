@@ -70,7 +70,8 @@ const defaultFont = {
   lineHeight: '1.5em',
 };
 
-const primaryColor = '#9c27b0';
+const primaryColor = '#448aff'; // '#316CBE'; // #9c27b0
+const secondaryColor = '#00b8d4';
 const warningColor = '#ff9800';
 const dangerColor = '#f44336';
 const successColor = '#4caf50';
@@ -200,6 +201,7 @@ export {
   card,
   defaultFont,
   primaryColor,
+  secondaryColor,
   warningColor,
   dangerColor,
   successColor,
