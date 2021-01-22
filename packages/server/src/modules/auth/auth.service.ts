@@ -13,15 +13,15 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
-import md5 from 'md5';
+import * as md5 from 'md5';
 
 import { IAuthService } from '../../abstract/auth.service.interface';
 import { IEmailService } from '../../abstract/email.service.interface';
 import { IJwtService } from '../../abstract/jwt.service.interface';
+import { IPasswordHashService } from '../../abstract/password.service.interface';
 import { IUserRepository } from '../../abstract/user.repository.interface';
 import { GoogleOAuth } from '../../config';
 import { TYPES } from '../../injectable.types';
-import { IPasswordHashService } from '../common/password/password.service';
 import { User } from '../user/user.schema';
 
 @Injectable()

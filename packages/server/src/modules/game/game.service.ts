@@ -2,10 +2,10 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { shuffle } from 'lodash';
 
+import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';
 import { IGameService } from '../../abstract/game.service.interface';
 import { TYPES } from '../../injectable.types';
 import { IContestRepository } from '../../abstract/contest.repository.interface';
-import { IContestItemRepository } from '../contest/contest-item.repository';
 import { IGameRepository } from '../../abstract/game.repository.interface';
 import { GameItem } from './game-item.schema';
 import { ContestItem } from '../contest/contest-item.schema';

@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 
-export interface IPasswordHashService {
-  hash(password: string, salt: number | string): Promise<string>;
-  compare(hash1: string, hash2: string): Promise<boolean>;
-}
+import { IPasswordHashService } from '../../../abstract/password.service.interface';
 
 @Injectable()
 export class PasswordHashService implements IPasswordHashService {

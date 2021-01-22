@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import cloudinary, { UploadApiResponse } from 'cloudinary';
 
-export interface ICloudinaryService {
-  upload(filePath: string, publicId: string): Promise<UploadApiResponse>;
-  destroy(publicId: string): Promise<any>;
-}
+import { ICloudinaryService } from '../../abstract/cloudinary.service.interface';
 
 @Injectable()
 export class CloudinaryService implements ICloudinaryService {

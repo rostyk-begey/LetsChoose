@@ -12,8 +12,8 @@ import {
   ISortOptions,
   SORT_OPTIONS,
 } from '@lets-choose/common';
-import { ICloudinaryService } from '../cloudinary/cloudinary.service';
-import { IContestItemRepository } from './contest-item.repository';
+import { ICloudinaryService } from '../../abstract/cloudinary.service.interface';
+import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';
 import { TYPES } from '../../injectable.types';
 import { IContestService } from '../../abstract/contest.service.interface';
 import { IContestRepository } from '../../abstract/contest.repository.interface';
