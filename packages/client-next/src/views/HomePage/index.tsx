@@ -5,7 +5,6 @@ import Container from '@material-ui/core/Container';
 import { Contest } from '@lets-choose/common';
 
 import ContestCard from '../../components/common/ContestCard';
-import Menu from '../../components/common/Menu';
 import Page from '../../components/common/Page';
 import useQueryState from '../../hooks/getParams';
 import { useContestAllInfinite } from '../../hooks/api/contest';
@@ -19,7 +18,7 @@ const HomePage: React.FC = () => {
   });
 
   return (
-    <Page subMenu={<Menu />}>
+    <Page>
       <Container>
         <InfiniteScroll
           pageStart={0}
@@ -32,7 +31,7 @@ const HomePage: React.FC = () => {
             </div>
           }
         >
-          <Grid container spacing={5}>
+          <Grid container spacing={3}>
             {isSuccess &&
               data?.map(
                 ({
@@ -41,7 +40,15 @@ const HomePage: React.FC = () => {
                   data: { contests: Contest[] };
                 }) =>
                   contests.map((contest) => (
-                    <Grid item key={contest.id} xs={4}>
+                    <Grid
+                      item
+                      container
+                      justify="center"
+                      key={contest.id}
+                      md={4}
+                      sm={6}
+                      xs={12}
+                    >
                       <ContestCard contest={contest} />
                     </Grid>
                   )),

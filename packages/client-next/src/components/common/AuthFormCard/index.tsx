@@ -16,6 +16,10 @@ export interface AuthFormCardProps {
 }
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    maxWidth: 400,
+  },
   cardContent: {
     display: 'flex',
     flexDirection: 'column',
@@ -64,7 +68,12 @@ const AuthFormCard: React.FC<AuthFormCardProps> = ({
   const classes = useStyles();
 
   return (
-    <Card component="form" onSubmit={onSubmit} variant="outlined">
+    <Card
+      className={classes.root}
+      component="form"
+      onSubmit={onSubmit}
+      variant="outlined"
+    >
       <CardHeader title={<Typography variant="h6">{title}</Typography>} />
       <CardContent className={classes.cardContent}>
         {children}

@@ -23,33 +23,33 @@ import { Contest, UserDto } from '@lets-choose/common';
 
 import ROUTES from '../../../utils/routes';
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      maxWidth: 345,
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    media: {
-      height: 0,
-      paddingTop: '100%',
-      // paddingTop: '56.25%', // 16:9
-    },
-    avatar: {
-      backgroundColor: red[500],
-    },
-    cursorPointer: {
-      cursor: 'pointer',
-    },
-    actions: {
-      marginTop: 'auto',
-    },
-    playBtn: {
-      marginLeft: 'auto',
-    },
-  }),
-);
+const useStyles = makeStyles(() => ({
+  root: {
+    width: '100%',
+    maxWidth: 345,
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    borderRadius: 8,
+  },
+  media: {
+    height: 0,
+    paddingTop: '100%',
+    // paddingTop: '56.25%', // 16:9
+  },
+  avatar: {
+    backgroundColor: red[500],
+  },
+  cursorPointer: {
+    cursor: 'pointer',
+  },
+  actions: {
+    marginTop: 'auto',
+  },
+  playBtn: {
+    marginLeft: 'auto',
+  },
+}));
 
 interface Props {
   contest: Contest;

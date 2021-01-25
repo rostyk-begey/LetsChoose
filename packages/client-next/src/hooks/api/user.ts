@@ -15,7 +15,8 @@ export const useUserApi = () => {
   return { find };
 };
 
-export const useCurrentUser = (
+export const useUserFindRedirect = (
+  username,
   {
     redirectTo,
     redirectIfFound,
@@ -26,7 +27,7 @@ export const useCurrentUser = (
   queryConfig: QueryConfig<AxiosResponse<UserDto>> = {},
 ): QueryResult<AxiosResponse<UserDto>> => {
   const { find } = useUserApi();
-  const query = useQuery('currentUser', () => find('me'), {
+  const query = useQuery(['user', username], () => find(username), {
     retry: 0,
     ...queryConfig,
   });
@@ -48,6 +49,16 @@ export const useCurrentUser = (
   }, [redirectTo, redirectIfFound, isLoading, hasUser]);
 
   return query;
+};
+
+export const useCurrentUser = (
+  config: {
+    redirectTo?: string;
+    redirectIfFound?: boolean;
+  },
+  queryConfig: QueryConfig<AxiosResponse<UserDto>> = {},
+): QueryResult<AxiosResponse<UserDto>> => {
+  return useUserFindRedirect('me', config, queryConfig);
 };
 
 export const useUserFind = (

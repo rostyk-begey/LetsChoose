@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { ReactNode, useState } from 'react';
 import RouterLink from 'next/link';
 import { useMutation } from 'react-query';
@@ -21,7 +22,7 @@ import Header from '../Header';
 import Footer from '../Footer';
 
 interface Props {
-  subMenu?: ReactNode;
+  withoutSubmenu?: boolean;
   className?: string;
 }
 
@@ -34,7 +35,11 @@ const useStyles = makeStyles(() => ({
   content: {},
 }));
 
-const Page: React.FC<Props> = ({ className, children, subMenu }) => {
+const Page: React.FC<Props> = ({
+  className,
+  children,
+  withoutSubmenu = false,
+}) => {
   const classes = useStyles();
   const { data: { data: user } = {}, clear, refetch } = useCurrentUser({});
   const [logout] = useMutation(authApi.logout);
@@ -52,6 +57,7 @@ const Page: React.FC<Props> = ({ className, children, subMenu }) => {
     <div className={classes.root}>
       <Header
         brand={<RouterLink href={ROUTES.HOME}>Let&apos;s Choose</RouterLink>}
+        withoutSubmenu={withoutSubmenu}
         rightLinks={
           user ? (
             <>
@@ -103,7 +109,6 @@ const Page: React.FC<Props> = ({ className, children, subMenu }) => {
             </>
           )
         }
-        subMenu={subMenu}
       />
       <div className={classNames(classes.content, className)}>{children}</div>
       <Footer />

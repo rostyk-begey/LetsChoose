@@ -15,12 +15,10 @@ const PageWithForm: React.FC = ({ children }) => {
   const classes = useStyles();
 
   return (
-    <Page className={classes.root}>
+    <Page className={classes.root} withoutSubmenu={true}>
       <Container>
         <Grid container justify="center">
-          <Grid item xs={4}>
-            {children}
-          </Grid>
+          {children}
         </Grid>
       </Container>
     </Page>

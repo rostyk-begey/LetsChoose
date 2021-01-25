@@ -2,6 +2,7 @@ import { createStyles } from '@material-ui/core/styles';
 import {
   boxShadow,
   container,
+  containerFluid,
   dangerColor,
   defaultFont,
   drawerWidth,
@@ -32,7 +33,7 @@ const styles = createStyles({
     zIndex: 1100,
   },
   container: {
-    ...container,
+    ...containerFluid,
     padding: '0.625rem 0',
     minHeight: '50px',
     flex: '1',
@@ -40,15 +41,21 @@ const styles = createStyles({
     justifyContent: 'space-between',
     display: 'flex',
     flexWrap: 'nowrap',
+    '@media (min-width: 1200px)': {
+      maxWidth: '1140px',
+    },
   },
   subMenuContainer: {
-    ...container,
+    ...containerFluid,
     padding: '0.625rem 0',
     minHeight: '50px',
     flex: '1',
     alignItems: 'center',
     display: 'flex',
     flexWrap: 'nowrap',
+    '@media (min-width: 1200px)': {
+      maxWidth: '1140px',
+    },
   },
   flex: {
     flex: 1,
