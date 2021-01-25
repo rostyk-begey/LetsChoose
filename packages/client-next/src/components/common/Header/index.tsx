@@ -20,8 +20,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import MenuIcon from '@material-ui/icons/Menu';
 import classNames from 'classnames';
 import { useMutation } from 'react-query';
-import { authApi } from '../../../hooks/api/auth';
 
+import { authApi } from '../../../hooks/api/auth';
 import { useCurrentUser } from '../../../hooks/api/user';
 import ROUTES from '../../../utils/routes';
 import ContestNavigation from '../ContestsNavigation';
@@ -150,7 +150,7 @@ const Header: React.FC<Props> = ({
                 <List>
                   {links.map(({ href, label, icon, active }) => (
                     <RouterLink key={href} href={href}>
-                      <ListItem button>
+                      <ListItem button selected={active}>
                         <ListItemIcon>{icon}</ListItemIcon>
                         <ListItemText primary={label} />
                       </ListItem>
