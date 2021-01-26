@@ -1,5 +1,3 @@
-// import { Contest } from '../modules/contest/contest.schema';
-
 import { Contest } from '@lets-choose/common';
 
 export type CreateContestData = Omit<
@@ -8,7 +6,7 @@ export type CreateContestData = Omit<
 >;
 
 export interface IContestRepository {
-  countDocuments(): Promise<number>;
+  countDocuments(authorId?: string): Promise<number>;
   aggregate(aggregations?: any[]): Promise<Contest[]>;
   findById(contestId: string): Promise<Contest>;
   findByAuthor(author: string): Promise<Contest[]>;

@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import * as mongoose from 'mongoose';
 
@@ -17,6 +22,7 @@ import { IContestItemRepository } from '../../abstract/contest-item.repository.i
 import { TYPES } from '../../injectable.types';
 import { IContestService } from '../../abstract/contest.service.interface';
 import { IContestRepository } from '../../abstract/contest.repository.interface';
+import { IUserRepository } from '../../abstract/user.repository.interface';
 
 interface SortOptions {
   rankScore: number;
@@ -49,6 +55,9 @@ export class ContestService implements IContestService {
 
     @Inject(TYPES.CloudinaryService)
     protected readonly cloudinaryService: ICloudinaryService,
+
+    @Inject(TYPES.UserRepository)
+    protected readonly userRepository: IUserRepository,
   ) {}
 
   protected static getContestThumbnailPublicId(contestId: string): string {
@@ -116,9 +125,20 @@ export class ContestService implements IContestService {
     perPage = 10,
     search = '',
     sortBy = 'POPULAR',
-    author = '',
+    author: authorUsername = '',
   }: GetContestQuery): Promise<GetContestsResponse> {
-    const totalItems = await this.contestRepository.countDocuments();
+    const author = await this.userRepository.findByUsername(authorUsername);
+
+    let totalItems: number;
+
+    if (authorUsername && author) {
+      totalItems = await this.contestRepository.countDocuments(author.id);
+    } else if (authorUsername && !author) {
+      throw new NotFoundException('Invalid author');
+    } else {
+      totalItems = await this.contestRepository.countDocuments();
+    }
+
     const totalPages = Math.ceil(totalItems / perPage);
 
     if (+page > totalPages) {
@@ -126,7 +146,7 @@ export class ContestService implements IContestService {
     }
 
     const matchPipeline = author
-      ? [{ $match: { 'author.username': author } }]
+      ? [{ $match: { 'author.username': authorUsername } }]
       : [];
 
     const contests: Contest[] = await this.contestRepository.aggregate([
@@ -159,12 +179,6 @@ export class ContestService implements IContestService {
         },
       },
     ]);
-
-    console.log({
-      currentPage: +page,
-      totalPages,
-      totalItems,
-    });
 
     return {
       contests,

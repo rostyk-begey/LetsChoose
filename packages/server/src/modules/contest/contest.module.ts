@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UserModule } from '../user/user.module';
 
 import { ContestService } from './contest.service';
 import { ContestRepository } from './contest.repository';
@@ -12,6 +13,7 @@ import { ContestController } from './contest.controller';
 @Module({
   imports: [
     CloudinaryModule,
+    forwardRef(() => UserModule),
     MongooseModule.forFeature([{ name: Contest.name, schema: ContestSchema }]),
     MongooseModule.forFeature([
       { name: ContestItem.name, schema: ContestItemSchema },

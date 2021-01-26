@@ -15,8 +15,10 @@ export class ContestRepository implements IContestRepository {
     private readonly contestModel: Model<ContestDocument>,
   ) {}
 
-  public async countDocuments(): Promise<number> {
-    const res = await this.contestModel.countDocuments();
+  public async countDocuments(authorId?: string): Promise<number> {
+    const res = authorId
+      ? await this.contestModel.countDocuments({ author: authorId })
+      : await this.contestModel.countDocuments();
     return res as number;
   }
 
