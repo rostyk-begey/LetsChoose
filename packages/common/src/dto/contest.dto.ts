@@ -49,6 +49,7 @@ export interface GetContestQuery extends SearchQuery, PaginationQuery {
 
 interface PaginatedResponse {
   totalPages: number;
+  totalItems: number;
   currentPage: number;
 }
 

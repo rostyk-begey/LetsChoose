@@ -118,8 +118,8 @@ export class ContestService implements IContestService {
     sortBy = 'POPULAR',
     author = '',
   }: GetContestQuery): Promise<GetContestsResponse> {
-    const count = await this.contestRepository.countDocuments();
-    const totalPages = Math.ceil(count / perPage);
+    const totalItems = await this.contestRepository.countDocuments();
+    const totalPages = Math.ceil(totalItems / perPage);
 
     if (+page > totalPages) {
       throw new BadRequestException('Invalid page number');
@@ -160,10 +160,17 @@ export class ContestService implements IContestService {
       },
     ]);
 
+    console.log({
+      currentPage: +page,
+      totalPages,
+      totalItems,
+    });
+
     return {
       contests,
       currentPage: +page,
       totalPages,
+      totalItems,
     };
   }
 
@@ -181,11 +188,11 @@ export class ContestService implements IContestService {
   ): Promise<GetItemsResponse> {
     await this.findContestById(contestId);
 
-    const count = await this.contestItemRepository.countDocuments({
+    const totalItems = await this.contestItemRepository.countDocuments({
       contestId,
     });
 
-    const totalPages = Math.ceil(count / perPage);
+    const totalPages = Math.ceil(totalItems / perPage);
 
     if (+page > totalPages) {
       throw new BadRequestException('Invalid page number');
@@ -235,6 +242,7 @@ export class ContestService implements IContestService {
     return {
       items,
       totalPages,
+      totalItems,
       currentPage: page,
     };
   }

@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
   username: {
     marginLeft: theme.spacing(1),
   },
+  counter: {
+    marginLeft: theme.spacing(3),
+  },
   avatar: {
     width: 64,
     height: 64,
@@ -66,6 +69,9 @@ const UserPage: React.FC = () => {
             <Typography variant="h5" className={classes.username}>
               @{username}
             </Typography>
+            <Typography variant="body1" className={classes.counter}>
+              {data?.[0]?.data?.totalItems} contests
+            </Typography>
           </Box>
           <Divider />
         </Subheader>
@@ -85,25 +91,20 @@ const UserPage: React.FC = () => {
         >
           <Grid container spacing={3}>
             {isSuccess &&
-              data?.map(
-                ({
-                  data: { contests = [] },
-                }: {
-                  data: { contests: Contest[] };
-                }) =>
-                  contests.map((contest) => (
-                    <Grid
-                      item
-                      container
-                      justify="center"
-                      key={contest.id}
-                      md={4}
-                      sm={6}
-                      xs={12}
-                    >
-                      <ContestCard contest={contest} />
-                    </Grid>
-                  )),
+              data?.map(({ data: { contests = [] } }) =>
+                contests.map((contest) => (
+                  <Grid
+                    item
+                    container
+                    justify="center"
+                    key={contest.id}
+                    md={4}
+                    sm={6}
+                    xs={12}
+                  >
+                    <ContestCard contest={contest} />
+                  </Grid>
+                )),
               )}
           </Grid>
         </InfiniteScroll>

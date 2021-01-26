@@ -86,3 +86,5 @@ const config: Config = {
     apiSecret: CLOUDINARY_API_SECRET as string,
   },
 };
+
+export default () => config;
