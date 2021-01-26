@@ -6,7 +6,7 @@ import {
   primaryColor,
 } from '../../../assets/jss/material-kit-react';
 
-const styles = ({ typography, palette, breakpoints }: Theme) =>
+const styles = ({ typography, palette, breakpoints, ...theme }: Theme) =>
   createStyles({
     legalLink: {
       ...typography.caption,
@@ -49,9 +49,8 @@ const styles = ({ typography, palette, breakpoints }: Theme) =>
     },
     footer: {
       marginTop: 'auto',
-      padding: '0.9375rem 0',
+      padding: theme.spacing(1, 3),
       textAlign: 'center',
-      display: 'flex',
       zIndex: 2,
       position: 'relative',
     },

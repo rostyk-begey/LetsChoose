@@ -7,7 +7,7 @@ import Page from '../Page';
 
 const useStyles = makeStyles(() => ({
   root: {
-    margin: 'auto 0',
+    margin: 'auto',
   },
 }));
 
@@ -15,7 +15,7 @@ const PageWithForm: React.FC = ({ children }) => {
   const classes = useStyles();
 
   return (
-    <Page className={classes.root} withoutSubmenu={true}>
+    <Page className={classes.root}>
       <Container>
         <Grid container justify="center">
           {children}

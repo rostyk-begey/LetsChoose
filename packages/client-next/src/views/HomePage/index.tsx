@@ -18,7 +18,7 @@ const HomePage: React.FC = () => {
   });
 
   return (
-    <Page>
+    <Page withContestNavigation>
       <Container>
         <InfiniteScroll
           pageStart={0}

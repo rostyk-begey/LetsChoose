@@ -1,22 +1,26 @@
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import React, { useRef } from 'react';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { ButtonGroup, InputAdornment, TextField } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import { SearchOutlined } from '@material-ui/icons';
 import throttle from 'lodash/throttle';
+import classNames from 'classnames';
 
 import useQueryState from '../../../hooks/getParams';
 
 const useStyles = makeStyles((theme) => ({
-  buttonGroup: {
-    marginLeft: 'auto',
-    height: '40px',
-  },
   sortButton: {
-    width: '100px',
+    width: 100,
   },
   marginLeft: {
     margin: theme.spacing(0, 0, 0, 1),
+  },
+  search: {
+    maxWidth: 300,
+    width: '100%',
+  },
+  searchInput: {
+    height: 36,
   },
 }));
 
@@ -40,7 +44,7 @@ const ContestNavigation: React.FC = () => {
 
   return (
     <>
-      <ButtonGroup color="primary" className={classes.buttonGroup}>
+      <ButtonGroup color="primary">
         <Button
           className={classes.sortButton}
           variant={sortBy === SORT_OPTIONS.POPULAR ? 'contained' : 'outlined'}
@@ -61,9 +65,10 @@ const ContestNavigation: React.FC = () => {
         placeholder="Search"
         variant="outlined"
         size="small"
-        className={classes.marginLeft}
+        className={classNames(classes.marginLeft, classes.search)}
         defaultValue={search}
         InputProps={{
+          className: classes.searchInput,
           endAdornment: (
             <InputAdornment position="end">
               <SearchOutlined />

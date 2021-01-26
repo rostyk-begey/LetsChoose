@@ -27,3 +27,9 @@
 @import "plugins/plugin-nouislider";
 @import "plugins/plugin-react-datetime";
 @import "plugins/plugin-react-slick";
+
+body > div {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+}
