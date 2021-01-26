@@ -1,17 +1,14 @@
-import { Drawer } from '@material-ui/core';
+import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
-import RouterLink from 'next/link';
-import React from 'react';
 import { useRouter } from 'next/router';
 import InfiniteScroll from 'react-infinite-scroller';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { Contest, UserDto } from '@lets-choose/common';
-import Layout, { Root, getSubheader } from '@mui-treasury/layout';
+import { getSubheader } from '@mui-treasury/layout';
 import styled from 'styled-components';
 
 import ContestCard from '../../components/common/ContestCard';
@@ -46,10 +43,17 @@ const UserPage: React.FC = () => {
   const classes = useStyles();
   const [sortBy] = useQueryState('sortBy', 'POPULAR');
   const [search] = useQueryState('search', '');
-  const { data, fetchMore, canFetchMore, isSuccess } = useContestAllInfinite({
+  const {
+    data,
+    fetchMore,
+    canFetchMore,
+    isSuccess,
+    isLoading,
+  } = useContestAllInfinite({
     search: search as string,
     sortBy: sortBy as any,
     author: username as string,
+    perPage: 3,
   });
   const { data: { data: user } = {} } = useUserFindRedirect(username, {
     redirectTo: ROUTES.HOME,
@@ -81,31 +85,42 @@ const UserPage: React.FC = () => {
         <InfiniteScroll
           pageStart={0}
           loadMore={() => fetchMore()}
-          hasMore={canFetchMore}
-          loader={
-            <div className="d-flex justify-content-center">
-              {/*<Loader />*/}
-              loading...
-            </div>
-          }
+          hasMore={!!canFetchMore}
         >
           <Grid container spacing={3}>
-            {isSuccess &&
-              data?.map(({ data: { contests = [] } }) =>
-                contests.map((contest) => (
-                  <Grid
-                    item
-                    container
-                    justify="center"
-                    key={contest.id}
-                    md={4}
-                    sm={6}
-                    xs={12}
-                  >
-                    <ContestCard contest={contest} />
-                  </Grid>
-                )),
-              )}
+            {data?.map(({ data: { contests = [] } }) =>
+              contests.map((contest) => (
+                <Grid
+                  item
+                  container
+                  justify="center"
+                  key={contest.id}
+                  md={4}
+                  sm={6}
+                  xs={12}
+                >
+                  <ContestCard contest={contest} />
+                </Grid>
+              )),
+            )}
+            {(isLoading || canFetchMore) &&
+              Array.from({
+                length: data
+                  ? 3 - data[data.length - 1].data.contests.length
+                  : 3,
+              }).map((_, i) => (
+                <Grid
+                  item
+                  container
+                  justify="center"
+                  key={i}
+                  md={4}
+                  sm={6}
+                  xs={12}
+                >
+                  <ContestCard />
+                </Grid>
+              ))}
           </Grid>
         </InfiniteScroll>
       </Container>

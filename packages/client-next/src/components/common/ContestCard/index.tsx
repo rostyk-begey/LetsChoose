@@ -1,3 +1,4 @@
+import { Skeleton } from '@material-ui/lab';
 import React from 'react';
 import humanTime from 'human-time';
 import clip from 'text-clipper';
@@ -37,9 +38,6 @@ const useStyles = makeStyles(() => ({
     paddingTop: '100%',
     // paddingTop: '56.25%', // 16:9
   },
-  avatar: {
-    backgroundColor: red[500],
-  },
   cursorPointer: {
     cursor: 'pointer',
   },
@@ -52,14 +50,89 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  contest: Contest;
+  contest?: Contest;
 }
 
-const ContestCard: React.FC<Props> = ({
-  contest: { id, thumbnail, title, excerpt, author, games, items, createdAt },
-}) => {
+const ContestCard: React.FC<Props> = ({ contest }) => {
   const classes = useStyles();
   const shadowStyles = useOverShadowStyles();
+
+  if (!contest) {
+    return (
+      <Card className={classNames(classes.root, shadowStyles.root)}>
+        <CardHeader
+          avatar={
+            <Skeleton
+              animation="wave"
+              variant="circle"
+              width={40}
+              height={40}
+            />
+          }
+          action={
+            <IconButton aria-label="settings">
+              <MoreVertIcon />
+            </IconButton>
+          }
+          title={
+            <Skeleton
+              animation="wave"
+              height={10}
+              width="80%"
+              style={{ marginBottom: 6 }}
+            />
+          }
+          subheader={<Skeleton animation="wave" height={10} width="40%" />}
+        />
+        <Skeleton animation="wave" variant="rect" className={classes.media} />
+        <CardContent>
+          <Skeleton animation="wave" height={16} style={{ margin: '6px 0' }} />
+          <Skeleton
+            animation="wave"
+            height={14}
+            style={{ margin: '3px 0' }}
+            width="80%"
+          />
+          <Skeleton
+            animation="wave"
+            height={14}
+            style={{ margin: '3px 0' }}
+            width="90%"
+          />
+        </CardContent>
+        <CardActions className={classes.actions} disableSpacing>
+          <Skeleton
+            animation="wave"
+            width={20}
+            height={33.45}
+            style={{ marginLeft: 20 }}
+          />
+          <Skeleton
+            animation="wave"
+            width={20}
+            height={33.45}
+            style={{ marginLeft: 20 }}
+          />
+          <Skeleton
+            animation="wave"
+            width={20}
+            height={33.45}
+            style={{ margin: '20px 20px 20px auto' }}
+          />
+        </CardActions>
+      </Card>
+    );
+  }
+  const {
+    id,
+    thumbnail,
+    title,
+    excerpt,
+    author,
+    games,
+    items,
+    createdAt,
+  } = contest;
   const username = (author as UserDto).username;
 
   return (
@@ -69,7 +142,7 @@ const ContestCard: React.FC<Props> = ({
           <RouterLink href={`${ROUTES.USERS}/${username}`}>
             <Avatar
               aria-label="recipe"
-              className={classNames(classes.avatar, classes.cursorPointer)}
+              className={classes.cursorPointer}
               src={(author as UserDto).avatar}
             />
           </RouterLink>
