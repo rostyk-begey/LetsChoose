@@ -4,7 +4,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-
 import * as mongoose from 'mongoose';
 
 import {
@@ -160,6 +159,14 @@ export class ContestService implements IContestService {
         },
       },
       {
+        $lookup: {
+          from: 'contestitems',
+          localField: '_id',
+          foreignField: 'contestId',
+          as: 'items',
+        },
+      },
+      {
         $unwind: '$author',
       },
       ...matchPipeline,
@@ -171,6 +178,7 @@ export class ContestService implements IContestService {
           id: '$_id',
           thumbnail: 1,
           title: 1,
+          items: 1,
           excerpt: 1,
           games: 1,
           createdAt: 1,
@@ -202,9 +210,9 @@ export class ContestService implements IContestService {
   ): Promise<GetItemsResponse> {
     await this.findContestById(contestId);
 
-    const totalItems = await this.contestItemRepository.countDocuments({
+    const totalItems = await this.contestItemRepository.countDocuments(
       contestId,
-    });
+    );
 
     const totalPages = Math.ceil(totalItems / perPage);
 
@@ -257,7 +265,7 @@ export class ContestService implements IContestService {
       items,
       totalPages,
       totalItems,
-      currentPage: page,
+      currentPage: +page,
     };
   }
 

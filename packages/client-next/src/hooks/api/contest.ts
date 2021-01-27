@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { useMutation, useQuery, useInfiniteQuery } from 'react-query';
 
 import {
@@ -80,7 +81,7 @@ export const useContestItemsInfinite = (
     ...params,
   };
   const { allItems } = contestApi();
-  return useInfiniteQuery(
+  return useInfiniteQuery<AxiosResponse<GetItemsResponse>>(
     ['contestItems', queryParams],
     (key, _, page: number) => allItems(contestId, { ...queryParams, page }),
     {

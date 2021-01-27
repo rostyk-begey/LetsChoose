@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { CreateContestItemDto } from '@lets-choose/common';
 
 import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';
-
 import { ContestItem, ContestItemDocument } from './contest-item.schema';
 
 @Injectable()
@@ -14,12 +13,11 @@ export class ContestItemRepository implements IContestItemRepository {
     private readonly contestItemModel: Model<ContestItemDocument>,
   ) {}
 
-  public async countDocuments(
-    criteria?: FilterQuery<ContestItem>,
-  ): Promise<number> {
-    if (criteria) return this.contestItemModel.countDocuments(criteria);
-    const res = await this.contestItemModel.countDocuments();
-    return res as number;
+  public async countDocuments(contestId?: string): Promise<number> {
+    if (contestId) {
+      return this.contestItemModel.countDocuments({ contestId });
+    }
+    return this.contestItemModel.countDocuments();
   }
 
   public aggregate(aggregations?: any[]): Promise<ContestItem[]> {

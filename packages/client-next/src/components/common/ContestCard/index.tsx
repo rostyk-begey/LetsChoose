@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import Button from '@material-ui/core/Button';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import humanTime from 'human-time';
 import clip from 'text-clipper';
@@ -7,6 +9,7 @@ import RouterLink from 'next/link';
 import { Skeleton } from '@material-ui/lab';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
+import MobileStepper from '@material-ui/core/MobileStepper';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -21,6 +24,8 @@ import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import { Contest, UserDto } from '@lets-choose/common';
+import SwipeableViews from 'react-swipeable-views';
+import { useContestItemsInfinite } from '../../../hooks/api/contest';
 
 import { useGameStart } from '../../../hooks/api/game';
 import ROUTES from '../../../utils/routes';
@@ -53,6 +58,9 @@ const useStyles = makeStyles(() => ({
 interface Props {
   contest?: Contest;
 }
+
+const itemsPerPage = 2;
+const loadingOffset = 1;
 
 const ContestCard: React.FC<Props> = ({ contest }) => {
   const classes = useStyles();
@@ -125,26 +133,53 @@ const ContestCard: React.FC<Props> = ({ contest }) => {
       </Card>
     );
   }
-  const {
-    id,
-    thumbnail,
-    title,
-    excerpt,
-    author,
-    games,
-    items,
-    createdAt,
-  } = contest;
+  const { id, thumbnail, title, excerpt, author, games, createdAt } = contest;
   const username = (author as UserDto).username;
+  const {
+    data,
+    fetchMore,
+    canFetchMore,
+    isLoading,
+  } = useContestItemsInfinite(contest.id, { perPage: itemsPerPage });
+  const { totalItems = 0 } = data?.[0].data || {};
+  let currentPage = 0;
+  if (data) {
+    ({ currentPage = 0 } = data[data.length - 1].data);
+  }
+  const maxSteps = totalItems + 1;
   const [startGame] = useGameStart();
   const onStartGame = async () => {
-    try {
-      const { data: { gameId = null } = {} } = (await startGame(id)) || {};
-      router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
-    } catch (e) {
-      // TODO handle error
-      console.log(e);
+    const { data: { gameId = null } = {} } = (await startGame(id)) || {};
+    router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
+  };
+  const [activeStep, setActiveStep] = useState(0);
+  useEffect(() => {
+    if (activeStep > 0) {
+      const timeout = setTimeout(() => setActiveStep(0), 3000);
+      return () => {
+        clearTimeout(timeout);
+      };
     }
+  }, [activeStep]);
+  const handleNext = useCallback(async () => {
+    const itemsUpToCurrentPage = currentPage * itemsPerPage;
+    const shouldFetchMore = activeStep > 0 && activeStep % itemsPerPage === 0;
+    const canProceed = activeStep - loadingOffset < itemsUpToCurrentPage;
+    if (shouldFetchMore && canFetchMore) {
+      fetchMore();
+    }
+
+    if (!isLoading && canProceed && activeStep < totalItems) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+  }, [activeStep, totalItems, currentPage]);
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleStepChange = (step: number) => {
+    setActiveStep(step);
   };
 
   return (
@@ -173,12 +208,59 @@ const ContestCard: React.FC<Props> = ({ contest }) => {
         subheader={humanTime(new Date(createdAt))}
       />
       <RouterLink href={`${ROUTES.CONTESTS.INDEX}/${id}`}>
-        <CardMedia
-          className={classNames(classes.media, classes.cursorPointer)}
-          image={thumbnail}
-          title={title}
-        />
+        <SwipeableViews
+          index={activeStep}
+          onChangeIndex={handleStepChange}
+          enableMouseEvents
+        >
+          <CardMedia
+            className={classNames(classes.media, classes.cursorPointer)}
+            image={thumbnail}
+            title={title}
+          />
+          {data?.map(({ data: { items } }) =>
+            items.map(({ id, image, title }) => (
+              <CardMedia
+                key={id}
+                className={classNames(classes.media, classes.cursorPointer)}
+                image={image}
+                title={title}
+              />
+            )),
+          )}
+          {Array.from({ length: loadingOffset }).map((_, i) => (
+            <Skeleton
+              key={i}
+              animation="wave"
+              variant="rect"
+              className={classes.media}
+            />
+          ))}
+          <Skeleton animation="wave" variant="rect" className={classes.media} />
+        </SwipeableViews>
       </RouterLink>
+      <MobileStepper
+        steps={maxSteps}
+        position="static"
+        variant="text"
+        activeStep={activeStep}
+        nextButton={
+          <Button
+            size="small"
+            onClick={handleNext}
+            disabled={isLoading && activeStep === maxSteps - 1}
+          >
+            Next
+            <KeyboardArrowRight />
+          </Button>
+        }
+        backButton={
+          <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+            <KeyboardArrowLeft />
+            Back
+          </Button>
+        }
+      />
       <CardContent>
         <Typography variant="subtitle1">{title}</Typography>
         <Typography variant="body2" color="textSecondary" component="p">
@@ -192,14 +274,12 @@ const ContestCard: React.FC<Props> = ({ contest }) => {
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>
-        <IconButton
-          className={classes.playBtn}
-          aria-label="play"
-          onClick={onStartGame}
-        >
+        <div className={classes.playBtn}>
           {games}&nbsp;
-          <PlayCircleFilledWhiteIcon color="primary" />
-        </IconButton>
+          <IconButton aria-label="play" onClick={onStartGame}>
+            <PlayCircleFilledWhiteIcon color="primary" />
+          </IconButton>
+        </div>
       </CardActions>
     </Card>
   );
