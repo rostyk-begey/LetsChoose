@@ -1,3 +1,4 @@
+import { Skeleton } from '@material-ui/lab';
 import React, { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import RouterLink from 'next/link';
@@ -33,11 +34,6 @@ interface Props {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100vh',
-  },
   content: {
     padding: theme.spacing(3, 0),
   },
@@ -113,7 +109,13 @@ const Page: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
   const router = useRouter();
-  const { data: { data: user } = {}, clear, refetch } = useCurrentUser({});
+  const {
+    data: { data: user } = {},
+    clear,
+    isSuccess,
+    refetch,
+    isLoading,
+  } = useCurrentUser({});
   const { username = '', avatar } = user || {};
   const [logout] = useMutation(authApi.logout);
   const links: MenuLink[] = [
@@ -130,6 +132,13 @@ const Page: React.FC<Props> = ({
       icon: <AccountCircleOutlinedIcon />,
     },
     {
+      href: `${ROUTES.GAMES.INDEX}/60100c72f7b3900024f0f449`,
+      active:
+        `${ROUTES.GAMES.INDEX}/60100c72f7b3900024f0f449` === router.asPath,
+      label: 'Test Game',
+      icon: <AccountCircleOutlinedIcon />,
+    },
+    {
       href: ROUTES.CONTESTS.NEW,
       active: ROUTES.CONTESTS.NEW === router.asPath,
       label: 'New Contest',
@@ -140,7 +149,6 @@ const Page: React.FC<Props> = ({
   return (
     <Layout
       title={<RouterLink href={ROUTES.HOME}>Let&apos;s Choose</RouterLink>}
-      footer={<Footer />}
       subHeader={subHeader}
       className={classNames(classes.content, className)}
       toolbarContent={
@@ -164,7 +172,7 @@ const Page: React.FC<Props> = ({
         </Box>
       }
       primarySidebar={
-        username
+        isSuccess || isLoading
           ? ({ open, collapsed }) => (
               <>
                 <Box
@@ -173,23 +181,42 @@ const Page: React.FC<Props> = ({
                   })}
                 >
                   <RouterLink href={`${ROUTES.USERS}/${username}`} passHref>
-                    <Avatar
-                      component="a"
-                      src={avatar}
-                      className={classNames(classes.avatar, {
-                        [classes.avatarOpen]: open || !collapsed,
+                    {isSuccess ? (
+                      <Avatar
+                        component="a"
+                        src={avatar}
+                        className={classNames(classes.avatar, {
+                          [classes.avatarOpen]: open || !collapsed,
+                        })}
+                      />
+                    ) : (
+                      <Skeleton
+                        animation="wave"
+                        variant="circle"
+                        className={classes.avatar}
+                      />
+                    )}
+                  </RouterLink>
+                  {isSuccess ? (
+                    <Typography
+                      variant="h6"
+                      noWrap
+                      className={classNames(classes.username, {
+                        [classes.usernameOpen]: open || !collapsed,
+                      })}
+                    >
+                      @{username}
+                    </Typography>
+                  ) : (
+                    <Skeleton
+                      animation="wave"
+                      height={20}
+                      width="85%"
+                      className={classNames(classes.username, {
+                        [classes.usernameOpen]: open || !collapsed,
                       })}
                     />
-                  </RouterLink>
-                  <Typography
-                    variant="h6"
-                    noWrap
-                    className={classNames(classes.username, {
-                      [classes.usernameOpen]: open || !collapsed,
-                    })}
-                  >
-                    @{username}
-                  </Typography>
+                  )}
                 </Box>
                 <Divider />
                 <List className={classes.sidebarMenu}>

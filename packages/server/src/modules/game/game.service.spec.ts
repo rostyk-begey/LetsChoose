@@ -44,19 +44,19 @@ describe('GameService', () => {
     const game = await gameService.start(contestId);
 
     expect(game.contestId).toEqual(contestId);
-    // test('test new game contestId', () => {
+    // test('test new games contestId', () => {
     // });
 
     expect(game.round).toEqual(0);
-    // test('test new game round', () => {
+    // test('test new games round', () => {
     // });
 
     expect(game.finished).toEqual(false);
-    // test('test new game finished', () => {
+    // test('test new games finished', () => {
     // });
 
     expect(game.items.length).toBeGreaterThanOrEqual(2);
-    // test('test new game finished', () => {
+    // test('test new games finished', () => {
     // });
 
     expect(game.totalRounds).toEqual(

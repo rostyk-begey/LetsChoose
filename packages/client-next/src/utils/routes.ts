@@ -13,12 +13,14 @@ const ROUTES = {
     SINGLE: '/contests/:id',
     UPDATE: '/contests/:id/update',
   },
-  GAME: '/games/:id',
+  GAMES: {
+    INDEX: '/games',
+  },
   API: {
     INDEX: '/api',
     CONTESTS: '/contests',
     USERS: '/users',
-    GAME: '/games',
+    GAMES: '/games',
     AUTH: {
       INDEX: '/auth',
       LOGIN: '/auth/login',

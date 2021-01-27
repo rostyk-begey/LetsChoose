@@ -142,7 +142,7 @@ export class GameService implements IGameService {
     if (roundItems.length > 1) {
       game.pair = GameService.generatePair(roundItems);
     }
-    // game has finished
+    // games has finished
     else {
       game.finished = true;
       game.winnerId = winnerId;

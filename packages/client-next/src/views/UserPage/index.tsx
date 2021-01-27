@@ -1,3 +1,4 @@
+import { Skeleton } from '@material-ui/lab';
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
@@ -8,21 +9,19 @@ import { useRouter } from 'next/router';
 import InfiniteScroll from 'react-infinite-scroller';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import { getSubheader } from '@mui-treasury/layout';
-import styled from 'styled-components';
 
 import ContestCard from '../../components/common/ContestCard';
 import Page from '../../components/common/Page';
+import Subheader from '../../components/common/Subheader';
 import { useUserFindRedirect } from '../../hooks/api/user';
 import useQueryState from '../../hooks/getParams';
 import { useContestAllInfinite } from '../../hooks/api/contest';
 import ROUTES from '../../utils/routes';
 
-const Subheader = getSubheader(styled);
-
 const useStyles = makeStyles((theme) => ({
-  profileHeader: {
-    backgroundColor: theme.palette.background.default,
+  subheader: {
+    display: 'flex',
+    alignItems: 'center',
   },
   username: {
     marginLeft: theme.spacing(1),
@@ -43,41 +42,58 @@ const UserPage: React.FC = () => {
   const classes = useStyles();
   const [sortBy] = useQueryState('sortBy', 'POPULAR');
   const [search] = useQueryState('search', '');
-  const {
-    data,
-    fetchMore,
-    canFetchMore,
-    isSuccess,
-    isLoading,
-  } = useContestAllInfinite({
+  const { data, fetchMore, canFetchMore, isSuccess } = useContestAllInfinite({
     search: search as string,
     sortBy: sortBy as any,
     author: username as string,
     perPage: 3,
   });
-  const { data: { data: user } = {} } = useUserFindRedirect(username, {
-    redirectTo: ROUTES.HOME,
-  });
+  const { data: { data: user } = {}, isLoading } = useUserFindRedirect(
+    username,
+    {
+      redirectTo: ROUTES.HOME,
+    },
+  );
   const { avatar } = user || {};
 
   return (
     <Page
       withContestNavigation
       subHeader={
-        <Subheader
-          subheaderId="profileHeader"
-          className={classes.profileHeader}
-        >
-          <Box px={2} py={1} display="flex" alignItems="center">
+        <Subheader className={classes.subheader}>
+          {isLoading ? (
+            <Skeleton
+              animation="wave"
+              variant="circle"
+              className={classes.avatar}
+            />
+          ) : (
             <Avatar src={avatar} className={classes.avatar} />
+          )}
+          {isLoading ? (
+            <Skeleton
+              animation="wave"
+              height={24}
+              width={180}
+              className={classes.username}
+            />
+          ) : (
             <Typography variant="h5" className={classes.username}>
               @{username}
             </Typography>
+          )}
+          {isLoading ? (
+            <Skeleton
+              animation="wave"
+              height={16}
+              width={100}
+              className={classes.counter}
+            />
+          ) : (
             <Typography variant="body1" className={classes.counter}>
               {data?.[0]?.data?.totalItems} contests
             </Typography>
-          </Box>
-          <Divider />
+          )}
         </Subheader>
       }
     >

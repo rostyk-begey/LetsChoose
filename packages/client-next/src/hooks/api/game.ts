@@ -5,7 +5,7 @@ import ROUTES from '../../utils/routes';
 import { GetPairResponse, GameStartResponse } from '@lets-choose/common';
 
 export const useGameApi = () => {
-  const baseURL = ROUTES.API.GAME;
+  const baseURL = ROUTES.API.GAMES;
   const start = (contestId: string) =>
     api.post<GameStartResponse>(`${baseURL}/start/${contestId}`);
   const getState = (id: string) => api.get<GetPairResponse>(`${baseURL}/${id}`);
@@ -19,9 +19,9 @@ export const useGameStart = () => {
   return useMutation(start);
 };
 
-export const useGameState = (id: string, config = {}) => {
+export const useGameState = (id: string) => {
   const { getState } = useGameApi();
-  return useQuery(['game', id], () => getState(id), { retry: 0, ...config });
+  return useMutation(() => getState(id));
 };
 
 export const useGameChoose = (gameId: string) => {

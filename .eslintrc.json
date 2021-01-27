@@ -1,5 +1,5 @@
 {
-  "plugins": ["import", "react"],
+  "plugins": ["import", "react", "mui-unused-classes"],
   "extends": [
     "plugin:@typescript-eslint/recommended",
     "prettier/@typescript-eslint",
@@ -24,6 +24,7 @@
     "import/prefer-default-export": "off",
     "import/no-extraneous-dependencies": "off",
     "import/extensions": "off",
+    "mui-unused-classes/unused-classes": 2,
     "import/order": [
       "error",
       {

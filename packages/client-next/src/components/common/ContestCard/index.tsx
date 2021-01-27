@@ -1,11 +1,12 @@
-import { Skeleton } from '@material-ui/lab';
 import React from 'react';
+import { useRouter } from 'next/router';
 import humanTime from 'human-time';
 import clip from 'text-clipper';
 import classNames from 'classnames';
 import RouterLink from 'next/link';
+import { Skeleton } from '@material-ui/lab';
 import Link from '@material-ui/core/Link';
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -14,7 +15,6 @@ import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
@@ -22,6 +22,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import { Contest, UserDto } from '@lets-choose/common';
 
+import { useGameStart } from '../../../hooks/api/game';
 import ROUTES from '../../../utils/routes';
 
 const useStyles = makeStyles(() => ({
@@ -56,6 +57,7 @@ interface Props {
 const ContestCard: React.FC<Props> = ({ contest }) => {
   const classes = useStyles();
   const shadowStyles = useOverShadowStyles();
+  const router = useRouter();
 
   if (!contest) {
     return (
@@ -134,6 +136,16 @@ const ContestCard: React.FC<Props> = ({ contest }) => {
     createdAt,
   } = contest;
   const username = (author as UserDto).username;
+  const [startGame] = useGameStart();
+  const onStartGame = async () => {
+    try {
+      const { data: { gameId = null } = {} } = (await startGame(id)) || {};
+      router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
+    } catch (e) {
+      // TODO handle error
+      console.log(e);
+    }
+  };
 
   return (
     <Card className={classNames(classes.root, shadowStyles.root)}>
@@ -180,8 +192,13 @@ const ContestCard: React.FC<Props> = ({ contest }) => {
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>
-        <IconButton className={classes.playBtn} aria-label="play">
-          <PlayCircleFilledWhiteIcon />
+        <IconButton
+          className={classes.playBtn}
+          aria-label="play"
+          onClick={onStartGame}
+        >
+          {games}&nbsp;
+          <PlayCircleFilledWhiteIcon color="primary" />
         </IconButton>
       </CardActions>
     </Card>

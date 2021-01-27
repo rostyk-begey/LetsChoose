@@ -17,15 +17,17 @@ import {
   getCozyScheme,
 } from '@mui-treasury/layout';
 import { SidebarState } from '@mui-treasury/layout/types';
+import classNames from 'classnames';
 
 import theme from '../../../theme';
+import Footer from '../Footer';
+import { subheaderId } from '../Subheader';
 
 interface Props {
   className?: string;
   title?: ReactNode;
   subHeader?: ReactNode;
   primarySidebar?: (state: SidebarState) => ReactNode;
-  footer?: ReactNode;
   toolbarContent?: ReactNode;
 }
 
@@ -51,7 +53,7 @@ cozyScheme.configureEdgeSidebar((builder) => {
 
 cozyScheme.configureSubheader((builder) => {
   builder
-    .create('profileHeader', {})
+    .create(subheaderId, {})
     .registerConfig('sm', {
       position: 'sticky',
       top: 64,
@@ -65,18 +67,23 @@ cozyScheme.configureSubheader((builder) => {
 });
 
 const useStyles = makeStyles((theme) => ({
+  header: {
+    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+  },
   footer: {
     position: 'sticky',
     bottom: 0,
     zIndex: theme.zIndex.appBar,
     backgroundColor: theme.palette.background.default,
   },
+  content: {
+    flex: 1,
+  },
 }));
 
 const Layout: React.FC<Props> = ({
   title,
   subHeader,
-  footer,
   toolbarContent,
   children,
   primarySidebar,
@@ -95,7 +102,7 @@ const Layout: React.FC<Props> = ({
       <Root theme={theme} scheme={cozyScheme}>
         {({ state: { sidebar } }) => (
           <>
-            <MuiHeader>
+            <MuiHeader className={classes.header}>
               <Toolbar>
                 <MuiSidebarTrigger sidebarId="primarySidebar" />
                 <Button className="">{title}</Button>
@@ -112,11 +119,12 @@ const Layout: React.FC<Props> = ({
               </MuiSidebarContent>
               <MuiCollapseBtn />
             </MuiDrawerSidebar>
-            <MuiContent className={className}>
-              {/*<ContentMockUp />*/}
+            <MuiContent className={classNames(classes.content, className)}>
               {children}
             </MuiContent>
-            <MuiFooter className={classes.footer}>{footer}</MuiFooter>
+            <MuiFooter className={classes.footer}>
+              <Footer />
+            </MuiFooter>
           </>
         )}
       </Root>

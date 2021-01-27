@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useMutation } from 'react-query';
@@ -46,10 +47,11 @@ const inputs: Record<string, FormTextInputProps> = {
 };
 
 const LoginPage: React.FC = () => {
-  const { refetch: refetchCurrentUser } = useCurrentUser({
+  useCurrentUser({
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,
   });
+  const router = useRouter();
   const [httpLogin, httpLoginQuery] = useMutation(authApi.login);
   const form = useForm<AuthLoginDto>({
     defaultValues: {
@@ -60,7 +62,7 @@ const LoginPage: React.FC = () => {
   const [googleLogin, googleLoginQuery] = useMutation(authApi.loginGoogle);
   const onOAuthSuccess = async (data) => {
     await googleLogin(data);
-    await refetchCurrentUser();
+    await router.push(ROUTES.HOME);
   };
 
   return (
@@ -76,7 +78,7 @@ const LoginPage: React.FC = () => {
           submitButtonText="Log in"
           onSubmit={form.handleSubmit(async (data) => {
             await httpLogin(data);
-            await refetchCurrentUser();
+            await router.push(ROUTES.HOME);
           })}
           cardAfter={
             <Grid container>
