@@ -1,5 +1,5 @@
-import { Skeleton } from '@material-ui/lab';
 import React, { ReactNode } from 'react';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { useRouter } from 'next/router';
 import RouterLink from 'next/link';
 import Avatar from '@material-ui/core/Avatar';
@@ -18,13 +18,12 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
 import classNames from 'classnames';
 import { useMutation } from 'react-query';
+
 import { authApi } from '../../../hooks/api/auth';
 import { useCurrentUser } from '../../../hooks/api/user';
-
 import ROUTES from '../../../utils/routes';
 import ContestNavigation from '../ContestsNavigation';
 import Layout from '../Layout';
-import Footer from '../Footer';
 import { MenuLink } from '../Menu';
 
 interface Props {
