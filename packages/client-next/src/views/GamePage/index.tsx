@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useGameChoose } from '@lets-choose/client/dist/hooks/api/game';
 import { ContestItem, GetPairResponse } from '@lets-choose/common';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Card from '@material-ui/core/Card';
@@ -14,7 +13,7 @@ import classNames from 'classnames';
 
 import Page from '../../components/common/Page';
 import Subheader from '../../components/common/Subheader';
-import { useGameState } from '../../hooks/api/game';
+import { useGameChoose, useGameState } from '../../hooks/api/game';
 import { useWarnIfUnsavedChanges } from '../../hooks/warnIfUnsavedChanges';
 import { sleep } from '../../utils/functions';
 import ROUTES from '../../utils/routes';
