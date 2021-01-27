@@ -132,13 +132,6 @@ const Page: React.FC<Props> = ({
       icon: <AccountCircleOutlinedIcon />,
     },
     {
-      href: `${ROUTES.GAMES.INDEX}/60100c72f7b3900024f0f449`,
-      active:
-        `${ROUTES.GAMES.INDEX}/60100c72f7b3900024f0f449` === router.asPath,
-      label: 'Test Game',
-      icon: <AccountCircleOutlinedIcon />,
-    },
-    {
       href: ROUTES.CONTESTS.NEW,
       active: ROUTES.CONTESTS.NEW === router.asPath,
       label: 'New Contest',
