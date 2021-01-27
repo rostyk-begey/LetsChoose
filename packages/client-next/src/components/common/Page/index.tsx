@@ -25,6 +25,7 @@ import ROUTES from '../../../utils/routes';
 import ContestNavigation from '../ContestsNavigation';
 import Layout from '../Layout';
 import { MenuLink } from '../Menu';
+import logo from '../../../assets/icons/logo.png';
 
 interface Props {
   withContestNavigation?: boolean;
@@ -140,7 +141,11 @@ const Page: React.FC<Props> = ({
 
   return (
     <Layout
-      title={<RouterLink href={ROUTES.HOME}>Let&apos;s Choose</RouterLink>}
+      title={
+        <RouterLink href={ROUTES.HOME}>
+          <img src={logo} />
+        </RouterLink>
+      }
       subHeader={subHeader}
       className={classNames(classes.content, className)}
       toolbarContent={
