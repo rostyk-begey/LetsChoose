@@ -1,8 +1,8 @@
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
+import { GetPairResponse, GameStartResponse } from '@lets-choose/common';
 
 import api from '../../providers/apiProvider';
 import ROUTES from '../../utils/routes';
-import { GetPairResponse, GameStartResponse } from '@lets-choose/common';
 
 export const useGameApi = () => {
   const baseURL = ROUTES.API.GAMES;
