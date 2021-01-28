@@ -1,8 +1,18 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  UsePipes,
+} from '@nestjs/common';
 
 import { TYPES } from '../../injectable.types';
 import { IGameService } from '../../abstract/game.service.interface';
+import { JoiValidationPipe } from '../../pipes/JoiValidationPipe';
 import { ContestItem } from '../contest/contest-item.schema';
+import { gamePlaySchema } from './game.validation';
 
 @Controller('/api/games')
 export class GameController {
@@ -36,6 +46,7 @@ export class GameController {
   }
 
   @Post('/:gameId')
+  @UsePipes(new JoiValidationPipe(gamePlaySchema, 'body'))
   public async play(
     @Param('gameId') gameId: string,
     @Body('winnerId') winnerId: string,

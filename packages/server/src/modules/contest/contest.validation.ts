@@ -1,44 +1,25 @@
-import Joi from '@hapi/joi';
+/* eslint-disable import/namespace */
+import * as Joi from 'joi';
 
-// export const getContestSchema = Joi.object({
-//   page: {
-//     in: 'query',
-//     toInt: true,
-//     customSanitizer: {
-//       options: (value) => value || 1,
-//     },
-//   },
-//   perPage: {
-//     in: 'query',
-//     toInt: true,
-//     customSanitizer: {
-//       options: (value) => value || 10,
-//     },
-//   },
-//   search: {
-//     in: 'query',
-//     trim: true,
-//   },
-//   author: {
-//     in: 'query',
-//     trim: true,
-//   },
-//   sortBy: {
-//     in: 'query',
-//     customSanitizer: {
-//       options: (value: keyof typeof SORT_OPTIONS): SORT_OPTIONS =>
-//         SORT_OPTIONS[value] || SORT_OPTIONS.NEWEST,
-//     },
-//   },
-// });
+const basePaginationSchema = {
+  page: Joi.number().integer().positive().messages({
+    'number:base': 'Page param should be a string',
+    'number:integer': 'Page param should be a integer value',
+  }),
+  perPage: Joi.number().integer().positive().messages({
+    'number:base': 'Page param should be a string',
+    'number:integer': 'Page param should be a integer value',
+  }),
+  search: Joi.string().empty('').messages({
+    'string:base': 'Search param should be a string',
+  }),
+};
 
 export const validationSchema = {
-  title: Joi.string()
-    .exist()
-    .message('Title is missing')
-    .min(5)
-    .message('Title should have at least 5 characters')
-    .max(255),
+  title: Joi.string().exist().min(5).max(255).messages({
+    'string:exists': 'Title is missing',
+    'string:min': 'Title should have at least 5 characters',
+  }),
   excerpt: Joi.string().max(255).message('Excerpt is too large'),
   items: Joi.array()
     .items(
@@ -47,7 +28,9 @@ export const validationSchema = {
       }),
     )
     .min(2)
-    .message('Contest should have at least 2 items'),
+    .messages({
+      'array:min': 'Contest should have at least 2 items',
+    }),
 };
 
 export const createContestSchema = Joi.object({
@@ -61,29 +44,13 @@ export const updateContestSchema = Joi.object({
   excerpt: validationSchema.excerpt,
 });
 
-export const getContestItemsSchema = Joi.object({
-  id: {
-    in: 'params',
-    customSanitizer: {
-      // options: (value) => Mongoose.Types.ObjectId(value),
-    },
-  },
-  page: {
-    in: 'query',
-    toInt: true,
-    customSanitizer: {
-      options: (value) => value || 1,
-    },
-  },
-  perPage: {
-    in: 'query',
-    toInt: true,
-    customSanitizer: {
-      options: (value) => value || 10,
-    },
-  },
-  search: {
-    in: 'query',
-    trim: true,
-  },
+export const getContestSchema = Joi.object({
+  ...basePaginationSchema,
+  author: Joi.string().empty(''),
+  sortBy: Joi.string().valid('POPULAR', 'NEWEST').messages({
+    'string:base': 'sortBy param should be a string',
+    'string:valid': 'sortBy param should be one of POPULAR | NEWEST',
+  }),
 });
+
+export const getContestItemsSchema = Joi.object(basePaginationSchema);

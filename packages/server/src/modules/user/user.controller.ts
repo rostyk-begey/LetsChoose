@@ -1,3 +1,4 @@
+import { HttpResponseMessageDto } from '@lets-choose/common';
 import {
   Controller,
   Delete,
@@ -33,7 +34,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Delete('/me')
-  public async removeMe(@Request() req: any): Promise<any> {
+  public async removeMe(@Request() req: any): Promise<HttpResponseMessageDto> {
     await this.userService.removeUserById(req.user.id as string);
     return { message: 'User successfully deleted!' };
   }

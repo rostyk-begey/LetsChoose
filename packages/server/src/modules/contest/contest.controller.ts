@@ -11,6 +11,7 @@ import {
   UploadedFiles,
   UseGuards,
   UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -23,9 +24,10 @@ import {
   GetItemsResponse,
 } from '@lets-choose/common';
 import { TYPES } from '../../injectable.types';
-// import { Contest } from './contest.schema';
+import { JoiValidationPipe } from '../../pipes/JoiValidationPipe';
 import { ContestItem } from './contest-item.schema';
 import { IContestService } from '../../abstract/contest.service.interface';
+import { getContestItemsSchema, getContestSchema } from './contest.validation';
 
 @Controller('/api/contests')
 export class ContestController {
@@ -35,6 +37,7 @@ export class ContestController {
   ) {}
 
   @Get('/')
+  @UsePipes(new JoiValidationPipe(getContestSchema, 'query'))
   public async get(
     @Query() query: GetContestQuery,
   ): Promise<GetContestsResponse> {
@@ -47,6 +50,7 @@ export class ContestController {
   }
 
   @Get('/:contestId/items')
+  @UsePipes(new JoiValidationPipe(getContestItemsSchema, 'query'))
   public async getItems(
     @Param('contestId') contestId: string,
     @Query() query: GetItemsQuery,

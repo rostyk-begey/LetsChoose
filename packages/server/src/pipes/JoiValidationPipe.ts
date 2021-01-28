@@ -5,7 +5,7 @@ import {
   BadRequestException,
   Paramtype,
 } from '@nestjs/common';
-import { AnySchema } from '@hapi/joi';
+import { AnySchema } from 'joi';
 
 @Injectable()
 export class JoiValidationPipe implements PipeTransform {

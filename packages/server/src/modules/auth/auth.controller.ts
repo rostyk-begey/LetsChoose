@@ -33,7 +33,7 @@ import {
   loginSchema,
   registerSchema,
   refreshTokenLocation,
-} from './auth.schema';
+} from './auth.validation';
 
 @Controller('/api/auth')
 export class AuthController {
