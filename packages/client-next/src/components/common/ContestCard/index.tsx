@@ -200,10 +200,9 @@ const ContestCard: React.FC<Props> = ({ contest }) => {
           </IconButton>
         }
         title={
-          <Link
-            component={RouterLink}
-            href={`${ROUTES.USERS}/${username}`}
-          >{`@${username}`}</Link>
+          <RouterLink href={`${ROUTES.USERS}/${username}`} passHref>
+            <Link>{`@${username}`}</Link>
+          </RouterLink>
         }
         subheader={humanTime(new Date(createdAt))}
       />

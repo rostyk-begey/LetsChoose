@@ -1,8 +1,7 @@
 import React, { ReactNode, useEffect } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
-import styled from 'styled-components';
-import { StylesProvider } from '@material-ui/core/styles';
+import { styled, StylesProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import {

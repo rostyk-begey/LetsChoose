@@ -1,9 +1,8 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { getSubheader } from '@mui-treasury/layout';
-import styled from 'styled-components';
+import { styled } from '@material-ui/core/styles';
 import classNames from 'classnames';
 
 interface Props {

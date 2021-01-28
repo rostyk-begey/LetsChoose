@@ -114,7 +114,6 @@ const Page: React.FC<Props> = ({
     clear,
     isSuccess,
     refetch,
-    isLoading,
   } = useCurrentUser({});
   const { username = '', avatar } = user || {};
   const [logout] = useMutation(authApi.logout);
@@ -169,7 +168,7 @@ const Page: React.FC<Props> = ({
         </Box>
       }
       primarySidebar={
-        isSuccess || isLoading
+        user
           ? ({ open, collapsed }) => (
               <>
                 <Box
