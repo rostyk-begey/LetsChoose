@@ -49,7 +49,7 @@ export class GameController {
   @UsePipes(new JoiValidationPipe(gamePlaySchema, 'body'))
   public async play(
     @Param('gameId') gameId: string,
-    @Body('winnerId') winnerId: string,
+    @Body() { winnerId }: { winnerId: string },
   ): Promise<any> {
     await this.gameService.playRound(gameId, winnerId);
     const game = await this.gameService.findGameById(gameId);
