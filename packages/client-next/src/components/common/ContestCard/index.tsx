@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { ListItemIcon, Menu, MenuItem } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import { useRouter } from 'next/router';
@@ -25,8 +27,11 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import { Contest, UserDto } from '@lets-choose/common';
 import SwipeableViews from 'react-swipeable-views';
-import { useContestItemsInfinite } from '../../../hooks/api/contest';
 
+import {
+  useContestDelete,
+  useContestItemsInfinite,
+} from '../../../hooks/api/contest';
 import { useGameStart } from '../../../hooks/api/game';
 import ROUTES from '../../../utils/routes';
 
@@ -57,12 +62,13 @@ const useStyles = makeStyles(() => ({
 
 interface Props {
   contest?: Contest;
+  onDelete?: () => any;
 }
 
 const itemsPerPage = 2;
 const loadingOffset = 1;
 
-const ContestCard: React.FC<Props> = ({ contest }) => {
+const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   const classes = useStyles();
   const shadowStyles = useOverShadowStyles();
   const router = useRouter();
@@ -181,6 +187,22 @@ const ContestCard: React.FC<Props> = ({ contest }) => {
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setMenuAnchor(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setMenuAnchor(null);
+  };
+
+  const [deleteContest] = useContestDelete(id);
+  const onDeleteClick = async () => {
+    await deleteContest();
+    handleClose();
+    onDelete && onDelete();
+  };
 
   return (
     <Card className={classNames(classes.root, shadowStyles.root)}>
@@ -195,13 +217,28 @@ const ContestCard: React.FC<Props> = ({ contest }) => {
           </RouterLink>
         }
         action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
+          <>
+            <IconButton aria-label="settings" onClick={handleClick}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              keepMounted
+              open={Boolean(menuAnchor)}
+              onClose={handleClose}
+              anchorEl={menuAnchor}
+            >
+              <MenuItem>
+                <ListItemIcon onClick={onDeleteClick}>
+                  <DeleteIcon />
+                </ListItemIcon>
+                Delete
+              </MenuItem>
+            </Menu>
+          </>
         }
         title={
           <RouterLink href={`${ROUTES.USERS}/${username}`} passHref>
-            <Link>{`@${username}`}</Link>
+            <Link>@{username}</Link>
           </RouterLink>
         }
         subheader={humanTime(new Date(createdAt))}

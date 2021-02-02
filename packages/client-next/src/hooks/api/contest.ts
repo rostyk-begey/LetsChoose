@@ -103,3 +103,8 @@ export const useContestUpdate = (id: string) => {
   const { update } = contestApi();
   return useMutation((data: UpdateContestData) => update(id, data));
 };
+
+export const useContestDelete = (id: string) => {
+  const { remove } = contestApi();
+  return useMutation(() => remove(id));
+};

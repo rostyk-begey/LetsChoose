@@ -1,7 +1,8 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from '../user/user.module';
+import { MulterModule } from '@nestjs/platform-express';
 
+import { UserModule } from '../user/user.module';
 import { ContestService } from './contest.service';
 import { ContestRepository } from './contest.repository';
 import { ContestItemRepository } from './contest-item.repository';
@@ -13,6 +14,9 @@ import { ContestController } from './contest.controller';
 @Module({
   imports: [
     CloudinaryModule,
+    MulterModule.register({
+      dest: './uploads',
+    }),
     forwardRef(() => UserModule),
     MongooseModule.forFeature([{ name: Contest.name, schema: ContestSchema }]),
     MongooseModule.forFeature([

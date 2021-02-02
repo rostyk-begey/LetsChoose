@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
-import { styled, StylesProvider } from '@material-ui/core/styles';
+import { StylesProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import {
@@ -17,6 +17,7 @@ import {
 } from '@mui-treasury/layout';
 import { SidebarState } from '@mui-treasury/layout/types';
 import classNames from 'classnames';
+import styled from 'styled-components';
 
 import theme from '../../../theme';
 import Footer from '../Footer';

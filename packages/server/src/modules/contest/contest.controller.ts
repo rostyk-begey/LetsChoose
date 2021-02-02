@@ -14,7 +14,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 
 import {
   Contest,
@@ -22,6 +22,7 @@ import {
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
+  HttpResponseMessageDto,
 } from '@lets-choose/common';
 import { TYPES } from '../../injectable.types';
 import { JoiValidationPipe } from '../../pipes/JoiValidationPipe';
@@ -59,14 +60,15 @@ export class ContestController {
   }
 
   @Post('/')
-  @UseInterceptors(FileInterceptor('files'))
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(AnyFilesInterceptor())
   public async create(
     @Body('title') title: string,
     @Body('excerpt') excerpt: string,
     @Body('items') items: Pick<ContestItem, 'title'>[],
     @UploadedFiles() files,
-    @Req() { user },
-  ): Promise<any> {
+    @Req() { user }: any,
+  ): Promise<HttpResponseMessageDto> {
     await this.contestService.createContest(user.id, {
       title,
       excerpt,
@@ -85,7 +87,7 @@ export class ContestController {
     @Body('title') title: string,
     @Body('excerpt') excerpt: string,
     @UploadedFiles() files,
-  ): Promise<any> {
+  ): Promise<HttpResponseMessageDto> {
     await this.contestService.updateContest(contestId, {
       title,
       excerpt,
@@ -97,7 +99,9 @@ export class ContestController {
 
   @UseGuards(AuthGuard('jwt'))
   @Delete('/:contestId')
-  public async remove(@Param('contestId') contestId: string): Promise<any> {
+  public async remove(
+    @Param('contestId') contestId: string,
+  ): Promise<HttpResponseMessageDto> {
     await this.contestService.removeContest(contestId);
 
     return { message: 'Contest successfully deleted!' };

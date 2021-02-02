@@ -11,7 +11,13 @@ import { useContestAllInfinite } from '../../hooks/api/contest';
 const HomePage: React.FC = () => {
   const [sortBy] = useQueryState('sortBy', 'POPULAR');
   const [search] = useQueryState('search', '');
-  const { data, fetchMore, canFetchMore, isLoading } = useContestAllInfinite({
+  const {
+    data,
+    fetchMore,
+    canFetchMore,
+    isLoading,
+    refetch,
+  } = useContestAllInfinite({
     search: search as string,
     sortBy: sortBy as any,
     perPage: 3,
@@ -37,7 +43,7 @@ const HomePage: React.FC = () => {
                   sm={6}
                   xs={12}
                 >
-                  <ContestCard contest={contest} />
+                  <ContestCard contest={contest} onDelete={refetch} />
                 </Grid>
               )),
             )}

@@ -1,20 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import cloudinary, { UploadApiResponse } from 'cloudinary';
+import { ConfigService } from '@nestjs/config';
+import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
 
 import { ICloudinaryService } from '../../abstract/cloudinary.service.interface';
+import { CloudinaryConfig } from '../../config';
 
 @Injectable()
 export class CloudinaryService implements ICloudinaryService {
-  public upload(
-    filePath: string,
-    publicId: string,
-  ): Promise<UploadApiResponse> {
-    return cloudinary.v2.uploader.upload(filePath, {
-      public_id: publicId,
+  constructor(configService: ConfigService) {
+    const {
+      cloudName,
+      apiKey,
+      apiSecret,
+    } = configService.get<CloudinaryConfig>('cloudinary');
+    cloudinary.config({
+      cloud_name: cloudName,
+      api_key: apiKey,
+      api_secret: apiSecret,
     });
   }
 
+  public async upload(filePath: string, publicId: string): Promise<string> {
+    try {
+      const { secure_url } = await cloudinary.uploader.upload(filePath, {
+        public_id: publicId,
+      });
+      return secure_url;
+    } catch (e) {
+      return '';
+    }
+  }
+
   public destroy(publicId: string): Promise<any> {
-    return cloudinary.v2.uploader.destroy(publicId);
+    return cloudinary.uploader.destroy(publicId);
   }
 }

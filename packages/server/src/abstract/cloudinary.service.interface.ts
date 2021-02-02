@@ -1,6 +1,4 @@
-import { UploadApiResponse } from 'cloudinary';
-
 export interface ICloudinaryService {
-  upload(filePath: string, publicId: string): Promise<UploadApiResponse>;
+  upload(filePath: string, publicId: string): Promise<string>;
   destroy(publicId: string): Promise<any>;
 }

@@ -2,8 +2,9 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { getSubheader } from '@mui-treasury/layout';
-import { styled } from '@material-ui/core/styles';
+// import { styled } from '@material-ui/core/styles';
 import classNames from 'classnames';
+import styled from 'styled-components';
 
 interface Props {
   className?: string;

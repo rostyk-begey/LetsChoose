@@ -1,27 +1,29 @@
 import {
+  Contest,
+  CreateContestDTO,
+  GetContestQuery,
+  GetContestsResponse,
+  GetItemsQuery,
+  GetItemsResponse,
+  ISortOptions,
+  SORT_OPTIONS,
+} from '@lets-choose/common';
+import {
   BadRequestException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import * as mongoose from 'mongoose';
+import * as fs from 'fs';
+import { promisify } from 'util';
 
-import {
-  Contest,
-  CreateContestDTO,
-  GetContestsResponse,
-  GetItemsQuery,
-  GetItemsResponse,
-  GetContestQuery,
-  ISortOptions,
-  SORT_OPTIONS,
-} from '@lets-choose/common';
 import { ICloudinaryService } from '../../abstract/cloudinary.service.interface';
 import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';
-import { TYPES } from '../../injectable.types';
-import { IContestService } from '../../abstract/contest.service.interface';
 import { IContestRepository } from '../../abstract/contest.repository.interface';
+import { IContestService } from '../../abstract/contest.service.interface';
 import { IUserRepository } from '../../abstract/user.repository.interface';
+import { TYPES } from '../../injectable.types';
 
 interface SortOptions {
   rankScore: number;
@@ -33,15 +35,16 @@ interface SortPipeline {
 }
 
 interface CreateContestsData extends CreateContestDTO {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   files: Express.Multer.File[];
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const fieldNameFilter = (key: string) => ({ fieldname }: Express.Multer.File) =>
-  fieldname === key;
+const fieldNameFilter = (key: string) => ({
+  fieldname,
+}: Express.Multer.File) => {
+  return fieldname === key;
+};
+
+const unlinkAsync = promisify(fs.unlink);
 
 @Injectable()
 export class ContestService implements IContestService {
@@ -61,6 +64,13 @@ export class ContestService implements IContestService {
 
   protected static getContestThumbnailPublicId(contestId: string): string {
     return `contests/${contestId}/thumbnail`;
+  }
+
+  protected static getContestItemImagePublicId(
+    contestId: string,
+    contestItemId: string,
+  ): string {
+    return `contests/${contestId}/items/${contestItemId}`;
   }
 
   protected static getPaginationPipelines(page = 1, perPage = 10): any[] {
@@ -284,33 +294,38 @@ export class ContestService implements IContestService {
 
     const contestId = mongoose.Types.ObjectId();
 
-    const { secure_url } = await this.cloudinaryService.upload(
-      thumbnail!.path,
+    const thumbnailUrl = await this.cloudinaryService.upload(
+      thumbnail.path,
       ContestService.getContestThumbnailPublicId(contestId.toString()),
     );
+    await unlinkAsync(thumbnail.path);
 
     await this.contestRepository.createContest({
       _id: `${contestId}`,
-      thumbnail: secure_url,
+      thumbnail: thumbnailUrl,
       title,
       excerpt,
       author: userId,
     });
 
     const savingItems = items.map(
-      async ({ title }, i: number): Promise<void> => {
+      async ({ title }, i): Promise<void> => {
         const contestItemId = mongoose.Types.ObjectId();
         const image = files.find(fieldNameFilter(`items[${i}][image]`));
-        const { secure_url } = await this.cloudinaryService.upload(
-          image!.path,
-          `contests/${contestId}/items/${contestItemId}`,
+        const imageUrl = await this.cloudinaryService.upload(
+          image.path,
+          ContestService.getContestItemImagePublicId(
+            contestId.toString(),
+            contestItemId.toString(),
+          ),
         );
         await this.contestItemRepository.createContestItem({
           title,
-          image: secure_url,
+          image: imageUrl,
           _id: `${contestItemId}`,
           contestId: `${contestId}`,
         });
+        await unlinkAsync(image.path);
       },
     );
 
@@ -338,11 +353,10 @@ export class ContestService implements IContestService {
           ContestService.getContestThumbnailPublicId(contestId),
         );
       }
-      const { secure_url } = await this.cloudinaryService.upload(
-        thumbnailFile!.path,
+      data.thumbnail = await this.cloudinaryService.upload(
+        thumbnailFile.path,
         ContestService.getContestThumbnailPublicId(contestId),
       );
-      data.thumbnail = secure_url;
     }
 
     return this.contestRepository.findByIdAndUpdate(contestId, data);
@@ -350,7 +364,16 @@ export class ContestService implements IContestService {
 
   public async removeContest(contestId: string): Promise<void> {
     await this.contestRepository.deleteContest(contestId);
-    // todo: delete images
+    await this.cloudinaryService.destroy(
+      ContestService.getContestThumbnailPublicId(contestId),
+    );
+    const items = await this.contestItemRepository.findByContestId(contestId);
+    const itemsToDelete = items.map(async ({ _id }) => {
+      await this.cloudinaryService.destroy(
+        ContestService.getContestItemImagePublicId(contestId, _id),
+      );
+    });
+    await Promise.all(itemsToDelete);
     await this.contestItemRepository.deleteContestItems(contestId);
   }
 }
