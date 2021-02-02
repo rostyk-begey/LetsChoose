@@ -12,6 +12,7 @@ import {
   UseGuards,
   UseInterceptors,
   UsePipes,
+  ForbiddenException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
@@ -101,7 +102,12 @@ export class ContestController {
   @Delete('/:contestId')
   public async remove(
     @Param('contestId') contestId: string,
+    @Req() { user }: any,
   ): Promise<HttpResponseMessageDto> {
+    const { author } = await this.contestService.findContestById(contestId);
+    if (author !== user.id) {
+      throw new ForbiddenException();
+    }
     await this.contestService.removeContest(contestId);
 
     return { message: 'Contest successfully deleted!' };
