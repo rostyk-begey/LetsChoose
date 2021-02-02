@@ -68,77 +68,79 @@ interface Props {
 const itemsPerPage = 2;
 const loadingOffset = 1;
 
+const ContestCardSkeleton = () => {
+  const classes = useStyles();
+  const shadowStyles = useOverShadowStyles();
+  return (
+    <Card className={classNames(classes.root, shadowStyles.root)}>
+      <CardHeader
+        avatar={
+          <Skeleton animation="wave" variant="circle" width={40} height={40} />
+        }
+        action={
+          <IconButton aria-label="settings">
+            <MoreVertIcon />
+          </IconButton>
+        }
+        title={
+          <Skeleton
+            animation="wave"
+            height={10}
+            width="80%"
+            style={{ marginBottom: 6 }}
+          />
+        }
+        subheader={<Skeleton animation="wave" height={10} width="40%" />}
+      />
+      <Skeleton animation="wave" variant="rect" className={classes.media} />
+      <CardContent>
+        <Skeleton animation="wave" height={16} style={{ margin: '6px 0' }} />
+        <Skeleton
+          animation="wave"
+          height={14}
+          style={{ margin: '3px 0' }}
+          width="80%"
+        />
+        <Skeleton
+          animation="wave"
+          height={14}
+          style={{ margin: '3px 0' }}
+          width="90%"
+        />
+      </CardContent>
+      <CardActions className={classes.actions} disableSpacing>
+        <Skeleton
+          animation="wave"
+          width={20}
+          height={33.45}
+          style={{ marginLeft: 20 }}
+        />
+        <Skeleton
+          animation="wave"
+          width={20}
+          height={33.45}
+          style={{ marginLeft: 20 }}
+        />
+        <Skeleton
+          animation="wave"
+          width={20}
+          height={33.45}
+          style={{ margin: '20px 20px 20px auto' }}
+        />
+      </CardActions>
+    </Card>
+  );
+};
+
 const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   const classes = useStyles();
   const shadowStyles = useOverShadowStyles();
   const router = useRouter();
 
   if (!contest) {
-    return (
-      <Card className={classNames(classes.root, shadowStyles.root)}>
-        <CardHeader
-          avatar={
-            <Skeleton
-              animation="wave"
-              variant="circle"
-              width={40}
-              height={40}
-            />
-          }
-          action={
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-          }
-          title={
-            <Skeleton
-              animation="wave"
-              height={10}
-              width="80%"
-              style={{ marginBottom: 6 }}
-            />
-          }
-          subheader={<Skeleton animation="wave" height={10} width="40%" />}
-        />
-        <Skeleton animation="wave" variant="rect" className={classes.media} />
-        <CardContent>
-          <Skeleton animation="wave" height={16} style={{ margin: '6px 0' }} />
-          <Skeleton
-            animation="wave"
-            height={14}
-            style={{ margin: '3px 0' }}
-            width="80%"
-          />
-          <Skeleton
-            animation="wave"
-            height={14}
-            style={{ margin: '3px 0' }}
-            width="90%"
-          />
-        </CardContent>
-        <CardActions className={classes.actions} disableSpacing>
-          <Skeleton
-            animation="wave"
-            width={20}
-            height={33.45}
-            style={{ marginLeft: 20 }}
-          />
-          <Skeleton
-            animation="wave"
-            width={20}
-            height={33.45}
-            style={{ marginLeft: 20 }}
-          />
-          <Skeleton
-            animation="wave"
-            width={20}
-            height={33.45}
-            style={{ margin: '20px 20px 20px auto' }}
-          />
-        </CardActions>
-      </Card>
-    );
+    return <ContestCardSkeleton />;
   }
+
   const { id, thumbnail, title, excerpt, author, games, createdAt } = contest;
   const username = (author as UserDto).username;
   const {
@@ -189,18 +191,18 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   };
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setMenuAnchor(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleMenuClose = () => {
     setMenuAnchor(null);
   };
 
   const [deleteContest] = useContestDelete(id);
   const onDeleteClick = async () => {
     await deleteContest();
-    handleClose();
+    handleMenuClose();
     onDelete && onDelete();
   };
 
@@ -218,13 +220,13 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
         }
         action={
           <>
-            <IconButton aria-label="settings" onClick={handleClick}>
+            <IconButton aria-label="settings" onClick={handleMenuClick}>
               <MoreVertIcon />
             </IconButton>
             <Menu
               keepMounted
               open={Boolean(menuAnchor)}
-              onClose={handleClose}
+              onClose={handleMenuClose}
               anchorEl={menuAnchor}
             >
               <MenuItem>
