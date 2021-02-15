@@ -145,17 +145,18 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   const username = (author as UserDto).username;
   const {
     data,
-    fetchMore,
-    canFetchMore,
+    fetchNextPage,
+    hasNextPage,
     isLoading,
   } = useContestItemsInfinite(contest.id, { perPage: itemsPerPage });
-  const { totalItems = 0 } = data?.[0].data || {};
+  const pages = data?.pages || [];
+  const { totalItems = 0 } = pages?.[0]?.data || {};
   let currentPage = 0;
   if (data) {
-    ({ currentPage = 0 } = data[data.length - 1].data);
+    ({ currentPage = 0 } = pages[pages.length - 1].data);
   }
   const maxSteps = totalItems + 1;
-  const [startGame] = useGameStart();
+  const { mutateAsync: startGame } = useGameStart();
   const onStartGame = async () => {
     const { data: { gameId = null } = {} } = (await startGame(id)) || {};
     router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
@@ -173,8 +174,8 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
     const itemsUpToCurrentPage = currentPage * itemsPerPage;
     const shouldFetchMore = activeStep > 0 && activeStep % itemsPerPage === 0;
     const canProceed = activeStep - loadingOffset < itemsUpToCurrentPage;
-    if (shouldFetchMore && canFetchMore) {
-      fetchMore();
+    if (shouldFetchMore && hasNextPage) {
+      fetchNextPage();
     }
 
     if (!isLoading && canProceed && activeStep < totalItems) {
@@ -199,7 +200,7 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
     setMenuAnchor(null);
   };
 
-  const [deleteContest] = useContestDelete(id);
+  const { mutateAsync: deleteContest } = useContestDelete(id);
   const onDeleteClick = async () => {
     await deleteContest();
     handleMenuClose();
@@ -256,7 +257,7 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
             image={thumbnail}
             title={title}
           />
-          {data?.map(({ data: { items } }) =>
+          {pages.map(({ data: { items } }) =>
             items.map(({ id, image, title }) => (
               <CardMedia
                 key={id}

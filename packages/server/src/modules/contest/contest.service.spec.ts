@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import MockContestItemRepository from '../../../test/mocks/repositories/ContestItemRepository';
+import MockContestItemRepository from '../../../test/mocks/repositories/contest-item.repository';
 import MockContestRepository, {
   mockContests,
-} from '../../../test/mocks/repositories/ContestRepository';
-import MockCloudinaryService from '../../../test/mocks/services/CloudinaryService';
+} from '../../../test/mocks/repositories/contest.repository';
+import MockCloudinaryService from '../../../test/mocks/services/cloudinary.service';
 import { TYPES } from '../../injectable.types';
 
-import { ContestService } from './contest.service';
+import { ContestService, CreateContestsData } from './contest.service';
 
 describe('ContestService', () => {
   let contestService: ContestService;
@@ -20,7 +20,7 @@ describe('ContestService', () => {
     title: 'testContestTitle',
     excerpt: 'testContestExcerpt',
     items: [{ title: 'item0' }, { title: 'item1' }],
-  };
+  } as CreateContestsData;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

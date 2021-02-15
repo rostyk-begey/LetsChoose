@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
 import { GetPairResponse, GameStartResponse } from '@lets-choose/common';
 
@@ -21,7 +22,7 @@ export const useGameStart = () => {
 
 export const useGameState = (id: string) => {
   const { getState } = useGameApi();
-  return useMutation(() => getState(id));
+  return useMutation<AxiosResponse<GetPairResponse>>(() => getState(id));
 };
 
 export const useGameChoose = (gameId: string) => {

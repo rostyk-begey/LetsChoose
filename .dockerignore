@@ -1,0 +1,17 @@
+node_modules
+dist
+.env
+.git
+.github
+.gitignore
+.idea
+
+packages/client
+packages/client-next/.next
+legacy
+uploads
+*.log
+*.tsbuildinfo
+.eslintrc.json
+.eslintignore
+.prettierrc

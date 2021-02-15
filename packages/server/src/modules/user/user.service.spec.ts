@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import MockContestRepository from '../../../test/mocks/repositories/ContestRepository';
-import MockContestItemRepository from '../../../test/mocks/repositories/ContestItemRepository';
-import MockCloudinaryService from '../../../test/mocks/services/CloudinaryService';
-import MockUserRepository from '../../../test/mocks/repositories/UserRepository';
+import MockContestRepository from '../../../test/mocks/repositories/contest.repository';
+import MockContestItemRepository from '../../../test/mocks/repositories/contest-item.repository';
+import MockCloudinaryService from '../../../test/mocks/services/cloudinary.service';
+import MockUserRepository from '../../../test/mocks/repositories/user.repository';
 import { TYPES } from '../../injectable.types';
 import { ContestService } from '../contest/contest.service';
 
@@ -32,6 +32,7 @@ describe('UserService', () => {
             MockContestRepository,
             MockContestItemRepository,
             MockCloudinaryService,
+            MockUserRepository,
           ),
         },
       ],

@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import MockContestRepository, {
   mockContests,
-} from '../../../test/mocks/repositories/ContestRepository';
-import MockContestItemRepository from '../../../test/mocks/repositories/ContestItemRepository';
+} from '../../../test/mocks/repositories/contest.repository';
+import MockContestItemRepository from '../../../test/mocks/repositories/contest-item.repository';
 import MockGameRepository, {
   mockGames,
-} from '../../../test/mocks/repositories/GameRepository';
+} from '../../../test/mocks/repositories/game.repository';
 import { TYPES } from '../../injectable.types';
 import { GameService } from './game.service';
 

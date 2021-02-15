@@ -42,12 +42,13 @@ const UserPage: React.FC = () => {
   const classes = useStyles();
   const [sortBy] = useQueryState('sortBy', 'POPULAR');
   const [search] = useQueryState('search', '');
-  const { data, fetchMore, canFetchMore, isSuccess } = useContestAllInfinite({
+  const { data, fetchNextPage, hasNextPage } = useContestAllInfinite({
     search: search as string,
     sortBy: sortBy as any,
     author: username as string,
     perPage: 3,
   });
+  const pages = data?.pages || [];
   const { data: { data: user } = {}, isLoading } = useUserFindRedirect(
     username,
     {
@@ -100,11 +101,11 @@ const UserPage: React.FC = () => {
       <Container>
         <InfiniteScroll
           pageStart={0}
-          loadMore={() => fetchMore()}
-          hasMore={!!canFetchMore}
+          loadMore={() => fetchNextPage()}
+          hasMore={!!hasNextPage}
         >
           <Grid container spacing={3}>
-            {data?.map(({ data: { contests = [] } }) =>
+            {pages.map(({ data: { contests = [] } }) =>
               contests.map((contest) => (
                 <Grid
                   item
@@ -119,10 +120,10 @@ const UserPage: React.FC = () => {
                 </Grid>
               )),
             )}
-            {(isLoading || canFetchMore) &&
+            {(isLoading || hasNextPage) &&
               Array.from({
-                length: data
-                  ? 3 - data[data.length - 1].data.contests.length
+                length: pages.length
+                  ? 3 - pages[pages.length - 1].data.contests.length
                   : 3,
               }).map((_, i) => (
                 <Grid

@@ -30,7 +30,6 @@ import FormTextInput, {
 import Page from '../components/common/Page';
 import Subheader from '../components/common/Subheader';
 import { useContestCreate } from '../hooks/api/contest';
-import ROUTES from '../utils/routes';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -223,7 +222,7 @@ const ContestItem: React.FC<Props> = ({
 
 const CreateContestPage: React.FC = () => {
   const classes = useStyles();
-  const [createContest, createContestQuery] = useContestCreate();
+  const { mutateAsync: createContest } = useContestCreate();
   const [itemsDialogOpen, setItemsDialogOpen] = useState(false);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [items, setItems] = useState<Item[]>([]);

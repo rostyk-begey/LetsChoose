@@ -34,7 +34,7 @@ interface SortPipeline {
   $sort: ISortOptions;
 }
 
-interface CreateContestsData extends CreateContestDTO {
+export interface CreateContestsData extends CreateContestDTO {
   files: Express.Multer.File[];
 }
 

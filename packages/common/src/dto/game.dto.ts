@@ -1,12 +1,12 @@
 import { Contest, ContestItem } from './contest.dto';
 
-export interface GameItem {
+export abstract class GameItem {
   contestItem: ContestItem | string;
   wins: number;
   compares: number;
 }
 
-export interface Game {
+export abstract class Game {
   _id: string;
   readonly id: string;
   contestId: Contest | string;

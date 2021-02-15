@@ -1,4 +1,4 @@
-export class UserDto {
+export abstract class UserDto {
   _id: string;
   email: string;
   avatar: string;
@@ -7,7 +7,7 @@ export class UserDto {
   password: string;
 }
 
-export class CreateUserDto {
+export abstract class CreateUserDto {
   email: string;
   avatar: string;
   bio?: string;

@@ -75,9 +75,13 @@ const RegisterPage: React.FC = () => {
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,
   });
-  const [register, registerQuery] = useMutation(authApi.register);
+  const { mutateAsync: register, ...registerQuery } = useMutation(
+    authApi.register,
+  );
   const form = useForm<AuthRegisterDto>({});
-  const [googleLogin, googleLoginQuery] = useMutation(authApi.loginGoogle);
+  const { mutateAsync: googleLogin, ...googleLoginQuery } = useMutation(
+    authApi.loginGoogle,
+  );
   const onOAuthSuccess = async (data) => {
     await googleLogin(data);
     await refetchCurrentUser();

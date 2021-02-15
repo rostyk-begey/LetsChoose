@@ -52,14 +52,18 @@ const LoginPage: React.FC = () => {
     redirectIfFound: true,
   });
   const router = useRouter();
-  const [httpLogin, httpLoginQuery] = useMutation(authApi.login);
+  const { mutateAsync: httpLogin, ...httpLoginQuery } = useMutation(
+    authApi.login,
+  );
   const form = useForm<AuthLoginDto>({
     defaultValues: {
       login: '',
       password: '',
     },
   });
-  const [googleLogin, googleLoginQuery] = useMutation(authApi.loginGoogle);
+  const { mutateAsync: googleLogin, ...googleLoginQuery } = useMutation(
+    authApi.loginGoogle,
+  );
   const onOAuthSuccess = async (data) => {
     await googleLogin(data);
     await router.push(ROUTES.HOME);

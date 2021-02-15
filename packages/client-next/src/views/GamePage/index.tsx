@@ -44,8 +44,8 @@ const GamePage: React.FC = () => {
     query: { gameId },
     ...router
   } = useRouter();
-  const [choose] = useGameChoose(gameId as string);
-  const [getGameState] = useGameState(gameId as string);
+  const { mutateAsync: choose } = useGameChoose(gameId as string);
+  const { mutateAsync: getGameState } = useGameState(gameId as string);
   const [animations, setAnimations] = useState<string[]>(inAnimations);
   const [game, setGame] = useState<GetPairResponse>();
   const [isLoading, setIsLoading] = useState<boolean>(true);

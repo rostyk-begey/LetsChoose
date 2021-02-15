@@ -1,6 +1,6 @@
 import { UserDto } from './user.dto';
 
-export interface ContestItem {
+export abstract class ContestItem {
   _id: string;
   readonly id: string;
   image: string;
@@ -12,7 +12,7 @@ export interface ContestItem {
   contestId: string | Contest;
 }
 
-export interface Contest {
+export abstract class Contest {
   _id: string;
   id: string;
   thumbnail: string;
@@ -29,41 +29,48 @@ export enum SORT_OPTIONS {
   NEWEST = '_id',
 }
 
-export interface PaginationQuery {
+export abstract class PaginationQuery {
   page: number;
   perPage: number;
 }
 
-export interface SearchQuery {
+export abstract class SearchQuery {
   search: string;
 }
 
-export interface FindParams {
+export abstract class FindParams {
   id: string;
 }
 
-export interface GetContestQuery extends SearchQuery, PaginationQuery {
+export abstract class GetContestQuery implements SearchQuery, PaginationQuery {
   author: string;
   sortBy: '' | keyof typeof SORT_OPTIONS;
+  search: string;
+  page: number;
+  perPage: number;
 }
 
-interface PaginatedResponse {
+abstract class PaginatedResponse {
   totalPages: number;
   totalItems: number;
   currentPage: number;
 }
 
-export interface GetContestsResponse extends PaginatedResponse {
+export abstract class GetContestsResponse extends PaginatedResponse {
   contests: Contest[];
 }
 
-export interface GetItemsQuery extends SearchQuery, PaginationQuery {}
+export abstract class GetItemsQuery implements SearchQuery, PaginationQuery {
+  search: string;
+  page: number;
+  perPage: number;
+}
 
-export interface GetItemsResponse extends PaginatedResponse {
+export abstract class GetItemsResponse extends PaginatedResponse {
   items: ContestItem[];
 }
 
-export interface CreateContestDTO {
+export abstract class CreateContestDTO {
   title: string;
   excerpt: string;
   items: Pick<ContestItem, 'title'>[];

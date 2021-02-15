@@ -1,11 +1,16 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2017",
+    "target": "es6",
     "sourceMap": true,
     "removeComments": true,
     "declaration": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": [
+      "es5",
+      "es6",
+      "esnext"
+    ]
   },
   "exclude": [
     "node_modules",

@@ -13,8 +13,8 @@ const HomePage: React.FC = () => {
   const [search] = useQueryState('search', '');
   const {
     data,
-    fetchMore,
-    canFetchMore,
+    fetchNextPage,
+    hasNextPage,
     isLoading,
     refetch,
   } = useContestAllInfinite({
@@ -22,17 +22,18 @@ const HomePage: React.FC = () => {
     sortBy: sortBy as any,
     perPage: 3,
   });
+  const pages = data?.pages || [];
 
   return (
     <Page withContestNavigation>
       <Container>
         <InfiniteScroll
           pageStart={0}
-          loadMore={() => fetchMore()}
-          hasMore={!!canFetchMore}
+          loadMore={() => fetchNextPage()}
+          hasMore={!!hasNextPage}
         >
           <Grid container spacing={3}>
-            {data?.map(({ data: { contests = [] } }) =>
+            {pages.map(({ data: { contests = [] } }) =>
               contests.map((contest) => (
                 <Grid
                   item
@@ -47,10 +48,10 @@ const HomePage: React.FC = () => {
                 </Grid>
               )),
             )}
-            {(isLoading || canFetchMore) &&
+            {(isLoading || hasNextPage) &&
               Array.from({
-                length: data
-                  ? 3 - data[data.length - 1].data.contests.length
+                length: pages.length
+                  ? 3 - pages[pages.length - 1].data.contests.length
                   : 3,
               }).map((_, i) => (
                 <Grid

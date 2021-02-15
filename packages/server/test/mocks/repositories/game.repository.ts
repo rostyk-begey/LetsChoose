@@ -3,7 +3,7 @@ import { CreateGameDto } from '@lets-choose/common';
 import { IGameRepository } from '../../../src/abstract/game.repository.interface';
 import { Game } from '../../../src/modules/game/game.schema';
 import games from './data/games';
-import ContestItemRepository from './ContestItemRepository';
+import ContestItemRepository from './contest-item.repository';
 
 export let mockGames = [...games];
 

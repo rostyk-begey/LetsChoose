@@ -49,21 +49,17 @@ export const useContestAllInfinite = (
     ...params,
   };
   const { all } = contestApi();
-  return useInfiniteQuery<
-    { data: GetContestsResponse },
-    [string, GetContestQuery],
-    any
-  >(
+  return useInfiniteQuery<AxiosResponse<GetContestsResponse>>(
     ['contests', queryParams],
-    (key, _, page = 1) => all({ ...queryParams, page }),
+    ({ pageParam: page = 1 }) => all({ ...queryParams, page }),
     {
       ...config,
-      getFetchMore: (lastPage) => {
+      getNextPageParam: (lastPage) => {
         const {
           data: { currentPage, totalPages },
         } = lastPage;
-        if (currentPage === totalPages) return false;
-        return currentPage + 1;
+        if (currentPage < totalPages) return currentPage + 1;
+        return undefined;
       },
     },
   );
@@ -83,12 +79,15 @@ export const useContestItemsInfinite = (
   const { allItems } = contestApi();
   return useInfiniteQuery<AxiosResponse<GetItemsResponse>>(
     ['contestItems', queryParams],
-    (key, _, page: number) => allItems(contestId, { ...queryParams, page }),
+    ({ pageParam: page = 1 }) => allItems(contestId, { ...queryParams, page }),
     {
       ...config,
-      getFetchMore: ({ data: { currentPage, totalPages } }) => {
-        if (currentPage === totalPages) return false;
-        return currentPage + 1;
+      getNextPageParam: (lastPage) => {
+        const {
+          data: { currentPage, totalPages },
+        } = lastPage;
+        if (currentPage < totalPages) return currentPage + 1;
+        return undefined;
       },
     },
   );

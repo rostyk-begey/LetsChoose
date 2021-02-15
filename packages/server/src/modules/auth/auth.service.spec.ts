@@ -1,12 +1,12 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import MockJwtService from '../../../test/mocks/services/JwtService';
-import MockEmailService from '../../../test/mocks/services/EmailService';
-import MockPasswordHashService from '../../../test/mocks/services/PasswordHashService';
+import MockJwtService from '../../../test/mocks/services/jwt.service';
+import MockEmailService from '../../../test/mocks/services/email.service';
+import MockPasswordHashService from '../../../test/mocks/services/password.service';
 import MockUserRepository, {
   mockUsers,
-} from '../../../test/mocks/repositories/UserRepository';
+} from '../../../test/mocks/repositories/user.repository';
 import config from '../../config';
 import { TYPES } from '../../injectable.types';
 import { PasswordHashService } from '../common/password/password.service';

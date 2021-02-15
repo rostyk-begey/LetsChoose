@@ -2,6 +2,7 @@ version: "3.8"
 services:
   web:
     build: .
+    container_name: "lets_choose_web"
     ports:
       - "3000:3000"
     env_file: .env

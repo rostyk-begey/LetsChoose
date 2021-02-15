@@ -3,7 +3,7 @@ import {
   useMutation,
   useQuery,
   MutationFunction,
-  MutationConfig,
+  UseMutationOptions,
 } from 'react-query';
 
 import {
@@ -52,16 +52,17 @@ export const authApi = {
 
 const useAxiosMutation = <TResult, TVariables>(
   mutationFn: MutationFunction<AxiosResponse<TResult>, TVariables>,
-  config?: MutationConfig<
+  config?: UseMutationOptions<
     AxiosResponse<TResult>,
     AxiosError<TResult>,
     TVariables
   >,
-) =>
-  useMutation<AxiosResponse<TResult>, AxiosError<TResult>, TVariables>(
+) => {
+  return useMutation<AxiosResponse<TResult>, AxiosError<TResult>, TVariables>(
     mutationFn,
     config,
   );
+};
 
 export const useApiLogin = () => {
   return useMutation(authApi.login);

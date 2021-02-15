@@ -59,8 +59,8 @@ const Header: React.FC<Props> = ({
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
-  const { data: { data: user } = {}, refetch, clear } = useCurrentUser({});
-  const [logout] = useMutation(authApi.logout);
+  const { data: { data: user } = {}, refetch, remove } = useCurrentUser({});
+  const { mutateAsync: logout } = useMutation(authApi.logout);
   const { username = '' } = user || {};
   const handleDrawerToggle = () => {
     setMobileOpen((x) => !x);
@@ -160,7 +160,7 @@ const Header: React.FC<Props> = ({
                   <ListItem
                     onClick={async () => {
                       await logout();
-                      clear();
+                      remove();
                       await refetch();
                     }}
                   >

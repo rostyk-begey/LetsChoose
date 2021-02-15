@@ -111,12 +111,12 @@ const Page: React.FC<Props> = ({
   const router = useRouter();
   const {
     data: { data: user } = {},
-    clear,
+    remove,
     isSuccess,
     refetch,
   } = useCurrentUser({});
   const { username = '', avatar } = user || {};
-  const [logout] = useMutation(authApi.logout);
+  const { mutateAsync: logout } = useMutation(authApi.logout);
   const links: MenuLink[] = [
     {
       href: ROUTES.HOME,
@@ -250,7 +250,7 @@ const Page: React.FC<Props> = ({
                     })}
                     onClick={async () => {
                       await logout();
-                      clear();
+                      remove();
                       await refetch();
                     }}
                   >
