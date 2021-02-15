@@ -142,7 +142,7 @@ const Page: React.FC<Props> = ({
     <Layout
       title={
         <RouterLink href={ROUTES.HOME}>
-          <img src={logo} />
+          <img src={logo} alt="" />
         </RouterLink>
       }
       subHeader={subHeader}
