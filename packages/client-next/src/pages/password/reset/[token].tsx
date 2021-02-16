@@ -1,1 +1,1 @@
-export { default } from '../../../views/ResetPasswordPage';
+export { default } from '../../../components/views/ResetPasswordPage';

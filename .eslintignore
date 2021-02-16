@@ -1,4 +1,8 @@
-/dist
+dist
+.next
+node_modules
+legacy
+packages/client
 /packages/client/webpack
 packages/client/webpack.config.js
 packages/client/.babelrc.js

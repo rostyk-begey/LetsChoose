@@ -9,11 +9,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { User } from './user.schema';
 import { TYPES } from '../../injectable.types';
 import { IUserService } from '../../abstract/user.service.interface';
 
+@ApiTags('User')
 @Controller('/api/users')
 export class UserController {
   constructor(
@@ -21,17 +23,23 @@ export class UserController {
     private readonly userService: IUserService,
   ) {}
 
+  @ApiOperation({ summary: 'Get current user' })
+  @ApiResponse({ status: 200, type: User })
   @UseGuards(AuthGuard('jwt'))
   @Get('/me')
   public me(@Request() req: any): Promise<User> {
     return req.user;
   }
 
+  @ApiOperation({ summary: 'Get user by username' })
+  @ApiResponse({ status: 200, type: User })
   @Get('/:username')
   async findById(@Param('username') username: string): Promise<User> {
     return await this.userService.findByUsername(username);
   }
 
+  @ApiOperation({ summary: 'Delete current user' })
+  @ApiResponse({ status: 200, type: HttpResponseMessageDto })
   @UseGuards(AuthGuard('jwt'))
   @Delete('/me')
   public async removeMe(@Request() req: any): Promise<HttpResponseMessageDto> {

@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { AppService } from './app.service';
 import { ContestModule } from '../contest/contest.module';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { AuthModule } from '../auth/auth.module';
@@ -32,7 +31,7 @@ import { GameModule } from '../game/game.module';
     CloudinaryModule,
   ],
   controllers: [],
-  providers: [AppService],
+  providers: [],
   exports: [ConfigModule],
 })
 export class AppModule {}

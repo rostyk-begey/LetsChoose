@@ -12,7 +12,7 @@ const GameRepository: IGameRepository = {
     return mockGames.length;
   },
 
-  async aggregate(aggregations?: any[]): Promise<Game[]> {
+  async aggregate(): Promise<Game[]> {
     return mockGames;
   },
 

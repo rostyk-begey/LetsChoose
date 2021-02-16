@@ -25,12 +25,14 @@ import {
   GetItemsResponse,
   HttpResponseMessageDto,
 } from '@lets-choose/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TYPES } from '../../injectable.types';
 import { JoiValidationPipe } from '../../pipes/JoiValidationPipe';
 import { ContestItem } from './contest-item.schema';
 import { IContestService } from '../../abstract/contest.service.interface';
 import { getContestItemsSchema, getContestSchema } from './contest.validation';
 
+@ApiTags('Contest')
 @Controller('/api/contests')
 export class ContestController {
   constructor(
@@ -39,6 +41,12 @@ export class ContestController {
   ) {}
 
   @Get('/')
+  @ApiOperation({ summary: 'Get all contests' })
+  @ApiResponse({
+    status: 200,
+    type: GetContestsResponse,
+    content: { test: { example: 'testx' } },
+  })
   @UsePipes(new JoiValidationPipe(getContestSchema, 'query'))
   public async get(
     @Query() query: GetContestQuery,

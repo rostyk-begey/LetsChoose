@@ -1,5 +1,5 @@
-import { Game } from '../modules/game/game.schema';
 import { CreateGameDto } from '@lets-choose/common';
+import { Game } from '../modules/game/game.schema';
 
 export interface IGameRepository {
   countDocuments(): Promise<number>;

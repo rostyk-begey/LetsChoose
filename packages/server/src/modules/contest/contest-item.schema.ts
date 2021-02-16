@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-// import mongoose, { Document } from 'mongoose';
+import { ContestItem as ContestItemModel } from '@lets-choose/common';
 import * as mongoose from 'mongoose';
 
 import { Contest } from './contest.schema';
@@ -7,7 +7,7 @@ import { Contest } from './contest.schema';
 export type ContestItemDocument = ContestItem & mongoose.Document;
 
 @Schema()
-export class ContestItem {
+export class ContestItem extends ContestItemModel {
   @Prop({ type: mongoose.Schema.Types.ObjectId, alias: 'id' })
   _id: string;
   readonly id: string;

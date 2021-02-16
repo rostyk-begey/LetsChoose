@@ -1,1 +1,1 @@
-export { default } from '../../views/UserPage';
+export { default } from '../../components/views/UserPage';

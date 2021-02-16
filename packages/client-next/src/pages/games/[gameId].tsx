@@ -1,1 +1,1 @@
-export { default } from '../../views/GamePage';
+export { default } from '../../components/views/GamePage';

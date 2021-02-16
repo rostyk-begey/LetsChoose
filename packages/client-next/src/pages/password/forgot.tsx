@@ -1,1 +1,1 @@
-export { default } from '../../views/ForgotPasswordPage';
+export { default } from '../../components/views/ForgotPasswordPage';

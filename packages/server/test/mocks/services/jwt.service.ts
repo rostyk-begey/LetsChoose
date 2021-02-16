@@ -1,17 +1,9 @@
-import * as jwt from 'jsonwebtoken';
 import {
   TokenPair,
   IJwtService,
   AuthTokenPayload,
   BaseTokenPayload,
 } from '../../../src/abstract/jwt.service.interface';
-// import config from '../../../config';
-// import {
-//   AuthTokenPayload,
-//   BaseTokenPayload,
-//   IJwtService,
-//   TokenPair,
-// } from '../../../services/JwtService';
 
 const JwtService: IJwtService = {
   generateAuthTokenPair(userId: string, passwordVersion = 0): TokenPair {

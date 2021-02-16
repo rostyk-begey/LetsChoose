@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Get,
   Inject,
   Param,
   Post,
@@ -12,6 +11,7 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -35,6 +35,7 @@ import {
   refreshTokenLocation,
 } from './auth.validation';
 
+@ApiTags('auth')
 @Controller('/api/auth')
 export class AuthController {
   config: JwtConfig;
@@ -62,6 +63,8 @@ export class AuthController {
   }
 
   @Post('/login')
+  @ApiOperation({ summary: 'Login' })
+  @ApiResponse({ status: 200, type: AuthTokenDto })
   @UsePipes(new JoiValidationPipe(loginSchema))
   async login(
     @Response({ passthrough: true }) res: any,
@@ -84,6 +87,8 @@ export class AuthController {
   }
 
   @Post('/login/google')
+  @ApiOperation({ summary: 'Login using google' })
+  @ApiResponse({ status: 200, type: AuthTokenDto })
   async loginGoogle(
     @Response({ passthrough: true }) res: any,
     @Body() { code }: AuthGoogleLoginDto,
@@ -105,6 +110,8 @@ export class AuthController {
   }
 
   @Post('/logout')
+  @ApiOperation({ summary: 'Logout' })
+  @ApiResponse({ status: 200, type: HttpResponseMessageDto })
   @UseGuards(AuthGuard('jwt'))
   async logout(
     @Response({ passthrough: true }) res: any,
@@ -116,6 +123,8 @@ export class AuthController {
   }
 
   @Post('/register')
+  @ApiOperation({ summary: 'Register' })
+  @ApiResponse({ status: 200, type: HttpResponseMessageDto })
   @UsePipes(new JoiValidationPipe(registerSchema))
   public async register(
     @Body() dto: AuthRegisterDto,
@@ -126,6 +135,8 @@ export class AuthController {
   }
 
   @Post('/password/forgot')
+  @ApiOperation({ summary: 'Request password reset' })
+  @ApiResponse({ status: 200, type: HttpResponseMessageDto })
   public async forgotPassword(
     @Body() dto: AuthForgotPasswordDto,
   ): Promise<HttpResponseMessageDto> {

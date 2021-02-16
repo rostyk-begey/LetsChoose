@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Game as GameModel } from '@lets-choose/common';
 import * as mongoose from 'mongoose';
 
 import { ContestItem } from '../contest/contest-item.schema';
@@ -8,7 +9,7 @@ import { Contest } from '../contest/contest.schema';
 export type GameDocument = Game & mongoose.Document;
 
 @Schema()
-export class Game {
+export class Game extends GameModel {
   @Prop({ type: mongoose.Schema.Types.ObjectId, alias: 'id' })
   _id: string;
   readonly id: string;

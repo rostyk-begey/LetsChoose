@@ -5,6 +5,9 @@
     "packages/*"
   ],
   "private": true,
+  "scripts": {
+    "lint": "eslint . --quiet"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^4.11.0",
@@ -15,9 +18,20 @@
     "eslint-plugin-mui-unused-classes": "^1.0.3",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.21.5",
+    "husky": "^5.0.9",
     "lerna": "^3.22.1",
+    "lint-staged": "^10.5.4",
     "prettier": "^2.1.2",
     "typescript": "^4.1.5"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "post-commit": "git update-index --again"
+    }
+  },
+  "lint-staged": {
+    "packages/**/*.{ts,tsx}": "eslint --quiet"
+  }
 }

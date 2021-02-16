@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Contest as ContestModel } from '@lets-choose/common';
 import * as mongoose from 'mongoose';
 
 import { User } from '../user/user.schema';
@@ -9,7 +10,7 @@ export type ContestDocument = Contest & mongoose.Document;
 @Schema({
   timestamps: true,
 })
-export class Contest {
+export class Contest extends ContestModel {
   @Prop({ type: mongoose.Schema.Types.ObjectId, alias: 'id' })
   _id: string;
   readonly id: string;

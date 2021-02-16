@@ -12,7 +12,7 @@ const ContestRepository: IContestRepository = {
   async countDocuments(): Promise<number> {
     return mockContests.length;
   },
-  async aggregate(aggregations?: any[]): Promise<Contest[]> {
+  async aggregate(): Promise<Contest[]> {
     return mockContests;
   },
   async findById(contestId: string): Promise<Contest> {

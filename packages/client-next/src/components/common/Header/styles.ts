@@ -1,7 +1,6 @@
 import { createStyles } from '@material-ui/core/styles';
 import {
   boxShadow,
-  container,
   containerFluid,
   dangerColor,
   defaultFont,

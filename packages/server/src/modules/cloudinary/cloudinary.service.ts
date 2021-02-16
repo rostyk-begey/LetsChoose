@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 
 import { ICloudinaryService } from '../../abstract/cloudinary.service.interface';
 import { CloudinaryConfig } from '../../config';
