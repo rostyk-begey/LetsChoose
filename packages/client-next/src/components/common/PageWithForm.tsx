@@ -7,7 +7,8 @@ import Page from './Page';
 
 const useStyles = makeStyles(() => ({
   root: {
-    margin: 'auto',
+    display: 'flex',
+    alignItems: 'center',
   },
 }));
 

@@ -100,13 +100,9 @@ const RegisterPage: React.FC = () => {
           cardAfter={
             <Grid container justify="flex-end">
               <Grid item>
-                <Link
-                  component={RouterLink}
-                  href={ROUTES.LOGIN}
-                  variant="body2"
-                >
-                  Already have an account? Log in
-                </Link>
+                <RouterLink href={ROUTES.LOGIN} passHref>
+                  <Link variant="body2">Already have an account? Log in</Link>
+                </RouterLink>
               </Grid>
             </Grid>
           }
