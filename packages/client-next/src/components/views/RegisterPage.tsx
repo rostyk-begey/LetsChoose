@@ -9,16 +9,14 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import AlternateEmailOutlinedIcon from '@material-ui/icons/AlternateEmailOutlined';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 
-import FormTextInput, {
-  FormTextInputProps,
-} from '../../components/common/FormTextInput';
+import FormTextInput, { FormTextInputProps } from '../common/FormTextInput';
 import { authApi } from '../../hooks/api/auth';
 import { useCurrentUser } from '../../hooks/api/user';
 import ROUTES from '../../utils/routes';
-import AuthFormCardWithOAuth from '../../components/common/AuthFormCardWithOAuth';
-import PasswordTextInput from '../../components/common/PasswordTextInput';
-import InputWithIcon from '../../components/common/InputWithIcon';
-import PageWithForm from '../../components/common/PageWithForm';
+import AuthFormCardWithOAuth from '../common/AuthFormCardWithOAuth';
+import PasswordTextInput from '../common/PasswordTextInput';
+import InputWithIcon from '../common/InputWithIcon';
+import PageWithForm from '../common/PageWithForm';
 
 const inputs: Record<keyof AuthRegisterDto, FormTextInputProps> = {
   email: {
