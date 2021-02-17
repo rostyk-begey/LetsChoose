@@ -253,8 +253,8 @@ export class ContestService implements IContestService {
           },
           finalWinRate: {
             $cond: {
-              if: { $gt: ['$compares', 0] },
-              then: { $divide: ['$wins', '$compares'] },
+              if: { $gt: ['$games', 0] },
+              then: { $divide: ['$finalWins', '$games'] },
               else: 0,
             },
           },
