@@ -24,6 +24,7 @@
     "imagemin-optipng": "^8.0.0",
     "imagemin-svgo": "^8.0.0",
     "json-form-data": "^1.7.2",
+    "json2mq": "^0.2.0",
     "material-ui-dropzone": "^3.5.0",
     "next": "10.0.4",
     "next-compose-plugins": "^2.2.1",
@@ -38,6 +39,7 @@
     "react-query": "^3.9.6",
     "react-swipeable-views": "^0.13.9",
     "react-swipeable-views-utils": "^0.14.0-alpha.0",
+    "react-table": "^7.6.3",
     "styled-components": "^5.2.1",
     "text-clipper": "^2.1.0",
     "use-location-state": "^2.5.0"

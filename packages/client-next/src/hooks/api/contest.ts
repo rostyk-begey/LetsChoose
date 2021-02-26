@@ -83,10 +83,12 @@ export const useContestItemsInfinite = (
     {
       ...config,
       getNextPageParam: (lastPage) => {
-        const {
-          data: { currentPage, totalPages },
-        } = lastPage;
-        if (currentPage < totalPages) return currentPage + 1;
+        try {
+          const {
+            data: { currentPage, totalPages },
+          } = lastPage;
+          if (currentPage < totalPages) return currentPage + 1;
+        } catch (e) {}
         return undefined;
       },
     },

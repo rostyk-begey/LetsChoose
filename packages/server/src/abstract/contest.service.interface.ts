@@ -7,7 +7,6 @@ import {
   GetItemsResponse,
   UpdateContestDTO,
 } from '@lets-choose/common';
-// import { Contest } from '../modules/contest/contest.schema';
 
 export interface IContestService {
   getContestsPaginate(query: GetContestQuery): Promise<GetContestsResponse>;
