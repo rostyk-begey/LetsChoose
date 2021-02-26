@@ -78,7 +78,7 @@ export const useContestItemsInfinite = (
   };
   const { allItems } = contestApi();
   return useInfiniteQuery<AxiosResponse<GetItemsResponse>>(
-    ['contestItems', queryParams],
+    ['contestItems', contestId, queryParams],
     ({ pageParam: page = 1 }) => allItems(contestId, { ...queryParams, page }),
     {
       ...config,

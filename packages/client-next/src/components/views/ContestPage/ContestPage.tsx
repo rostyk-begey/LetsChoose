@@ -69,7 +69,6 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
     [breakpoints.down('sm')]: {
       display: 'none',
     },
-    // marginLeft: theme.spacing(2),
   },
   contestContent: {
     display: 'flex',
