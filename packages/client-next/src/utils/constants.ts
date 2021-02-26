@@ -1,0 +1,10 @@
+export const PRIMARY_SIDEBAR_ID = 'primarySidebar';
+
+export const HEADER_HEIGHT = 64;
+export const HEADER_HEIGHT_XS = 56;
+export const PRIMARY_SUBHEADER_HEIGHT = 54;
+export const SECONDARY_SUBHEADER_HEIGHT = 80;
+
+export const PRIMARY_SUBHEADER_ID = 'PRIMARY_SUBHEADER';
+
+export const SECONDARY_SUBHEADER_ID = 'SECONDARY_SUBHEADER';

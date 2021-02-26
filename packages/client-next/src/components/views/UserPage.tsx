@@ -1,3 +1,4 @@
+import { useMediaQuery } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
@@ -7,17 +8,28 @@ import { useRouter } from 'next/router';
 import InfiniteScroll from 'react-infinite-scroller';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
+import json2mq from 'json2mq';
 
 import ContestCard from '../common/ContestCard';
+import ContestNavigation from '../common/ContestNavigation';
 import Page from '../common/Page';
 import Subheader from '../common/Subheader';
 import { useUserFindRedirect } from '../../hooks/api/user';
 import useQueryState from '../../hooks/getParams';
 import { useContestAllInfinite } from '../../hooks/api/contest';
 import ROUTES from '../../utils/routes';
+import {
+  PRIMARY_SUBHEADER_ID,
+  SECONDARY_SUBHEADER_HEIGHT,
+  SECONDARY_SUBHEADER_ID,
+} from '../../utils/constants';
 
 const useStyles = makeStyles((theme) => ({
-  subheader: {
+  navigationSubheader: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  profileSubheader: {
     display: 'flex',
     alignItems: 'center',
   },
@@ -54,46 +66,67 @@ const UserPage: React.FC = () => {
     },
   );
   const { avatar } = user || {};
+  const matchesMaxWidth1024 = useMediaQuery(
+    json2mq({
+      maxWidth: 1024,
+    }),
+  );
 
   return (
     <Page
-      withContestNavigation
+      withContestNavigation={!matchesMaxWidth1024}
       subHeader={
-        <Subheader className={classes.subheader}>
-          {isLoading ? (
-            <Skeleton
-              animation="wave"
-              variant="circle"
-              className={classes.avatar}
-            />
-          ) : (
-            <Avatar src={avatar} className={classes.avatar} />
+        <>
+          {matchesMaxWidth1024 && (
+            <Subheader className={classes.navigationSubheader}>
+              <ContestNavigation />
+            </Subheader>
           )}
-          {isLoading ? (
-            <Skeleton
-              animation="wave"
-              height={24}
-              width={180}
-              className={classes.username}
-            />
-          ) : (
-            <Typography variant="h5" className={classes.username}>
-              @{username}
-            </Typography>
-          )}
-          {isLoading ? (
-            <Skeleton
-              animation="wave"
-              height={16}
-              width={100}
-              className={classes.counter}
-            />
-          ) : (
-            <Typography variant="body1" className={classes.counter}>
-              {data?.[0]?.data?.totalItems} contests
-            </Typography>
-          )}
-        </Subheader>
+          <Subheader
+            id={
+              matchesMaxWidth1024
+                ? SECONDARY_SUBHEADER_ID
+                : PRIMARY_SUBHEADER_ID
+            }
+            height={SECONDARY_SUBHEADER_HEIGHT}
+            className={classes.profileSubheader}
+            animated
+          >
+            {isLoading ? (
+              <Skeleton
+                animation="wave"
+                variant="circle"
+                className={classes.avatar}
+              />
+            ) : (
+              <Avatar src={avatar} className={classes.avatar} />
+            )}
+            {isLoading ? (
+              <Skeleton
+                animation="wave"
+                height={24}
+                width={180}
+                className={classes.username}
+              />
+            ) : (
+              <Typography variant="h5" className={classes.username}>
+                @{username}
+              </Typography>
+            )}
+            {isLoading ? (
+              <Skeleton
+                animation="wave"
+                height={16}
+                width={100}
+                className={classes.counter}
+              />
+            ) : (
+              <Typography variant="body1" className={classes.counter}>
+                {data?.[0]?.data?.totalItems} contests
+              </Typography>
+            )}
+          </Subheader>
+        </>
       }
     >
       <Container>

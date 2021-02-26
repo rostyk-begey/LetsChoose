@@ -1,8 +1,6 @@
 import React, { ReactNode, useEffect } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
-import { StylesProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import {
   Root,
@@ -19,9 +17,17 @@ import { SidebarState } from '@mui-treasury/layout/types';
 import classNames from 'classnames';
 import styled from 'styled-components';
 
+import {
+  HEADER_HEIGHT,
+  HEADER_HEIGHT_XS,
+  PRIMARY_SIDEBAR_ID,
+  PRIMARY_SUBHEADER_HEIGHT,
+  PRIMARY_SUBHEADER_ID,
+  SECONDARY_SUBHEADER_HEIGHT,
+  SECONDARY_SUBHEADER_ID,
+} from '../../utils/constants';
 import theme from '../../utils/theme';
 import Footer from './Footer';
-import { subheaderId } from './Subheader';
 
 interface Props {
   className?: string;
@@ -43,7 +49,7 @@ const cozyScheme = getCozyScheme();
 
 cozyScheme.configureEdgeSidebar((builder) => {
   builder
-    .create('primarySidebar', { anchor: 'left' })
+    .create(PRIMARY_SIDEBAR_ID, { anchor: 'left' })
     .registerPermanentConfig('md', {
       collapsedWidth: 65,
       width: 256,
@@ -53,16 +59,31 @@ cozyScheme.configureEdgeSidebar((builder) => {
 
 cozyScheme.configureSubheader((builder) => {
   builder
-    .create(subheaderId, {})
+    .create(PRIMARY_SUBHEADER_ID, {})
     .registerConfig('sm', {
       position: 'sticky',
-      top: 64,
-      initialHeight: 81,
+      top: HEADER_HEIGHT,
+      initialHeight: PRIMARY_SUBHEADER_HEIGHT,
     })
     .registerConfig('xs', {
       position: 'sticky',
-      top: 56,
-      initialHeight: 81,
+      top: HEADER_HEIGHT_XS,
+      initialHeight: PRIMARY_SUBHEADER_HEIGHT,
+    });
+});
+
+cozyScheme.configureSubheader((builder) => {
+  builder
+    .create(SECONDARY_SUBHEADER_ID, {})
+    .registerConfig('sm', {
+      position: 'sticky',
+      top: HEADER_HEIGHT + PRIMARY_SUBHEADER_HEIGHT - 2,
+      initialHeight: SECONDARY_SUBHEADER_HEIGHT,
+    })
+    .registerConfig('xs', {
+      position: 'sticky',
+      top: HEADER_HEIGHT_XS + PRIMARY_SUBHEADER_HEIGHT - 2,
+      initialHeight: SECONDARY_SUBHEADER_HEIGHT,
     });
 });
 
@@ -97,38 +118,32 @@ const Layout: React.FC<Props> = ({
   }, [primarySidebar]);
 
   return (
-    <StylesProvider injectFirst>
-      <CssBaseline />
-      <Root theme={theme} scheme={cozyScheme}>
-        {({ state: { sidebar } }) => (
-          <>
-            <MuiHeader className={classes.header}>
-              <Toolbar>
-                <MuiSidebarTrigger sidebarId="primarySidebar" />
-                <Button className="">{title}</Button>
-                {toolbarContent}
-              </Toolbar>
-            </MuiHeader>
-            {subHeader}
-            <MuiDrawerSidebar
-              sidebarId="primarySidebar"
-              open={!!primarySidebar}
-            >
-              <MuiSidebarContent>
-                {!!primarySidebar && primarySidebar(sidebar.primarySidebar)}
-              </MuiSidebarContent>
-              <MuiCollapseBtn />
-            </MuiDrawerSidebar>
-            <MuiContent className={classNames(classes.content, className)}>
-              {children}
-            </MuiContent>
-            <MuiFooter className={classes.footer}>
-              <Footer />
-            </MuiFooter>
-          </>
-        )}
-      </Root>
-    </StylesProvider>
+    <Root theme={theme} scheme={cozyScheme}>
+      {({ state: { sidebar } }) => (
+        <>
+          <MuiHeader className={classes.header}>
+            <Toolbar>
+              <MuiSidebarTrigger sidebarId={PRIMARY_SIDEBAR_ID} />
+              <Button className="">{title}</Button>
+              {toolbarContent}
+            </Toolbar>
+          </MuiHeader>
+          {subHeader}
+          <MuiDrawerSidebar sidebarId="primarySidebar" open={!!primarySidebar}>
+            <MuiSidebarContent>
+              {!!primarySidebar && primarySidebar(sidebar.primarySidebar)}
+            </MuiSidebarContent>
+            <MuiCollapseBtn />
+          </MuiDrawerSidebar>
+          <MuiContent className={classNames(classes.content, className)}>
+            {children}
+          </MuiContent>
+          <MuiFooter className={classes.footer}>
+            <Footer />
+          </MuiFooter>
+        </>
+      )}
+    </Root>
   );
 };
 
