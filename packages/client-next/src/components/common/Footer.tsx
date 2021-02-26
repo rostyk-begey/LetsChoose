@@ -53,7 +53,7 @@ const Footer: React.FC = () => {
   const classes = useStyles();
 
   return (
-    <footer className={classes.footer}>
+    <div className={classes.footer}>
       <NavMenu className={classes.navMenu}>
         <NavItem className={classNames(classes.legalLink)}>
           Terms & Conditions
@@ -67,7 +67,7 @@ const Footer: React.FC = () => {
           Let&apos;s Choose © {new Date().getFullYear()} All right reserved
         </Typography>
       </Box>
-    </footer>
+    </div>
   );
 };
 
