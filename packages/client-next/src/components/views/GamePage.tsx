@@ -51,21 +51,17 @@ const GamePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { pair, round, totalRounds } = game || {};
   const fetchGameState = async (initial?: boolean) => {
-    try {
+    if (gameId) {
       setIsLoading(true);
       const { data: game } = (await getGameState()) || {};
 
-      // TODO: update
       if (game?.finished && !initial) {
-        await router.push(ROUTES.HOME);
+        await router.push(`${ROUTES.CONTESTS.INDEX}/${game.contestId}`);
       }
 
       setGame(game);
       setAnimations(inAnimations);
       setIsLoading(false);
-    } catch (e) {
-      // TODO: handle error
-      console.log(e);
     }
   };
   useEffect(() => {
