@@ -142,7 +142,7 @@ const ContestPage: React.FC = () => {
   const gamesChip = (
     <Chip
       icon={<PlayCircleOutlineIcon />}
-      label={`${contest.games} Games`}
+      label={`${contest?.games} Games`}
       className={classes.chip}
     />
   );
