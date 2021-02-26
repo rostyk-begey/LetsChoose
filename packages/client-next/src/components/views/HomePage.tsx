@@ -1,12 +1,24 @@
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import React from 'react';
+import { useMediaQuery } from '@material-ui/core';
 import InfiniteScroll from 'react-infinite-scroller';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
+import json2mq from 'json2mq';
 
 import ContestCard from '../common/ContestCard';
+import ContestNavigation from '../common/ContestNavigation';
 import Page from '../common/Page';
 import useQueryState from '../../hooks/getParams';
 import { useContestAllInfinite } from '../../hooks/api/contest';
+import Subheader from '../common/Subheader';
+
+const useStyles = makeStyles({
+  subheader: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+});
 
 const HomePage: React.FC = () => {
   const [sortBy] = useQueryState('sortBy', 'POPULAR');
@@ -23,9 +35,24 @@ const HomePage: React.FC = () => {
     perPage: 3,
   });
   const pages = data?.pages || [];
+  const matchesMaxWidth1024 = useMediaQuery(
+    json2mq({
+      maxWidth: 1024,
+    }),
+  );
+  const classes = useStyles();
 
   return (
-    <Page withContestNavigation>
+    <Page
+      withContestNavigation={!matchesMaxWidth1024}
+      subHeader={
+        matchesMaxWidth1024 && (
+          <Subheader className={classes.subheader} animated>
+            <ContestNavigation />
+          </Subheader>
+        )
+      }
+    >
       <Container>
         <InfiniteScroll
           pageStart={0}
