@@ -46,7 +46,6 @@ COPY --from=build /app/packages/server/dist ./packages/server/dist
 COPY --from=build /app/packages/server/package.json ./packages/server/
 COPY --from=build /app/packages/server/yarn.lock ./packages/server/
 
-COPY --from=build /app/packages/client-next/dist ./packages/client-next/dist
 COPY --from=build /app/packages/client-next/.next ./packages/client-next/.next
 COPY --from=build /app/packages/client-next/public ./packages/client-next/public
 COPY --from=build /app/packages/client-next/node_modules ./packages/client-next/node_modules
@@ -54,4 +53,4 @@ COPY --from=build /app/packages/client-next/package.json ./packages/client-next/
 
 EXPOSE 3000
 
-CMD lerna run start --parallel
+CMD lerna run start --parallel --ignore=@lets-choose/client

@@ -26,7 +26,8 @@ async function bootstrap() {
   app.use(cookieParser());
   // TODO: check csrf
   // app.use(csurf({ cookie: true }));
-  app.use(cors(corsOptions));
+  // TODO: check cors
+  // app.use(cors(corsOptions));
   const config = new DocumentBuilder()
     .setTitle("Let's choose api")
     // .setDescription('The cats API description')
@@ -37,6 +38,6 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get('port');
-  await app.listen(port);
+  await app.listen(port, () => console.log(`Server listening on port ${port}`));
 }
 bootstrap();
