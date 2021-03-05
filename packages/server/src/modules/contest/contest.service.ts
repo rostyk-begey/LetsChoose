@@ -271,13 +271,6 @@ export class ContestService implements IContestService {
       ...ContestService.getPaginationPipelines(page, perPage),
     ]);
 
-    console.log({
-      contestId,
-      totalPages,
-      totalItems,
-      currentPage: +page,
-    });
-
     return {
       items,
       totalPages,

@@ -13,7 +13,6 @@ import {
 } from '../../abstract/jwt.service.interface';
 
 const cookieExtractor = (req) => {
-  console.log(req.cookies);
   if (req?.cookies) {
     return req.cookies['accessToken'];
   }

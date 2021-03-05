@@ -8,11 +8,11 @@ import {
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
+  HttpResponseMessageDto,
   UpdateContestData,
 } from '@lets-choose/common';
 import api from '../../providers/apiProvider';
 import ROUTES from '../../utils/routes';
-import { ResponseMessage } from '../../../../../legacy/server/types';
 
 export const contestApi = () => {
   const baseURL = ROUTES.API.CONTESTS;
@@ -22,11 +22,11 @@ export const contestApi = () => {
     api.get<GetItemsResponse>(`${baseURL}/${id}/items`, { params });
   const find = (id: string) => api.get<Contest>(`${baseURL}/${id}`);
   const create = (data: CreateContestData) =>
-    api.post<ResponseMessage>(baseURL, data);
+    api.post<HttpResponseMessageDto>(baseURL, data);
   const update = (
     id: string,
     data: Partial<Omit<UpdateContestData, 'items'>>,
-  ) => api.post<ResponseMessage>(`${baseURL}/${id}`, data);
+  ) => api.post<HttpResponseMessageDto>(`${baseURL}/${id}`, data);
   const remove = (id: string) => api.delete(`${baseURL}/${id}`);
   return { all, allItems, find, create, update, remove };
 };
