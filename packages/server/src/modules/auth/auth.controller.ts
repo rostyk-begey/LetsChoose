@@ -132,10 +132,26 @@ export class AuthController {
   @UsePipes(new JoiValidationPipe(registerSchema))
   public async register(
     @Body() dto: AuthRegisterDto,
-  ): Promise<HttpResponseMessageDto> {
+    @Response({ passthrough: true }) res: any,
+  ): Promise<AuthTokenDto> {
     await this.authService.registerUser(dto);
+    const result = await this.authService.loginUser({
+      login: dto.username,
+      password: dto.password,
+    });
 
-    return { message: 'User successfully created!' };
+    res.cookie(
+      this.config.accessTokenKey,
+      result.accessToken,
+      this.getCookieOptions(),
+    );
+    res.cookie(
+      this.config.refreshTokenKey,
+      result.refreshToken,
+      this.getCookieOptions(),
+    );
+
+    return result;
   }
 
   @Post('/password/forgot')

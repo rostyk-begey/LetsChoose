@@ -1,12 +1,14 @@
 node_modules
 dist
-.env
+packages/server/.env
+packages/server/.env.example
 .git
 .github
 .gitignore
 .idea
 
 packages/client
+packages/client-next/.env.example
 packages/client-next/.next
 legacy
 uploads

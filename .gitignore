@@ -13,7 +13,7 @@ lerna-debug.log*
 tsconfig.build.tsbuildinfo
 tsconfig.tsbuildinfo
 
-.env
+packages/server/.env
 
 # OS
 .DS_Store
