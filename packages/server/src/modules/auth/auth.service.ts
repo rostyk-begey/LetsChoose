@@ -129,9 +129,10 @@ export class AuthService implements IAuthService {
       throw new UnauthorizedException('Incorrect login data');
     }
 
-    if (!user.confirmed) {
-      throw new UnauthorizedException('Email confirmation needed');
-    }
+    // TODO: update email confirmation
+    // if (!user.confirmed) {
+    //   throw new UnauthorizedException('Email confirmation needed');
+    // }
 
     const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
       user.id,
