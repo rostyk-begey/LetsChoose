@@ -7,6 +7,10 @@ export interface IContestItemRepository {
   aggregate(aggregations?: any[]): Promise<ContestItem[]>;
   findById(itemId: string): Promise<ContestItem>;
   findByContestId(contestId: string): Promise<ContestItem[]>;
+  findByIdAndUpdate(
+    contestId: string,
+    contestItem: Partial<ContestItem>,
+  ): Promise<ContestItem>;
   deleteContestItems(contestId: string): Promise<void>;
   createContestItem(data: CreateContestItemDto): Promise<ContestItem>;
 }

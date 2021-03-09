@@ -13,6 +13,8 @@ export abstract class Game {
   winnerId?: ContestItem | string;
   items?: GameItem[];
   pair: (ContestItem | string)[];
+  pairNumber: number;
+  pairsInRound: number;
   round: number;
   finished: boolean;
   totalRounds: number;
@@ -23,6 +25,8 @@ export type CreateGameDto = Omit<Game, 'id'>;
 export interface GetPairResponse {
   round: number;
   totalRounds: number;
+  pairNumber: number;
+  pairsInRound: number;
   contestId: string;
   finished: boolean;
   pair: ContestItem[];

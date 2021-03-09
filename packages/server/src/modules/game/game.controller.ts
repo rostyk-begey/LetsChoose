@@ -1,3 +1,4 @@
+import { GetPairResponse } from '@lets-choose/common';
 import {
   Body,
   Controller,
@@ -33,12 +34,14 @@ export class GameController {
   }
 
   @Get('/:gameId')
-  public async get(@Param('gameId') gameId: string): Promise<any> {
+  public async get(@Param('gameId') gameId: string): Promise<GetPairResponse> {
     const game = await this.gameService.findGameById(gameId);
 
     return {
       round: game.round,
       totalRounds: game.totalRounds,
+      pairNumber: game.pairNumber,
+      pairsInRound: game.pairsInRound,
       contestId: game.contestId as string,
       finished: game.finished,
       pair: game.pair as ContestItem[],
@@ -50,13 +53,15 @@ export class GameController {
   public async play(
     @Param('gameId') gameId: string,
     @Body() { winnerId }: { winnerId: string },
-  ): Promise<any> {
+  ): Promise<GetPairResponse> {
     await this.gameService.playRound(gameId, winnerId);
     const game = await this.gameService.findGameById(gameId);
 
     return {
       round: game.round,
       totalRounds: game.totalRounds,
+      pairNumber: game.pairNumber,
+      pairsInRound: game.pairsInRound,
       contestId: game.contestId as string,
       finished: game.finished,
       pair: game.pair as ContestItem[],

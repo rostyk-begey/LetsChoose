@@ -1,3 +1,4 @@
+import { Contest } from '@lets-choose/common';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { shuffle } from 'lodash';
@@ -31,7 +32,7 @@ export class GameService implements IGameService {
   }
 
   protected static calculateGameItemsLength(allItemsLength: number): number {
-    return allItemsLength > 2 ? Math.floor(Math.log2(allItemsLength)) ** 2 : 2;
+    return 2 ** Math.floor(Math.log2(allItemsLength));
   }
 
   protected static produceGameItems(
@@ -48,7 +49,7 @@ export class GameService implements IGameService {
   }
 
   protected static calculateTotalRounds(gameItemsLength: number): number {
-    return gameItemsLength > 2 ? Math.sqrt(gameItemsLength) : 1;
+    return Math.log2(gameItemsLength);
   }
 
   protected inGamePair(gamePair: ContestItem[], id: string): boolean {
@@ -102,9 +103,11 @@ export class GameService implements IGameService {
     return this.gameRepository.createGame({
       _id: mongoose.Types.ObjectId().toString(),
       contestId,
-      items: gameItems as any, // todo refactor
+      items: gameItems,
       finished: false,
       round: 0,
+      pairNumber: 1,
+      pairsInRound: gameItems.length / 2,
       totalRounds,
       pair,
     });
@@ -114,9 +117,7 @@ export class GameService implements IGameService {
     return this.gameRepository.findById(gameId);
   }
 
-  public async playRound(gameId: string, winnerId: string): Promise<void> {
-    const game = await this.findGameById(gameId);
-
+  protected playRoundUpdateGame(game: Game, winnerId: string): Game {
     if (game.finished) {
       throw new BadRequestException('Game has been finished');
     }
@@ -136,25 +137,35 @@ export class GameService implements IGameService {
     // no items left on this round, go to next round
     if (roundItems.length === 0) {
       game.round += 1;
+      game.pairNumber = 0;
       roundItems = this.getRoundItems(game.items as GameItem[], game.round);
+      game.pairsInRound = roundItems.length > 1 ? roundItems.length / 2 : 0;
     }
 
     if (roundItems.length > 1) {
       game.pair = GameService.generatePair(roundItems);
+      game.pairNumber += 1;
     }
     // games has finished
     else {
       game.finished = true;
       game.winnerId = winnerId;
+    }
 
+    return game;
+  }
+
+  public async playRound(gameId: string, winnerId: string): Promise<void> {
+    let game = await this.findGameById(gameId);
+
+    game = this.playRoundUpdateGame(game, winnerId);
+
+    if (game.finished) {
       const contest = await this.contestRepository.findById(
         game.contestId as string,
       );
       contest.games += 1;
-      // TODO: rewrite using repository
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      await contest.save();
+      await this.contestRepository.findByIdAndUpdate(contest.id, contest);
 
       await Promise.all(
         game.items.map(async (gameItem) => {
@@ -165,11 +176,15 @@ export class GameService implements IGameService {
           contestItem.compares += compares;
           contestItem.wins += wins;
           contestItem.games += 1;
-          if (winnerId === `${itemId}`) contestItem.finalWins += 1;
-          // TODO: rewrite using repository
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          await contestItem.save();
+
+          if (winnerId === `${itemId}`) {
+            contestItem.finalWins += 1;
+          }
+
+          await this.contestItemRepository.findByIdAndUpdate(
+            contestItem._id,
+            contestItem,
+          );
         }),
       );
     }

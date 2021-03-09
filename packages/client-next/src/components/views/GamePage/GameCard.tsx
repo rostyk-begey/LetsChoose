@@ -24,10 +24,10 @@ const useStyles = makeStyles(() => ({
 
 interface Props {
   item?: ContestItem;
-  onClick: () => any;
+  onClick?: () => any;
 }
 
-const GameCard: React.FC<Props> = ({ item, onClick }) => {
+const GameCard: React.FC<Props> = ({ item, onClick = () => null }) => {
   const classes = useStyles();
   const cardMediaStyles = useFourThreeCardMediaStyles();
   const shadowStyles = useOverShadowStyles();
@@ -40,6 +40,7 @@ const GameCard: React.FC<Props> = ({ item, onClick }) => {
     <Card
       className={classNames(classes.gameCard, shadowStyles.root)}
       onClick={onClick}
+      title={item.title}
     >
       <CardMedia classes={cardMediaStyles} className={classes.imageHolder}>
         <img src={item.image} alt="" className={classes.image} />

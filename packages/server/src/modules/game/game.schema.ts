@@ -35,6 +35,12 @@ export class Game extends GameModel {
   @Prop({ type: Number, required: true })
   round: number;
 
+  @Prop({ type: Number, required: true })
+  pairNumber: number;
+
+  @Prop({ type: Number, required: true })
+  pairsInRound: number;
+
   @Prop({ type: Boolean, required: true, default: false })
   finished: boolean;
 

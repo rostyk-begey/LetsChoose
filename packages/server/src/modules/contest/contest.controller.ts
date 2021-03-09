@@ -28,6 +28,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TYPES } from '../../injectable.types';
 import { JoiValidationPipe } from '../../pipes/JoiValidationPipe';
+import { fieldNameFilter, unlinkAsync } from '../../usecases/utils';
 import { ContestItem } from './contest-item.schema';
 import { IContestService } from '../../abstract/contest.service.interface';
 import { getContestItemsSchema, getContestSchema } from './contest.validation';
@@ -78,12 +79,16 @@ export class ContestController {
     @UploadedFiles() files,
     @Req() { user }: any,
   ): Promise<Contest> {
-    return await this.contestService.createContest(user.id, {
+    const contest = await this.contestService.createContest(user.id, {
       title,
       excerpt,
       items,
       files,
     });
+    const thumbnail = files.find(fieldNameFilter('thumbnail'));
+    await unlinkAsync(thumbnail.path);
+
+    return contest;
   }
 
   @UseGuards(AuthGuard('jwt'))

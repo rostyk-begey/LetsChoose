@@ -5,6 +5,7 @@ import MockContestRepository, {
   mockContests,
 } from '../../../test/mocks/repositories/contest.repository';
 import MockCloudinaryService from '../../../test/mocks/services/cloudinary.service';
+import MockUserRepository from '../../../test/mocks/repositories/user.repository';
 import { TYPES } from '../../injectable.types';
 
 import { ContestService, CreateContestsData } from './contest.service';
@@ -37,6 +38,10 @@ describe('ContestService', () => {
         {
           provide: TYPES.CloudinaryService,
           useValue: MockCloudinaryService,
+        },
+        {
+          provide: TYPES.UserRepository,
+          useValue: MockUserRepository,
         },
       ],
     }).compile();
@@ -87,27 +92,17 @@ describe('ContestService', () => {
     const [contest] = await contestService.findContestsByAuthor(userId);
 
     expect(contest.author).toEqual(userId);
-    // test('test new contest author', () => {
-    // });
 
     expect(contest.title).toEqual(contestData.title);
-    // test('test new contest title', () => {
-    // });
 
     expect(contest.excerpt).toEqual(contestData.excerpt);
-    // test('test new contest excerpt', () => {
-    // });
 
     expect(contest.thumbnail).toEqual(`contests/${contest.id}/thumbnail`);
-    // test('test new contest thumbnail', () => {
-    // });
 
     expect(MockCloudinaryService.upload).toBeCalledWith(
       'path',
       `contests/${contest.id}/thumbnail`,
     );
-    // test('test called cloudinary service', () => {
-    // });
   });
 
   test('updateContest', async () => {
@@ -117,23 +112,15 @@ describe('ContestService', () => {
     );
 
     expect(contest.title).toEqual(contestData.title);
-    // test('test updated contest title', () => {
-    // });
 
     expect(contest.excerpt).toEqual(contestData.excerpt);
-    // test('test updated contest excerpt', () => {
-    // });
 
-    expect(contest.thumbnail).toEqual(`contests/${contest.id}/thumbnail`);
-    // test('test updated contest thumbnail', () => {
-    // });
+    expect(contest.thumbnail).toEqual(`path:contests/${contest.id}/thumbnail`);
 
     expect(MockCloudinaryService.upload).toBeCalledWith(
       'path',
       `contests/${contest.id}/thumbnail`,
     );
-    // test('test called cloudinary service', () => {
-    // });
   });
 
   test('removeContest', async () => {

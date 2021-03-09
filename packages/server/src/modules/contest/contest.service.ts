@@ -15,8 +15,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as mongoose from 'mongoose';
-import * as fs from 'fs';
-import { promisify } from 'util';
 
 import { ICloudinaryService } from '../../abstract/cloudinary.service.interface';
 import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';
@@ -24,6 +22,7 @@ import { IContestRepository } from '../../abstract/contest.repository.interface'
 import { IContestService } from '../../abstract/contest.service.interface';
 import { IUserRepository } from '../../abstract/user.repository.interface';
 import { TYPES } from '../../injectable.types';
+import { fieldNameFilter, unlinkAsync } from '../../usecases/utils';
 
 interface SortOptions {
   rankScore: number;
@@ -37,14 +36,6 @@ interface SortPipeline {
 export interface CreateContestsData extends CreateContestDTO {
   files: Express.Multer.File[];
 }
-
-const fieldNameFilter = (key: string) => ({
-  fieldname,
-}: Express.Multer.File) => {
-  return fieldname === key;
-};
-
-const unlinkAsync = promisify(fs.unlink);
 
 @Injectable()
 export class ContestService implements IContestService {
@@ -291,7 +282,6 @@ export class ContestService implements IContestService {
       thumbnail.path,
       ContestService.getContestThumbnailPublicId(contestId.toString()),
     );
-    await unlinkAsync(thumbnail.path);
 
     const contest = await this.contestRepository.createContest({
       _id: `${contestId}`,

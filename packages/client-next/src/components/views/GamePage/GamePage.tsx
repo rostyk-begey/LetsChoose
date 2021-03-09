@@ -5,14 +5,15 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { useRouter } from 'next/router';
-import GameCard from '../common/GameCard';
 
-import Page from '../common/Page';
-import Subheader from '../common/Subheader';
-import { useGameChoose, useGameState } from '../../hooks/api/game';
-import { useWarnIfUnsavedChanges } from '../../hooks/warnIfUnsavedChanges';
-import { sleep } from '../../utils/functions';
-import ROUTES from '../../utils/routes';
+import Page from '../../common/Page';
+import Subheader from '../../common/Subheader';
+import { useGameChoose, useGameState } from '../../../hooks/api/game';
+import { useWarnIfUnsavedChanges } from '../../../hooks/warnIfUnsavedChanges';
+import { sleep } from '../../../utils/functions';
+import ROUTES from '../../../utils/routes';
+
+import GameCard from './GameCard';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -49,7 +50,9 @@ const GamePage: React.FC = () => {
   const [animations, setAnimations] = useState<string[]>(inAnimations);
   const [game, setGame] = useState<GetPairResponse>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { pair, round, totalRounds } = game || {};
+  const [isChooseLoading, setIsChooseLoading] = useState<boolean>(false);
+  const { pair, round = 0, totalRounds, pairNumber, pairsInRound } = game || {};
+
   const fetchGameState = async (initial?: boolean) => {
     if (gameId) {
       setIsLoading(true);
@@ -64,17 +67,22 @@ const GamePage: React.FC = () => {
       setIsLoading(false);
     }
   };
-  useEffect(() => {
-    fetchGameState(true);
-  }, []);
+
   const onChoose = (idx: number, winnerId: string) => async () => {
-    await choose(winnerId);
+    setIsChooseLoading(true);
     setAnimations(Array.from({ length: 2, [idx]: winnerAnimation }));
+    await choose(winnerId);
     await sleep(700);
     setAnimations(outAnimations);
     await sleep(700);
     await fetchGameState();
+    setIsChooseLoading(false);
   };
+
+  useEffect(() => {
+    fetchGameState(true);
+  }, []);
+
   useWarnIfUnsavedChanges(!isLoading && !!game && !game.finished);
 
   if (!isLoading && !!game && game.finished) {
@@ -94,7 +102,9 @@ const GamePage: React.FC = () => {
         !isLoading ? (
           <Subheader className={classes.subheader}>
             <Typography variant="h5">
-              Round {round} / {totalRounds}
+              {round + 1 === totalRounds
+                ? 'Final round'
+                : `Round ${round + 1} | ({pairNumber} / {pairsInRound})`}
             </Typography>
           </Subheader>
         ) : undefined
@@ -105,7 +115,10 @@ const GamePage: React.FC = () => {
           {!isLoading &&
             pair?.map((item, i) => (
               <Grid key={item._id} item xs={6} className={animations[i]}>
-                <GameCard item={item} onClick={onChoose(i, item._id)} />
+                <GameCard
+                  item={item}
+                  onClick={!isChooseLoading ? onChoose(i, item._id) : undefined}
+                />
               </Grid>
             ))}
         </Grid>
