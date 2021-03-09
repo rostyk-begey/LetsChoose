@@ -21,8 +21,7 @@ export const contestApi = () => {
   const allItems = (id: string, params: GetItemsQuery) =>
     api.get<GetItemsResponse>(`${baseURL}/${id}/items`, { params });
   const find = (id: string) => api.get<Contest>(`${baseURL}/${id}`);
-  const create = (data: CreateContestData) =>
-    api.post<HttpResponseMessageDto>(baseURL, data);
+  const create = (data: CreateContestData) => api.post<Contest>(baseURL, data);
   const update = (
     id: string,
     data: Partial<Omit<UpdateContestData, 'items'>>,

@@ -1,18 +1,8 @@
 import React, { useCallback, useState } from 'react';
+import { useRouter } from 'next/router';
 import jsonToFormData from 'json-form-data';
-import TextField from '@material-ui/core/TextField';
-import {
-  GridList,
-  GridListTile,
-  GridListTileBar,
-  ListSubheader,
-} from '@material-ui/core';
-import Box from '@material-ui/core/Box';
+import { GridList, GridListTile, ListSubheader } from '@material-ui/core';
 import CardContent from '@material-ui/core/CardContent';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import DeleteIcon from '@material-ui/icons/Delete';
 import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
 import { DropzoneArea, DropzoneDialog } from 'material-ui-dropzone';
@@ -21,12 +11,13 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { useForm, FormProvider } from 'react-hook-form';
-import classNames from 'classnames';
 
-import FormTextInput, { FormTextInputProps } from '../common/FormTextInput';
-import Page from '../common/Page';
-import Subheader from '../common/Subheader';
-import { useContestCreate } from '../../hooks/api/contest';
+import ROUTES from '../../../utils/routes';
+import FormTextInput, { FormTextInputProps } from '../../common/FormTextInput';
+import Page from '../../common/Page';
+import Subheader from '../../common/Subheader';
+import { useContestCreate } from '../../../hooks/api/contest';
+import ContestItem from './ContestItem';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,10 +33,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     margin: '0 auto',
-  },
-  gridList: {
-    // width: 500,
-    // height: 450,
   },
   dropzoneRoot: {
     position: 'relative',
@@ -65,51 +52,6 @@ const useStyles = makeStyles((theme) => ({
   },
   titleInput: {
     width: '100%',
-  },
-}));
-
-const useStyles1 = makeStyles(() => ({
-  icon: {
-    color: 'rgba(255, 255, 255, 0.54)',
-  },
-  tile: {
-    '&:hover $titleBar': {
-      opacity: 1,
-      visibility: 'visible',
-      transform: 'none',
-    },
-  },
-  content: {
-    width: '100%',
-  },
-  hidden: {
-    opacity: 0,
-    // visibility: 'hidden',
-  },
-  transition: {
-    transition: 'opacity 0.3s ease',
-  },
-  titleBar: {
-    opacity: 0,
-    visibility: 'hidden',
-    transition: 'all 0.3s ease',
-  },
-  titleBarTop: {
-    transform: 'translateY(-100%)',
-    background:
-      'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
-      'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-  },
-  titleBarBottom: {
-    transform: 'translateY(100%)',
-    background:
-      'linear-gradient(to top, rgba(0,0,0,0.7) 0%, ' +
-      'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-  },
-  inputContainer: {
-    position: 'absolute',
-    width: '100%',
-    top: 0,
   },
 }));
 
@@ -138,87 +80,14 @@ const inputs: Record<string, FormTextInputProps> = {
   },
 };
 
-interface Props {
-  isEditing: boolean;
-  onDeleteClick: () => any;
-  onEditChange: (title: string) => any;
-  onToggleEdit: () => any;
-  img: string;
-  title: string;
-}
-
 interface Item {
   title: string;
   image: File;
 }
 
-const ContestItem: React.FC<Props> = ({
-  isEditing,
-  onDeleteClick,
-  onEditChange,
-  onToggleEdit,
-  img,
-  title,
-  ...props
-}) => {
-  const classes = useStyles1();
-  const hidden = (isHidden = false) => {
-    return classNames(classes.transition, {
-      [classes.hidden]: isHidden,
-    });
-  };
-
-  return (
-    <GridListTile cols={1} className={classes.tile} {...props}>
-      <img src={img} alt={title} className={hidden(isEditing)} />
-      <Box
-        mt={8}
-        display="flex"
-        justifyContent="center"
-        className={classNames(classes.inputContainer, hidden(!isEditing))}
-      >
-        {/*<FormTextInput {...inputs.title} />*/}
-        <TextField
-          size="small"
-          // name={name}
-          defaultValue={title}
-          onChange={({ target: { value } }) => onEditChange(value)}
-          {...inputs.title.fieldProps}
-          // helperText={error?.message || fieldProps?.helperText}
-        />
-      </Box>
-      <GridListTileBar
-        titlePosition="top"
-        className={classNames(classes.titleBar, classes.titleBarTop)}
-        actionIcon={
-          <IconButton
-            aria-label={`delete ${title}`}
-            className={classes.icon}
-            onClick={onDeleteClick}
-          >
-            <DeleteIcon />
-          </IconButton>
-        }
-      />
-      <GridListTileBar
-        title={title}
-        className={classNames(classes.titleBar, classes.titleBarBottom)}
-        actionIcon={
-          <IconButton
-            aria-label={`edit ${title}`}
-            className={classes.icon}
-            onClick={onToggleEdit}
-          >
-            {!isEditing ? <EditIcon /> : <HighlightOffIcon />}
-          </IconButton>
-        }
-      />
-    </GridListTile>
-  );
-};
-
 const CreateContestPage: React.FC = () => {
   const classes = useStyles();
+  const router = useRouter();
   const { mutateAsync: createContest } = useContestCreate();
   const [itemsDialogOpen, setItemsDialogOpen] = useState(false);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
@@ -250,14 +119,14 @@ const CreateContestPage: React.FC = () => {
   const saveContest = useCallback(
     async (contestData) => {
       try {
-        await createContest(
+        const { data: contest } = await createContest(
           jsonToFormData({
             ...contestData,
             thumbnail,
             items,
           } as any) as any,
         );
-        // history.push(ROUTES.HOME);
+        await router.push(`${ROUTES.CONTESTS.INDEX}/${contest.id}`);
       } catch (e) {
         console.log(e);
       }
@@ -349,11 +218,7 @@ const CreateContestPage: React.FC = () => {
             <Grid item md={8} xs={12}>
               <Card>
                 <CardContent>
-                  <GridList
-                    cellHeight={180}
-                    cols={3}
-                    className={classes.gridList}
-                  >
+                  <GridList cellHeight={180} cols={3}>
                     <GridListTile
                       key="Subheader"
                       cols={3}

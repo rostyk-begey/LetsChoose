@@ -77,15 +77,13 @@ export class ContestController {
     @Body('items') items: Pick<ContestItem, 'title'>[],
     @UploadedFiles() files,
     @Req() { user }: any,
-  ): Promise<HttpResponseMessageDto> {
-    await this.contestService.createContest(user.id, {
+  ): Promise<Contest> {
+    return await this.contestService.createContest(user.id, {
       title,
       excerpt,
       items,
       files,
     });
-
-    return { message: 'Contest successfully created!' };
   }
 
   @UseGuards(AuthGuard('jwt'))

@@ -282,7 +282,7 @@ export class ContestService implements IContestService {
   public async createContest(
     userId: string,
     { files, title, excerpt, items }: CreateContestsData,
-  ): Promise<void> {
+  ): Promise<Contest> {
     const thumbnail = files.find(fieldNameFilter('thumbnail'));
 
     const contestId = mongoose.Types.ObjectId();
@@ -293,7 +293,7 @@ export class ContestService implements IContestService {
     );
     await unlinkAsync(thumbnail.path);
 
-    await this.contestRepository.createContest({
+    const contest = await this.contestRepository.createContest({
       _id: `${contestId}`,
       thumbnail: thumbnailUrl,
       title,
@@ -323,6 +323,8 @@ export class ContestService implements IContestService {
     );
 
     await Promise.all(savingItems);
+
+    return contest;
   }
 
   public async updateContest(
