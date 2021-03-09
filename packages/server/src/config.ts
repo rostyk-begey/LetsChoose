@@ -4,6 +4,7 @@ import * as path from 'path';
 dotenv.config({ path: path.join(__dirname, '..', '..', '.env') });
 
 const {
+  USE_SSL,
   APP_URL,
   PORT,
   MONGOOSE_DEBUG,
@@ -53,6 +54,7 @@ export interface Config {
   jwt: JwtConfig;
   mongoUri: string;
   mongooseDebug: boolean;
+  useSSL: boolean;
   appUrl: string;
   gmail: GmailConfig;
   cloudinary: CloudinaryConfig;
@@ -72,6 +74,7 @@ const config: Config = {
   mongoUri: MONGO_URI as string,
   mongooseDebug: (MONGOOSE_DEBUG || false) as boolean,
   appUrl: APP_URL as string,
+  useSSL: (USE_SSL || false) as boolean,
   gmail: {
     user: GMAIL_USER as string,
     password: GMAIL_PASSWORD as string,
