@@ -41,9 +41,16 @@ COPY --from=build /app/yarn.lock ./
 COPY --from=build /app/lerna.json ./
 COPY --from=build /app/node_modules ./node_modules
 
+COPY --from=build /app/packages/common/node_modules ./packages/common/node_modules
+COPY --from=build /app/packages/common/dist ./packages/common/dist
+COPY --from=build /app/packages/common/package.json ./packages/common/
+COPY --from=build /app/packages/common/tsconfig.json ./packages/common/
+
 COPY --from=build /app/packages/server/node_modules ./packages/server/node_modules
 COPY --from=build /app/packages/server/dist ./packages/server/dist
 COPY --from=build /app/packages/server/package.json ./packages/server/
+COPY --from=build /app/packages/server/tsconfig.json ./packages/server/
+COPY --from=build /app/packages/server/tsconfig.build.json ./packages/server/
 COPY --from=build /app/packages/server/yarn.lock ./packages/server/
 
 COPY --from=build /app/packages/client-next/.next ./packages/client-next/.next

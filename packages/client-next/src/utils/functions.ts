@@ -3,9 +3,11 @@ export const getKeyValue = <T extends object, U extends keyof T>(obj: T) => (
   key: U,
 ) => obj[key];
 
-export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
-export const imageSize = (width, multiplier = 3 / 4) => ({
+export const imageSize = (width: number, multiplier = 3 / 4) => ({
   width: width,
   height: width * multiplier,
 });

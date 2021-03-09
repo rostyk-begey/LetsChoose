@@ -38,7 +38,8 @@ import {
 @ApiTags('auth')
 @Controller('/api/auth')
 export class AuthController {
-  config: JwtConfig;
+  private readonly config: JwtConfig;
+  private readonly useSecureCookie: boolean;
 
   constructor(
     @Inject(TYPES.AuthService)
@@ -47,6 +48,9 @@ export class AuthController {
     protected readonly configService: ConfigService,
   ) {
     this.config = configService.get<JwtConfig>('jwt');
+    this.useSecureCookie =
+      configService.get<string>('useSSL') === 'true' &&
+      process.env.NODE_ENV === 'production';
   }
 
   private getCookieOptions(): any {
@@ -56,9 +60,9 @@ export class AuthController {
       // maxAge: MAX_AGE,
       // expires: new Date(Date.now() + MAX_AGE * 1000),
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: this.useSecureCookie,
       path: '/',
-      // sameSite: 'lax',
+      sameSite: 'lax',
     };
   }
 
