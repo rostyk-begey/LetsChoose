@@ -104,7 +104,7 @@ const GamePage: React.FC = () => {
             <Typography variant="h5">
               {round + 1 === totalRounds
                 ? 'Final round'
-                : `Round ${round + 1} | ({pairNumber} / {pairsInRound})`}
+                : `Round ${round + 1} | (${pairNumber} / ${pairsInRound})`}
             </Typography>
           </Subheader>
         ) : undefined

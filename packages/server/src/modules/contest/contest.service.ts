@@ -20,9 +20,11 @@ import { ICloudinaryService } from '../../abstract/cloudinary.service.interface'
 import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';
 import { IContestRepository } from '../../abstract/contest.repository.interface';
 import { IContestService } from '../../abstract/contest.service.interface';
+import { IGameRepository } from '../../abstract/game.repository.interface';
 import { IUserRepository } from '../../abstract/user.repository.interface';
 import { TYPES } from '../../injectable.types';
 import { fieldNameFilter, unlinkAsync } from '../../usecases/utils';
+import { ContestItem } from './contest-item.schema';
 
 interface SortOptions {
   rankScore: number;
@@ -45,6 +47,9 @@ export class ContestService implements IContestService {
 
     @Inject(TYPES.ContestItemRepository)
     protected readonly contestItemRepository: IContestItemRepository,
+
+    @Inject(TYPES.GameRepository)
+    protected readonly gameRepository: IGameRepository,
 
     @Inject(TYPES.CloudinaryService)
     protected readonly cloudinaryService: ICloudinaryService,
@@ -308,7 +313,6 @@ export class ContestService implements IContestService {
           _id: `${contestItemId}`,
           contestId: `${contestId}`,
         });
-        await unlinkAsync(image.path);
       },
     );
 
@@ -345,6 +349,23 @@ export class ContestService implements IContestService {
     }
 
     return this.contestRepository.findByIdAndUpdate(contestId, data);
+  }
+
+  public async resetContest(contestId: string): Promise<Contest> {
+    const contest = await this.contestRepository.findByIdAndUpdate(contestId, {
+      games: 0,
+    });
+
+    await this.contestItemRepository.updateContestItems(contestId, {
+      games: 0,
+      compares: 0,
+      wins: 0,
+      finalWins: 0,
+    });
+
+    await this.gameRepository.deleteGames(contestId);
+
+    return contest;
   }
 
   public async removeContest(contestId: string): Promise<void> {

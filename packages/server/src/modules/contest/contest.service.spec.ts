@@ -4,6 +4,7 @@ import MockContestItemRepository from '../../../test/mocks/repositories/contest-
 import MockContestRepository, {
   mockContests,
 } from '../../../test/mocks/repositories/contest.repository';
+import MockGameRepository from '../../../test/mocks/repositories/game.repository';
 import MockCloudinaryService from '../../../test/mocks/services/cloudinary.service';
 import MockUserRepository from '../../../test/mocks/repositories/user.repository';
 import { TYPES } from '../../injectable.types';
@@ -38,6 +39,10 @@ describe('ContestService', () => {
         {
           provide: TYPES.CloudinaryService,
           useValue: MockCloudinaryService,
+        },
+        {
+          provide: TYPES.GameRepository,
+          useValue: MockGameRepository,
         },
         {
           provide: TYPES.UserRepository,
@@ -97,7 +102,7 @@ describe('ContestService', () => {
 
     expect(contest.excerpt).toEqual(contestData.excerpt);
 
-    expect(contest.thumbnail).toEqual(`contests/${contest.id}/thumbnail`);
+    expect(contest.thumbnail).toEqual(`path:contests/${contest.id}/thumbnail`);
 
     expect(MockCloudinaryService.upload).toBeCalledWith(
       'path',

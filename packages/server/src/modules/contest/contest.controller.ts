@@ -1,7 +1,16 @@
 import {
+  Contest,
+  GetContestQuery,
+  GetContestsResponse,
+  GetItemsQuery,
+  GetItemsResponse,
+  HttpResponseMessageDto,
+} from '@lets-choose/common';
+import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Inject,
   Param,
@@ -12,25 +21,15 @@ import {
   UseGuards,
   UseInterceptors,
   UsePipes,
-  ForbiddenException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
-
-import {
-  Contest,
-  GetContestQuery,
-  GetContestsResponse,
-  GetItemsQuery,
-  GetItemsResponse,
-  HttpResponseMessageDto,
-} from '@lets-choose/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { IContestService } from '../../abstract/contest.service.interface';
 import { TYPES } from '../../injectable.types';
 import { JoiValidationPipe } from '../../pipes/JoiValidationPipe';
 import { fieldNameFilter, unlinkAsync } from '../../usecases/utils';
 import { ContestItem } from './contest-item.schema';
-import { IContestService } from '../../abstract/contest.service.interface';
 import { getContestItemsSchema, getContestSchema } from './contest.validation';
 
 @ApiTags('Contest')
@@ -88,6 +87,15 @@ export class ContestController {
     const thumbnail = files.find(fieldNameFilter('thumbnail'));
     await unlinkAsync(thumbnail.path);
 
+    const deletingFiles = items.map(
+      async (_, i): Promise<void> => {
+        const image = files.find(fieldNameFilter(`items[${i}][image]`));
+        await unlinkAsync(image.path);
+      },
+    );
+
+    await Promise.all(deletingFiles);
+
     return contest;
   }
 
@@ -110,13 +118,26 @@ export class ContestController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @Post('/:contestId/reset')
+  public async reset(
+    @Param('contestId') contestId: string,
+    @Req() { user }: any,
+  ): Promise<Contest> {
+    const { author } = await this.contestService.findContestById(contestId);
+    if (author.toString() !== user.id.toString()) {
+      throw new ForbiddenException();
+    }
+    return await this.contestService.resetContest(contestId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Delete('/:contestId')
   public async remove(
     @Param('contestId') contestId: string,
     @Req() { user }: any,
   ): Promise<HttpResponseMessageDto> {
     const { author } = await this.contestService.findContestById(contestId);
-    if (author !== user.id) {
+    if (author.toString() !== user.id.toString()) {
       throw new ForbiddenException();
     }
     await this.contestService.removeContest(contestId);

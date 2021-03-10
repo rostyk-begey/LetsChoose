@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { GameController } from './game.controller';
@@ -9,10 +9,11 @@ import { ContestModule } from '../contest/contest.module';
 
 @Module({
   imports: [
-    ContestModule,
+    forwardRef(() => ContestModule),
     MongooseModule.forFeature([{ name: Game.name, schema: GameSchema }]),
   ],
   controllers: [GameController],
   providers: [GameService, GameRepository],
+  exports: [GameRepository],
 })
 export class GameModule {}

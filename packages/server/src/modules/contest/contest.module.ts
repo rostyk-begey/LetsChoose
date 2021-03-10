@@ -2,6 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 
+import { GameModule } from '../game/game.module';
 import { UserModule } from '../user/user.module';
 import { ContestService } from './contest.service';
 import { ContestRepository } from './contest.repository';
@@ -17,6 +18,7 @@ import { ContestController } from './contest.controller';
     MulterModule.register({
       dest: './uploads',
     }),
+    forwardRef(() => GameModule),
     forwardRef(() => UserModule),
     MongooseModule.forFeature([{ name: Contest.name, schema: ContestSchema }]),
     MongooseModule.forFeature([

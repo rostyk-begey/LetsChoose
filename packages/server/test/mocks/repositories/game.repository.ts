@@ -43,6 +43,10 @@ const GameRepository: IGameRepository = {
     return game;
   },
 
+  async deleteGames(): Promise<void> {
+    return Promise.resolve(undefined);
+  },
+
   async createGame(data: CreateGameDto): Promise<Game> {
     const game = {
       id: data._id,
@@ -58,6 +62,7 @@ GameRepository.aggregate = jest.fn(GameRepository.aggregate);
 GameRepository.findById = jest.fn(GameRepository.findById);
 GameRepository.findByIdAndUpdate = jest.fn(GameRepository.findByIdAndUpdate);
 GameRepository.deleteGame = jest.fn(GameRepository.deleteGame);
+GameRepository.deleteGames = jest.fn(GameRepository.deleteGames);
 GameRepository.createGame = jest.fn(GameRepository.createGame);
 
 export default GameRepository;

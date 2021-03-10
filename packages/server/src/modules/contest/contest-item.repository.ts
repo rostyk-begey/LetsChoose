@@ -51,6 +51,13 @@ export class ContestItemRepository implements IContestItemRepository {
     return contestItem;
   }
 
+  public async updateContestItems(
+    contestId: string,
+    data: Partial<ContestItem>,
+  ): Promise<void> {
+    await this.contestItemModel.updateMany({ contestId }, data);
+  }
+
   public async deleteContestItems(contestId: string): Promise<void> {
     await this.contestItemModel.deleteMany({ contestId });
   }

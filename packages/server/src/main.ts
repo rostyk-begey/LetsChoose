@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
-import * as cors from 'cors';
+// import * as cors from 'cors';
 // import * as csurf from 'csurf';
 import * as helmet from 'helmet';
 

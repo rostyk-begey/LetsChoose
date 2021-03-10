@@ -18,5 +18,6 @@ export interface IContestService {
   ): Promise<GetItemsResponse>;
   createContest(userId: string, data: CreateContestDTO): Promise<Contest>;
   updateContest(contestId: string, data: UpdateContestDTO): Promise<Contest>;
+  resetContest(contestId: string): Promise<Contest>;
   removeContest(contestId: string): Promise<void>;
 }

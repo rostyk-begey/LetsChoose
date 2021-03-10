@@ -8,9 +8,13 @@ export interface IContestItemRepository {
   findById(itemId: string): Promise<ContestItem>;
   findByContestId(contestId: string): Promise<ContestItem[]>;
   findByIdAndUpdate(
-    contestId: string,
+    itemId: string,
     contestItem: Partial<ContestItem>,
   ): Promise<ContestItem>;
+  updateContestItems(
+    contestId: string,
+    data: Partial<ContestItem>,
+  ): Promise<void>;
   deleteContestItems(contestId: string): Promise<void>;
   createContestItem(data: CreateContestItemDto): Promise<ContestItem>;
 }

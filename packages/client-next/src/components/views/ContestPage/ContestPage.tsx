@@ -1,4 +1,7 @@
 import React from 'react';
+import { ListItemIcon } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import { useRouter } from 'next/router';
 import { Contest, ContestItem } from '@lets-choose/common';
 import Chip from '@material-ui/core/Chip';
@@ -16,13 +19,18 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import InfiniteScroll from 'react-infinite-scroller';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
 import {
+  useContestDelete,
   useContestFind,
   useContestItemsInfinite,
+  useContestReset,
 } from '../../../hooks/api/contest';
 import { useGameStart } from '../../../hooks/api/game';
+import { useCurrentUser } from '../../../hooks/api/user';
 import ROUTES from '../../../utils/routes';
+import DropdownButton from '../../common/DropdownButton';
 import Page from '../../common/Page';
 import Subheader from '../../common/Subheader';
 import Table from './Table';
@@ -93,10 +101,14 @@ const ContestPage: React.FC = () => {
     ...router
   } = useRouter();
 
-  const { data, isLoading: contestIsLoading } = useContestFind(
-    contestId as string,
-  );
-  const contest = (data?.data as Contest) || null;
+  const {
+    data: contestResponse,
+    isLoading: contestIsLoading,
+    remove: removeContest,
+  } = useContestFind(contestId as string);
+  const { data: { data: user } = {} } = useCurrentUser({});
+  const contest = (contestResponse?.data as Contest) || null;
+  const isCurrentUserAuthor = user?._id === contest?.author;
   const classes = useStyles({ thumbnail: contest?.thumbnail || '' });
   const { mutateAsync: startGame } = useGameStart();
   const onStartGame = async () => {
@@ -109,6 +121,7 @@ const ContestPage: React.FC = () => {
     fetchNextPage,
     hasNextPage,
     isLoading: contestItemsIsLoading,
+    remove: removeContestItems,
   } = useContestItemsInfinite(
     contestId as string,
     { perPage: itemsPerPage },
@@ -117,6 +130,8 @@ const ContestPage: React.FC = () => {
   const isLoading = contestIsLoading || contestItemsIsLoading;
   const pages = contestItemsData?.pages || [];
   const { totalItems = 0 } = pages?.[0]?.data || {};
+  const { mutateAsync: resetContest } = useContestReset(contest?._id);
+  const { mutateAsync: deleteContest } = useContestDelete(contest?._id);
 
   if (!isLoading && !contest) {
     return (
@@ -157,15 +172,76 @@ const ContestPage: React.FC = () => {
               {itemsChip}
               {gamesChip}
             </div>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={onStartGame}
-              className={classes.playBtn}
-              startIcon={<PlayCircleFilledWhiteIcon />}
-            >
-              Play
-            </Button>
+            {isCurrentUserAuthor ? (
+              <DropdownButton
+                className={classes.playBtn}
+                mainButtonProps={{
+                  startIcon: <PlayCircleFilledWhiteIcon />,
+                  children: 'Play',
+                  onClick: onStartGame,
+                }}
+                items={[
+                  // {
+                  //   content: (
+                  //     <>
+                  //       <ListItemIcon>
+                  //         <EditIcon />
+                  //       </ListItemIcon>
+                  //       Edit
+                  //     </>
+                  //   ),
+                  //   onClick: () => null,
+                  // },
+                  {
+                    content: (
+                      <>
+                        <ListItemIcon>
+                          <RotateLeftIcon />
+                        </ListItemIcon>
+                        Clear
+                      </>
+                    ),
+                    onClick: async () => {
+                      if (
+                        confirm(
+                          'Are you sure you want to reset contest? All data will be reset to defaults.',
+                        )
+                      ) {
+                        await resetContest();
+                        await removeContest();
+                        await removeContestItems();
+                      }
+                    },
+                  },
+                  {
+                    content: (
+                      <>
+                        <ListItemIcon>
+                          <DeleteIcon />
+                        </ListItemIcon>
+                        Delete
+                      </>
+                    ),
+                    onClick: async () => {
+                      if (confirm('Are you sure you want to delete?')) {
+                        await deleteContest();
+                        await router.push(ROUTES.HOME);
+                      }
+                    },
+                  },
+                ]}
+              />
+            ) : (
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={onStartGame}
+                className={classes.playBtn}
+                startIcon={<PlayCircleFilledWhiteIcon />}
+              >
+                Play
+              </Button>
+            )}
           </Subheader>
         ) : (
           <Subheader className={classes.subheader}>

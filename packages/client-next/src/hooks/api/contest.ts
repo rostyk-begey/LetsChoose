@@ -26,8 +26,9 @@ export const contestApi = () => {
     id: string,
     data: Partial<Omit<UpdateContestData, 'items'>>,
   ) => api.post<HttpResponseMessageDto>(`${baseURL}/${id}`, data);
+  const reset = (id: string) => api.post(`${baseURL}/${id}/reset`);
   const remove = (id: string) => api.delete(`${baseURL}/${id}`);
-  return { all, allItems, find, create, update, remove };
+  return { all, allItems, find, create, update, remove, reset };
 };
 
 export const useContestFind = (id: string, config = {}) => {
@@ -102,6 +103,11 @@ export const useContestCreate = () => {
 export const useContestUpdate = (id: string) => {
   const { update } = contestApi();
   return useMutation((data: UpdateContestData) => update(id, data));
+};
+
+export const useContestReset = (id: string) => {
+  const { reset } = contestApi();
+  return useMutation(() => reset(id));
 };
 
 export const useContestDelete = (id: string) => {
