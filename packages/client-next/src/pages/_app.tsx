@@ -5,12 +5,27 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { StylesProvider, ThemeProvider } from '@material-ui/core/styles';
 import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { DefaultSeo } from 'next-seo';
 
 import queryClient from '../utils/queryClient';
 import theme from '../utils/theme';
 
 import '../assets/scss/material-kit-react.scss';
 import 'animate.css';
+
+const defaultSeo = {
+  title: undefined,
+  titleTemplate: "%s | Let's Choose",
+  defaultTitle: "Let's Choose",
+  description:
+    "Let's Choose is a platform where you can create contests to compare images",
+  openGraph: {
+    type: 'website',
+    locale: 'en_IE',
+    url: 'http://http://ec2-18-217-198-156.us-east-2.compute.amazonaws.com//',
+    site_name: "Let's Choose",
+  },
+};
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
@@ -29,6 +44,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
+      <DefaultSeo {...defaultSeo} />
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>

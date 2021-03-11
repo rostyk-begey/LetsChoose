@@ -1,3 +1,4 @@
+import { NextSeo } from 'next-seo';
 import React from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Divider from '@material-ui/core/Divider';
@@ -129,6 +130,18 @@ const UserPage: React.FC = () => {
         </>
       }
     >
+      <NextSeo
+        title={`@${username}`}
+        openGraph={{
+          title: `@${username}`,
+          images: [
+            {
+              url: user?.avatar as string,
+              alt: `@${username}`,
+            },
+          ],
+        }}
+      />
       <Container>
         <InfiniteScroll
           pageStart={0}

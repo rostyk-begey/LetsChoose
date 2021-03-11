@@ -1,3 +1,4 @@
+import { NextSeo } from 'next-seo';
 import React from 'react';
 import Fab from '@material-ui/core/Fab';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -276,6 +277,20 @@ const ContestPage: React.FC = () => {
         )
       }
     >
+      <NextSeo
+        title={contest?.title}
+        description={contest?.excerpt || undefined}
+        openGraph={{
+          title: contest?.title,
+          ...(contest?.excerpt && { description: contest?.excerpt }),
+          images: [
+            {
+              url: contest?.thumbnail,
+              alt: contest?.title,
+            },
+          ],
+        }}
+      />
       <Container>
         <Grid container spacing={2} justify="center">
           <Grid item xs={12}>
