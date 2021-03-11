@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { InputAdornment } from '@material-ui/core';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
-import { Visibility, VisibilityOff } from '@material-ui/icons';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+
 import FormTextInput, { FormTextInputProps } from './FormTextInput';
 
 const PasswordTextInput: React.FC<FormTextInputProps> = ({

@@ -1,5 +1,6 @@
 import React from 'react';
-import { ListItemIcon } from '@material-ui/core';
+import Fab from '@material-ui/core/Fab';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { useRouter } from 'next/router';
@@ -45,9 +46,13 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
   subheader: {
     display: 'flex',
     alignItems: 'center',
+    color: theme.palette.text.primary,
   },
   playBtn: {
     marginLeft: 'auto',
+  },
+  actionButtonIcon: {
+    marginRight: theme.spacing(0.5),
   },
   thumbnailContainer: {
     backgroundSize: 'cover',
@@ -133,7 +138,7 @@ const ContestPage: React.FC = () => {
   const { mutateAsync: resetContest } = useContestReset(contest?._id);
   const { mutateAsync: deleteContest } = useContestDelete(contest?._id);
 
-  if (!isLoading && !contest) {
+  if (contestId && !isLoading && !contest) {
     return (
       <Page className={classes.root}>
         <Typography variant="h1" className={classes.content}>
@@ -160,6 +165,14 @@ const ContestPage: React.FC = () => {
       className={classes.chip}
     />
   );
+  const chipSkeleton = (
+    <Skeleton
+      animation="wave"
+      width={100}
+      height={24}
+      className={classes.chip}
+    />
+  );
 
   return (
     <Page
@@ -181,17 +194,19 @@ const ContestPage: React.FC = () => {
                   onClick: onStartGame,
                 }}
                 items={[
-                  // {
-                  //   content: (
-                  //     <>
-                  //       <ListItemIcon>
-                  //         <EditIcon />
-                  //       </ListItemIcon>
-                  //       Edit
-                  //     </>
-                  //   ),
-                  //   onClick: () => null,
-                  // },
+                  {
+                    content: (
+                      <>
+                        <ListItemIcon>
+                          <EditIcon />
+                        </ListItemIcon>
+                        Edit
+                      </>
+                    ),
+                    onClick: () => {
+                      router.push(`${ROUTES.CONTESTS.INDEX}/${contestId}/edit`);
+                    },
+                  },
                   {
                     content: (
                       <>
@@ -248,18 +263,8 @@ const ContestPage: React.FC = () => {
             <Skeleton animation="wave" width={200} height={32} />
             <div className={classes.subheaderStats}>
               <Divider orientation="vertical" className={classes.divider} />
-              <Skeleton
-                animation="wave"
-                width={100}
-                height={24}
-                className={classes.chip}
-              />
-              <Skeleton
-                animation="wave"
-                width={100}
-                height={24}
-                className={classes.chip}
-              />
+              {chipSkeleton}
+              {chipSkeleton}
             </div>
             <Skeleton
               animation="wave"
@@ -309,23 +314,38 @@ const ContestPage: React.FC = () => {
                       <div className={classes.contestActionsBar}>
                         {itemsChip}
                         {gamesChip}
-                        <Button
-                          size="small"
+                        <Fab
                           color="primary"
-                          variant="contained"
-                          onClick={onStartGame}
+                          variant="extended"
+                          size="small"
                           className={classes.playBtn}
-                          startIcon={<PlayCircleFilledWhiteIcon />}
+                          onClick={onStartGame}
                         >
+                          <PlayCircleFilledWhiteIcon
+                            fontSize="small"
+                            className={classes.actionButtonIcon}
+                          />
                           Play
-                        </Button>
+                        </Fab>
                       </div>
                     </>
                   ) : (
-                    <CardContent>
-                      <Skeleton animation="wave" width="45%" height={56} />
-                      <Skeleton animation="wave" width="20%" height={24} />
-                    </CardContent>
+                    <>
+                      <CardContent>
+                        <Skeleton animation="wave" width="45%" height={56} />
+                        <Skeleton animation="wave" width="20%" height={24} />
+                      </CardContent>
+                      <div className={classes.contestActionsBar}>
+                        {chipSkeleton}
+                        {chipSkeleton}
+                        <Skeleton
+                          animation="wave"
+                          width={100}
+                          height={24}
+                          className={classes.playBtn}
+                        />
+                      </div>
+                    </>
                   )}
                 </Grid>
               </Grid>

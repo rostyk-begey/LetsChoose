@@ -1,5 +1,5 @@
-import { useMediaQuery } from '@material-ui/core';
 import React, { useEffect, useMemo } from 'react';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MuiTable from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';

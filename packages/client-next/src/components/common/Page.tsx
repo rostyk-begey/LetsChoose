@@ -18,6 +18,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
 import classNames from 'classnames';
 import { useMutation } from 'react-query';
+import { useTheme } from '@material-ui/core/styles';
 
 import { authApi } from '../../hooks/api/auth';
 import { useCurrentUser } from '../../hooks/api/user';
@@ -36,6 +37,7 @@ interface Props {
 const useStyles = makeStyles((theme) => ({
   content: {
     padding: theme.spacing(3, 0),
+    backgroundColor: theme.palette.background.default,
   },
   signupBtn: {
     margin: theme.spacing(0, 1, 0, 4),

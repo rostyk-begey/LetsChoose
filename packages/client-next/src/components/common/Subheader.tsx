@@ -17,10 +17,12 @@ interface Props {
 const MuiSubheader = getSubheader(styled);
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+  },
   container: {
-    height: 'calc(100% - 1px)',
-    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-    backgroundColor: theme.palette.background.default,
+    height: '100%',
+    borderBottom: `1px solid ${theme.palette.divider}`,
   },
 }));
 
@@ -36,7 +38,7 @@ const Subheader: React.FC<Props> = ({
     <MuiSubheader
       subheaderId={id}
       style={height ? { height } : undefined}
-      className={classNames({
+      className={classNames(classes.root, {
         ['animate__animated animate__fadeInDown']: animated,
       })}
     >

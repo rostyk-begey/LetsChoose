@@ -1,6 +1,7 @@
-import { useMediaQuery } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
 import React from 'react';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Divider from '@material-ui/core/Divider';
+import Skeleton from '@material-ui/lab/Skeleton';
 import Avatar from '@material-ui/core/Avatar';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
@@ -32,12 +33,15 @@ const useStyles = makeStyles((theme) => ({
   profileSubheader: {
     display: 'flex',
     alignItems: 'center',
+    color: theme.palette.text.primary,
+  },
+  divider: {
+    width: 2,
+    height: 32,
+    margin: theme.spacing(0, 3),
   },
   username: {
     marginLeft: theme.spacing(1),
-  },
-  counter: {
-    marginLeft: theme.spacing(3),
   },
   avatar: {
     width: 64,
@@ -113,16 +117,12 @@ const UserPage: React.FC = () => {
                 @{username}
               </Typography>
             )}
+            <Divider orientation="vertical" className={classes.divider} />
             {isLoading ? (
-              <Skeleton
-                animation="wave"
-                height={16}
-                width={100}
-                className={classes.counter}
-              />
+              <Skeleton animation="wave" height={16} width={100} />
             ) : (
-              <Typography variant="body1" className={classes.counter}>
-                {data?.[0]?.data?.totalItems} contests
+              <Typography variant="body1">
+                {pages?.[0]?.data?.totalItems || 0} contests
               </Typography>
             )}
           </Subheader>

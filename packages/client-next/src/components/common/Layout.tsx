@@ -89,16 +89,18 @@ cozyScheme.configureSubheader((builder) => {
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+    borderBottom: `1px solid ${theme.palette.divider}`,
   },
   footer: {
     position: 'sticky',
     bottom: 0,
     zIndex: theme.zIndex.appBar,
+    borderTop: '1px solid rgba(0, 0, 0, 0.12)',
     backgroundColor: theme.palette.background.default,
   },
   content: {
     flex: 1,
+    backgroundColor: theme.palette.background.default,
   },
 }));
 
@@ -118,7 +120,7 @@ const Layout: React.FC<Props> = ({
   }, [primarySidebar]);
 
   return (
-    <Root theme={theme} scheme={cozyScheme}>
+    <Root themeProviderOmitted scheme={cozyScheme}>
       {({ state: { sidebar } }) => (
         <>
           <MuiHeader className={classes.header}>

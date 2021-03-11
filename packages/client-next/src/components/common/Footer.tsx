@@ -1,13 +1,12 @@
-import { Theme } from '@material-ui/core';
 import React from 'react';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { NavItem, NavMenu } from '@mui-treasury/components/menu/navigation';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import classNames from 'classnames';
 
 const useStyles = makeStyles(
-  ({ typography, palette, breakpoints, ...theme }: Theme) => ({
+  ({ typography, palette, breakpoints, ...theme }) => ({
     legalLink: {
       ...typography.caption,
       justifyContent: 'center',

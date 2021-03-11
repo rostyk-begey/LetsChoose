@@ -68,6 +68,7 @@ export class ContestController {
     return await this.contestService.getContestItemsPaginate(contestId, query);
   }
 
+  // TODO: add schema validation
   @Post('/')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
@@ -99,6 +100,7 @@ export class ContestController {
     return contest;
   }
 
+  // TODO: add schema validation
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('files'))
   @Post('/:contestId')

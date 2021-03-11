@@ -331,9 +331,7 @@ export class ContestService implements IContestService {
       data.title = title;
     }
 
-    if (excerpt) {
-      data.excerpt = excerpt;
-    }
+    data.excerpt = excerpt;
 
     if (files?.length) {
       const thumbnailFile = files.find(fieldNameFilter('thumbnail'));

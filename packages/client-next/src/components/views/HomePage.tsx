@@ -1,6 +1,6 @@
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import React from 'react';
-import { useMediaQuery } from '@material-ui/core';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import InfiniteScroll from 'react-infinite-scroller';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';

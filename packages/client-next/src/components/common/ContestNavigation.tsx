@@ -1,8 +1,10 @@
 import React, { useRef } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { ButtonGroup, InputAdornment, TextField } from '@material-ui/core';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { SearchOutlined } from '@material-ui/icons';
+import SearchOutlined from '@material-ui/icons/SearchOutlined';
 import throttle from 'lodash/throttle';
 import classNames from 'classnames';
 

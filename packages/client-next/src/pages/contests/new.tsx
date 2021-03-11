@@ -1,1 +1,1 @@
-export { default } from '../../components/views/CreateContestPage/CreateContestPage';
+export { default } from '../../components/views/CreateContestPage';

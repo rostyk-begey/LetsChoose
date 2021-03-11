@@ -11,7 +11,7 @@ export interface FormTextInputProps {
 const FormTextInput: React.FC<FormTextInputProps> = ({
   name,
   validation,
-  fieldProps,
+  fieldProps = {},
 }) => {
   const {
     errors: { [name]: error = false },

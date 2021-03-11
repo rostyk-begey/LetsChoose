@@ -1,6 +1,6 @@
 import React from 'react';
-import { Skeleton } from '@material-ui/lab';
-import { useMediaQuery } from '@material-ui/core';
+import Skeleton from '@material-ui/lab/Skeleton';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import TableCell from '@material-ui/core/TableCell';
 import MuiTableRow from '@material-ui/core/TableRow';
 import json2mq from 'json2mq';

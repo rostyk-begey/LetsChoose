@@ -1,4 +1,4 @@
-import { createStyles, Theme } from '@material-ui/core';
+import { createStyles, Theme } from '@material-ui/core/styles';
 import { container, title } from '../../../material-kit-react';
 import headerLinksStyle from '../../components/headerLinksStyle';
 
