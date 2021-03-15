@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { AppProps } from 'next/app';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { StylesProvider, ThemeProvider } from '@material-ui/core/styles';
+import { StylesProvider } from '@material-ui/core/styles';
 import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { DefaultSeo } from 'next-seo';
 
+import ThemeProvider from '../components/common/ThemeProvider';
 import queryClient from '../utils/queryClient';
-import theme from '../utils/theme';
 
 import '../assets/scss/material-kit-react.scss';
 import 'animate.css';
@@ -45,7 +45,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         />
       </Head>
       <DefaultSeo {...defaultSeo} />
-      <ThemeProvider theme={theme}>
+      <ThemeProvider>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />

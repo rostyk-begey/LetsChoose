@@ -1,3 +1,4 @@
+import { Tooltip } from '@material-ui/core';
 import React, { ReactNode } from 'react';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { useRouter } from 'next/router';
@@ -13,20 +14,24 @@ import ListItemText from '@material-ui/core/ListItemText';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
 import AddIcon from '@material-ui/icons/Add';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
+import IconButton from '@material-ui/core/IconButton';
 import classNames from 'classnames';
 import { useMutation } from 'react-query';
-import { useTheme } from '@material-ui/core/styles';
 
 import { authApi } from '../../hooks/api/auth';
 import { useCurrentUser } from '../../hooks/api/user';
+import { useDarkMode } from './ThemeProvider';
 import ROUTES from '../../utils/routes';
 import ContestNavigation from './ContestNavigation';
 import Layout from './Layout';
 import { MenuLink } from './Menu';
 import logo from '../../assets/icons/logo.png';
+import logoWhite from '../../assets/icons/logo-white.png';
 
 interface Props {
   withContestNavigation?: boolean;
@@ -119,6 +124,7 @@ const Page: React.FC<Props> = ({
   } = useCurrentUser({});
   const { username = '', avatar } = user || {};
   const { mutateAsync: logout } = useMutation(authApi.logout);
+  const [darkMode, setDarkMode] = useDarkMode();
   const links: MenuLink[] = [
     {
       href: ROUTES.HOME,
@@ -144,13 +150,26 @@ const Page: React.FC<Props> = ({
     <Layout
       title={
         <RouterLink href={ROUTES.HOME}>
-          <img src={logo} alt="" />
+          <img src={darkMode ? logoWhite : logo} alt="" />
         </RouterLink>
       }
       subHeader={subHeader}
       className={classNames(classes.content, className)}
       toolbarContent={
-        <Box ml="auto" display="flex">
+        <Box ml="auto" display="flex" alignItems="center">
+          <div>
+            <Tooltip
+              title="Toggle dark mode"
+              aria-label="toggle-dark-mode"
+              placement="bottom"
+              // arrow
+              PopperProps={{ disablePortal: true }}
+            >
+              <IconButton onClick={() => setDarkMode(!darkMode)}>
+                {darkMode ? <BrightnessHighIcon /> : <Brightness4Icon />}
+              </IconButton>
+            </Tooltip>
+          </div>
           {withContestNavigation && <ContestNavigation />}
           {!user && (
             <>

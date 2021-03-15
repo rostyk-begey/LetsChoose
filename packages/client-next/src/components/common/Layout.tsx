@@ -26,7 +26,6 @@ import {
   SECONDARY_SUBHEADER_HEIGHT,
   SECONDARY_SUBHEADER_ID,
 } from '../../utils/constants';
-import theme from '../../utils/theme';
 import Footer from './Footer';
 
 interface Props {

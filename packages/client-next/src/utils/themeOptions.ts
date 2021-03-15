@@ -1,4 +1,6 @@
-import { createMuiTheme } from '@material-ui/core';
+import createMuiTheme, {
+  ThemeOptions,
+} from '@material-ui/core/styles/createMuiTheme';
 import {
   dangerColor,
   infoColor,
@@ -8,7 +10,7 @@ import {
   warningColor,
 } from '../assets/jss/material-kit-react';
 
-const theme = createMuiTheme({
+const themeOptions: ThemeOptions = {
   palette: {
     primary: {
       main: primaryColor,
@@ -28,8 +30,7 @@ const theme = createMuiTheme({
     success: {
       main: successColor,
     },
-    // gray: grayColor,
   },
-});
+};
 
-export default theme;
+export default themeOptions;
