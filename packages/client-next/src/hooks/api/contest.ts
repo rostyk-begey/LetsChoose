@@ -11,6 +11,10 @@ import {
   HttpResponseMessageDto,
   UpdateContestData,
 } from '@lets-choose/common';
+import {
+  UseInfiniteQueryOptions,
+  UseQueryOptions,
+} from 'react-query/types/react/types';
 import api from '../../providers/apiProvider';
 import ROUTES from '../../utils/routes';
 
@@ -31,14 +35,17 @@ export const contestApi = () => {
   return { all, allItems, find, create, update, remove, reset };
 };
 
-export const useContestFind = (id: string, config = {}) => {
+export const useContestFind = (
+  id: string,
+  options: UseQueryOptions<AxiosResponse<Contest>> = {},
+) => {
   const { find } = contestApi();
-  return useQuery(['contest', id], () => find(id), { retry: 0, ...config });
+  return useQuery(['contest', id], () => find(id), { retry: 0, ...options });
 };
 
 export const useContestAllInfinite = (
   params: Partial<GetContestQuery> = {},
-  config = {},
+  options: UseInfiniteQueryOptions<AxiosResponse<GetContestsResponse>> = {},
 ) => {
   const queryParams: GetContestQuery = {
     author: '',
@@ -53,7 +60,7 @@ export const useContestAllInfinite = (
     ['contests', queryParams],
     ({ pageParam: page = 1 }) => all({ ...queryParams, page }),
     {
-      ...config,
+      ...options,
       getNextPageParam: (lastPage) => {
         const {
           data: { currentPage, totalPages },
@@ -68,7 +75,7 @@ export const useContestAllInfinite = (
 export const useContestItemsInfinite = (
   contestId: string,
   params: Partial<GetItemsQuery> = {},
-  config = {},
+  options: UseInfiniteQueryOptions<AxiosResponse<GetItemsResponse>> = {},
 ) => {
   const queryParams: GetItemsQuery = {
     search: '',
@@ -81,7 +88,7 @@ export const useContestItemsInfinite = (
     ['contestItems', contestId, queryParams],
     ({ pageParam: page = 1 }) => allItems(contestId, { ...queryParams, page }),
     {
-      ...config,
+      ...options,
       getNextPageParam: (lastPage) => {
         try {
           const {

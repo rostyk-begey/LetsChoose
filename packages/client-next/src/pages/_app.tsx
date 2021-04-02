@@ -4,7 +4,6 @@ import { AppProps } from 'next/app';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { StylesProvider } from '@material-ui/core/styles';
 import { QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { DefaultSeo } from 'next-seo';
 
 import ThemeProvider from '../components/common/ThemeProvider';
@@ -22,7 +21,7 @@ const defaultSeo = {
   openGraph: {
     type: 'website',
     locale: 'en_IE',
-    url: 'http://http://ec2-18-217-198-156.us-east-2.compute.amazonaws.com//',
+    url: 'http://ec2-18-217-198-156.us-east-2.compute.amazonaws.com/',
     site_name: "Let's Choose",
   },
 };
@@ -49,7 +48,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />
-          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </ThemeProvider>
     </StylesProvider>
