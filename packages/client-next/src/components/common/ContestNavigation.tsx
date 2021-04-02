@@ -11,9 +11,6 @@ import classNames from 'classnames';
 import useQueryState from '../../hooks/getParams';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    marginLeft: theme.spacing(2),
-  },
   sortButton: {
     width: 100,
   },
@@ -49,7 +46,7 @@ const ContestNavigation: React.FC = () => {
 
   return (
     <>
-      <ButtonGroup color="primary" className={classes.root}>
+      <ButtonGroup color="primary">
         <Button
           className={classes.sortButton}
           variant={sortBy === SORT_OPTIONS.POPULAR ? 'contained' : 'outlined'}

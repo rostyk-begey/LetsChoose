@@ -1,5 +1,6 @@
-import Divider from '@material-ui/core/Divider';
 import React, { useCallback, useState } from 'react';
+import Divider from '@material-ui/core/Divider';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Button from '@material-ui/core/Button';
 import { Theme } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
@@ -9,7 +10,6 @@ import jsonToFormData from 'json-form-data';
 import Checkbox from '@material-ui/core/Checkbox';
 import Fab from '@material-ui/core/Fab';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import CardContent from '@material-ui/core/CardContent';
 import Card from '@material-ui/core/Card';
 import { DropzoneArea, DropzoneDialog } from 'material-ui-dropzone';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -21,6 +21,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import classNames from 'classnames';
+import json2mq from 'json2mq';
 
 import FormTextInput, { FormTextInputProps } from '../../common/FormTextInput';
 import Page from '../../common/Page';
@@ -40,8 +41,15 @@ const useStyles = makeStyles<Theme>((theme) => ({
     justifyContent: 'center',
   },
   title: {
-    margin: '0 auto',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    marginRight: theme.spacing(2),
+    marginLeft: 'auto',
     color: theme.palette.text.primary,
+  },
+  submitButton: {
+    marginLeft: 'auto',
   },
   buttonRow: {
     display: 'flex',
@@ -52,6 +60,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
     margin: theme.spacing(0, 2),
     height: '30px',
     width: 1.5,
+    alignSelf: 'center',
   },
   grid: {
     display: 'grid',
@@ -290,6 +299,11 @@ const EditContestPageTemplate: React.FC<Props> = ({
     },
     [thumbnail, items],
   );
+  const matchesMinWidth600 = useMediaQuery(
+    json2mq({
+      minWidth: 600,
+    }),
+  );
 
   return (
     <Page
@@ -303,6 +317,7 @@ const EditContestPageTemplate: React.FC<Props> = ({
             color="primary"
             variant="contained"
             onClick={form.handleSubmit(saveContest)}
+            className={classes.submitButton}
             startIcon={<SaveIcon />}
           >
             {submitButtonText}
@@ -461,7 +476,7 @@ const EditContestPageTemplate: React.FC<Props> = ({
                     fontSize="small"
                     className={classes.actionButtonIcon}
                   />
-                  Add items
+                  Add {matchesMinWidth600 && 'items'}
                 </Fab>
               </div>
             </Card>

@@ -1,12 +1,11 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { NavItem, NavMenu } from '@mui-treasury/components/menu/navigation';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import classNames from 'classnames';
 
 const useStyles = makeStyles(
   ({ typography, palette, breakpoints, ...theme }) => ({
+    // eslint-disable-next-line mui-unused-classes/unused-classes
     legalLink: {
       ...typography.caption,
       justifyContent: 'center',
@@ -34,14 +33,15 @@ const useStyles = makeStyles(
       position: 'relative',
       display: 'flex',
       width: '100%',
-      [breakpoints.down('sm')]: {
+      [breakpoints.down('xs')]: {
         flexDirection: 'column',
       },
     },
+    // eslint-disable-next-line mui-unused-classes/unused-classes
     navMenu: {
       display: 'flex',
       flex: '1 0 auto',
-      [breakpoints.down('sm')]: {
+      [breakpoints.down('xs')]: {
         justifyContent: 'center',
       },
     },
@@ -53,14 +53,15 @@ const Footer: React.FC = () => {
 
   return (
     <div className={classes.footer}>
-      <NavMenu className={classes.navMenu}>
-        <NavItem className={classNames(classes.legalLink)}>
-          Terms & Conditions
-        </NavItem>
-        <NavItem className={classNames(classes.legalLink)}>
-          Privacy Policy
-        </NavItem>
-      </NavMenu>
+      {/* TODO: update footer navigation */}
+      {/*<NavMenu className={classes.navMenu}>*/}
+      {/*  <NavItem className={classNames(classes.legalLink)}>*/}
+      {/*    Terms & Conditions*/}
+      {/*  </NavItem>*/}
+      {/*  <NavItem className={classNames(classes.legalLink)}>*/}
+      {/*    Privacy Policy*/}
+      {/*  </NavItem>*/}
+      {/*</NavMenu>*/}
       <Box py={1} textAlign={{ xs: 'center', md: 'right' }}>
         <Typography component="p" variant="caption" color="textSecondary">
           Let&apos;s Choose © {new Date().getFullYear()} All right reserved

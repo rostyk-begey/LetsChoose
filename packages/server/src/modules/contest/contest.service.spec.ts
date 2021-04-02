@@ -71,14 +71,10 @@ describe('ContestService', () => {
     });
 
     expect(response.currentPage).toEqual(page);
-    // test('test current page', () => {
-    // });
 
     expect(response.totalPages).toEqual(
       Math.ceil(mockContests.length / perPage),
     );
-    // test('test total pages', () => {
-    // });
   });
 
   test('findContestsByAuthor', async () => {

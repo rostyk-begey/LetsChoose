@@ -36,6 +36,7 @@ import {
   useContestItemsInfinite,
 } from '../../hooks/api/contest';
 import { useGameStart } from '../../hooks/api/game';
+import { useCurrentUser } from '../../hooks/api/user';
 import ROUTES from '../../utils/routes';
 import ContestCardSkeleton from './ContestCardSkeleton';
 
@@ -51,7 +52,6 @@ const useStyles = makeStyles(() => ({
   media: {
     height: 0,
     paddingTop: '100%',
-    // paddingTop: '56.25%', // 16:9
   },
   cursorPointer: {
     cursor: 'pointer',
@@ -83,6 +83,7 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
 
   const { id, thumbnail, title, excerpt, author, games, createdAt } = contest;
   const username = (author as UserDto).username;
+  const { data: { data: user } = {} } = useCurrentUser({});
   const {
     data,
     fetchNextPage,
@@ -160,24 +161,26 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
           </RouterLink>
         }
         action={
-          <>
-            <IconButton aria-label="settings" onClick={handleMenuClick}>
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              keepMounted
-              open={Boolean(menuAnchor)}
-              onClose={handleMenuClose}
-              anchorEl={menuAnchor}
-            >
-              <MenuItem>
-                <ListItemIcon onClick={onDeleteClick}>
-                  <DeleteIcon />
-                </ListItemIcon>
-                Delete
-              </MenuItem>
-            </Menu>
-          </>
+          user?.username === username && (
+            <>
+              <IconButton aria-label="settings" onClick={handleMenuClick}>
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                keepMounted
+                open={Boolean(menuAnchor)}
+                onClose={handleMenuClose}
+                anchorEl={menuAnchor}
+              >
+                <MenuItem>
+                  <ListItemIcon onClick={onDeleteClick}>
+                    <DeleteIcon />
+                  </ListItemIcon>
+                  Delete
+                </MenuItem>
+              </Menu>
+            </>
+          )
         }
         title={
           <RouterLink href={`${ROUTES.USERS}/${username}`} passHref>
@@ -195,7 +198,6 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
           <CardMedia
             className={classNames(classes.media, classes.cursorPointer)}
             image={thumbnail}
-            title={title}
           />
           {pages.map(({ data: { items } }) =>
             items.map(({ id, image, title }) => (

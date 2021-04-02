@@ -23,7 +23,7 @@ export const useUserFindRedirect = (
   }: {
     redirectTo?: string;
     redirectIfFound?: boolean;
-  },
+  } = {},
   queryConfig: UseQueryOptions<AxiosResponse<UserDto>> = {},
 ) => {
   const { find } = useUserApi();

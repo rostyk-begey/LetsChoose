@@ -14,17 +14,17 @@ import json2mq from 'json2mq';
 
 import ContestCard from '../common/ContestCard';
 import ContestNavigation from '../common/ContestNavigation';
+import {
+  PRIMARY_SUBHEADER_ID,
+  SECONDARY_SUBHEADER_ID,
+} from '../common/Layout/constants';
 import Page from '../common/Page';
 import Subheader from '../common/Subheader';
 import { useUserFindRedirect } from '../../hooks/api/user';
 import useQueryState from '../../hooks/getParams';
 import { useContestAllInfinite } from '../../hooks/api/contest';
-import ROUTES from '../../utils/routes';
-import {
-  PRIMARY_SUBHEADER_ID,
-  SECONDARY_SUBHEADER_HEIGHT,
-  SECONDARY_SUBHEADER_ID,
-} from '../../utils/constants';
+
+const avatarSize = 45;
 
 const useStyles = makeStyles((theme) => ({
   navigationSubheader: {
@@ -45,8 +45,8 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
   },
   avatar: {
-    width: 64,
-    height: 64,
+    width: avatarSize,
+    height: avatarSize,
   },
 }));
 
@@ -66,9 +66,6 @@ const UserPage: React.FC = () => {
   const pages = data?.pages || [];
   const { data: { data: user } = {}, isLoading } = useUserFindRedirect(
     username,
-    {
-      redirectTo: ROUTES.HOME,
-    },
   );
   const { avatar } = user || {};
   const matchesMaxWidth1024 = useMediaQuery(
@@ -82,20 +79,10 @@ const UserPage: React.FC = () => {
       withContestNavigation={!matchesMaxWidth1024}
       subHeader={
         <>
-          {matchesMaxWidth1024 && (
-            <Subheader className={classes.navigationSubheader}>
-              <ContestNavigation />
-            </Subheader>
-          )}
           <Subheader
-            id={
-              matchesMaxWidth1024
-                ? SECONDARY_SUBHEADER_ID
-                : PRIMARY_SUBHEADER_ID
-            }
-            height={SECONDARY_SUBHEADER_HEIGHT}
+            id={PRIMARY_SUBHEADER_ID}
             className={classes.profileSubheader}
-            animated
+            style={{ zIndex: 1001 }}
           >
             {isLoading ? (
               <Skeleton
@@ -127,6 +114,15 @@ const UserPage: React.FC = () => {
               </Typography>
             )}
           </Subheader>
+          {matchesMaxWidth1024 && (
+            <Subheader
+              id={SECONDARY_SUBHEADER_ID}
+              className={classes.navigationSubheader}
+              animated
+            >
+              <ContestNavigation />
+            </Subheader>
+          )}
         </>
       }
     >

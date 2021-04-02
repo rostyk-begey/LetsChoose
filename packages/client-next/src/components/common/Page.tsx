@@ -1,35 +1,20 @@
-import { Tooltip } from '@material-ui/core';
 import React, { ReactNode } from 'react';
-import Skeleton from '@material-ui/lab/Skeleton';
-import { useRouter } from 'next/router';
+import { Tooltip } from '@material-ui/core';
 import RouterLink from 'next/link';
-import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import Typography from '@material-ui/core/Typography';
-import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
-import AddIcon from '@material-ui/icons/Add';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import HomeIcon from '@material-ui/icons/Home';
 import IconButton from '@material-ui/core/IconButton';
 import classNames from 'classnames';
-import { useMutation } from 'react-query';
 
-import { authApi } from '../../hooks/api/auth';
 import { useCurrentUser } from '../../hooks/api/user';
+import Sidebar from './Sidebar';
 import { useDarkMode } from './ThemeProvider';
 import ROUTES from '../../utils/routes';
 import ContestNavigation from './ContestNavigation';
 import Layout from './Layout';
-import { MenuLink } from './Menu';
 import logo from '../../assets/icons/logo.png';
 import logoWhite from '../../assets/icons/logo-white.png';
 
@@ -48,64 +33,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 1, 0, 4),
     flexShrink: 0,
   },
-  menuItem: {
-    transition: 'all 0s linear 0.2s',
-    justifyContent: 'center',
-  },
-  menuItemOpen: {
-    justifyContent: 'flex-start',
-  },
-  menuItemText: {
-    transition: 'all 0.3s ease 0s, max-width 0s linear 0.2s',
-    opacity: 0,
-    maxWidth: 0,
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    textOverflow: 'ellipsis',
-  },
-  menuItemTextOpen: {
-    opacity: 1,
-    maxWidth: 500,
-  },
-  menuItemIcon: {
-    transition: 'all 0.3s ease 0s',
-    minWidth: 'unset',
-    marginRight: 0,
-  },
-  menuItemIconOpen: {
-    marginRight: theme.spacing(4),
-  },
-  avatar: {
-    transition: 'all 0.3s ease 0s',
-    width: 48,
-    height: 48,
-    marginBottom: 0,
-  },
-  avatarOpen: {
-    width: 60,
-    height: 60,
-    marginBottom: theme.spacing(2),
-  },
-  username: {
-    transition: 'all 0.3s ease 0s',
-    maxHeight: 0,
-    textTransform: 'none',
-    opacity: 0,
-  },
-  usernameOpen: {
-    maxHeight: 100,
-    opacity: 1,
-  },
-  profileBox: {
-    padding: theme.spacing(2, 1),
-    transition: 'all 0.3s ease 0s',
-  },
-  profileBoxOpen: {
-    padding: theme.spacing(2),
-  },
-  sidebarMenu: {
-    paddingTop: 0,
-  },
 }));
 
 const Page: React.FC<Props> = ({
@@ -115,7 +42,6 @@ const Page: React.FC<Props> = ({
   subHeader,
 }) => {
   const classes = useStyles();
-  const router = useRouter();
   const {
     data: { data: user } = {},
     remove,
@@ -123,28 +49,38 @@ const Page: React.FC<Props> = ({
     refetch,
   } = useCurrentUser({});
   const { username = '', avatar } = user || {};
-  const { mutateAsync: logout } = useMutation(authApi.logout);
   const [darkMode, setDarkMode] = useDarkMode();
-  const links: MenuLink[] = [
-    {
-      href: ROUTES.HOME,
-      active: ROUTES.HOME === router.asPath,
-      label: 'Home',
-      icon: <HomeIcon />,
-    },
-    {
-      href: `${ROUTES.USERS}/${username}`,
-      active: `${ROUTES.USERS}/${username}` === router.asPath,
-      label: 'My profile',
-      icon: <AccountCircleOutlinedIcon />,
-    },
-    {
-      href: ROUTES.CONTESTS.NEW,
-      active: ROUTES.CONTESTS.NEW === router.asPath,
-      label: 'New Contest',
-      icon: <AddIcon />,
-    },
-  ];
+
+  const authButtons = (
+    <>
+      <Button
+        color="primary"
+        variant="outlined"
+        className={classes.signupBtn}
+        href={ROUTES.REGISTER}
+      >
+        Sign up
+      </Button>
+      <Button color="primary" href={ROUTES.LOGIN}>
+        Log in
+      </Button>
+    </>
+  );
+
+  const darkModeSwitch = (
+    <div>
+      <Tooltip
+        title="Toggle dark mode"
+        aria-label="toggle-dark-mode"
+        placement="bottom"
+        PopperProps={{ disablePortal: true }}
+      >
+        <IconButton onClick={() => setDarkMode(!darkMode)}>
+          {darkMode ? <BrightnessHighIcon /> : <Brightness4Icon />}
+        </IconButton>
+      </Tooltip>
+    </div>
+  );
 
   return (
     <Layout
@@ -157,140 +93,25 @@ const Page: React.FC<Props> = ({
       className={classNames(classes.content, className)}
       toolbarContent={
         <Box ml="auto" display="flex" alignItems="center">
-          <div>
-            <Tooltip
-              title="Toggle dark mode"
-              aria-label="toggle-dark-mode"
-              placement="bottom"
-              // arrow
-              PopperProps={{ disablePortal: true }}
-            >
-              <IconButton onClick={() => setDarkMode(!darkMode)}>
-                {darkMode ? <BrightnessHighIcon /> : <Brightness4Icon />}
-              </IconButton>
-            </Tooltip>
-          </div>
+          {darkModeSwitch}
           {withContestNavigation && <ContestNavigation />}
-          {!user && (
-            <>
-              <Button
-                color="primary"
-                variant="outlined"
-                className={classes.signupBtn}
-                href={ROUTES.REGISTER}
-              >
-                Sign up
-              </Button>
-              <Button color="primary" href={ROUTES.LOGIN}>
-                Log in
-              </Button>
-            </>
-          )}
+          {!user && authButtons}
         </Box>
       }
       primarySidebar={
         user
           ? ({ open, collapsed }) => (
-              <>
-                <Box
-                  className={classNames(classes.profileBox, {
-                    [classes.profileBoxOpen]: open || !collapsed,
-                  })}
-                >
-                  <RouterLink href={`${ROUTES.USERS}/${username}`} passHref>
-                    {isSuccess ? (
-                      <Avatar
-                        component="a"
-                        src={avatar}
-                        className={classNames(classes.avatar, {
-                          [classes.avatarOpen]: open || !collapsed,
-                        })}
-                      />
-                    ) : (
-                      <Skeleton
-                        animation="wave"
-                        variant="circle"
-                        className={classes.avatar}
-                      />
-                    )}
-                  </RouterLink>
-                  {isSuccess ? (
-                    <Typography
-                      variant="h6"
-                      noWrap
-                      className={classNames(classes.username, {
-                        [classes.usernameOpen]: open || !collapsed,
-                      })}
-                    >
-                      @{username}
-                    </Typography>
-                  ) : (
-                    <Skeleton
-                      animation="wave"
-                      height={20}
-                      width="85%"
-                      className={classNames(classes.username, {
-                        [classes.usernameOpen]: open || !collapsed,
-                      })}
-                    />
-                  )}
-                </Box>
-                <Divider />
-                <List className={classes.sidebarMenu}>
-                  {links.map(({ href, label, icon, active }) => (
-                    <RouterLink key={href} href={href} passHref>
-                      <ListItem
-                        component="a"
-                        button
-                        selected={active}
-                        className={classNames(classes.menuItem, {
-                          [classes.menuItemOpen]: open || !collapsed,
-                        })}
-                      >
-                        <ListItemIcon
-                          className={classNames(classes.menuItemIcon, {
-                            [classes.menuItemIconOpen]: open || !collapsed,
-                          })}
-                        >
-                          {icon}
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={label}
-                          className={classNames(classes.menuItemText, {
-                            [classes.menuItemTextOpen]: open || !collapsed,
-                          })}
-                        />
-                      </ListItem>
-                    </RouterLink>
-                  ))}
-                  <Divider />
-                  <ListItem
-                    button
-                    className={classNames(classes.menuItem, {
-                      [classes.menuItemOpen]: open || !collapsed,
-                    })}
-                    onClick={async () => {
-                      await logout();
-                      remove();
-                      await refetch();
-                    }}
-                  >
-                    <ListItemIcon
-                      className={classNames(classes.menuItemIcon, {
-                        [classes.menuItemIconOpen]: open || !collapsed,
-                      })}
-                    >
-                      <ExitToAppIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary="Logout"
-                      className={classNames(classes.menuItemText, {
-                        [classes.menuItemTextOpen]: open || !collapsed,
-                      })}
-                    />
-                  </ListItem>
-                </List>
-              </>
+              <Sidebar
+                isLoading={!isSuccess}
+                username={username}
+                avatar={avatar}
+                open={open}
+                collapsed={collapsed}
+                onLogout={async () => {
+                  remove();
+                  await refetch();
+                }}
+              />
             )
           : undefined
       }

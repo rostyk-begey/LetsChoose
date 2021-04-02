@@ -18,15 +18,12 @@ import classNames from 'classnames';
 import styled from 'styled-components';
 
 import {
-  HEADER_HEIGHT,
-  HEADER_HEIGHT_XS,
   PRIMARY_SIDEBAR_ID,
-  PRIMARY_SUBHEADER_HEIGHT,
   PRIMARY_SUBHEADER_ID,
-  SECONDARY_SUBHEADER_HEIGHT,
   SECONDARY_SUBHEADER_ID,
-} from '../../utils/constants';
-import Footer from './Footer';
+  SUBHEADER_CONFIG,
+} from './constants';
+import Footer from '../Footer';
 
 interface Props {
   className?: string;
@@ -53,37 +50,24 @@ cozyScheme.configureEdgeSidebar((builder) => {
       collapsedWidth: 65,
       width: 256,
       collapsible: true,
+    })
+    .registerTemporaryConfig('sm', {
+      width: 256,
     });
 });
 
 cozyScheme.configureSubheader((builder) => {
   builder
     .create(PRIMARY_SUBHEADER_ID, {})
-    .registerConfig('sm', {
-      position: 'sticky',
-      top: HEADER_HEIGHT,
-      initialHeight: PRIMARY_SUBHEADER_HEIGHT,
-    })
-    .registerConfig('xs', {
-      position: 'sticky',
-      top: HEADER_HEIGHT_XS,
-      initialHeight: PRIMARY_SUBHEADER_HEIGHT,
-    });
+    .registerConfig('sm', SUBHEADER_CONFIG[PRIMARY_SUBHEADER_ID].sm)
+    .registerConfig('xs', SUBHEADER_CONFIG[PRIMARY_SUBHEADER_ID].xs);
 });
 
 cozyScheme.configureSubheader((builder) => {
   builder
     .create(SECONDARY_SUBHEADER_ID, {})
-    .registerConfig('sm', {
-      position: 'sticky',
-      top: HEADER_HEIGHT + PRIMARY_SUBHEADER_HEIGHT - 2,
-      initialHeight: SECONDARY_SUBHEADER_HEIGHT,
-    })
-    .registerConfig('xs', {
-      position: 'sticky',
-      top: HEADER_HEIGHT_XS + PRIMARY_SUBHEADER_HEIGHT - 2,
-      initialHeight: SECONDARY_SUBHEADER_HEIGHT,
-    });
+    .registerConfig('sm', SUBHEADER_CONFIG[SECONDARY_SUBHEADER_ID].sm)
+    .registerConfig('xs', SUBHEADER_CONFIG[SECONDARY_SUBHEADER_ID].xs);
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -100,6 +84,10 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flex: 1,
     backgroundColor: theme.palette.background.default,
+  },
+  sidebarContent: {
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));
 
@@ -131,7 +119,7 @@ const Layout: React.FC<Props> = ({
           </MuiHeader>
           {subHeader}
           <MuiDrawerSidebar sidebarId="primarySidebar" open={!!primarySidebar}>
-            <MuiSidebarContent>
+            <MuiSidebarContent className={classes.sidebarContent}>
               {!!primarySidebar && primarySidebar(sidebar.primarySidebar)}
             </MuiSidebarContent>
             <MuiCollapseBtn />

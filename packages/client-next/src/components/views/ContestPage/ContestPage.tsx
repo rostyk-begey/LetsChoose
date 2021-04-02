@@ -1,5 +1,5 @@
-import { NextSeo } from 'next-seo';
 import React from 'react';
+import { NextSeo } from 'next-seo';
 import Fab from '@material-ui/core/Fab';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -40,6 +40,12 @@ import Table from './Table';
 const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
   root: {
     display: 'flex',
+  },
+  headerTitle: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    marginRight: theme.spacing(2),
   },
   content: {
     margin: 'auto',
@@ -111,7 +117,7 @@ const ContestPage: React.FC = () => {
     data: contestResponse,
     isLoading: contestIsLoading,
     remove: removeContest,
-  } = useContestFind(contestId as string);
+  } = useContestFind(contestId as string, { useErrorBoundary: false });
   const { data: { data: user } = {} } = useCurrentUser({});
   const contest = (contestResponse?.data as Contest) || null;
   const isCurrentUserAuthor = user?._id === contest?.author;
@@ -180,7 +186,9 @@ const ContestPage: React.FC = () => {
       subHeader={
         contest ? (
           <Subheader className={classes.subheader}>
-            <Typography variant="h5">{contest.title}</Typography>
+            <Typography variant="h5" className={classes.headerTitle}>
+              {contest.title}
+            </Typography>
             <div className={classes.subheaderStats}>
               <Divider orientation="vertical" className={classes.divider} />
               {itemsChip}
@@ -319,7 +327,7 @@ const ContestPage: React.FC = () => {
                   {contest ? (
                     <>
                       <CardContent>
-                        <Typography variant="h3" gutterBottom>
+                        <Typography variant="h4" gutterBottom>
                           {contest.title}
                         </Typography>
                         <Typography variant="body1">

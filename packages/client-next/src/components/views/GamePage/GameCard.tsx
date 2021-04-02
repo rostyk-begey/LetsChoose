@@ -40,7 +40,6 @@ const GameCard: React.FC<Props> = ({ item, onClick = () => null }) => {
     <Card
       className={classNames(classes.gameCard, shadowStyles.root)}
       onClick={onClick}
-      title={item.title}
     >
       <CardMedia classes={cardMediaStyles} className={classes.imageHolder}>
         <img src={item.image} alt="" className={classes.image} />

@@ -6,7 +6,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import MuiTableRow from '@material-ui/core/TableRow';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useTable, Column } from 'react-table';
 import json2mq from 'json2mq';
 
@@ -18,14 +17,7 @@ interface Props {
   skeleton?: boolean;
 }
 
-const useStyles = makeStyles({
-  image: {
-    width: 100,
-  },
-});
-
 const Table: React.FC<Props> = ({ data, skeleton }) => {
-  const classes = useStyles();
   const columns: Array<Column<any>> = useMemo(
     () => [
       {
@@ -67,7 +59,7 @@ const Table: React.FC<Props> = ({ data, skeleton }) => {
     ],
     [],
   );
-  const matchesMaxWidth760 = useMediaQuery(
+  const matchesMaxWidth700 = useMediaQuery(
     json2mq({
       maxWidth: 700,
     }),
@@ -75,6 +67,7 @@ const Table: React.FC<Props> = ({ data, skeleton }) => {
 
   const defaultHiddenColumns = ['compares', 'wins', 'finalWins', 'games'];
   const mobileHiddenColumns = [
+    'title',
     'finalWinRate',
     'winRate',
     ...defaultHiddenColumns,
@@ -97,12 +90,12 @@ const Table: React.FC<Props> = ({ data, skeleton }) => {
   });
 
   useEffect(() => {
-    if (matchesMaxWidth760) {
+    if (matchesMaxWidth700) {
       setHiddenColumns(mobileHiddenColumns);
     } else {
       setHiddenColumns(defaultHiddenColumns);
     }
-  }, [matchesMaxWidth760]);
+  }, [matchesMaxWidth700]);
 
   /*
     Render the UI for your table

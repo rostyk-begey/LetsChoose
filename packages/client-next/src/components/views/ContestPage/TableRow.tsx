@@ -56,7 +56,6 @@ export const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
     alignItems: 'center',
     position: 'relative',
     overflow: 'hidden',
-    paddingBottom: '75%',
     margin: 0,
   },
   previewImage: {
@@ -90,13 +89,19 @@ const StatisticRow: React.FC<{ title: string }> = ({ title, children }) => (
 const TableRow: React.FC<Props> = ({ row }) => {
   const [open, setOpen] = useState(false);
   const {
-    cells: [rank, image, title, ...cells],
+    cells: [rank, image, ...cells],
     allCells,
+    values,
   } = row;
   const classes = useStyles({ index: row.index });
   const matchesMaxWidth960 = useMediaQuery(
     json2mq({
       maxWidth: 960,
+    }),
+  );
+  const matchesMinWidth700 = useMediaQuery(
+    json2mq({
+      minWidth: 700,
     }),
   );
   const imageSrc = image.value.replace(
@@ -137,23 +142,29 @@ const TableRow: React.FC<Props> = ({ row }) => {
             <img src={imageSrc} className={classes.previewImage} alt="" />
           </figure>
         </TableCell>
-        <TableCell
-          style={matchesMaxWidth960 ? { width: '100%' } : undefined}
-          {...title.getCellProps()}
-        >
-          <Typography variant="h6" component="div">
-            {title.value}
-          </Typography>
-        </TableCell>
-        {cells.map((cell, i) => (
-          <TableCell key={i} {...cell.getCellProps()}>
-            {matchesMaxWidth960 ? (
-              <CircularProgressWithLabel value={cell.value * 100} />
-            ) : (
-              <LinearProgress variant="determinate" value={cell.value * 100} />
-            )}
-          </TableCell>
-        ))}
+        {cells.map((cell, i) =>
+          i === 0 ? (
+            <TableCell
+              style={matchesMaxWidth960 ? { width: '100%' } : undefined}
+              {...cell.getCellProps()}
+            >
+              <Typography variant="h6" component="div">
+                {cell.value}
+              </Typography>
+            </TableCell>
+          ) : (
+            <TableCell key={i} {...cell.getCellProps()}>
+              {matchesMaxWidth960 ? (
+                <CircularProgressWithLabel value={cell.value * 100} />
+              ) : (
+                <LinearProgress
+                  variant="determinate"
+                  value={cell.value * 100}
+                />
+              )}
+            </TableCell>
+          ),
+        )}
       </MuiTableRow>
       <MuiTableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -167,7 +178,7 @@ const TableRow: React.FC<Props> = ({ row }) => {
                 </Grid>
                 <Grid item md={7} xs={12}>
                   <Typography variant="h6" gutterBottom component="div">
-                    {title.value}
+                    {values.title}
                   </Typography>
                   <MuiTable size="small" aria-label="item-info">
                     <TableBody>
