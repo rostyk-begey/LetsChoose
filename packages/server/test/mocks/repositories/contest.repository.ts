@@ -62,6 +62,10 @@ const ContestRepository: IContestRepository = {
 
 ContestRepository.countDocuments = jest.fn(ContestRepository.countDocuments);
 ContestRepository.aggregate = jest.fn(ContestRepository.aggregate);
+ContestRepository.createContest = jest.fn(ContestRepository.createContest);
+ContestRepository.findByIdAndUpdate = jest.fn(
+  ContestRepository.findByIdAndUpdate,
+);
 ContestRepository.findById = jest.fn(ContestRepository.findById);
 ContestRepository.findByAuthor = jest.fn(ContestRepository.findByAuthor);
 ContestRepository.findByIdAndUpdate = jest.fn(

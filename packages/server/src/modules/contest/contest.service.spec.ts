@@ -13,6 +13,8 @@ import { ContestService, CreateContestsData } from './contest.service';
 
 describe('ContestService', () => {
   let contestService: ContestService;
+  const contestId = mockContests[0].id;
+  const thumbnail = `path:contests/${contestId}/thumbnail`;
   const contestData = {
     files: [
       { fieldname: 'thumbnail', path: 'path' },
@@ -55,8 +57,11 @@ describe('ContestService', () => {
   });
 
   test('findById', async () => {
-    const contest = await contestService.findContestById(mockContests[0].id);
+    const contest = await contestService.findContestById(contestId);
+
     expect(contest).toMatchObject(mockContests[0]);
+
+    expect(MockContestRepository.findById).toBeCalledWith(contestId);
   });
 
   test('getContestsPaginate', async () => {
@@ -75,6 +80,8 @@ describe('ContestService', () => {
     expect(response.totalPages).toEqual(
       Math.ceil(mockContests.length / perPage),
     );
+
+    expect(MockContestRepository.aggregate).toBeCalled();
   });
 
   test('findContestsByAuthor', async () => {
@@ -84,6 +91,8 @@ describe('ContestService', () => {
     expect(contest).toMatchObject(
       mockContests.filter(({ author: a }) => a === author),
     );
+
+    expect(MockContestRepository.findByAuthor).toBeCalledWith(author);
   });
 
   test('createContest', async () => {
@@ -91,6 +100,15 @@ describe('ContestService', () => {
 
     await contestService.createContest(userId, contestData);
     const [contest] = await contestService.findContestsByAuthor(userId);
+    const thumbnail = `path:contests/${contest.id}/thumbnail`;
+
+    expect(MockContestRepository.createContest).toBeCalledWith({
+      _id: contest._id,
+      author: userId,
+      title: contestData.title,
+      excerpt: contestData.excerpt,
+      thumbnail,
+    });
 
     expect(contest.author).toEqual(userId);
 
@@ -98,7 +116,7 @@ describe('ContestService', () => {
 
     expect(contest.excerpt).toEqual(contestData.excerpt);
 
-    expect(contest.thumbnail).toEqual(`path:contests/${contest.id}/thumbnail`);
+    expect(contest.thumbnail).toEqual(thumbnail);
 
     expect(MockCloudinaryService.upload).toBeCalledWith(
       'path',
@@ -107,28 +125,32 @@ describe('ContestService', () => {
   });
 
   test('updateContest', async () => {
-    const contest = await contestService.updateContest(
-      mockContests[0].id,
-      contestData,
-    );
+    const contest = await contestService.updateContest(contestId, contestData);
+
+    expect(MockContestRepository.findByIdAndUpdate).toBeCalledWith(contestId, {
+      title: contestData.title,
+      excerpt: contestData.excerpt,
+      thumbnail: `path:contests/${contest.id}/thumbnail`,
+    });
 
     expect(contest.title).toEqual(contestData.title);
 
     expect(contest.excerpt).toEqual(contestData.excerpt);
 
-    expect(contest.thumbnail).toEqual(`path:contests/${contest.id}/thumbnail`);
+    expect(contest.thumbnail).toEqual(thumbnail);
 
     expect(MockCloudinaryService.upload).toBeCalledWith(
       'path',
-      `contests/${contest.id}/thumbnail`,
+      `contests/${contestId}/thumbnail`,
     );
   });
 
   test('removeContest', async () => {
-    const contestId = mockContests[0].id;
     await contestService.removeContest(contestId);
     await contestService.findContestById(contestId).catch((e) => {
       expect(e).toBeInstanceOf(Error);
     });
+
+    expect(MockContestRepository.deleteContest).toBeCalledWith(contestId);
   });
 });

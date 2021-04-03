@@ -12,11 +12,21 @@ const ContestItemRepository: IContestItemRepository = {
   async countDocuments(): Promise<number> {
     return mockContestItems.length;
   },
-  async aggregate(aggregations?: any[]): Promise<ContestItem[]> {
+  async aggregate(): Promise<ContestItem[]> {
     return mockContestItems;
   },
   async findById(itemId: string): Promise<ContestItem> {
     const contestItem = mockContestItems.find(({ id }) => itemId === id);
+    if (!contestItem) {
+      throw new Error('contest item not found');
+    }
+    return contestItem;
+  },
+  async findByIdAndUpdate(itemId: string): Promise<ContestItem> {
+    const contestItemIndex = mockContestItems.findIndex(
+      ({ id }) => itemId === id,
+    );
+    const contestItem = mockContestItems[contestItemIndex];
     if (!contestItem) {
       throw new Error('contest item not found');
     }
@@ -29,6 +39,9 @@ const ContestItemRepository: IContestItemRepository = {
     mockContestItems = mockContestItems.filter(
       ({ contestId: cId }) => contestId !== cId,
     );
+  },
+  async updateContestItems(): Promise<void> {
+    return;
   },
   async createContestItem(data: CreateContestItemDto): Promise<ContestItem> {
     const id = new Types.ObjectId().toString();
@@ -59,6 +72,12 @@ ContestItemRepository.deleteContestItems = jest.fn(
 );
 ContestItemRepository.createContestItem = jest.fn(
   ContestItemRepository.createContestItem,
+);
+ContestItemRepository.updateContestItems = jest.fn(
+  ContestItemRepository.updateContestItems,
+);
+ContestItemRepository.deleteContestItems = jest.fn(
+  ContestItemRepository.deleteContestItems,
 );
 
 export default ContestItemRepository;

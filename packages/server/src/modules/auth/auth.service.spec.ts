@@ -79,37 +79,24 @@ describe('AuthService', () => {
     });
 
     expect(userId).toEqual(user.id);
-    // test('test userId', () => {});
 
     expect(accessToken).toEqual(mockToken);
-    // test('test accessToken', () => {});
 
     expect(refreshToken).toEqual(mockToken);
-    // test('test refreshToken', () => {
-    // });
 
     expect(MockJwtService.generateAuthTokenPair).toBeCalledWith(
       userId,
       user.passwordVersion,
     );
-    // test('test generateAuthTokenPair', () => {
-    // });
   });
 
   test('requestPasswordReset', async () => {
     const [user] = mockUsers;
     await authService.requestPasswordReset({ email: user.email });
 
-    // beforeAll(async () => {
-    // });
-
     expect(MockJwtService.generateResetPasswordToken).toBeCalledWith(user.id);
-    // test('test generateRefreshToken', () => {
-    // });
 
     expect(MockEmailService.sendResetPasswordEmail).toBeCalled();
-    // test('test sendResetPasswordEmail', () => {
-    // });
   });
 
   test('resetUsersPassword', async () => {
@@ -118,29 +105,17 @@ describe('AuthService', () => {
     const mockToken = MockJwtService.generateEmailToken(user.id);
     await authService.resetUsersPassword(mockToken, newPassword);
 
-    // beforeAll(async () => {
-    //   resUser =
-    // });
-
     expect(MockJwtService.verifyPasswordResetToken).toBeCalledWith(mockToken);
-    // test('test verifyPasswordResetToken', () => {
-    // });
 
     expect(MockPasswordHashService.hash).toBeCalledWith(newPassword, 12);
-    // test('test hash password', () => {
-    // });
 
     expect((await userRepository.findByEmail(user.email)).password).toEqual(
       newPassword,
     );
-    // test('test new password', () => {
-    // });
 
     expect(
       (await userRepository.findByEmail(user.email)).passwordVersion,
     ).toEqual(user.passwordVersion + 1);
-    // test('test new passwordVersion', () => {
-    // });
   });
 
   test('refreshToken', async () => {
@@ -156,23 +131,15 @@ describe('AuthService', () => {
     } = await authService.refreshToken(mockToken);
 
     expect(userId).toEqual(user.id);
-    // test('test userId', () => {
-    // });
 
     expect(accessToken).toEqual(mockToken);
-    // test('test accessToken', () => {
-    // });
 
     expect(refreshToken).toEqual(mockToken);
-    // test('test refreshToken', () => {
-    // });
 
     expect(MockJwtService.generateAuthTokenPair).toBeCalledWith(
       userId,
       user.passwordVersion,
     );
-    // test('test generateAuthTokenPair', () => {
-    // });
   });
 
   test('confirmEmail', async () => {
@@ -180,17 +147,11 @@ describe('AuthService', () => {
     const mockToken = MockJwtService.generateEmailToken(user.id);
 
     await authService.confirmEmail(mockToken);
-    // beforeAll(async () => {
-    // });
 
     expect(MockJwtService.verifyEmailToken).toBeCalledWith(mockToken);
-    // test('test verifyEmailToken', () => {
-    // });
 
     expect(userRepository.findByIdAndUpdate).toBeCalledWith(user.id, {
       confirmed: true,
     });
-    // test('test verifyEmailToken', () => {
-    // });
   });
 });

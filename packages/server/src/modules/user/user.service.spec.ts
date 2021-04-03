@@ -4,6 +4,7 @@ import MockContestRepository from '../../../test/mocks/repositories/contest.repo
 import MockContestItemRepository from '../../../test/mocks/repositories/contest-item.repository';
 import MockCloudinaryService from '../../../test/mocks/services/cloudinary.service';
 import MockUserRepository from '../../../test/mocks/repositories/user.repository';
+import MockGameRepository from '../../../test/mocks/repositories/game.repository';
 import { TYPES } from '../../injectable.types';
 import { ContestService } from '../contest/contest.service';
 
@@ -31,6 +32,7 @@ describe('UserService', () => {
           useValue: new ContestService(
             MockContestRepository,
             MockContestItemRepository,
+            MockGameRepository,
             MockCloudinaryService,
             MockUserRepository,
           ),

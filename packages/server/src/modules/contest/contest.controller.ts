@@ -1,10 +1,12 @@
 import {
   Contest,
+  CreateContestDTO,
   GetContestQuery,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
   HttpResponseMessageDto,
+  UpdateContestData,
 } from '@lets-choose/common';
 import {
   Body,
@@ -29,7 +31,6 @@ import { IContestService } from '../../abstract/contest.service.interface';
 import { TYPES } from '../../injectable.types';
 import { JoiValidationPipe } from '../../pipes/JoiValidationPipe';
 import { fieldNameFilter, unlinkAsync } from '../../usecases/utils';
-import { ContestItem } from './contest-item.schema';
 import { getContestItemsSchema, getContestSchema } from './contest.validation';
 
 @ApiTags('Contest')
@@ -73,9 +74,7 @@ export class ContestController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
   public async create(
-    @Body('title') title: string,
-    @Body('excerpt') excerpt: string,
-    @Body('items') items: Pick<ContestItem, 'title'>[],
+    @Body() { title, excerpt, items }: CreateContestDTO,
     @UploadedFiles() files,
     @Req() { user }: any,
   ): Promise<Contest> {
@@ -106,8 +105,7 @@ export class ContestController {
   @Post('/:contestId')
   public async update(
     @Param('contestId') contestId: string,
-    @Body('title') title: string,
-    @Body('excerpt') excerpt: string,
+    @Body() { title, excerpt }: UpdateContestData,
     @UploadedFiles() files,
   ): Promise<HttpResponseMessageDto> {
     await this.contestService.updateContest(contestId, {

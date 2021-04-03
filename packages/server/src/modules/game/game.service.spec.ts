@@ -321,5 +321,19 @@ describe('GameService', () => {
     expect(game.totalRounds).toEqual(
       game.items.length > 2 ? Math.sqrt(game.items.length) : 1,
     );
+
+    expect(MockContestRepository.findById).toBeCalledWith(contestId);
+
+    expect(MockGameRepository.createGame).toBeCalledWith({
+      _id: game._id,
+      contestId,
+      items: game.items,
+      finished: false,
+      round: 0,
+      pairNumber: 1,
+      pairsInRound: game.pairsInRound,
+      totalRounds: game.totalRounds,
+      pair: (game.pair as ContestItem[]).map(({ _id }) => _id),
+    });
   });
 });

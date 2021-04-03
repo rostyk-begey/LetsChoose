@@ -1,4 +1,3 @@
-import { Contest } from '@lets-choose/common';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import { shuffle } from 'lodash';

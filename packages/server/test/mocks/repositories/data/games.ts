@@ -7,6 +7,8 @@ const games: Game[] = [
     _id: '5f88bcef179ef455fff64e76',
     id: '5f88bcef179ef455fff64e76',
     contestId: '5f356138cf38e922503cb564',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f35613bcf38e922503cb567',
@@ -39,6 +41,8 @@ const games: Game[] = [
     _id: '5f89d90daae4a000265e3dd0',
     id: '5f89d90daae4a000265e3dd0',
     contestId: '5f356138cf38e922503cb564',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f35613bcf38e922503cb566',
@@ -71,6 +75,8 @@ const games: Game[] = [
     _id: '5f89dc3989fccc0024b29770',
     id: '5f89dc3989fccc0024b29770',
     contestId: '5f89dc3289fccc0024b2976d',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f89dc3389fccc0024b2976f',
@@ -93,6 +99,8 @@ const games: Game[] = [
     _id: '5f89dc9f36cc0d1b3e4363ff',
     id: '5f89dc9f36cc0d1b3e4363ff',
     contestId: '5f89dc3289fccc0024b2976d',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f89dc3389fccc0024b2976f',
@@ -115,6 +123,8 @@ const games: Game[] = [
     _id: '5f89dd6636cc0d1b3e436400',
     id: '5f89dd6636cc0d1b3e436400',
     contestId: '5f89dc3289fccc0024b2976d',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f89dc3389fccc0024b2976e',
@@ -137,6 +147,8 @@ const games: Game[] = [
     _id: '5f8e0da2059e4d816f8e6ae6',
     id: '5f8e0da2059e4d816f8e6ae6',
     contestId: '5f356138cf38e922503cb564',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f35613bcf38e922503cb566',
@@ -168,6 +180,8 @@ const games: Game[] = [
     _id: '5f8e0e8a184a7682fd9592a4',
     id: '5f8e0e8a184a7682fd9592a4',
     contestId: '5f356138cf38e922503cb564',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f35613bcf38e922503cb568',
@@ -199,6 +213,8 @@ const games: Game[] = [
     _id: '5f8e0e92184a7682fd9592a5',
     id: '5f8e0e92184a7682fd9592a5',
     contestId: '5f89dc3289fccc0024b2976d',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f89dc3389fccc0024b2976e',
@@ -220,6 +236,8 @@ const games: Game[] = [
     _id: '5f8e0e9e184a7682fd9592a6',
     id: '5f8e0e9e184a7682fd9592a6',
     contestId: '5f356138cf38e922503cb564',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f35613bcf38e922503cb569',
@@ -252,6 +270,8 @@ const games: Game[] = [
     _id: '5f8e0f34526a358398933aec',
     id: '5f8e0f34526a358398933aec',
     contestId: '5f356138cf38e922503cb564',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f35613bcf38e922503cb567',
@@ -284,6 +304,8 @@ const games: Game[] = [
     _id: '5f8e0f41526a358398933aed',
     id: '5f8e0f41526a358398933aed',
     contestId: '5f89dc3289fccc0024b2976d',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f89dc3389fccc0024b2976e',
@@ -306,6 +328,8 @@ const games: Game[] = [
     _id: '5f8e0f4f526a358398933aee',
     id: '5f8e0f4f526a358398933aee',
     contestId: '5f89dc3289fccc0024b2976d',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f89dc3389fccc0024b2976e',
@@ -328,6 +352,8 @@ const games: Game[] = [
     _id: '5f8e0fc443e3b48540482fc6',
     id: '5f8e0fc443e3b48540482fc6',
     contestId: '5f89dc3289fccc0024b2976d',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f89dc3389fccc0024b2976e',
@@ -350,6 +376,8 @@ const games: Game[] = [
     _id: '5f8e12c2e9348288aec0602c',
     id: '5f8e12c2e9348288aec0602c',
     contestId: '5f89dc3289fccc0024b2976d',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f89dc3389fccc0024b2976f',
@@ -372,6 +400,8 @@ const games: Game[] = [
     _id: '5f8e13ab41741589e037f627',
     id: '5f8e13ab41741589e037f627',
     contestId: '5f89dc3289fccc0024b2976d',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f89dc3389fccc0024b2976e',
@@ -394,6 +424,8 @@ const games: Game[] = [
     _id: '5f8e15924e24c98c44945465',
     id: '5f8e15924e24c98c44945465',
     contestId: '5f89dc3289fccc0024b2976d',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f89dc3389fccc0024b2976f',
@@ -416,6 +448,8 @@ const games: Game[] = [
     _id: '5f8e166f356fb48cd2dfb79e',
     id: '5f8e166f356fb48cd2dfb79e',
     contestId: '5f89dc3289fccc0024b2976d',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f89dc3389fccc0024b2976f',
@@ -438,6 +472,8 @@ const games: Game[] = [
     _id: '5f8e2957304ef9a9ce71be57',
     id: '5f8e2957304ef9a9ce71be57',
     contestId: '5f356138cf38e922503cb564',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f35613bcf38e922503cb566',
@@ -470,6 +506,8 @@ const games: Game[] = [
     _id: '5f8f1d82f0cf7bf8ac7a9bb5',
     id: '5f8f1d82f0cf7bf8ac7a9bb5',
     contestId: '5f356138cf38e922503cb564',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f35613bcf38e922503cb566',
@@ -502,6 +540,8 @@ const games: Game[] = [
     _id: '5f8f1d8ff0cf7bf8ac7a9bb6',
     id: '5f8f1d8ff0cf7bf8ac7a9bb6',
     contestId: '5f356138cf38e922503cb564',
+    pairsInRound: 0,
+    pairNumber: 0,
     items: [
       {
         contestItem: '5f35613bcf38e922503cb569',
