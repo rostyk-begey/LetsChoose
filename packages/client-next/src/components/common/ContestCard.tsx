@@ -38,9 +38,8 @@ import {
 import { useGameStart } from '../../hooks/api/game';
 import { useCurrentUser } from '../../hooks/api/user';
 import ROUTES from '../../utils/routes';
-import ContestCardSkeleton from './ContestCardSkeleton';
 
-const useStyles = makeStyles(() => ({
+export const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     maxWidth: 345,
@@ -51,35 +50,50 @@ const useStyles = makeStyles(() => ({
   },
   media: {
     height: 0,
-    paddingTop: '100%',
+    paddingTop: '75%',
   },
   cursorPointer: {
     cursor: 'pointer',
   },
+  title: {
+    textTransform: 'none',
+    color: theme.palette.text.primary,
+    fontWeight: theme.typography.fontWeightMedium,
+    '&:hover': {
+      textDecoration: 'underline',
+      color: theme.palette.text.primary,
+    },
+  },
   actions: {
     marginTop: 'auto',
+    padding: theme.spacing(0),
   },
   playBtn: {
     marginLeft: 'auto',
   },
+  cardHeader: {
+    padding: theme.spacing(1, 1.5),
+  },
+  cardContent: {
+    padding: theme.spacing(1, 1.5),
+  },
+  sliderNavigation: {
+    padding: theme.spacing(0.5, 0),
+  },
 }));
 
 interface Props {
-  contest?: Contest;
+  contest: Contest;
   onDelete?: () => any;
 }
 
-const itemsPerPage = 2;
+const itemsPerPage = 5;
 const loadingOffset = 1;
 
 const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   const classes = useStyles();
   const shadowStyles = useOverShadowStyles();
   const router = useRouter();
-
-  if (!contest) {
-    return <ContestCardSkeleton />;
-  }
 
   const { id, thumbnail, title, excerpt, author, games, createdAt } = contest;
   const username = (author as UserDto).username;
@@ -89,9 +103,13 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
     fetchNextPage,
     hasNextPage,
     isLoading,
-  } = useContestItemsInfinite(contest.id, { perPage: itemsPerPage });
+  } = useContestItemsInfinite(contest.id, { page: 2, perPage: itemsPerPage });
   const pages = data?.pages || [];
   const { totalItems = 0 } = pages?.[0]?.data || {};
+  const currentItemsLength = pages.reduce(
+    (acc, { data: { items } }) => acc + items.length,
+    0,
+  );
   let currentPage = 0;
   if (data) {
     ({ currentPage = 0 } = pages[pages.length - 1].data);
@@ -151,6 +169,7 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   return (
     <Card className={classNames(classes.root, shadowStyles.root)}>
       <CardHeader
+        className={classes.cardHeader}
         avatar={
           <RouterLink href={`${ROUTES.USERS}/${username}`}>
             <Avatar
@@ -209,15 +228,16 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
               />
             )),
           )}
-          {Array.from({ length: loadingOffset }).map((_, i) => (
-            <Skeleton
-              key={i}
-              animation="wave"
-              variant="rect"
-              className={classes.media}
-            />
-          ))}
-          <Skeleton animation="wave" variant="rect" className={classes.media} />
+          {Array.from({ length: totalItems - currentItemsLength }).map(
+            (_, i) => (
+              <Skeleton
+                key={i}
+                animation="wave"
+                variant="rect"
+                className={classes.media}
+              />
+            ),
+          )}
         </SwipeableViews>
       </RouterLink>
       <MobileStepper
@@ -225,6 +245,7 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
         position="static"
         variant="text"
         activeStep={activeStep}
+        className={classes.sliderNavigation}
         nextButton={
           <Button
             size="small"
@@ -242,23 +263,31 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
           </Button>
         }
       />
-      <CardContent>
-        <Typography variant="subtitle1">{title}</Typography>
+      <CardContent className={classes.cardContent}>
+        <RouterLink href={`${ROUTES.CONTESTS.INDEX}/${contest.id}`} passHref>
+          <Typography
+            component="a"
+            variant="subtitle1"
+            className={classes.title}
+          >
+            {title}
+          </Typography>
+        </RouterLink>
         <Typography variant="body2" color="textSecondary" component="p">
           {clip(excerpt, 150)}
         </Typography>
       </CardContent>
       <CardActions className={classes.actions} disableSpacing>
         <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
+          <FavoriteIcon fontSize="small" />
         </IconButton>
         <IconButton aria-label="share">
-          <ShareIcon />
+          <ShareIcon fontSize="small" />
         </IconButton>
         <div className={classes.playBtn}>
           {games}&nbsp;
           <IconButton aria-label="play" onClick={onStartGame}>
-            <PlayCircleFilledWhiteIcon color="primary" />
+            <PlayCircleFilledWhiteIcon fontSize="small" color="primary" />
           </IconButton>
         </div>
       </CardActions>

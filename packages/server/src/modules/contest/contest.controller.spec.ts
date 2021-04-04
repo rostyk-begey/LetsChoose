@@ -1,5 +1,5 @@
 import {
-  GetContestQuery,
+  GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
@@ -65,7 +65,7 @@ describe('ContestController', () => {
   });
 
   test('get', async () => {
-    const query: GetContestQuery = {
+    const query: GetContestsQuery = {
       author: '',
       sortBy: '',
       search: '',
@@ -73,7 +73,7 @@ describe('ContestController', () => {
       perPage: 10,
     };
     const result: GetContestsResponse = {
-      contests: [],
+      items: [],
       currentPage: 1,
       totalPages: 10,
       totalItems: 1,

@@ -2,6 +2,9 @@
 import * as Joi from 'joi';
 
 const basePaginationSchema = {
+  nextCursor: Joi.string().empty('').messages({
+    'string:base': 'Next cursor param should be a string',
+  }),
   page: Joi.number().integer().positive().messages({
     'number:base': 'Page param should be a string',
     'number:integer': 'Page param should be a integer value',

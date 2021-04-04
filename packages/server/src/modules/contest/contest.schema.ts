@@ -44,3 +44,5 @@ export class Contest extends ContestModel {
 }
 
 export const ContestSchema = SchemaFactory.createForClass<Contest>(Contest);
+
+ContestSchema.index({ games: -1 });

@@ -1,7 +1,7 @@
 import {
   Contest,
   CreateContestDTO,
-  GetContestQuery,
+  GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
@@ -9,7 +9,7 @@ import {
 } from '@lets-choose/common';
 
 export interface IContestService {
-  getContestsPaginate(query: GetContestQuery): Promise<GetContestsResponse>;
+  getContestsPaginate(query: GetContestsQuery): Promise<GetContestsResponse>;
   findContestById(id: string): Promise<Contest>;
   findContestsByAuthor(author: string): Promise<Contest[]>;
   getContestItemsPaginate(

@@ -1,10 +1,14 @@
-import { CreateContestItemDto } from '@lets-choose/common';
+import {
+  CreateContestItemDto,
+  GetItemsQuery,
+  GetItemsResponse,
+} from '@lets-choose/common';
 
 import { ContestItem } from '../modules/contest/contest-item.schema';
 
 export interface IContestItemRepository {
   countDocuments(contestId?: string): Promise<number>;
-  aggregate(aggregations?: any[]): Promise<ContestItem[]>;
+  paginate(contestId: string, data: GetItemsQuery): Promise<GetItemsResponse>;
   findById(itemId: string): Promise<ContestItem>;
   findByContestId(contestId: string): Promise<ContestItem[]>;
   findByIdAndUpdate(

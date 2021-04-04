@@ -42,23 +42,23 @@ export abstract class FindParams {
   id: string;
 }
 
-export abstract class GetContestQuery implements SearchQuery, PaginationQuery {
+export abstract class GetContestsQuery implements SearchQuery, PaginationQuery {
   author: string;
   sortBy: '' | keyof typeof SORT_OPTIONS;
   search: string;
   page: number;
   perPage: number;
+  nextCursor?: string;
 }
 
-abstract class PaginatedResponse {
+abstract class PaginatedResponse<T extends any> {
+  items: T[];
   totalPages: number;
   totalItems: number;
   currentPage: number;
 }
 
-export abstract class GetContestsResponse extends PaginatedResponse {
-  contests: Contest[];
-}
+export abstract class GetContestsResponse extends PaginatedResponse<Contest> {}
 
 export abstract class GetItemsQuery implements SearchQuery, PaginationQuery {
   search: string;
@@ -66,9 +66,7 @@ export abstract class GetItemsQuery implements SearchQuery, PaginationQuery {
   perPage: number;
 }
 
-export abstract class GetItemsResponse extends PaginatedResponse {
-  items: ContestItem[];
-}
+export abstract class GetItemsResponse extends PaginatedResponse<ContestItem> {}
 
 export abstract class CreateContestDTO {
   title: string;

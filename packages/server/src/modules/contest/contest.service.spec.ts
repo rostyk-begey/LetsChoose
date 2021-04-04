@@ -1,12 +1,16 @@
+import { GetContestsQuery, GetItemsQuery } from '@lets-choose/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import MockContestItemRepository from '../../../test/mocks/repositories/contest-item.repository';
 import MockContestRepository, {
+  mockContestItems,
   mockContests,
 } from '../../../test/mocks/repositories/contest.repository';
 import MockGameRepository from '../../../test/mocks/repositories/game.repository';
 import MockCloudinaryService from '../../../test/mocks/services/cloudinary.service';
-import MockUserRepository from '../../../test/mocks/repositories/user.repository';
+import MockUserRepository, {
+  mockUsers,
+} from '../../../test/mocks/repositories/user.repository';
 import { TYPES } from '../../injectable.types';
 
 import { ContestService, CreateContestsData } from './contest.service';
@@ -67,13 +71,14 @@ describe('ContestService', () => {
   test('getContestsPaginate', async () => {
     const page = 1;
     const perPage = 5;
-    const response = await contestService.getContestsPaginate({
+    const options: GetContestsQuery = {
       page,
       perPage,
-      author: '',
+      author: mockUsers[0].username,
       sortBy: 'NEWEST',
       search: '',
-    });
+    };
+    const response = await contestService.getContestsPaginate(options);
 
     expect(response.currentPage).toEqual(page);
 
@@ -81,7 +86,32 @@ describe('ContestService', () => {
       Math.ceil(mockContests.length / perPage),
     );
 
-    expect(MockContestRepository.aggregate).toBeCalled();
+    expect(MockContestRepository.paginate).toBeCalledWith(options);
+  });
+
+  test('getContestItemsPaginate', async () => {
+    const page = 1;
+    const perPage = 5;
+    const options: GetItemsQuery = {
+      page,
+      perPage,
+      search: '',
+    };
+    const response = await contestService.getContestItemsPaginate(
+      contestId,
+      options,
+    );
+
+    expect(response.currentPage).toEqual(page);
+
+    expect(response.totalPages).toEqual(
+      Math.ceil(mockContestItems.length / perPage),
+    );
+
+    expect(MockContestItemRepository.paginate).toBeCalledWith(
+      contestId,
+      options,
+    );
   });
 
   test('findContestsByAuthor', async () => {

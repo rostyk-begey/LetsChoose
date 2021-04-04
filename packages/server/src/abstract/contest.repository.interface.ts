@@ -1,4 +1,8 @@
-import { Contest } from '@lets-choose/common';
+import {
+  Contest,
+  GetContestsQuery,
+  GetContestsResponse,
+} from '@lets-choose/common';
 
 export type CreateContestData = Omit<
   Contest,
@@ -7,7 +11,7 @@ export type CreateContestData = Omit<
 
 export interface IContestRepository {
   countDocuments(authorId?: string): Promise<number>;
-  aggregate(aggregations?: any[]): Promise<Contest[]>;
+  paginate(data: GetContestsQuery): Promise<GetContestsResponse>;
   findById(contestId: string): Promise<Contest>;
   findByAuthor(author: string): Promise<Contest[]>;
   findByIdAndUpdate(

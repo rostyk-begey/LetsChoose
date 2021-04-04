@@ -1,3 +1,4 @@
+import { GetContestsResponse } from '@lets-choose/common';
 import { Contest } from '../../../src/modules/contest/contest.schema';
 import {
   IContestRepository,
@@ -5,15 +6,22 @@ import {
 } from '../../../src/abstract/contest.repository.interface';
 
 import contests from './data/contests';
+import contestItems from './data/contestItems';
 
 export let mockContests = [...contests];
+export const mockContestItems = [...contestItems];
 
 const ContestRepository: IContestRepository = {
   async countDocuments(): Promise<number> {
     return mockContests.length;
   },
-  async aggregate(): Promise<Contest[]> {
-    return mockContests;
+  async paginate({ page, perPage }): Promise<GetContestsResponse> {
+    return {
+      items: mockContests,
+      currentPage: page,
+      totalPages: Math.ceil(mockContests.length / perPage),
+      totalItems: mockContests.length,
+    };
   },
   async findById(contestId: string): Promise<Contest> {
     const contest = mockContests.find(({ id }) => contestId === id);
@@ -61,7 +69,7 @@ const ContestRepository: IContestRepository = {
 };
 
 ContestRepository.countDocuments = jest.fn(ContestRepository.countDocuments);
-ContestRepository.aggregate = jest.fn(ContestRepository.aggregate);
+ContestRepository.paginate = jest.fn(ContestRepository.paginate);
 ContestRepository.createContest = jest.fn(ContestRepository.createContest);
 ContestRepository.findByIdAndUpdate = jest.fn(
   ContestRepository.findByIdAndUpdate,

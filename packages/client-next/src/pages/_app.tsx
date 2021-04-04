@@ -4,6 +4,7 @@ import { AppProps } from 'next/app';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { StylesProvider } from '@material-ui/core/styles';
 import { QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { DefaultSeo } from 'next-seo';
 
 import ThemeProvider from '../components/common/ThemeProvider';
@@ -48,6 +49,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />
+          <ReactQueryDevtools position="bottom-right" />
         </QueryClientProvider>
       </ThemeProvider>
     </StylesProvider>

@@ -4,7 +4,7 @@ import { useMutation, useQuery, useInfiniteQuery } from 'react-query';
 import {
   Contest,
   CreateContestData,
-  GetContestQuery,
+  GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
@@ -20,7 +20,7 @@ import ROUTES from '../../utils/routes';
 
 export const contestApi = () => {
   const baseURL = ROUTES.API.CONTESTS;
-  const all = (params: GetContestQuery) =>
+  const all = (params: GetContestsQuery) =>
     api.get<GetContestsResponse>(baseURL, { params });
   const allItems = (id: string, params: GetItemsQuery) =>
     api.get<GetItemsResponse>(`${baseURL}/${id}/items`, { params });
@@ -44,10 +44,10 @@ export const useContestFind = (
 };
 
 export const useContestAllInfinite = (
-  params: Partial<GetContestQuery> = {},
+  params: Partial<GetContestsQuery> = {},
   options: UseInfiniteQueryOptions<AxiosResponse<GetContestsResponse>> = {},
 ) => {
-  const queryParams: GetContestQuery = {
+  const queryParams: GetContestsQuery = {
     author: '',
     search: '',
     sortBy: 'POPULAR',

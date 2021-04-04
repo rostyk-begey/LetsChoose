@@ -1,19 +1,12 @@
 import {
   Contest,
   CreateContestDTO,
-  GetContestQuery,
+  GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
-  ISortOptions,
-  SORT_OPTIONS,
 } from '@lets-choose/common';
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 
 import { ICloudinaryService } from '../../abstract/cloudinary.service.interface';
@@ -23,17 +16,7 @@ import { IContestService } from '../../abstract/contest.service.interface';
 import { IGameRepository } from '../../abstract/game.repository.interface';
 import { IUserRepository } from '../../abstract/user.repository.interface';
 import { TYPES } from '../../injectable.types';
-import { fieldNameFilter, unlinkAsync } from '../../usecases/utils';
-import { ContestItem } from './contest-item.schema';
-
-interface SortOptions {
-  rankScore: number;
-  score?: number;
-}
-
-interface SortPipeline {
-  $sort: ISortOptions;
-}
+import { fieldNameFilter } from '../../usecases/utils';
 
 export interface CreateContestsData extends CreateContestDTO {
   files: Express.Multer.File[];
@@ -69,137 +52,22 @@ export class ContestService implements IContestService {
     return `contests/${contestId}/items/${contestItemId}`;
   }
 
-  protected static getPaginationPipelines(page = 1, perPage = 10): any[] {
-    return [
-      {
-        $skip: (+page - 1) * perPage,
-      },
-      {
-        $limit: +perPage,
-      },
-    ];
-  }
-
-  protected static getSearchPipelines(search = ''): any[] {
-    const query = search.trim();
-    if (!query) return [];
-
-    return [
-      {
-        $search: {
-          text: {
-            query,
-            path: ['title', 'excerpt'],
-            fuzzy: {
-              maxEdits: 2,
-            },
-          },
-        },
-      },
-      {
-        $addFields: {
-          score: { $meta: 'searchScore' },
-        },
-      },
-    ];
-  }
-
-  protected static getSortPipeline(
-    search: string,
-    sortBy: string | keyof typeof SORT_OPTIONS = SORT_OPTIONS.POPULAR,
-  ): { $sort: ISortOptions } {
-    const sortOptions: ISortOptions = search ? { score: -1 } : {};
-    if (sortBy) {
-      sortOptions[sortBy] = -1;
-    }
-
-    return { $sort: sortOptions };
-  }
-
-  protected static getItemsSortPipeline(search: string): SortPipeline {
-    const sortOptions: SortOptions = { rankScore: -1 };
-    if (search) {
-      sortOptions.score = -1;
-    }
-
-    return { $sort: sortOptions };
-  }
-
   public async getContestsPaginate({
     page = 1,
     perPage = 10,
     search = '',
     sortBy = 'POPULAR',
     author: authorUsername = '',
-  }: GetContestQuery): Promise<GetContestsResponse> {
+  }: GetContestsQuery): Promise<GetContestsResponse> {
     const author = await this.userRepository.findByUsername(authorUsername);
 
-    let totalItems: number;
-
-    if (authorUsername && author) {
-      totalItems = await this.contestRepository.countDocuments(author.id);
-    } else if (authorUsername && !author) {
-      throw new NotFoundException('Invalid author');
-    } else {
-      totalItems = await this.contestRepository.countDocuments();
-    }
-
-    const totalPages = Math.ceil(totalItems / perPage);
-
-    if (+page > totalPages) {
-      throw new BadRequestException('Invalid page number');
-    }
-
-    const matchPipeline = author
-      ? [{ $match: { 'author.username': authorUsername } }]
-      : [];
-
-    const contests: Contest[] = await this.contestRepository.aggregate([
-      ...ContestService.getSearchPipelines(search), // should be a first stage
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'author',
-          foreignField: '_id',
-          as: 'author',
-        },
-      },
-      {
-        $lookup: {
-          from: 'contestitems',
-          localField: '_id',
-          foreignField: 'contestId',
-          as: 'items',
-        },
-      },
-      {
-        $unwind: '$author',
-      },
-      ...matchPipeline,
-      ContestService.getSortPipeline(search, SORT_OPTIONS[sortBy]),
-      ...ContestService.getPaginationPipelines(page, perPage),
-      {
-        $project: {
-          _id: 1,
-          id: '$_id',
-          thumbnail: 1,
-          title: 1,
-          items: 1,
-          excerpt: 1,
-          games: 1,
-          createdAt: 1,
-          'author.avatar': 1,
-          'author.username': 1,
-        },
-      },
-    ]);
-
-    return {
-      contests,
-      currentPage: +page,
-      totalPages,
-      totalItems,
-    };
+    return await this.contestRepository.paginate({
+      page,
+      perPage,
+      search,
+      sortBy,
+      ...(author && { author: authorUsername }),
+    });
   }
 
   public findContestById(id: string): Promise<Contest> {
@@ -216,63 +84,11 @@ export class ContestService implements IContestService {
   ): Promise<GetItemsResponse> {
     await this.findContestById(contestId);
 
-    const totalItems = await this.contestItemRepository.countDocuments(
-      contestId,
-    );
-
-    const totalPages = Math.ceil(totalItems / perPage);
-
-    if (+page > totalPages) {
-      throw new BadRequestException('Invalid page number');
-    }
-
-    const items = await this.contestItemRepository.aggregate([
-      ...ContestService.getSearchPipelines(search), // should be a first stage
-      { $match: { contestId: mongoose.Types.ObjectId(contestId) } },
-      {
-        $project: {
-          _id: 1,
-          id: '$_id',
-          title: 1,
-          image: 1,
-          compares: 1,
-          contestId: 1,
-          wins: 1,
-          games: 1,
-          finalWins: 1,
-          winRate: {
-            $cond: {
-              if: { $gt: ['$compares', 0] },
-              then: { $divide: ['$wins', '$compares'] },
-              else: 0,
-            },
-          },
-          finalWinRate: {
-            $cond: {
-              if: { $gt: ['$games', 0] },
-              then: { $divide: ['$finalWins', '$games'] },
-              else: 0,
-            },
-          },
-        },
-      },
-      {
-        $addFields: {
-          rankScore: {
-            $add: ['$winRate', '$finalWinRate'],
-          },
-        },
-      },
-      ContestService.getItemsSortPipeline(search),
-      ...ContestService.getPaginationPipelines(page, perPage),
-    ]);
-
-    return {
-      items,
-      totalPages,
-      totalItems,
-      currentPage: +page,
-    };
+    return await this.contestItemRepository.paginate(contestId, {
+      page,
+      perPage,
+      search,
+    });
   }
 
   public async createContest(

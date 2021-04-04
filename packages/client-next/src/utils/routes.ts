@@ -1,17 +1,12 @@
 const ROUTES = {
-  INDEX: '/',
   HOME: '/',
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/password/forgot',
-  RESET_PASSWORD: '/password/reset/:token',
-  CONFIRM_EMAIL: '/email/confirm/:token',
   USERS: '/users',
   CONTESTS: {
     INDEX: '/contests',
     NEW: '/contests/new',
-    SINGLE: '/contests/:id',
-    UPDATE: '/contests/:id/update',
   },
   GAMES: {
     INDEX: '/games',

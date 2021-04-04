@@ -1,8 +1,9 @@
-import { CreateContestItemDto } from '@lets-choose/common';
+import { CreateContestItemDto, GetItemsResponse } from '@lets-choose/common';
 import { Types } from 'mongoose';
 
 import { ContestItem } from '../../../src/modules/contest/contest-item.schema';
 import { IContestItemRepository } from '../../../src/abstract/contest-item.repository.interface';
+import { mockContests } from './contest.repository';
 
 import contestItems, { ExtendedContestItem } from './data/contestItems';
 
@@ -12,8 +13,13 @@ const ContestItemRepository: IContestItemRepository = {
   async countDocuments(): Promise<number> {
     return mockContestItems.length;
   },
-  async aggregate(): Promise<ContestItem[]> {
-    return mockContestItems;
+  async paginate(_, { page, perPage }): Promise<GetItemsResponse> {
+    return {
+      items: mockContestItems,
+      currentPage: page,
+      totalPages: Math.ceil(mockContestItems.length / perPage),
+      totalItems: mockContests.length,
+    };
   },
   async findById(itemId: string): Promise<ContestItem> {
     const contestItem = mockContestItems.find(({ id }) => itemId === id);
@@ -62,7 +68,7 @@ const ContestItemRepository: IContestItemRepository = {
 ContestItemRepository.countDocuments = jest.fn(
   ContestItemRepository.countDocuments,
 );
-ContestItemRepository.aggregate = jest.fn(ContestItemRepository.aggregate);
+ContestItemRepository.paginate = jest.fn(ContestItemRepository.paginate);
 ContestItemRepository.findById = jest.fn(ContestItemRepository.findById);
 ContestItemRepository.findByContestId = jest.fn(
   ContestItemRepository.findByContestId,

@@ -1,7 +1,7 @@
 import {
   Contest,
   CreateContestDTO,
-  GetContestQuery,
+  GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
@@ -50,7 +50,7 @@ export class ContestController {
   })
   @UsePipes(new JoiValidationPipe(getContestSchema, 'query'))
   public async get(
-    @Query() query: GetContestQuery,
+    @Query() query: GetContestsQuery,
   ): Promise<GetContestsResponse> {
     return await this.contestService.getContestsPaginate(query);
   }

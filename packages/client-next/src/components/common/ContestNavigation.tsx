@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -35,12 +35,14 @@ type InputCallback = (e: React.ChangeEvent<HTMLInputElement>) => void;
 
 const ContestNavigation: React.FC = () => {
   const [sortBy, setSortBy] = useQueryState('sortBy', 'POPULAR');
-  const [search, setSearch] = useQueryState('search', '');
+  const [searchQuery, setSearchQuery] = useQueryState('search', '');
+  const [search, setSearch] = useState<string>();
   const { current: throttled } = useRef(
-    throttle(setSearch, 1000, { leading: false }),
+    throttle(setSearchQuery, 1000, { leading: false }),
   );
   const handleSearch: InputCallback = ({ target: { value } }) => {
     throttled(value);
+    setSearch(value);
   };
   const classes = useStyles();
 
@@ -68,7 +70,7 @@ const ContestNavigation: React.FC = () => {
         variant="outlined"
         size="small"
         className={classNames(classes.marginLeft, classes.search)}
-        defaultValue={search}
+        value={search ?? searchQuery}
         InputProps={{
           className: classes.searchInput,
           endAdornment: (

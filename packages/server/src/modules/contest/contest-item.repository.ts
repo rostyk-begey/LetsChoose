@@ -1,10 +1,28 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { CreateContestItemDto } from '@lets-choose/common';
+import { Types, Model } from 'mongoose';
+import {
+  CreateContestItemDto,
+  GetItemsQuery,
+  GetItemsResponse,
+  ISortOptions,
+} from '@lets-choose/common';
 
 import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';
+import {
+  getPaginationPipelines,
+  getSearchPipelines,
+} from '../../usecases/utils';
 import { ContestItem, ContestItemDocument } from './contest-item.schema';
+
+interface SortOptions {
+  rankScore: number;
+  score?: number;
+}
+
+interface SortPipeline {
+  $sort: ISortOptions;
+}
 
 @Injectable()
 export class ContestItemRepository implements IContestItemRepository {
@@ -20,8 +38,61 @@ export class ContestItemRepository implements IContestItemRepository {
     return this.contestItemModel.countDocuments();
   }
 
-  public aggregate(aggregations?: any[]): Promise<ContestItem[]> {
-    return this.contestItemModel.aggregate(aggregations).exec();
+  protected static getSortPipeline(search: string): SortPipeline {
+    const sortOptions: SortOptions = { rankScore: -1 };
+    if (search) {
+      sortOptions.score = -1;
+    }
+
+    return { $sort: sortOptions };
+  }
+
+  public async paginate(
+    contestId: string,
+    { search, page, perPage }: GetItemsQuery,
+  ): Promise<GetItemsResponse> {
+    const pipeline = [
+      ...getSearchPipelines(search), // should be a first stage
+      { $match: { contestId: Types.ObjectId(contestId) } },
+      {
+        $project: {
+          _id: 1,
+          id: '$_id',
+          title: 1,
+          image: 1,
+          compares: 1,
+          contestId: 1,
+          wins: 1,
+          games: 1,
+          finalWins: 1,
+          winRate: {
+            $cond: {
+              if: { $gt: ['$compares', 0] },
+              then: { $divide: ['$wins', '$compares'] },
+              else: 0,
+            },
+          },
+          finalWinRate: {
+            $cond: {
+              if: { $gt: ['$games', 0] },
+              then: { $divide: ['$finalWins', '$games'] },
+              else: 0,
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          rankScore: {
+            $add: ['$winRate', '$finalWinRate'],
+          },
+        },
+      },
+      ContestItemRepository.getSortPipeline(search),
+      ...getPaginationPipelines(page, perPage),
+    ];
+    const result = await this.contestItemModel.aggregate(pipeline).exec();
+    return result[0];
   }
 
   public async findById(itemId: string): Promise<ContestItem> {

@@ -13,13 +13,13 @@ export class JoiValidationPipe implements PipeTransform {
 
   transform(value: any, metadata: ArgumentMetadata) {
     if (metadata.type === this.type) {
-      const { error } = this.schema.validate(value);
+      const { error, value: newValue } = this.schema.validate(value, {
+        convert: true,
+      });
       if (error) {
-        throw new BadRequestException(
-          'Validation failed',
-          error.details[0].message,
-        );
+        throw new BadRequestException(error);
       }
+      return newValue;
     }
     return value;
   }

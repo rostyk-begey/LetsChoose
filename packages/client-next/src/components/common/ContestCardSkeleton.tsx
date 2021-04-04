@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { Paper } from '@material-ui/core';
 import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -10,23 +10,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import classNames from 'classnames';
 
-const useStyles = makeStyles(() => ({
-  root: {
-    width: '100%',
-    maxWidth: 345,
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    borderRadius: 8,
-  },
-  media: {
-    height: 0,
-    paddingTop: '100%',
-  },
-  actions: {
-    marginTop: 'auto',
-  },
-}));
+import { useStyles } from './ContestCard';
 
 const ContestCardSkeleton = () => {
   const classes = useStyles();
@@ -34,6 +18,7 @@ const ContestCardSkeleton = () => {
   return (
     <Card className={classNames(classes.root, shadowStyles.root)}>
       <CardHeader
+        className={classes.cardHeader}
         avatar={
           <Skeleton animation="wave" variant="circle" width={40} height={40} />
         }
@@ -53,7 +38,12 @@ const ContestCardSkeleton = () => {
         subheader={<Skeleton animation="wave" height={10} width="40%" />}
       />
       <Skeleton animation="wave" variant="rect" className={classes.media} />
-      <CardContent>
+      <Paper
+        style={{ height: 40, backgroundColor: '#fafafa' }}
+        elevation={0}
+        square
+      />
+      <CardContent className={classes.cardContent}>
         <Skeleton animation="wave" height={16} style={{ margin: '6px 0' }} />
         <Skeleton
           animation="wave"
@@ -68,24 +58,28 @@ const ContestCardSkeleton = () => {
           width="90%"
         />
       </CardContent>
-      <CardActions className={classes.actions} disableSpacing>
+      <CardActions
+        className={classes.actions}
+        style={{ height: 44 }}
+        disableSpacing
+      >
         <Skeleton
           animation="wave"
           width={20}
           height={33.45}
-          style={{ marginLeft: 20 }}
+          style={{ marginLeft: 12 }}
         />
         <Skeleton
           animation="wave"
           width={20}
           height={33.45}
-          style={{ marginLeft: 20 }}
+          style={{ marginLeft: 24 }}
         />
         <Skeleton
           animation="wave"
           width={20}
           height={33.45}
-          style={{ margin: '20px 20px 20px auto' }}
+          style={{ margin: '12px 12px 12px auto' }}
         />
       </CardActions>
     </Card>
