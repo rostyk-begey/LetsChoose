@@ -26,7 +26,7 @@
     "json-form-data": "^1.7.2",
     "json2mq": "^0.2.0",
     "material-ui-dropzone": "^3.5.0",
-    "next": "10.0.4",
+    "next": "^10.2.0",
     "next-compose-plugins": "^2.2.1",
     "next-optimized-images": "^2.6.2",
     "next-seo": "^4.20.0",
