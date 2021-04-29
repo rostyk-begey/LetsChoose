@@ -46,7 +46,6 @@ export class ContestController {
   @ApiResponse({
     status: 200,
     type: GetContestsResponse,
-    content: { test: { example: 'testx' } },
   })
   @UsePipes(new JoiValidationPipe(getContestSchema, 'query'))
   public async get(
@@ -56,11 +55,21 @@ export class ContestController {
   }
 
   @Get('/:contestId')
+  @ApiOperation({ summary: 'Find contest by id' })
+  @ApiResponse({
+    status: 200,
+    type: Contest,
+  })
   public async find(@Param('contestId') contestId: string): Promise<Contest> {
     return await this.contestService.findContestById(contestId);
   }
 
   @Get('/:contestId/items')
+  @ApiOperation({ summary: 'Get contest items' })
+  @ApiResponse({
+    status: 200,
+    type: GetItemsResponse,
+  })
   @UsePipes(new JoiValidationPipe(getContestItemsSchema, 'query'))
   public async getItems(
     @Param('contestId') contestId: string,
@@ -71,6 +80,11 @@ export class ContestController {
 
   // TODO: add schema validation
   @Post('/')
+  @ApiOperation({ summary: 'Create new contest' })
+  @ApiResponse({
+    status: 200,
+    type: Contest,
+  })
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
   public async create(
@@ -103,6 +117,11 @@ export class ContestController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('files'))
   @Post('/:contestId')
+  @ApiOperation({ summary: 'Update contest' })
+  @ApiResponse({
+    status: 200,
+    type: HttpResponseMessageDto,
+  })
   public async update(
     @Param('contestId') contestId: string,
     @Body() { title, excerpt }: UpdateContestData,
@@ -119,6 +138,11 @@ export class ContestController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('/:contestId/reset')
+  @ApiOperation({ summary: 'Reset contest' })
+  @ApiResponse({
+    status: 200,
+    type: Contest,
+  })
   public async reset(
     @Param('contestId') contestId: string,
     @Req() { user }: any,
@@ -132,6 +156,11 @@ export class ContestController {
 
   @UseGuards(AuthGuard('jwt'))
   @Delete('/:contestId')
+  @ApiOperation({ summary: 'Delete contest' })
+  @ApiResponse({
+    status: 200,
+    type: HttpResponseMessageDto,
+  })
   public async remove(
     @Param('contestId') contestId: string,
     @Req() { user }: any,

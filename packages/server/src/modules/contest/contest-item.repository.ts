@@ -13,7 +13,7 @@ import {
   getPaginationPipelines,
   getSearchPipelines,
 } from '../../usecases/utils';
-import { ContestItem, ContestItemDocument } from './contest-item.schema';
+import { ContestItem, ContestItemDocument } from './contest-item.entity';
 
 interface SortOptions {
   rankScore: number;

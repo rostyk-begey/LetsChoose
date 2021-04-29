@@ -12,7 +12,7 @@ import {
   getSearchPipelines,
 } from '../../usecases/utils';
 
-import { Contest, ContestDocument } from './contest.schema';
+import { Contest, ContestDocument } from './contest.entity';
 import {
   CreateContestData,
   IContestRepository,

@@ -1,7 +1,7 @@
 import { CreateContestItemDto, GetItemsResponse } from '@lets-choose/common';
 import { Types } from 'mongoose';
 
-import { ContestItem } from '../../../src/modules/contest/contest-item.schema';
+import { ContestItem } from '../../../src/modules/contest/contest-item.entity';
 import { IContestItemRepository } from '../../../src/abstract/contest-item.repository.interface';
 import { mockContests } from './contest.repository';
 

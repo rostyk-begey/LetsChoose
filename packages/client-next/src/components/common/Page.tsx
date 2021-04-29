@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 1, 0, 4),
     flexShrink: 0,
   },
+  loginBtn: {
+    flexShrink: 0,
+  },
 }));
 
 const Page: React.FC<Props> = ({
@@ -61,7 +64,7 @@ const Page: React.FC<Props> = ({
       >
         Sign up
       </Button>
-      <Button color="primary" href={ROUTES.LOGIN}>
+      <Button className={classes.loginBtn} color="primary" href={ROUTES.LOGIN}>
         Log in
       </Button>
     </>

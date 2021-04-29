@@ -48,7 +48,7 @@ const ContestNavigation: React.FC = () => {
 
   return (
     <>
-      <ButtonGroup color="primary">
+      <ButtonGroup color="primary" disableElevation>
         <Button
           className={classes.sortButton}
           variant={sortBy === SORT_OPTIONS.POPULAR ? 'contained' : 'outlined'}
