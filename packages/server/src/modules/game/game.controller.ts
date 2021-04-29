@@ -12,7 +12,7 @@ import {
 import { TYPES } from '../../injectable.types';
 import { IGameService } from '../../abstract/game.service.interface';
 import { JoiValidationPipe } from '../../pipes/JoiValidationPipe';
-import { ContestItem } from '../contest/contest-item.schema';
+import { ContestItem } from '../contest/contest-item.entity';
 import { gamePlaySchema } from './game.validation';
 
 @Controller('/api/games')

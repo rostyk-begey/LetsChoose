@@ -7,8 +7,8 @@ import { UserModule } from '../user/user.module';
 import { ContestService } from './contest.service';
 import { ContestRepository } from './contest.repository';
 import { ContestItemRepository } from './contest-item.repository';
-import { Contest, ContestSchema } from './contest.schema';
-import { ContestItem, ContestItemSchema } from './contest-item.schema';
+import { Contest, ContestSchema } from './contest.entity';
+import { ContestItem, ContestItemSchema } from './contest-item.entity';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { ContestController } from './contest.controller';
 

@@ -4,7 +4,7 @@ import {
   GetItemsResponse,
 } from '@lets-choose/common';
 
-import { ContestItem } from '../modules/contest/contest-item.schema';
+import { ContestItem } from '../modules/contest/contest-item.entity';
 
 export interface IContestItemRepository {
   countDocuments(contestId?: string): Promise<number>;

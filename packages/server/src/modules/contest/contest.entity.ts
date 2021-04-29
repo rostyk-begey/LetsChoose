@@ -3,7 +3,7 @@ import { Contest as ContestModel } from '@lets-choose/common';
 import * as mongoose from 'mongoose';
 
 import { User } from '../user/user.schema';
-import { ContestItem } from './contest-item.schema';
+import { ContestItem } from './contest-item.entity';
 
 export type ContestDocument = Contest & mongoose.Document;
 

@@ -8,9 +8,9 @@ import MockGameRepository, {
   mockGames,
 } from '../../../test/mocks/repositories/game.repository';
 import { TYPES } from '../../injectable.types';
-import { ContestItem } from '../contest/contest-item.schema';
-import { GameItem } from './game-item.schema';
-import { Game } from './game.schema';
+import { ContestItem } from '../contest/contest-item.entity';
+import { GameItem } from './game-item.entity';
+import { Game } from './game.entity';
 import { GameService } from './game.service';
 
 describe('GameService', () => {

@@ -1,5 +1,5 @@
 // import { ContestItem } from '@lets-choose/common';
-import { ContestItem } from '../../../../src/modules/contest/contest-item.schema';
+import { ContestItem } from '../../../../src/modules/contest/contest-item.entity';
 
 export interface ExtendedContestItem extends ContestItem {
   winRate?: number;

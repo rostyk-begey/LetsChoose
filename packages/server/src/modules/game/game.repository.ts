@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 
 import { CreateGameDto } from '@lets-choose/common';
 import { IGameRepository } from '../../abstract/game.repository.interface';
-import { Game, GameDocument } from './game.schema';
+import { Game, GameDocument } from './game.entity';
 
 @Injectable()
 export class GameRepository implements IGameRepository {

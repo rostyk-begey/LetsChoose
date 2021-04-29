@@ -1,4 +1,4 @@
-import { Game } from '../modules/game/game.schema';
+import { Game } from '../modules/game/game.entity';
 
 export interface IGameService {
   start(contestId: string): Promise<Game>;

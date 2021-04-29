@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GameController } from './game.controller';
 import { GameService } from './game.service';
 import { GameRepository } from './game.repository';
-import { Game, GameSchema } from './game.schema';
+import { Game, GameSchema } from './game.entity';
 import { ContestModule } from '../contest/contest.module';
 
 @Module({

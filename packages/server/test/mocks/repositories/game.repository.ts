@@ -1,7 +1,7 @@
 import { CreateGameDto } from '@lets-choose/common';
 
 import { IGameRepository } from '../../../src/abstract/game.repository.interface';
-import { Game } from '../../../src/modules/game/game.schema';
+import { Game } from '../../../src/modules/game/game.entity';
 import games from './data/games';
 import ContestItemRepository from './contest-item.repository';
 

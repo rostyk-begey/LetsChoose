@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ContestItem as ContestItemModel } from '@lets-choose/common';
 import * as mongoose from 'mongoose';
 
-import { Contest } from './contest.schema';
+import { Contest } from './contest.entity';
 
 export type ContestItemDocument = ContestItem & mongoose.Document;
 

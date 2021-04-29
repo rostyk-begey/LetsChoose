@@ -7,9 +7,9 @@ import { IGameService } from '../../abstract/game.service.interface';
 import { TYPES } from '../../injectable.types';
 import { IContestRepository } from '../../abstract/contest.repository.interface';
 import { IGameRepository } from '../../abstract/game.repository.interface';
-import { GameItem } from './game-item.schema';
-import { ContestItem } from '../contest/contest-item.schema';
-import { Game } from './game.schema';
+import { GameItem } from './game-item.entity';
+import { ContestItem } from '../contest/contest-item.entity';
+import { Game } from './game.entity';
 
 @Injectable()
 export class GameService implements IGameService {
