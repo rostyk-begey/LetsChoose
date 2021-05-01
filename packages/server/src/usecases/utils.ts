@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import { promisify } from 'util';
+import { PathLike } from 'fs';
+import * as fs from 'fs/promises';
 
 export const fieldNameFilter = (key: string) => ({
   fieldname,
@@ -7,7 +7,7 @@ export const fieldNameFilter = (key: string) => ({
   return fieldname === key;
 };
 
-export const unlinkAsync = promisify(fs.unlink);
+export const unlinkAsync = (path: PathLike) => fs.unlink(path);
 
 export const getSearchPipelines = (search = ''): any[] => {
   const query = search.trim();
