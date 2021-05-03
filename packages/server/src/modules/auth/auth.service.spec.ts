@@ -69,7 +69,7 @@ describe('AuthService', () => {
     expect(userRepository.createUser).toHaveBeenCalled();
     expect(passwordHashService.hash).toHaveBeenCalledWith(password, 12);
     expect(jwtService.generateEmailToken).toHaveBeenCalledWith(user.id);
-    expect(emailService.sendRegistrationEmail).toHaveBeenCalled();
+    expect(emailService.sendRegistrationEmail).not.toHaveBeenCalled();
   });
 
   describe('loginUser', () => {

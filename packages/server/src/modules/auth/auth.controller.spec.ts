@@ -140,7 +140,7 @@ describe('AuthController', () => {
     it('should logout user correctly', async () => {
       const { message } = await controller.logout(mockResponse);
 
-      expect(mockResponse.clearCookie.mock.calls[0][0]).toEqual(
+      expect(mockResponse.clearCookie.mock.calls[1][0]).toEqual(
         mockJwtConfig.accessTokenKey,
       );
       expect(mockResponse.clearCookie.mock.calls[1][0]).toEqual(
