@@ -52,26 +52,23 @@ describe('AuthService', () => {
       ],
     }).compile();
 
-    authService = module.get<AuthService>(AuthService);
+    authService = module.get<IAuthService>(AuthService);
 
     jest.clearAllMocks();
   });
 
   test('registerUser', async () => {
-    const userId = 'userId';
+    jest.spyOn(userRepository, 'findByEmail').mockResolvedValueOnce(undefined);
     jest
-      .spyOn(userRepository, 'createUser')
-      .mockImplementationOnce((data: CreateUserDto) => ({
-        ...userRepository.createUser(data),
-        id: userId,
-        _id: userId,
-      }));
+      .spyOn(userRepository, 'findByUsername')
+      .mockResolvedValueOnce(undefined);
+    jest.spyOn(userRepository, 'createUser').mockResolvedValueOnce(user);
 
     await authService.registerUser({ email, username, password });
 
     expect(userRepository.createUser).toHaveBeenCalled();
     expect(passwordHashService.hash).toHaveBeenCalledWith(password, 12);
-    expect(jwtService.generateEmailToken).toHaveBeenCalledWith(userId);
+    expect(jwtService.generateEmailToken).toHaveBeenCalledWith(user.id);
     expect(emailService.sendRegistrationEmail).toHaveBeenCalled();
   });
 

@@ -4,6 +4,7 @@ import * as path from 'path';
 dotenv.config({ path: path.join(__dirname, '..', '..', '.env') });
 
 const {
+  NODE_ENV,
   USE_SSL,
   APP_URL,
   PORT,
@@ -90,4 +91,35 @@ const config: Config = {
   },
 };
 
-export default () => config;
+const testConfig: Config = {
+  port: 5000,
+  jwt: {
+    accessTokenKey: 'jwt.accessTokenKey',
+    refreshTokenKey: 'jwt.refreshTokenKey',
+    accessSecret: 'jwt.accessSecret',
+    refreshSecret: 'jwt.refreshSecret',
+    emailSecret: 'jwt.emailSecret',
+    passwordResetSecret: 'jwt.passwordResetSecret',
+  },
+  mongoUri: 'mongoUri',
+  mongooseDebug: false,
+  appUrl: 'appUrl',
+  useSSL: false,
+  gmail: {
+    user: 'gmail.user',
+    password: 'gmail.password',
+  },
+  googleOAuth: {
+    clientId: 'googleOAuth.clientId',
+    clientSecret: 'googleOAuth.clientSecret',
+  },
+  cloudinary: {
+    cloudName: 'cloudinary.cloudName',
+    apiKey: 'cloudinary.apiKey',
+    apiSecret: 'cloudinary.apiSecret',
+  },
+};
+
+export default () => {
+  return NODE_ENV === 'test' ? testConfig : config;
+};

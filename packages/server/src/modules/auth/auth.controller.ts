@@ -123,7 +123,7 @@ export class AuthController {
     res.clearCookie(this.config.accessTokenKey);
     res.clearCookie(this.config.refreshTokenKey);
 
-    return { message: 'You have logged out' };
+    return { message: 'You have been logged out' };
   }
 
   @Post('/register')
@@ -131,27 +131,15 @@ export class AuthController {
   @ApiResponse({ status: 200, type: HttpResponseMessageDto })
   @UsePipes(new JoiValidationPipe(registerSchema))
   public async register(
-    @Body() dto: AuthRegisterDto,
     @Response({ passthrough: true }) res: any,
+    @Body() dto: AuthRegisterDto,
   ): Promise<AuthTokenDto> {
     await this.authService.registerUser(dto);
-    const result = await this.authService.loginUser({
+
+    return await this.login(res, {
       login: dto.username,
       password: dto.password,
     });
-
-    res.cookie(
-      this.config.accessTokenKey,
-      result.accessToken,
-      this.getCookieOptions(),
-    );
-    res.cookie(
-      this.config.refreshTokenKey,
-      result.refreshToken,
-      this.getCookieOptions(),
-    );
-
-    return result;
   }
 
   @Post('/password/forgot')
@@ -181,7 +169,7 @@ export class AuthController {
     @Request() req: any,
     @Response({ passthrough: true }) res: any,
     @Query('refreshTokenLocation') refreshTokenLocation: RefreshTokenLocation,
-  ): Promise<HttpResponseMessageDto> {
+  ): Promise<AuthTokenDto> {
     let token;
 
     if (refreshTokenLocation === 'body') {
@@ -200,11 +188,6 @@ export class AuthController {
       refreshToken,
     } = await this.authService.refreshToken(token);
 
-    const responseBody: any = {
-      userId,
-      accessToken,
-    };
-
     res.cookie(
       this.config.accessTokenKey,
       accessToken,
@@ -216,11 +199,11 @@ export class AuthController {
       this.getCookieOptions(),
     );
 
-    if (refreshTokenLocation === 'body') {
-      responseBody.refreshToken = refreshToken;
-    }
-
-    return responseBody;
+    return {
+      userId,
+      accessToken,
+      ...(refreshTokenLocation === 'body' && { refreshToken }),
+    };
   }
 
   @Post('/email/confirm/:token')

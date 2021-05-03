@@ -92,6 +92,12 @@ export class AuthService implements IAuthService {
     username,
     password,
   }: AuthRegisterDto): Promise<void> {
+    if (await this.userRepository.findByEmail(email)) {
+      throw new BadRequestException('User with email already taken');
+    } else if (await this.userRepository.findByUsername(username)) {
+      throw new BadRequestException('Username already taken');
+    }
+
     const user = await this.baseRegisterUser({
       email,
       username,
