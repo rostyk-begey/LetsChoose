@@ -73,7 +73,10 @@ export class GameService implements IGameService {
     });
   }
 
-  protected getRoundItems(gameItems: GameItem[], round: number): GameItem[] {
+  protected getNextRoundItems(
+    gameItems: GameItem[],
+    round: number,
+  ): GameItem[] {
     return gameItems.filter(
       ({ compares, wins }) => round === compares && round === wins,
     );
@@ -131,13 +134,16 @@ export class GameService implements IGameService {
       winnerId,
     );
 
-    let roundItems = this.getRoundItems(game.items as GameItem[], game.round);
+    let roundItems = this.getNextRoundItems(
+      game.items as GameItem[],
+      game.round,
+    );
 
     // no items left on this round, go to next round
     if (roundItems.length === 0) {
       game.round += 1;
       game.pairNumber = 0;
-      roundItems = this.getRoundItems(game.items as GameItem[], game.round);
+      roundItems = this.getNextRoundItems(game.items as GameItem[], game.round);
       game.pairsInRound = roundItems.length > 1 ? roundItems.length / 2 : 0;
     }
 

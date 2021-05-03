@@ -1,4 +1,4 @@
-import { Contest } from '../../../../src/modules/contest/contest.entity';
+import { Contest } from '../../contest.entity';
 
 import contestItems from './contestItems';
 

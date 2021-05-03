@@ -1,24 +1,20 @@
 import { GetContestsQuery, GetItemsQuery } from '@lets-choose/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import * as mongoose from 'mongoose';
 
-import MockContestItemRepository from '../../../test/mocks/repositories/contest-item.repository';
-import MockContestRepository, {
-  mockContestItems,
-  mockContests,
-} from '../../../test/mocks/repositories/contest.repository';
-import MockGameRepository from '../../../test/mocks/repositories/game.repository';
-import MockCloudinaryService from '../../../test/mocks/services/cloudinary.service';
-import MockUserRepository, {
-  mockUsers,
-} from '../../../test/mocks/repositories/user.repository';
+import gameRepository from '../game/__mocks__/game.repository';
+import cloudinaryService from '../cloudinary/__mocks__/cloudinary.service';
+import userRepository, { user } from '../user/__mocks__/user.repository';
+import contestRepository, { contest } from './__mocks__/contest.repository';
+import contestItemRepository, {
+  contestItem,
+} from './__mocks__/contest-item.repository';
 import { TYPES } from '../../injectable.types';
-
 import { ContestService, CreateContestsData } from './contest.service';
 
 describe('ContestService', () => {
   let contestService: ContestService;
-  const contestId = mockContests[0].id;
-  const thumbnail = `path:contests/${contestId}/thumbnail`;
+  const { id: contestId } = contest;
   const contestData = {
     files: [
       { fieldname: 'thumbnail', path: 'path' },
@@ -30,146 +26,130 @@ describe('ContestService', () => {
     items: [{ title: 'item0' }, { title: 'item1' }],
   } as CreateContestsData;
 
+  beforeAll(() => {
+    jest
+      .spyOn(mongoose.Types, 'ObjectId')
+      .mockReturnValueOnce(contestId as any);
+  });
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ContestService,
         {
           provide: TYPES.ContestRepository,
-          useValue: MockContestRepository,
+          useValue: contestRepository,
         },
         {
           provide: TYPES.ContestItemRepository,
-          useValue: MockContestItemRepository,
+          useValue: contestItemRepository,
         },
         {
           provide: TYPES.CloudinaryService,
-          useValue: MockCloudinaryService,
+          useValue: cloudinaryService,
         },
         {
           provide: TYPES.GameRepository,
-          useValue: MockGameRepository,
+          useValue: gameRepository,
         },
         {
           provide: TYPES.UserRepository,
-          useValue: MockUserRepository,
+          useValue: userRepository,
         },
       ],
     }).compile();
 
     contestService = module.get<ContestService>(ContestService);
+
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   test('findById', async () => {
     const contest = await contestService.findContestById(contestId);
 
-    expect(contest).toMatchObject(mockContests[0]);
-
-    expect(MockContestRepository.findById).toBeCalledWith(contestId);
+    expect(contest).toMatchObject(contest);
+    expect(contestRepository.findById).toBeCalledWith(contestId);
   });
 
   test('getContestsPaginate', async () => {
-    const page = 1;
-    const perPage = 5;
     const options: GetContestsQuery = {
-      page,
-      perPage,
-      author: mockUsers[0].username,
+      page: 1,
+      perPage: 1,
+      author: 'author',
       sortBy: 'NEWEST',
-      search: '',
+      search: 'search',
     };
     const response = await contestService.getContestsPaginate(options);
 
-    expect(response.currentPage).toEqual(page);
-
-    expect(response.totalPages).toEqual(
-      Math.ceil(mockContests.length / perPage),
-    );
-
-    expect(MockContestRepository.paginate).toBeCalledWith(options);
+    expect(response).toMatchObject({
+      items: [contest],
+      totalItems: 1,
+      totalPages: 1,
+      currentPage: 1,
+    });
+    expect(contestRepository.paginate).toBeCalledWith(options);
   });
 
   test('getContestItemsPaginate', async () => {
-    const page = 1;
-    const perPage = 5;
     const options: GetItemsQuery = {
-      page,
-      perPage,
-      search: '',
+      page: 1,
+      perPage: 1,
+      search: 'search',
     };
     const response = await contestService.getContestItemsPaginate(
       contestId,
       options,
     );
 
-    expect(response.currentPage).toEqual(page);
-
-    expect(response.totalPages).toEqual(
-      Math.ceil(mockContestItems.length / perPage),
-    );
-
-    expect(MockContestItemRepository.paginate).toBeCalledWith(
-      contestId,
-      options,
-    );
+    expect(response).toMatchObject({
+      items: [contestItem],
+      totalItems: 1,
+      totalPages: 1,
+      currentPage: 1,
+    });
+    expect(contestItemRepository.paginate).toBeCalledWith(contestId, options);
   });
 
   test('findContestsByAuthor', async () => {
-    const author = mockContests[0].author as string;
-    const contest = await contestService.findContestsByAuthor(author);
+    const result = await contestService.findContestsByAuthor(user.id);
 
-    expect(contest).toMatchObject(
-      mockContests.filter(({ author: a }) => a === author),
-    );
-
-    expect(MockContestRepository.findByAuthor).toBeCalledWith(author);
+    expect(result).toMatchObject(contest);
+    expect(contestRepository.findByAuthor).toBeCalledWith(user.id);
   });
 
   test('createContest', async () => {
-    const userId = 'testUserId';
+    const result = await contestService.createContest(user.id, contestData);
 
-    await contestService.createContest(userId, contestData);
-    const [contest] = await contestService.findContestsByAuthor(userId);
-    const thumbnail = `path:contests/${contest.id}/thumbnail`;
-
-    expect(MockContestRepository.createContest).toBeCalledWith({
-      _id: contest._id,
-      author: userId,
+    expect(contestRepository.createContest).toBeCalledWith({
+      _id: contestId,
+      author: user.id,
       title: contestData.title,
       excerpt: contestData.excerpt,
-      thumbnail,
+      thumbnail: `path:contests/${contestId}/thumbnail`,
     });
 
-    expect(contest.author).toEqual(userId);
-
-    expect(contest.title).toEqual(contestData.title);
-
-    expect(contest.excerpt).toEqual(contestData.excerpt);
-
-    expect(contest.thumbnail).toEqual(thumbnail);
-
-    expect(MockCloudinaryService.upload).toBeCalledWith(
+    expect(result).toEqual(contest);
+    expect(cloudinaryService.upload).toBeCalledWith(
       'path',
-      `contests/${contest.id}/thumbnail`,
+      `contests/${contestId}/thumbnail`,
     );
   });
 
   test('updateContest', async () => {
-    const contest = await contestService.updateContest(contestId, contestData);
+    const result = await contestService.updateContest(contestId, contestData);
 
-    expect(MockContestRepository.findByIdAndUpdate).toBeCalledWith(contestId, {
+    expect(contestRepository.findByIdAndUpdate).toBeCalledWith(contestId, {
       title: contestData.title,
       excerpt: contestData.excerpt,
-      thumbnail: `path:contests/${contest.id}/thumbnail`,
+      thumbnail: `path:contests/${contestId}/thumbnail`,
     });
 
-    expect(contest.title).toEqual(contestData.title);
-
-    expect(contest.excerpt).toEqual(contestData.excerpt);
-
-    expect(contest.thumbnail).toEqual(thumbnail);
-
-    expect(MockCloudinaryService.upload).toBeCalledWith(
+    expect(result).toEqual(contest);
+    expect(cloudinaryService.upload).toBeCalledWith(
       'path',
       `contests/${contestId}/thumbnail`,
     );
@@ -177,10 +157,10 @@ describe('ContestService', () => {
 
   test('removeContest', async () => {
     await contestService.removeContest(contestId);
-    await contestService.findContestById(contestId).catch((e) => {
-      expect(e).toBeInstanceOf(Error);
-    });
 
-    expect(MockContestRepository.deleteContest).toBeCalledWith(contestId);
+    expect(contestRepository.deleteContest).toBeCalledWith(contestId);
+    // TODO: update tests
   });
+
+  test.todo('resetContest');
 });

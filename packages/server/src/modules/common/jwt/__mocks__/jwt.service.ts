@@ -3,9 +3,9 @@ import {
   IJwtService,
   AuthTokenPayload,
   BaseTokenPayload,
-} from '../../../src/abstract/jwt.service.interface';
+} from '../../../../abstract/jwt.service.interface';
 
-const JwtService: IJwtService = {
+const jwtService: IJwtService = {
   generateAuthTokenPair(userId: string, passwordVersion = 0): TokenPair {
     const payload = { userId, passwordVersion };
     const accessToken = this.generateAccessToken(payload);
@@ -31,7 +31,6 @@ const JwtService: IJwtService = {
 
   verifyAccessToken(token: string): AuthTokenPayload {
     return JSON.parse(token) as AuthTokenPayload;
-    // return jwt.verify(token, config.jwt.accessSecret) as AuthTokenPayload;
   },
 
   verifyRefreshToken(token: string): AuthTokenPayload {
@@ -47,18 +46,18 @@ const JwtService: IJwtService = {
   },
 };
 
-JwtService.generateAuthTokenPair = jest.fn(JwtService.generateAuthTokenPair);
-JwtService.generateAccessToken = jest.fn(JwtService.generateAccessToken);
-JwtService.generateRefreshToken = jest.fn(JwtService.generateRefreshToken);
-JwtService.generateResetPasswordToken = jest.fn(
-  JwtService.generateResetPasswordToken,
+jwtService.generateAuthTokenPair = jest.fn(jwtService.generateAuthTokenPair);
+jwtService.generateAccessToken = jest.fn(jwtService.generateAccessToken);
+jwtService.generateRefreshToken = jest.fn(jwtService.generateRefreshToken);
+jwtService.generateResetPasswordToken = jest.fn(
+  jwtService.generateResetPasswordToken,
 );
-JwtService.generateEmailToken = jest.fn(JwtService.generateEmailToken);
-JwtService.verifyAccessToken = jest.fn(JwtService.verifyAccessToken);
-JwtService.verifyRefreshToken = jest.fn(JwtService.verifyRefreshToken);
-JwtService.verifyEmailToken = jest.fn(JwtService.verifyEmailToken);
-JwtService.verifyPasswordResetToken = jest.fn(
-  JwtService.verifyPasswordResetToken,
+jwtService.generateEmailToken = jest.fn(jwtService.generateEmailToken);
+jwtService.verifyAccessToken = jest.fn(jwtService.verifyAccessToken);
+jwtService.verifyRefreshToken = jest.fn(jwtService.verifyRefreshToken);
+jwtService.verifyEmailToken = jest.fn(jwtService.verifyEmailToken);
+jwtService.verifyPasswordResetToken = jest.fn(
+  jwtService.verifyPasswordResetToken,
 );
 
-export default JwtService;
+export default jwtService as jest.Mocked<IJwtService>;

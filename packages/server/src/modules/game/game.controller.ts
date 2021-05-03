@@ -11,7 +11,7 @@ import {
 
 import { TYPES } from '../../injectable.types';
 import { IGameService } from '../../abstract/game.service.interface';
-import { JoiValidationPipe } from '../../pipes/JoiValidationPipe';
+import { JoiValidationPipe } from '../../pipes/joi-validation.pipe';
 import { ContestItem } from '../contest/contest-item.entity';
 import { gamePlaySchema } from './game.validation';
 

@@ -6,13 +6,14 @@ import {
   UpdateContestData,
 } from '@lets-choose/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import MockContestItemRepository from '../../../test/mocks/repositories/contest-item.repository';
-import MockContestRepository, {
-  mockContests,
-} from '../../../test/mocks/repositories/contest.repository';
-import MockGameRepository from '../../../test/mocks/repositories/game.repository';
-import MockUserRepository from '../../../test/mocks/repositories/user.repository';
-import MockCloudinaryService from '../../../test/mocks/services/cloudinary.service';
+
+import contestItemRepository from '../contest/__mocks__/contest-item.repository';
+import contestRepository, {
+  contest,
+} from '../contest/__mocks__/contest.repository';
+import gameRepository from '../game/__mocks__/game.repository';
+import userRepository from '../user/__mocks__/user.repository';
+import cloudinaryService from '../cloudinary/__mocks__/cloudinary.service';
 import { TYPES } from '../../injectable.types';
 import { ContestController } from './contest.controller';
 import { ContestService, CreateContestsData } from './contest.service';
@@ -39,29 +40,33 @@ describe('ContestController', () => {
         ContestService,
         {
           provide: TYPES.ContestRepository,
-          useValue: MockContestRepository,
+          useValue: contestRepository,
         },
         {
           provide: TYPES.ContestItemRepository,
-          useValue: MockContestItemRepository,
+          useValue: contestItemRepository,
         },
         {
           provide: TYPES.CloudinaryService,
-          useValue: MockCloudinaryService,
+          useValue: cloudinaryService,
         },
         {
           provide: TYPES.GameRepository,
-          useValue: MockGameRepository,
+          useValue: gameRepository,
         },
         {
           provide: TYPES.UserRepository,
-          useValue: MockUserRepository,
+          useValue: userRepository,
         },
       ],
     }).compile();
 
     contestService = module.get<ContestService>(ContestService);
     controller = module.get<ContestController>(ContestController);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   test('get', async () => {
@@ -89,10 +94,10 @@ describe('ContestController', () => {
   test('find', async () => {
     jest
       .spyOn(contestService, 'findContestById')
-      .mockImplementation(() => Promise.resolve(mockContests[0]));
-    const response = await controller.find(mockContests[0].id);
+      .mockImplementation(() => Promise.resolve(contest));
+    const response = await controller.find(contest.id);
 
-    expect(response).toMatchObject(mockContests[0]);
+    expect(response).toMatchObject(contest);
   });
 
   test('getItems', async () => {
@@ -110,7 +115,7 @@ describe('ContestController', () => {
     jest
       .spyOn(contestService, 'getContestItemsPaginate')
       .mockImplementation(() => Promise.resolve(result));
-    const response = await controller.getItems(mockContests[0].id, query);
+    const response = await controller.getItems(contest.id, query);
 
     expect(response).toMatchObject(result);
   });
@@ -125,12 +130,12 @@ describe('ContestController', () => {
 
     jest
       .spyOn(contestService, 'createContest')
-      .mockImplementation(() => Promise.resolve(mockContests[0]));
+      .mockImplementation(() => Promise.resolve(contest));
     const response = await controller.create(contestData, files, {
       user: { id: testUserId },
     });
 
-    expect(response).toMatchObject(mockContests[0]);
+    expect(response).toMatchObject(contest);
     expect(contestService.createContest).toBeCalledWith(testUserId, {
       ...contestData,
       files,
@@ -146,7 +151,7 @@ describe('ContestController', () => {
 
     jest
       .spyOn(contestService, 'updateContest')
-      .mockImplementation(() => Promise.resolve(mockContests[0]));
+      .mockImplementation(() => Promise.resolve(contest));
     const response = await controller.update(contestId, contestData, files);
 
     expect(response).toMatchObject({
@@ -161,37 +166,37 @@ describe('ContestController', () => {
   });
 
   test('reset', async () => {
-    const contestId = mockContests[0].id;
+    const contestId = contest.id;
 
     jest
       .spyOn(contestService, 'findContestById')
-      .mockImplementation(() => Promise.resolve(mockContests[0]));
+      .mockImplementation(() => Promise.resolve(contest));
 
     jest
       .spyOn(contestService, 'resetContest')
-      .mockImplementation(() => Promise.resolve(mockContests[0]));
+      .mockImplementation(() => Promise.resolve(contest));
     const response = await controller.reset(contestId, {
-      user: { id: mockContests[0].author },
+      user: { id: contest.author },
     });
 
-    expect(response).toMatchObject(mockContests[0]);
+    expect(response).toMatchObject(contest);
 
     expect(contestService.findContestById).toBeCalledWith(contestId);
     expect(contestService.resetContest).toBeCalledWith(contestId);
   });
 
   test('remove', async () => {
-    const contestId = mockContests[0].id;
+    const contestId = contest.id;
 
     jest
       .spyOn(contestService, 'findContestById')
-      .mockImplementation(() => Promise.resolve(mockContests[0]));
+      .mockImplementation(() => Promise.resolve(contest));
 
     jest
       .spyOn(contestService, 'removeContest')
       .mockImplementation(() => Promise.resolve());
     const response = await controller.remove(contestId, {
-      user: { id: mockContests[0].author },
+      user: { id: contest.author },
     });
 
     expect(response).toMatchObject({

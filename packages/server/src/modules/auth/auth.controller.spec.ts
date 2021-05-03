@@ -1,9 +1,9 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import MockUserRepository from '../../../test/mocks/repositories/user.repository';
-import MockEmailService from '../../../test/mocks/services/email.service';
-import MockJwtService from '../../../test/mocks/services/jwt.service';
-import MockPasswordHashService from '../../../test/mocks/services/password.service';
+import userRepository from '../user/__mocks__/user.repository';
+import emailService from '../common/email/__mocks__/email.service';
+import jwtService from '../common/jwt/__mocks__/jwt.service';
+import passwordHashService from '../common/password/__mocks__/password.service';
 import config from '../../config';
 import { TYPES } from '../../injectable.types';
 import { PasswordHashService } from '../common/password/password.service';
@@ -28,24 +28,28 @@ describe('AuthController', () => {
         PasswordHashService,
         {
           provide: TYPES.UserRepository,
-          useValue: MockUserRepository,
+          useValue: userRepository,
         },
         {
           provide: TYPES.JwtService,
-          useValue: MockJwtService,
+          useValue: jwtService,
         },
         {
           provide: TYPES.EmailService,
-          useValue: MockEmailService,
+          useValue: emailService,
         },
         {
           provide: TYPES.PasswordHashService,
-          useValue: MockPasswordHashService,
+          useValue: passwordHashService,
         },
       ],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {

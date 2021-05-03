@@ -5,7 +5,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { UserRepository } from './user.repository';
 import { ContestModule } from '../contest/contest.module';
-import { User, UserSchema } from './user.schema';
+import { User, UserSchema } from './user.entity';
 
 @Module({
   imports: [

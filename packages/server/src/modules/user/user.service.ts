@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 
 import { IUserRepository } from '../../abstract/user.repository.interface';
-import { User } from './user.schema';
+import { User } from './user.entity';
 import { TYPES } from '../../injectable.types';
 import { IUserService } from '../../abstract/user.service.interface';
 import { IContestService } from '../../abstract/contest.service.interface';

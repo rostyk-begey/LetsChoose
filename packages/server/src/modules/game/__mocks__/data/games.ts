@@ -1,4 +1,4 @@
-import { Game } from '../../../../src/modules/game/game.entity';
+import { Game } from '../../game.entity';
 
 const games: Game[] = [
   {

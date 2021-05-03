@@ -1,37 +1,47 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as jwt from 'jsonwebtoken';
 
 import { AuthTokenPayload } from '../../../abstract/jwt.service.interface';
-import config, { JwtConfig } from '../../../config';
+import { JwtConfig } from '../../../config';
 import { JwtService } from './jwt.service';
 
 jest.mock('jsonwebtoken');
 describe('JwtService', () => {
   let jwtService: JwtService;
-  let configService: ConfigService;
-  let jwtConfig: JwtConfig;
+  const jwtConfig: JwtConfig = {
+    accessSecret: 'accessSecret',
+    refreshSecret: 'refreshSecret',
+    accessTokenKey: 'accessTokenKey',
+    refreshTokenKey: 'refreshTokenKey',
+    passwordResetSecret: 'passwordResetSecret',
+    emailSecret: 'emailSecret',
+  };
   const payload: AuthTokenPayload = {
     userId: 'userId',
     passwordVersion: 1,
   };
   const token = 'token';
+  const configService: Partial<ConfigService> = {
+    get: jest.fn(() => jwtConfig),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          ignoreEnvFile: true,
-          load: [config],
-        }),
+      providers: [
+        JwtService,
+        {
+          provide: ConfigService,
+          useValue: configService,
+        },
       ],
-      providers: [JwtService],
     }).compile();
 
     jwtService = module.get<JwtService>(JwtService);
-    configService = module.get<ConfigService>(ConfigService);
-    jwtConfig = configService.get<JwtConfig>('jwt');
+  });
+
+  it('should get jwt config', () => {
+    expect(configService.get).toHaveBeenCalledWith('jwt');
   });
 
   test('generateAccessToken', () => {

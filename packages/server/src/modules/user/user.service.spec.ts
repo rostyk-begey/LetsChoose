@@ -1,17 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import MockContestRepository from '../../../test/mocks/repositories/contest.repository';
-import MockContestItemRepository from '../../../test/mocks/repositories/contest-item.repository';
-import MockCloudinaryService from '../../../test/mocks/services/cloudinary.service';
-import MockUserRepository from '../../../test/mocks/repositories/user.repository';
-import MockGameRepository from '../../../test/mocks/repositories/game.repository';
+import { IUserService } from '../../abstract/user.service.interface';
+import contestRepository from '../contest/__mocks__/contest.repository';
+import contestItemRepository from '../contest/__mocks__/contest-item.repository';
+import cloudinaryService from '../cloudinary/__mocks__/cloudinary.service';
+import userRepository from './__mocks__/user.repository';
+import gameRepository from '../game/__mocks__/game.repository';
 import { TYPES } from '../../injectable.types';
 import { ContestService } from '../contest/contest.service';
-
 import { UserService } from './user.service';
 
+jest.mock('./__mocks__/user.repository');
+
 describe('UserService', () => {
-  let userService: UserService;
+  let userService: IUserService;
   const userId = '5f0e3e8cda24411b78617891';
   const username = 'rostyk.begey';
 
@@ -21,46 +23,50 @@ describe('UserService', () => {
         UserService,
         {
           provide: TYPES.UserRepository,
-          useValue: MockUserRepository,
+          useValue: userRepository,
         },
         {
           provide: TYPES.ContestRepository,
-          useValue: MockContestRepository,
+          useValue: contestRepository,
         },
         {
           provide: TYPES.ContestService,
           useValue: new ContestService(
-            MockContestRepository,
-            MockContestItemRepository,
-            MockGameRepository,
-            MockCloudinaryService,
-            MockUserRepository,
+            contestRepository,
+            contestItemRepository,
+            gameRepository,
+            cloudinaryService,
+            userRepository,
           ),
         },
       ],
     }).compile();
 
-    userService = module.get<UserService>(UserService);
+    userService = module.get<IUserService>(TYPES.UserService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   test('findById', () => {
     userService.findById(userId);
-    expect(MockUserRepository.findByIdOrFail).toHaveBeenCalledWith(userId);
+    expect(userRepository.findByIdOrFail).toHaveBeenCalledWith(userId);
   });
 
   test('findByUsername', () => {
     userService.findByUsername(username);
-    expect(MockUserRepository.findByUsername).toHaveBeenCalledWith(username);
+    expect(userRepository.findByUsername).toHaveBeenCalledWith(username);
   });
 
   test('removeUserById', () => {
     userService.removeUserById(userId);
-    expect(MockUserRepository.findByIdOrFail).toHaveBeenCalledWith(userId);
+    expect(userRepository.findByIdOrFail).toHaveBeenCalledWith(userId);
   });
 
   test('removeUserByUsername', () => {
     userService.removeUserByUsername(username);
-    expect(MockUserRepository.findByUsername).toHaveBeenCalledWith(username);
+    expect(userRepository.findByUsername).toHaveBeenCalledWith(username);
   });
 
   // TODO: add more tests

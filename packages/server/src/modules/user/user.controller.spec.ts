@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import MockContestItemRepository from '../../../test/mocks/repositories/contest-item.repository';
-import MockContestRepository from '../../../test/mocks/repositories/contest.repository';
-import MockGameRepository from '../../../test/mocks/repositories/game.repository';
-import MockUserRepository from '../../../test/mocks/repositories/user.repository';
-import MockCloudinaryService from '../../../test/mocks/services/cloudinary.service';
+
+import contestItemRepository from '../contest/__mocks__/contest-item.repository';
+import contestRepository from '../contest/__mocks__/contest.repository';
+import gameRepository from '../game/__mocks__/game.repository';
+import userRepository from '../user/__mocks__/user.repository';
+import cloudinaryService from '../cloudinary/__mocks__/cloudinary.service';
 import { TYPES } from '../../injectable.types';
 import { ContestService } from '../contest/contest.service';
 
@@ -20,26 +21,30 @@ describe('UserController', () => {
         UserService,
         {
           provide: TYPES.UserRepository,
-          useValue: MockUserRepository,
+          useValue: userRepository,
         },
         {
           provide: TYPES.ContestRepository,
-          useValue: MockContestRepository,
+          useValue: contestRepository,
         },
         {
           provide: TYPES.ContestService,
           useValue: new ContestService(
-            MockContestRepository,
-            MockContestItemRepository,
-            MockGameRepository,
-            MockCloudinaryService,
-            MockUserRepository,
+            contestRepository,
+            contestItemRepository,
+            gameRepository,
+            cloudinaryService,
+            userRepository,
           ),
         },
       ],
     }).compile();
 
     controller = module.get<UserController>(UserController);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {

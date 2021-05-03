@@ -5,7 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { JwtConfig } from '../../config';
 import { TYPES } from '../../injectable.types';
-import { User } from '../user/user.schema';
+import { User } from '../user/user.entity';
 import { IUserRepository } from '../../abstract/user.repository.interface';
 import {
   AuthTokenPayload,

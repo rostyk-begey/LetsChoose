@@ -1,4 +1,4 @@
-import { User } from '../../../../src/modules/user/user.schema';
+import { User } from '../../user.entity';
 
 export const users: Partial<User>[] = [
   {
@@ -93,3 +93,15 @@ export const users: Partial<User>[] = [
 ];
 
 export default users as User[];
+
+export const user: User = {
+  avatar: 'avatar',
+  bio: '',
+  confirmed: true,
+  passwordVersion: 1,
+  _id: 'userId',
+  id: 'userId',
+  email: 'email',
+  username: 'username',
+  password: 'password',
+};

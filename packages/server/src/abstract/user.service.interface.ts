@@ -1,4 +1,4 @@
-import { User } from '../modules/user/user.schema';
+import { User } from '../modules/user/user.entity';
 
 export interface IUserService {
   findById(userId: string): Promise<User>;

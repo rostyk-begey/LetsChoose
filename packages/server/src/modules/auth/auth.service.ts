@@ -22,7 +22,7 @@ import { IPasswordHashService } from '../../abstract/password.service.interface'
 import { IUserRepository } from '../../abstract/user.repository.interface';
 import { GoogleOAuth } from '../../config';
 import { TYPES } from '../../injectable.types';
-import { User } from '../user/user.schema';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class AuthService implements IAuthService {

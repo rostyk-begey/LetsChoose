@@ -5,16 +5,6 @@ import config from '../../config';
 
 import { CloudinaryService } from './cloudinary.service';
 
-// jest.mock('cloudinary', () => ({
-//   v2: {
-//     config: jest.fn(),
-//     uploader: {
-//       upload: jest.fn(() => ''),
-//       destroy: jest.fn(),
-//     },
-//   },
-// }));
-
 describe('CloudinaryService', () => {
   let service: CloudinaryService;
   const filePath = 'testFilePath';

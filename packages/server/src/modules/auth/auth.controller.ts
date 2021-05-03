@@ -28,7 +28,7 @@ import {
 import { JwtConfig } from '../../config';
 import { TYPES } from '../../injectable.types';
 import { IAuthService } from '../../abstract/auth.service.interface';
-import { JoiValidationPipe } from '../../pipes/JoiValidationPipe';
+import { JoiValidationPipe } from '../../pipes/joi-validation.pipe';
 import {
   loginSchema,
   registerSchema,

@@ -11,7 +11,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { User } from './user.schema';
+import { User } from './user.entity';
 import { TYPES } from '../../injectable.types';
 import { IUserService } from '../../abstract/user.service.interface';
 
