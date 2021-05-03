@@ -1,7 +1,6 @@
-import { useRouter } from 'next/router';
 import React from 'react';
+import { useRouter } from 'next/router';
 import { useForm, FormProvider } from 'react-hook-form';
-import { useMutation } from 'react-query';
 import RouterLink from 'next/link';
 import { AuthLoginDto } from '@lets-choose/common';
 import Grid from '@material-ui/core/Grid';
@@ -12,7 +11,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import FormTextInput, { FormTextInputProps } from '../common/FormTextInput';
 import { useCurrentUser } from '../../hooks/api/user';
 import ROUTES from '../../utils/routes';
-import { authApi } from '../../hooks/api/auth';
+import { authApi, useAxiosMutation } from '../../hooks/api/auth';
 import AuthFormCardWithOAuth from '../common/AuthFormCardWithOAuth';
 import PasswordTextInput from '../common/PasswordTextInput';
 import InputWithIcon from '../common/InputWithIcon';
@@ -50,8 +49,11 @@ const LoginPage: React.FC = () => {
     redirectIfFound: true,
   });
   const router = useRouter();
-  const { mutateAsync: httpLogin, ...httpLoginQuery } = useMutation(
+  const { mutateAsync: httpLogin, error, ...httpLoginQuery } = useAxiosMutation(
     authApi.login,
+    {
+      onSuccess: () => router.push(ROUTES.HOME).then(),
+    },
   );
   const form = useForm<AuthLoginDto>({
     defaultValues: {
@@ -59,13 +61,23 @@ const LoginPage: React.FC = () => {
       password: '',
     },
   });
-  const { mutateAsync: googleLogin, ...googleLoginQuery } = useMutation(
-    authApi.loginGoogle,
-  );
+  const {
+    mutateAsync: googleLogin,
+    error: googleLoginError,
+    ...googleLoginQuery
+  } = useAxiosMutation(authApi.loginGoogle, {
+    onSuccess: () => router.push(ROUTES.HOME).then(),
+  });
   const onOAuthSuccess = async (data) => {
-    await googleLogin(data);
-    await router.push(ROUTES.HOME);
+    try {
+      await googleLogin(data);
+    } catch (e) {}
   };
+  const onFormSubmit = form.handleSubmit(async (data) => {
+    try {
+      await httpLogin(data);
+    } catch (e) {}
+  });
 
   return (
     <PageWithForm>
@@ -76,12 +88,10 @@ const LoginPage: React.FC = () => {
           submitDisabled={
             httpLoginQuery.isLoading || googleLoginQuery.isLoading
           }
+          error={(error ?? googleLoginError)?.response?.data?.message}
           onOAuthSuccess={onOAuthSuccess}
           submitButtonText="Log in"
-          onSubmit={form.handleSubmit(async (data) => {
-            await httpLogin(data);
-            await router.push(ROUTES.HOME);
-          })}
+          onSubmit={onFormSubmit}
           cardAfter={
             <Grid container>
               <Grid item xs>

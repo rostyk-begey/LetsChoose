@@ -17,6 +17,7 @@ interface Props extends AuthFormCardProps {
   onOAuthSuccess: (
     response: GoogleLoginResponse | GoogleLoginResponseOffline,
   ) => void;
+  error?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -48,6 +49,7 @@ const AuthFormCardWithOAuth: React.FC<Props> = ({
   onOAuthSuccess,
   googleButtonLabel,
   cardAfter,
+  error,
   ...props
 }) => {
   const classes = useStyles();
@@ -64,6 +66,11 @@ const AuthFormCardWithOAuth: React.FC<Props> = ({
       {...props}
       cardAfter={
         <>
+          {error && (
+            <Typography variant="body2" align="left" color="error" gutterBottom>
+              {error}
+            </Typography>
+          )}
           <Typography variant="body1" align="center">
             Or
           </Typography>

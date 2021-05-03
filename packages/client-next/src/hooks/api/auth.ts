@@ -50,18 +50,23 @@ export const authApi = {
     api.post<HttpResponseMessageDto>(`${RESET_PASSWORD}/${token}`, data),
 };
 
-const useAxiosMutation = <TResult, TVariables>(
+export const useAxiosMutation = <
+  TResult,
+  TVariables,
+  TErrorResult = HttpResponseMessageDto
+>(
   mutationFn: MutationFunction<AxiosResponse<TResult>, TVariables>,
   config?: UseMutationOptions<
     AxiosResponse<TResult>,
-    AxiosError<TResult>,
+    AxiosError<TErrorResult>,
     TVariables
   >,
 ) => {
-  return useMutation<AxiosResponse<TResult>, AxiosError<TResult>, TVariables>(
-    mutationFn,
-    config,
-  );
+  return useMutation<
+    AxiosResponse<TResult>,
+    AxiosError<TErrorResult>,
+    TVariables
+  >(mutationFn, config);
 };
 
 export const useApiLogin = () => {

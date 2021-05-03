@@ -4,13 +4,12 @@ import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import RouterLink from 'next/link';
 import { useForm, FormProvider } from 'react-hook-form';
-import { useMutation } from 'react-query';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import AlternateEmailOutlinedIcon from '@material-ui/icons/AlternateEmailOutlined';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 
 import FormTextInput, { FormTextInputProps } from '../common/FormTextInput';
-import { authApi } from '../../hooks/api/auth';
+import { authApi, useAxiosMutation } from '../../hooks/api/auth';
 import { useCurrentUser } from '../../hooks/api/user';
 import ROUTES from '../../utils/routes';
 import AuthFormCardWithOAuth from '../common/AuthFormCardWithOAuth';
@@ -73,17 +72,30 @@ const RegisterPage: React.FC = () => {
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,
   });
-  const { mutateAsync: register, ...registerQuery } = useMutation(
+  const { mutateAsync: register, error, ...registerQuery } = useAxiosMutation(
     authApi.register,
+    {
+      onSuccess: () => refetchCurrentUser().then(),
+    },
   );
   const form = useForm<AuthRegisterDto>({});
-  const { mutateAsync: googleLogin, ...googleLoginQuery } = useMutation(
-    authApi.loginGoogle,
-  );
+  const {
+    mutateAsync: googleLogin,
+    error: googleError,
+    ...googleLoginQuery
+  } = useAxiosMutation(authApi.loginGoogle, {
+    onSuccess: () => refetchCurrentUser().then(),
+  });
   const onOAuthSuccess = async (data) => {
-    await googleLogin(data);
-    await refetchCurrentUser();
+    try {
+      await googleLogin(data);
+    } catch (e) {}
   };
+  const onFormSubmit = form.handleSubmit(async (data) => {
+    try {
+      await register(data);
+    } catch (e) {}
+  });
 
   return (
     <PageWithForm>
@@ -93,9 +105,8 @@ const RegisterPage: React.FC = () => {
           onOAuthSuccess={onOAuthSuccess}
           title="Sign up"
           submitButtonText="Sign up"
-          onSubmit={form.handleSubmit((data) => {
-            register(data);
-          })}
+          onSubmit={onFormSubmit}
+          error={(error ?? googleError)?.response?.data?.message}
           submitDisabled={registerQuery.isLoading || googleLoginQuery.isLoading}
           cardAfter={
             <Grid container justify="flex-end">
