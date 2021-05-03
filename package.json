@@ -6,7 +6,8 @@
   ],
   "private": true,
   "scripts": {
-    "lint": "eslint . --quiet"
+    "lint": "eslint . --quiet",
+    "ci": "yarn run lint && lerna run test"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.6.1",
