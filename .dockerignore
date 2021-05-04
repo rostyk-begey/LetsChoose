@@ -7,10 +7,8 @@ packages/server/.env.example
 .gitignore
 .idea
 
-packages/client
 packages/client-next/.env.example
 packages/client-next/.next
-legacy
 uploads
 *.log
 *.tsbuildinfo
