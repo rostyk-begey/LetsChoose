@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -48,6 +49,7 @@ const LoginPage: React.FC = () => {
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,
   });
+  const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const { mutateAsync: httpLogin, error, ...httpLoginQuery } = useAxiosMutation(
     authApi.login,
@@ -71,12 +73,16 @@ const LoginPage: React.FC = () => {
   const onOAuthSuccess = async (data) => {
     try {
       await googleLogin(data);
-    } catch (e) {}
+    } catch (e) {
+      enqueueSnackbar(e.response.data.message, { variant: 'error' });
+    }
   };
   const onFormSubmit = form.handleSubmit(async (data) => {
     try {
       await httpLogin(data);
-    } catch (e) {}
+    } catch (e) {
+      enqueueSnackbar(e.response.data.message, { variant: 'error' });
+    }
   });
 
   return (
@@ -88,7 +94,6 @@ const LoginPage: React.FC = () => {
           submitDisabled={
             httpLoginQuery.isLoading || googleLoginQuery.isLoading
           }
-          error={(error ?? googleLoginError)?.response?.data?.message}
           onOAuthSuccess={onOAuthSuccess}
           submitButtonText="Log in"
           onSubmit={onFormSubmit}

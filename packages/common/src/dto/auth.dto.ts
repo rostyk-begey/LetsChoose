@@ -3,9 +3,11 @@ export class AuthLoginDto {
   password: string;
 }
 
-export class AuthGoogleLoginDto {
-  code: string;
-}
+export type AuthGoogleLoginCodeDto = { code: string };
+export type AuthGoogleLoginTokenDto = { token: string };
+export type AuthGoogleLoginDto =
+  | AuthGoogleLoginCodeDto
+  | AuthGoogleLoginTokenDto;
 
 export class AuthTokenDto {
   userId: string;

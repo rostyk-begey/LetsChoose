@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack';
 import React from 'react';
 import { AuthRegisterDto } from '@lets-choose/common';
 import Grid from '@material-ui/core/Grid';
@@ -7,6 +8,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import AlternateEmailOutlinedIcon from '@material-ui/icons/AlternateEmailOutlined';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import { UseMutationOptions } from 'react-query';
 
 import FormTextInput, { FormTextInputProps } from '../common/FormTextInput';
 import { authApi, useAxiosMutation } from '../../hooks/api/auth';
@@ -72,29 +74,32 @@ const RegisterPage: React.FC = () => {
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,
   });
-  const { mutateAsync: register, error, ...registerQuery } = useAxiosMutation(
-    authApi.register,
-    {
-      onSuccess: () => refetchCurrentUser().then(),
-    },
-  );
+  const { enqueueSnackbar } = useSnackbar();
   const form = useForm<AuthRegisterDto>({});
-  const {
-    mutateAsync: googleLogin,
-    error: googleError,
-    ...googleLoginQuery
-  } = useAxiosMutation(authApi.loginGoogle, {
+  const loginMutationConfig: any = {
     onSuccess: () => refetchCurrentUser().then(),
-  });
+  };
+  const { mutateAsync: register, ...registerQuery } = useAxiosMutation(
+    authApi.register,
+    loginMutationConfig,
+  );
+  const { mutateAsync: googleLogin, ...googleLoginQuery } = useAxiosMutation(
+    authApi.loginGoogle,
+    loginMutationConfig,
+  );
   const onOAuthSuccess = async (data) => {
     try {
       await googleLogin(data);
-    } catch (e) {}
+    } catch (e) {
+      enqueueSnackbar(e.response.data.message, { variant: 'error' });
+    }
   };
   const onFormSubmit = form.handleSubmit(async (data) => {
     try {
       await register(data);
-    } catch (e) {}
+    } catch (e) {
+      enqueueSnackbar(e.response.data.message, { variant: 'error' });
+    }
   });
 
   return (
@@ -106,7 +111,6 @@ const RegisterPage: React.FC = () => {
           title="Sign up"
           submitButtonText="Sign up"
           onSubmit={onFormSubmit}
-          error={(error ?? googleError)?.response?.data?.message}
           submitDisabled={registerQuery.isLoading || googleLoginQuery.isLoading}
           cardAfter={
             <Grid container justify="flex-end">

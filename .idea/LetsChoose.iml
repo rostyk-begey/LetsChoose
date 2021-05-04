@@ -8,6 +8,10 @@
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/packages/server/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/client-next/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/client/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/server/coverage" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/server/uploads" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

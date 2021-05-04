@@ -1,5 +1,8 @@
 import {
   AuthForgotPasswordDto,
+  AuthGoogleLoginCodeDto,
+  AuthGoogleLoginDto,
+  AuthGoogleLoginTokenDto,
   AuthLoginDto,
   AuthRegisterDto,
   AuthTokenDto,
@@ -152,8 +155,8 @@ export class AuthService implements IAuthService {
     };
   }
 
-  public async loginUserOAuth(code: string): Promise<AuthTokenDto> {
-    const { email, picture } = await this.getOAuthProfile(code);
+  public async loginUserOAuth(dto: AuthGoogleLoginDto): Promise<AuthTokenDto> {
+    const { email, picture } = await this.getOAuthProfile(dto);
     let user = await this.userRepository.findByEmail(email);
 
     if (!user) {
@@ -181,9 +184,14 @@ export class AuthService implements IAuthService {
     };
   }
 
-  private async getOAuthProfile(code: string) {
-    const r = await this.OAuth2Client.getToken(code);
-    const idToken = r.tokens.id_token;
+  private async getOAuthProfile(dto: AuthGoogleLoginDto) {
+    let idToken = (dto as AuthGoogleLoginTokenDto)?.token;
+    const code = (dto as AuthGoogleLoginCodeDto)?.code;
+
+    if (code) {
+      const r = await this.OAuth2Client.getToken(code);
+      idToken = r.tokens.id_token;
+    }
 
     const ticket = await this.OAuth2Client.verifyIdToken({
       idToken,

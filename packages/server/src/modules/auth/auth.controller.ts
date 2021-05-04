@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Inject,
+  Logger,
   Param,
   Post,
   Query,
@@ -40,6 +41,7 @@ import {
 export class AuthController {
   private readonly config: JwtConfig;
   private readonly useSecureCookie: boolean;
+  private readonly logger = new Logger(AuthController.name);
 
   constructor(
     @Inject(TYPES.AuthService)
@@ -74,6 +76,7 @@ export class AuthController {
     @Response({ passthrough: true }) res: any,
     @Body() dto: AuthLoginDto,
   ): Promise<AuthTokenDto> {
+    this.logger.log(dto, 'login');
     const result = await this.authService.loginUser(dto);
 
     res.cookie(
@@ -95,9 +98,10 @@ export class AuthController {
   @ApiResponse({ status: 200, type: AuthTokenDto })
   async loginGoogle(
     @Response({ passthrough: true }) res: any,
-    @Body() { code }: AuthGoogleLoginDto,
+    @Body() dto: AuthGoogleLoginDto,
   ): Promise<AuthTokenDto> {
-    const result = await this.authService.loginUserOAuth(code);
+    this.logger.log(dto, 'loginGoogle');
+    const result = await this.authService.loginUserOAuth(dto);
 
     res.cookie(
       this.config.accessTokenKey,

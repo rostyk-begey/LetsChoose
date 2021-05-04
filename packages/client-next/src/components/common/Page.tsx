@@ -1,5 +1,6 @@
-import React, { ReactNode } from 'react';
-import { Tooltip } from '@material-ui/core';
+import React, { ReactNode, useEffect } from 'react';
+import { useSnackbar } from 'notistack';
+import Tooltip from '@material-ui/core/Tooltip';
 import RouterLink from 'next/link';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -8,6 +9,7 @@ import Brightness4Icon from '@material-ui/icons/Brightness4';
 import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
 import IconButton from '@material-ui/core/IconButton';
 import classNames from 'classnames';
+import { authApi, useAxiosMutation } from '../../hooks/api/auth';
 
 import { useCurrentUser } from '../../hooks/api/user';
 import Sidebar from './Sidebar';
@@ -49,10 +51,11 @@ const Page: React.FC<Props> = ({
     data: { data: user } = {},
     remove,
     isSuccess,
-    refetch,
+    refetch: refetchCurrentUser,
   } = useCurrentUser({});
   const { username = '', avatar } = user || {};
   const [darkMode, setDarkMode] = useDarkMode();
+  const { enqueueSnackbar } = useSnackbar();
 
   const authButtons = (
     <>
@@ -69,6 +72,31 @@ const Page: React.FC<Props> = ({
       </Button>
     </>
   );
+
+  const { mutateAsync: googleLogin } = useAxiosMutation(authApi.loginGoogle);
+
+  useEffect(() => {
+    if (!user && window?.google?.accounts) {
+      const options: google.IdConfiguration = {
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID as string,
+        auto_select: false,
+        cancel_on_tap_outside: false,
+        context: 'signin',
+        callback: async ({ credential: token }) => {
+          try {
+            await googleLogin({ token });
+            remove();
+            await refetchCurrentUser();
+            enqueueSnackbar('Successfully logged in', { variant: 'success' });
+          } catch (e) {
+            enqueueSnackbar(e.response.data.message, { variant: 'error' });
+          }
+        },
+      };
+      window.google.accounts.id.initialize(options);
+      window.google.accounts.id.prompt();
+    }
+  }, [user, typeof window]);
 
   const darkModeSwitch = (
     <div>
@@ -112,7 +140,7 @@ const Page: React.FC<Props> = ({
                 collapsed={collapsed}
                 onLogout={async () => {
                   remove();
-                  await refetch();
+                  await refetchCurrentUser();
                 }}
               />
             )

@@ -1,4 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import { SnackbarProvider } from 'notistack';
 import Head from 'next/head';
 import { AppProps } from 'next/app';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -35,6 +38,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     }
   });
 
+  const notistackRef = useRef();
+  const handleDismissClick = (key) => () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    notistackRef?.current?.closeSnackbar(key);
+  };
+
   return (
     <StylesProvider injectFirst>
       <Head>
@@ -43,13 +53,26 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
+        <script src="https://accounts.google.com/gsi/client" async defer />
       </Head>
       <DefaultSeo {...defaultSeo} />
       <ThemeProvider>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
-          <ReactQueryDevtools position="bottom-right" />
+          <SnackbarProvider
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            ref={notistackRef}
+            autoHideDuration={3000}
+            action={(key) => (
+              <IconButton onClick={handleDismissClick(key)}>
+                <CloseIcon />
+              </IconButton>
+            )}
+          >
+            <Component {...pageProps} />
+            <ReactQueryDevtools position="bottom-right" />
+          </SnackbarProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </StylesProvider>

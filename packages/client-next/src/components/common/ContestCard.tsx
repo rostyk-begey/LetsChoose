@@ -116,9 +116,9 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   }
   const maxSteps = totalItems + 1;
   const { mutateAsync: startGame } = useGameStart();
-  const onStartGame = async () => {
+  const handleStartGameClick = async () => {
     const { data: { gameId = null } = {} } = (await startGame(id)) || {};
-    router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
+    await router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
   };
   const [activeStep, setActiveStep] = useState(0);
   useEffect(() => {
@@ -160,10 +160,18 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   };
 
   const { mutateAsync: deleteContest } = useContestDelete(id);
-  const onDeleteClick = async () => {
+  const handleDeleteClick = async () => {
     await deleteContest();
     handleMenuClose();
     onDelete && onDelete();
+  };
+
+  const handleShareClick = () => {
+    navigator?.share?.({
+      text: excerpt,
+      title,
+      url: `${ROUTES.CONTESTS.INDEX}/${contest.id}`,
+    });
   };
 
   return (
@@ -192,7 +200,7 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
                 anchorEl={menuAnchor}
               >
                 <MenuItem>
-                  <ListItemIcon onClick={onDeleteClick}>
+                  <ListItemIcon onClick={handleDeleteClick}>
                     <DeleteIcon />
                   </ListItemIcon>
                   Delete
@@ -282,11 +290,11 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
           <FavoriteIcon fontSize="small" />
         </IconButton>
         <IconButton aria-label="share">
-          <ShareIcon fontSize="small" />
+          <ShareIcon fontSize="small" onClick={handleShareClick} />
         </IconButton>
         <div className={classes.playBtn}>
           {games}&nbsp;
-          <IconButton aria-label="play" onClick={onStartGame}>
+          <IconButton aria-label="play" onClick={handleStartGameClick}>
             <PlayCircleFilledWhiteIcon fontSize="small" color="primary" />
           </IconButton>
         </div>

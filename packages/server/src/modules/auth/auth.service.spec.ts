@@ -1,8 +1,10 @@
-import { AuthLoginDto, AuthTokenDto, CreateUserDto } from '@lets-choose/common';
+import { AuthLoginDto, AuthTokenDto } from '@lets-choose/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { IAuthService } from '../../abstract/auth.service.interface';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
+import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
 
+import { IAuthService } from '../../abstract/auth.service.interface';
 import jwtService from '../common/jwt/__mocks__/jwt.service';
 import emailService from '../common/email/__mocks__/email.service';
 import passwordHashService from '../common/password/__mocks__/password.service';
@@ -20,6 +22,9 @@ describe('AuthService', () => {
     accessToken: 'accessToken',
     refreshToken: 'refreshToken',
   };
+  jest
+    .spyOn(jwtService, 'generateAuthTokenPair')
+    .mockImplementation(() => tokenPair);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -57,6 +62,10 @@ describe('AuthService', () => {
     jest.clearAllMocks();
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test('registerUser', async () => {
     jest.spyOn(userRepository, 'findByEmail').mockResolvedValueOnce(undefined);
     jest
@@ -73,12 +82,6 @@ describe('AuthService', () => {
   });
 
   describe('loginUser', () => {
-    beforeEach(() => {
-      jest
-        .spyOn(jwtService, 'generateAuthTokenPair')
-        .mockImplementation(() => tokenPair);
-    });
-
     it('should login user by email correctly', async () => {
       const data: AuthLoginDto = {
         login: user.email,
@@ -152,6 +155,68 @@ describe('AuthService', () => {
       } catch (e) {
         expect(e.message).toMatch('User not exists!');
       }
+    });
+  });
+
+  describe('loginUserOAuth', () => {
+    const code = 'code';
+    const idToken = 'id_token';
+    const tokenPayload: TokenPayload = {
+      iss: 'iss',
+      sub: 'sub',
+      aud: 'aud',
+      iat: 10,
+      exp: 20,
+      email: 'username@email.com',
+      picture: 'picture',
+    };
+    const ticket = { getPayload: jest.fn().mockReturnValue(tokenPayload) };
+    const getTokenSpy = jest
+      .spyOn(OAuth2Client.prototype, 'getToken')
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      .mockResolvedValue({
+        tokens: { id_token: idToken },
+        res: null,
+      } as GetTokenResponse);
+    const verifyIdTokenSpy = jest
+      .spyOn(OAuth2Client.prototype, 'verifyIdToken')
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      .mockResolvedValue(ticket);
+
+    it('should login user correctly from code', async () => {
+      const result = await authService.loginUserOAuth({ code });
+
+      expect(result).toMatchObject(tokenPair);
+      expect(getTokenSpy).toBeCalledWith(code);
+      expect(verifyIdTokenSpy).toBeCalledWith({
+        idToken,
+        audience: config().googleOAuth.clientId,
+      });
+      expect(ticket.getPayload).toBeCalled();
+      expect(userRepository.findByEmail).toBeCalledWith(tokenPayload.email);
+      expect(jwtService.generateAuthTokenPair).toBeCalledWith(
+        tokenPair.userId,
+        user.passwordVersion,
+      );
+    });
+
+    it('should login user correctly from token', async () => {
+      const result = await authService.loginUserOAuth({ token: idToken });
+
+      expect(result).toMatchObject(tokenPair);
+      expect(getTokenSpy).not.toBeCalled();
+      expect(verifyIdTokenSpy).toBeCalledWith({
+        idToken,
+        audience: config().googleOAuth.clientId,
+      });
+      expect(ticket.getPayload).toBeCalled();
+      expect(userRepository.findByEmail).toBeCalledWith(tokenPayload.email);
+      expect(jwtService.generateAuthTokenPair).toBeCalledWith(
+        tokenPair.userId,
+        user.passwordVersion,
+      );
     });
   });
 
