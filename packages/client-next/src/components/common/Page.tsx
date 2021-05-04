@@ -51,6 +51,7 @@ const Page: React.FC<Props> = ({
     data: { data: user } = {},
     remove,
     isSuccess,
+    isFetched,
     refetch: refetchCurrentUser,
   } = useCurrentUser({});
   const { username = '', avatar } = user || {};
@@ -76,7 +77,7 @@ const Page: React.FC<Props> = ({
   const { mutateAsync: googleLogin } = useAxiosMutation(authApi.loginGoogle);
 
   useEffect(() => {
-    if (!user && window?.google?.accounts) {
+    if (isFetched && !user && window?.google?.accounts) {
       const options: google.IdConfiguration = {
         client_id: process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID as string,
         auto_select: false,
@@ -96,7 +97,7 @@ const Page: React.FC<Props> = ({
       window.google.accounts.id.initialize(options);
       window.google.accounts.id.prompt();
     }
-  }, [user, typeof window]);
+  }, [isFetched, user, typeof window]);
 
   const darkModeSwitch = (
     <div>

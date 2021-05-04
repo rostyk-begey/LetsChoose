@@ -12,6 +12,8 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/client/dist" />
       <excludeFolder url="file://$MODULE_DIR$/packages/server/coverage" />
       <excludeFolder url="file://$MODULE_DIR$/packages/server/uploads" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/common/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/client-next/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
