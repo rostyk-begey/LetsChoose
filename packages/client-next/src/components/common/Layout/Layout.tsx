@@ -73,6 +73,10 @@ cozyScheme.configureSubheader((builder) => {
 const useStyles = makeStyles((theme) => ({
   header: {
     borderBottom: `1px solid ${theme.palette.divider}`,
+    justifyContent: 'center',
+  },
+  logoBtn: {
+    padding: 0,
   },
   footer: {
     position: 'sticky',
@@ -113,7 +117,7 @@ const Layout: React.FC<Props> = ({
           <MuiHeader className={classes.header}>
             <Toolbar>
               <MuiSidebarTrigger sidebarId={PRIMARY_SIDEBAR_ID} />
-              <Button className="">{title}</Button>
+              <Button className={classes.logoBtn}>{title}</Button>
               {toolbarContent}
             </Toolbar>
           </MuiHeader>

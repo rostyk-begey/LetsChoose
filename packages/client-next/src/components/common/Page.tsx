@@ -31,12 +31,22 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3, 0),
     backgroundColor: theme.palette.background.default,
   },
-  signupBtn: {
-    margin: theme.spacing(0, 1, 0, 4),
+  signupBtn: ({
+    withContestNavigation,
+  }: {
+    withContestNavigation: boolean;
+  }) => ({
+    marginRight: theme.spacing(1),
+    marginLeft: withContestNavigation ? theme.spacing(4) : 0,
     flexShrink: 0,
-  },
+  }),
   loginBtn: {
     flexShrink: 0,
+  },
+  logo: {
+    [theme.breakpoints.down('md')]: {
+      width: 150,
+    },
   },
 }));
 
@@ -46,7 +56,7 @@ const Page: React.FC<Props> = ({
   className,
   subHeader,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles({ withContestNavigation });
   const {
     data: { data: user } = {},
     remove,
@@ -118,7 +128,11 @@ const Page: React.FC<Props> = ({
     <Layout
       title={
         <RouterLink href={ROUTES.HOME}>
-          <img src={darkMode ? logoWhite : logo} alt="" />
+          <img
+            className={classes.logo}
+            src={darkMode ? logoWhite : logo}
+            alt=""
+          />
         </RouterLink>
       }
       subHeader={subHeader}
