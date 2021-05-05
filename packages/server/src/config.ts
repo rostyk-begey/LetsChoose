@@ -7,7 +7,6 @@ const {
   NODE_ENV,
   USE_SSL,
   APP_URL,
-  PORT,
   MONGOOSE_DEBUG,
   ACCESS_TOKEN_KEY,
   REFRESH_TOKEN_KEY,
@@ -63,7 +62,7 @@ export interface Config {
 }
 
 const config: Config = {
-  port: (PORT || 5000) as number,
+  port: 5000,
   jwt: {
     accessTokenKey: ACCESS_TOKEN_KEY || 'accessToken',
     refreshTokenKey: REFRESH_TOKEN_KEY || 'refreshToken',

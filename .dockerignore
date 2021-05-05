@@ -7,8 +7,10 @@ packages/server/.env.example
 .gitignore
 .idea
 
-packages/client-next/.env.example
-packages/client-next/.next
+packages/client/.env.example
+packages/client/.next
+*.spec.ts
+**/__mocks__/
 uploads
 *.log
 *.tsbuildinfo

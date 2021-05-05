@@ -1,10 +1,4 @@
 dist
 .next
 node_modules
-legacy
-packages/client
-packages/client/webpack
-packages/client/webpack.config.js
-packages/client/.babelrc.js
-packages/client/postcss.config.js
-packages/client-next/next.config.js
+packages/client/next.config.js

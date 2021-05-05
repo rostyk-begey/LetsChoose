@@ -4,6 +4,7 @@
   "workspaces": [
     "packages/*"
   ],
+  "type": "module",
   "private": true,
   "scripts": {
     "lint": "eslint . --quiet",

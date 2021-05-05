@@ -18,7 +18,7 @@ COPY ./yarn.lock ./
 COPY ./lerna.json ./
 
 COPY ./packages/common/package.json ./packages/common/
-COPY ./packages/client-next/package.json ./packages/client-next/
+COPY packages/client/package.json ./packages/client/
 COPY ./packages/server/package.json ./packages/server/
 
 RUN lerna bootstrap
@@ -53,11 +53,9 @@ COPY --from=build /app/packages/server/tsconfig.json ./packages/server/
 COPY --from=build /app/packages/server/tsconfig.build.json ./packages/server/
 COPY --from=build /app/packages/server/yarn.lock ./packages/server/
 
-COPY --from=build /app/packages/client-next/.next ./packages/client-next/.next
-COPY --from=build /app/packages/client-next/public ./packages/client-next/public
-COPY --from=build /app/packages/client-next/node_modules ./packages/client-next/node_modules
-COPY --from=build /app/packages/client-next/package.json ./packages/client-next/
+COPY --from=build /app/packages/client/.next ./packages/client/.next
+COPY --from=build /app/packages/client/public ./packages/client/public
+COPY --from=build /app/packages/client/node_modules ./packages/client/node_modules
+COPY --from=build /app/packages/client/package.json ./packages/client/
 
-EXPOSE 3000
-
-CMD lerna run start --parallel --ignore=@lets-choose/client
+CMD lerna run start --parallel

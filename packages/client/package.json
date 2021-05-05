@@ -1,11 +1,11 @@
 {
-  "name": "@lets-choose/client-next",
+  "name": "@lets-choose/client",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p $PORT"
   },
   "dependencies": {
     "@lets-choose/common": "1.0.0",
