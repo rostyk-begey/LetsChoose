@@ -23,16 +23,33 @@ import useQueryState from '../../hooks/getParams';
 import { useContestAllInfinite } from '../../hooks/api/contest';
 
 const avatarSize = 45;
+const mobileAvatarSize = 40;
 
 const useStyles = makeStyles((theme) => ({
   navigationSubheader: {
     display: 'flex',
     justifyContent: 'flex-end',
+    padding: theme.spacing(1),
   },
   profileSubheader: {
     display: 'flex',
     alignItems: 'center',
+    padding: theme.spacing(1),
     color: theme.palette.text.primary,
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(0.5, 1),
+    },
+  },
+  profileSubheaderText: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      alignItems: 'flex-start',
+      flexDirection: 'column',
+      '& $divider': {
+        display: 'none',
+      },
+    },
   },
   divider: {
     width: 2,
@@ -40,11 +57,24 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 3),
   },
   username: {
-    marginLeft: theme.spacing(1),
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.9rem',
+      fontWeight: theme.typography.fontWeightMedium,
+    },
+  },
+  contestsCounter: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.8rem',
+    },
   },
   avatar: {
     width: avatarSize,
     height: avatarSize,
+    marginRight: theme.spacing(1),
+    [theme.breakpoints.down('sm')]: {
+      width: mobileAvatarSize,
+      height: mobileAvatarSize,
+    },
   },
 }));
 
@@ -104,13 +134,15 @@ const UserPage: React.FC = () => {
               style={{ zIndex: 1001 }}
             >
               <Avatar src={avatar} className={classes.avatar} />
-              <Typography variant="h5" className={classes.username}>
-                @{username}
-              </Typography>
-              <Divider orientation="vertical" className={classes.divider} />
-              <Typography variant="body1">
-                {pages?.[0]?.data?.totalItems || 0} contests
-              </Typography>
+              <div className={classes.profileSubheaderText}>
+                <Typography variant="h5" className={classes.username}>
+                  @{username}
+                </Typography>
+                <Divider orientation="vertical" className={classes.divider} />
+                <Typography variant="body1" className={classes.contestsCounter}>
+                  {pages?.[0]?.data?.totalItems || 0} contests
+                </Typography>
+              </div>
             </Subheader>
           )}
           {matchesMaxWidth1024 && (
