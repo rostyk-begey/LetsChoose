@@ -1,5 +1,6 @@
 /* eslint-disable import/namespace */
 import * as Joi from 'joi';
+import { joiObjectIdSchema } from '../../usecases/object-id.schema';
 
 const basePaginationSchema = {
   nextCursor: Joi.string().empty('').messages({
@@ -57,3 +58,6 @@ export const getContestSchema = Joi.object({
 });
 
 export const getContestItemsSchema = Joi.object(basePaginationSchema);
+
+export const gameIdSchema = Joi.object({ gameId: joiObjectIdSchema() });
+export const contestIdSchema = Joi.object({ contestId: joiObjectIdSchema() });

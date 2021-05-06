@@ -11,14 +11,34 @@ describe('JoiValidationPipe', () => {
   let metadata: ArgumentMetadata;
 
   beforeEach(async () => {
-    schema = ({
-      validate: jest.fn().mockReturnValue({ value: newValue, error: null }),
-    } as unknown) as jest.Mocked<AnySchema>;
     joiValidationPipe = new JoiValidationPipe(schema as AnySchema);
     metadata = { type: 'param' } as ArgumentMetadata;
   });
 
-  describe('transform', () => {
+  describe.each`
+    decorator
+    ${undefined}
+    ${'key'}
+  `('transform $decorator', ({ decorator }) => {
+    let schemaValue;
+    let expectedValue;
+
+    beforeAll(() => {
+      schemaValue = decorator ? { [decorator]: value } : value;
+      expectedValue = decorator ? { [decorator]: newValue } : newValue;
+      metadata = { ...metadata, data: decorator };
+    });
+
+    beforeEach(async () => {
+      schema = ({
+        validate: jest
+          .fn()
+          .mockReturnValue({ value: expectedValue, error: null }),
+      } as unknown) as jest.Mocked<AnySchema>;
+      joiValidationPipe = new JoiValidationPipe(schema as AnySchema);
+      metadata = { type: 'param' } as ArgumentMetadata;
+    });
+
     it.each`
       type
       ${'body'}
@@ -28,13 +48,15 @@ describe('JoiValidationPipe', () => {
     `(
       'should validate and transform object correctly on $type type',
       ({ type }) => {
-        const metadata = { type } as ArgumentMetadata;
+        const metadata = { type, data: decorator } as ArgumentMetadata;
         joiValidationPipe = new JoiValidationPipe(schema, type);
 
         const result = joiValidationPipe.transform(value, metadata);
 
         expect(result).toEqual(newValue);
-        expect(schema.validate).toHaveBeenCalledWith(value, { convert: true });
+        expect(schema.validate).toHaveBeenCalledWith(schemaValue, {
+          convert: true,
+        });
       },
     );
 
@@ -56,10 +78,12 @@ describe('JoiValidationPipe', () => {
       expect.assertions(2);
 
       try {
-        joiValidationPipe.transform(value, metadata);
+        joiValidationPipe.transform(schemaValue, metadata);
       } catch (e) {
         expect(e.message).toEqual(errorMessage);
-        expect(schema.validate).toHaveBeenCalledWith(value, { convert: true });
+        expect(schema.validate).toHaveBeenCalledWith(schemaValue, {
+          convert: true,
+        });
       }
     });
   });

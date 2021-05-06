@@ -173,9 +173,6 @@ describe('GameService', () => {
           expectedWinner = items.find(findItemById(winnerId));
           actualLooser = updatedItems.find(findItemById(looserId));
           expectedLooser = items.find(findItemById(looserId));
-          console.log(items);
-          console.log(winnerId);
-          console.log(updatedItems);
         });
 
         afterAll(() => {

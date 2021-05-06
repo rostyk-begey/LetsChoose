@@ -31,7 +31,11 @@ import { IContestService } from '../../abstract/contest.service.interface';
 import { TYPES } from '../../injectable.types';
 import { JoiValidationPipe } from '../../pipes/joi-validation.pipe';
 import { fieldNameFilter, unlinkAsync } from '../../usecases/utils';
-import { getContestItemsSchema, getContestSchema } from './contest.validation';
+import {
+  getContestItemsSchema,
+  getContestSchema,
+  contestIdSchema,
+} from './contest.validation';
 
 @ApiTags('Contest')
 @Controller('/api/contests')
@@ -60,6 +64,7 @@ export class ContestController {
     status: 200,
     type: Contest,
   })
+  @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
   public async find(@Param('contestId') contestId: string): Promise<Contest> {
     return await this.contestService.findContestById(contestId);
   }
@@ -70,6 +75,7 @@ export class ContestController {
     status: 200,
     type: GetItemsResponse,
   })
+  @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
   @UsePipes(new JoiValidationPipe(getContestItemsSchema, 'query'))
   public async getItems(
     @Param('contestId') contestId: string,
@@ -115,13 +121,14 @@ export class ContestController {
 
   // TODO: add schema validation
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(FileInterceptor('files'))
   @Post('/:contestId')
   @ApiOperation({ summary: 'Update contest' })
   @ApiResponse({
     status: 200,
     type: HttpResponseMessageDto,
   })
+  @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
+  @UseInterceptors(FileInterceptor('files'))
   public async update(
     @Param('contestId') contestId: string,
     @Body() { title, excerpt }: UpdateContestData,
@@ -136,13 +143,14 @@ export class ContestController {
     return { message: 'Contest successfully updated!' };
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Post('/:contestId/reset')
   @ApiOperation({ summary: 'Reset contest' })
   @ApiResponse({
     status: 200,
     type: Contest,
   })
+  @UseGuards(AuthGuard('jwt'))
+  @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
   public async reset(
     @Param('contestId') contestId: string,
     @Req() { user }: any,
@@ -154,13 +162,14 @@ export class ContestController {
     return await this.contestService.resetContest(contestId);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Delete('/:contestId')
   @ApiOperation({ summary: 'Delete contest' })
   @ApiResponse({
     status: 200,
     type: HttpResponseMessageDto,
   })
+  @UseGuards(AuthGuard('jwt'))
+  @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
   public async remove(
     @Param('contestId') contestId: string,
     @Req() { user }: any,

@@ -1,3 +1,5 @@
+import { CustomValidator } from 'joi';
+import * as mongoose from 'mongoose';
 import { PathLike } from 'fs';
 import * as fs from 'fs/promises';
 
@@ -69,3 +71,14 @@ export const getPaginationPipelines = (page = 1, perPage = 10): any[] => [
     },
   },
 ];
+
+export const joiObjectIdValidator: CustomValidator = (value, helpers) => {
+  // for example if the username value is (something) then it will throw an error with flowing message but it throws an error inside (value) object without error message. It should throw error inside the (error) object with a proper error message
+
+  if (!mongoose.Types.ObjectId.isValid(value)) {
+    return helpers.error('objectId.invalid');
+  }
+
+  // Return the value unchanged
+  return mongoose.Types.ObjectId(value);
+};

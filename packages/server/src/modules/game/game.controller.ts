@@ -13,7 +13,11 @@ import { TYPES } from '../../injectable.types';
 import { IGameService } from '../../abstract/game.service.interface';
 import { JoiValidationPipe } from '../../pipes/joi-validation.pipe';
 import { ContestItem } from '../contest/contest-item.entity';
-import { gamePlaySchema } from './game.validation';
+import {
+  contestIdSchema,
+  gameIdSchema,
+  gamePlaySchema,
+} from './game.validation';
 
 @Controller('/api/games')
 export class GameController {
@@ -23,6 +27,7 @@ export class GameController {
   ) {}
 
   @Post('/start/:contestId')
+  @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
   public async start(@Param('contestId') contestId: string): Promise<any> {
     const game = await this.gameService.start(contestId);
 
@@ -34,6 +39,7 @@ export class GameController {
   }
 
   @Get('/:gameId')
+  @UsePipes(new JoiValidationPipe(gameIdSchema, 'param'))
   public async get(@Param('gameId') gameId: string): Promise<GetPairResponse> {
     const game = await this.gameService.findGameById(gameId);
 
@@ -49,6 +55,7 @@ export class GameController {
   }
 
   @Post('/:gameId')
+  @UsePipes(new JoiValidationPipe(gameIdSchema, 'param'))
   @UsePipes(new JoiValidationPipe(gamePlaySchema, 'body'))
   public async play(
     @Param('gameId') gameId: string,
