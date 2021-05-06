@@ -99,11 +99,6 @@ const TableRow: React.FC<Props> = ({ row }) => {
       maxWidth: 960,
     }),
   );
-  const matchesMinWidth700 = useMediaQuery(
-    json2mq({
-      minWidth: 700,
-    }),
-  );
   const imageSrc = image.value.replace(
     'image/upload',
     'image/upload/c_fill,ar_4:3',

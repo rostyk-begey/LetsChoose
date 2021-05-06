@@ -7,11 +7,13 @@ import json2mq from 'json2mq';
 
 import { useStyles, Props } from './TableRow';
 
-const TableRowSkeleton: React.FC<Props> = ({ row }) => {
-  const {
-    cells: [rank, image, title, ...cells],
-  } = row;
-  const classes = useStyles({ index: row.index });
+const TableRowSkeleton: React.FC<Props> = ({
+  row: {
+    index,
+    cells: [rank, image, ...cells],
+  },
+}) => {
+  const classes = useStyles({ index });
   const matchesMaxWidth960 = useMediaQuery(
     json2mq({
       maxWidth: 960,
@@ -33,12 +35,6 @@ const TableRowSkeleton: React.FC<Props> = ({ row }) => {
       </TableCell>
       <TableCell width={250} {...image.getCellProps()}>
         <Skeleton animation="wave" className={classes.image} />
-      </TableCell>
-      <TableCell
-        style={matchesMaxWidth960 ? { width: '100%' } : undefined}
-        {...title.getCellProps()}
-      >
-        <Skeleton animation="wave" width="70%" height={32} />
       </TableCell>
       {cells.map((cell, i) => (
         <TableCell key={i} {...cell.getCellProps()}>

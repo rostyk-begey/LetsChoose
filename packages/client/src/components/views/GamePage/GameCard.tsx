@@ -19,6 +19,7 @@ const useStyles = makeStyles(() => ({
   },
   gameCard: {
     cursor: 'pointer',
+    width: '100%',
   },
 }));
 

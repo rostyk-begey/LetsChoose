@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
   });
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
-  const { mutateAsync: httpLogin, error, ...httpLoginQuery } = useAxiosMutation(
+  const { mutateAsync: httpLogin, ...httpLoginQuery } = useAxiosMutation(
     authApi.login,
     {
       onSuccess: () => router.push(ROUTES.HOME).then(),
@@ -65,7 +65,7 @@ const LoginPage: React.FC = () => {
   });
   const {
     mutateAsync: googleLogin,
-    error: googleLoginError,
+    error,
     ...googleLoginQuery
   } = useAxiosMutation(authApi.loginGoogle, {
     onSuccess: () => router.push(ROUTES.HOME).then(),

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
 import { GetPairResponse } from '@lets-choose/common';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
@@ -18,15 +19,24 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flex: 1,
+    padding: theme.spacing(3),
   },
   content: {
     margin: 'auto',
-    display: 'flex',
-    justifyContent: 'space-between',
-    flex: 1,
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridGap: theme.spacing(3),
+    maxWidth: 1500,
+    width: '100%',
+    [theme.breakpoints.down('sm')]: {
+      gridTemplateColumns: '1fr',
+      maxWidth: 550,
+    },
   },
   item: {
-    flex: `1 1 calc(50% - ${theme.spacing(4)})`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   subheader: {
     display: 'flex',
@@ -38,13 +48,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const inAnimations = [
-  'animate__animated animate__bounceInLeft',
-  'animate__animated animate__bounceInRight',
-];
-const outAnimations = [
-  'animate__animated animate__bounceOutLeft',
-  'animate__animated animate__bounceOutRight',
+const getAnimationClassNames = ({
+  direction = 'In',
+}: {
+  direction?: 'In' | 'Out';
+} = {}) => [
+  `animate__animated animate__bounce${direction}Left`,
+  `animate__animated animate__bounce${direction}Right`,
 ];
 const winnerAnimation = 'animate__animated animate__faster animate__flash';
 
@@ -54,6 +64,7 @@ const GamePage: React.FC = () => {
     query: { gameId },
     ...router
   } = useRouter();
+  const inAnimations = getAnimationClassNames();
   const { mutateAsync: choose } = useGameChoose(gameId as string);
   const { mutateAsync: getGameState } = useGameState(gameId as string);
   const [animations, setAnimations] = useState<string[]>(inAnimations);
@@ -61,19 +72,24 @@ const GamePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isChooseLoading, setIsChooseLoading] = useState<boolean>(false);
   const { pair, round = 0, totalRounds, pairNumber, pairsInRound } = game || {};
+  const { enqueueSnackbar } = useSnackbar();
 
   const fetchGameState = async (initial?: boolean) => {
-    if (gameId) {
-      setIsLoading(true);
-      const { data: game } = (await getGameState()) || {};
+    try {
+      if (gameId) {
+        setIsLoading(true);
+        const { data: game } = (await getGameState()) || {};
 
-      if (game?.finished && !initial) {
-        await router.push(`${ROUTES.CONTESTS.INDEX}/${game.contestId}`);
+        if (game?.finished && !initial) {
+          await router.push(`${ROUTES.CONTESTS.INDEX}/${game.contestId}`);
+        }
+
+        setGame(game);
+        setAnimations(inAnimations);
+        setIsLoading(false);
       }
-
-      setGame(game);
-      setAnimations(inAnimations);
-      setIsLoading(false);
+    } catch (e) {
+      enqueueSnackbar(e.response.data.message, { variant: 'error' });
     }
   };
 
@@ -83,12 +99,12 @@ const GamePage: React.FC = () => {
       setAnimations(Array.from({ length: 2, [idx]: winnerAnimation }));
       await choose(winnerId);
       await sleep(700);
-      setAnimations(outAnimations);
+      setAnimations(getAnimationClassNames({ direction: 'Out' }));
       await sleep(700);
       await fetchGameState();
       setIsChooseLoading(false);
-    } catch (e) {
-      console.log(e);
+    } catch ({ message }) {
+      enqueueSnackbar(message);
     }
   };
 

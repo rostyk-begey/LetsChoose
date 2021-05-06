@@ -69,7 +69,6 @@ MyDocument.getInitialProps = async (ctx) => {
   const sheets = new ServerStyleSheets();
   const styledComponentsSheet = new ServerStyleSheet();
   const originalRenderPage = ctx.renderPage;
-  console.log(originalRenderPage);
 
   try {
     ctx.renderPage = () =>
