@@ -1,46 +1,32 @@
 import { AxiosResponse } from 'axios';
-import { useMutation, useQuery, useInfiniteQuery } from 'react-query';
-
+import {
+  useMutation,
+  useQuery,
+  useInfiniteQuery,
+  UseInfiniteQueryOptions,
+  UseQueryOptions,
+} from 'react-query';
 import {
   Contest,
-  CreateContestData,
   GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
-  HttpResponseMessageDto,
   UpdateContestData,
 } from '@lets-choose/common';
-import {
-  UseInfiniteQueryOptions,
-  UseQueryOptions,
-} from 'react-query/types/react/types';
-import api from '../../providers/apiProvider';
-import ROUTES from '../../utils/routes';
 
-export const contestApi = () => {
-  const baseURL = ROUTES.API.CONTESTS;
-  const all = (params: GetContestsQuery) =>
-    api.get<GetContestsResponse>(baseURL, { params });
-  const allItems = (id: string, params: GetItemsQuery) =>
-    api.get<GetItemsResponse>(`${baseURL}/${id}/items`, { params });
-  const find = (id: string) => api.get<Contest>(`${baseURL}/${id}`);
-  const create = (data: CreateContestData) => api.post<Contest>(baseURL, data);
-  const update = (
-    id: string,
-    data: Partial<Omit<UpdateContestData, 'items'>>,
-  ) => api.post<HttpResponseMessageDto>(`${baseURL}/${id}`, data);
-  const reset = (id: string) => api.post(`${baseURL}/${id}/reset`);
-  const remove = (id: string) => api.delete(`${baseURL}/${id}`);
-  return { all, allItems, find, create, update, remove, reset };
-};
+import ContestApi from '../../api/contest.api';
+
+export const contestApi = new ContestApi();
 
 export const useContestFind = (
   id: string,
   options: UseQueryOptions<AxiosResponse<Contest>> = {},
 ) => {
-  const { find } = contestApi();
-  return useQuery(['contest', id], () => find(id), { retry: 0, ...options });
+  return useQuery(['contest', id], () => contestApi.find(id), {
+    retry: 0,
+    ...options,
+  });
 };
 
 export const useContestAllInfinite = (
@@ -55,10 +41,9 @@ export const useContestAllInfinite = (
     perPage: 10,
     ...params,
   };
-  const { all } = contestApi();
   return useInfiniteQuery<AxiosResponse<GetContestsResponse>>(
     ['contests', queryParams],
-    ({ pageParam: page = 1 }) => all({ ...queryParams, page }),
+    ({ pageParam: page = 1 }) => contestApi.all({ ...queryParams, page }),
     {
       ...options,
       getNextPageParam: (lastPage) => {
@@ -83,10 +68,10 @@ export const useContestItemsInfinite = (
     perPage: 20,
     ...params,
   };
-  const { allItems } = contestApi();
   return useInfiniteQuery<AxiosResponse<GetItemsResponse>>(
     ['contestItems', contestId, queryParams],
-    ({ pageParam: page = 1 }) => allItems(contestId, { ...queryParams, page }),
+    ({ pageParam: page = 1 }) =>
+      contestApi.allItems(contestId, { ...queryParams, page }),
     {
       ...options,
       getNextPageParam: (lastPage) => {
@@ -103,21 +88,17 @@ export const useContestItemsInfinite = (
 };
 
 export const useContestCreate = () => {
-  const { create } = contestApi();
-  return useMutation(create);
+  return useMutation(contestApi.create);
 };
 
 export const useContestUpdate = (id: string) => {
-  const { update } = contestApi();
-  return useMutation((data: UpdateContestData) => update(id, data));
+  return useMutation((data: UpdateContestData) => contestApi.update(id, data));
 };
 
 export const useContestReset = (id: string) => {
-  const { reset } = contestApi();
-  return useMutation(() => reset(id));
+  return useMutation(() => contestApi.reset(id));
 };
 
 export const useContestDelete = (id: string) => {
-  const { remove } = contestApi();
-  return useMutation(() => remove(id));
+  return useMutation(() => contestApi.remove(id));
 };

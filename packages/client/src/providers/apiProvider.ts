@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 
 import ROUTES from '../utils/routes';
 
-const options: AxiosRequestConfig = {
+export const config: AxiosRequestConfig = {
   baseURL: ROUTES.API.INDEX,
   headers: {
     accepts: 'application/json',
@@ -10,7 +10,7 @@ const options: AxiosRequestConfig = {
   },
 };
 
-const api = axios.create(options);
+const api = axios.create(config);
 
 api.interceptors.response.use(
   (response) => response,

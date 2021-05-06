@@ -1,4 +1,5 @@
-import { SORT_OPTIONS } from '@lets-choose/common';
+import { SORT_OPTIONS, UserDto } from '@lets-choose/common';
+import { AxiosResponse } from 'axios';
 import { NextSeo } from 'next-seo';
 import React from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -18,7 +19,7 @@ import {
 } from '../common/Layout/constants';
 import Page from '../common/Page';
 import Subheader from '../common/Subheader';
-import { useUserFindRedirect } from '../../hooks/api/user';
+import { useUserFind, useUserFindRedirect } from '../../hooks/api/user';
 import useQueryState from '../../hooks/getParams';
 import { useContestAllInfinite } from '../../hooks/api/contest';
 
@@ -78,7 +79,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserPage: React.FC = () => {
+export interface UserPageProps {
+  initialUserData: AxiosResponse<UserDto>;
+}
+
+const UserPage: React.FC<UserPageProps> = ({ initialUserData }) => {
   const {
     query: { username },
   } = useRouter();
@@ -92,10 +97,10 @@ const UserPage: React.FC = () => {
     perPage: 3,
   });
   const pages = data?.pages || [];
-  const { data: { data: user } = {}, isLoading } = useUserFindRedirect(
-    username,
-  );
-  const { avatar } = user || {};
+  const { data: userResponse, isLoading } = useUserFind(username as string, {
+    initialData: initialUserData,
+  });
+  const user = (userResponse || initialUserData).data;
   const matchesMaxWidth1024 = useMediaQuery(
     json2mq({
       maxWidth: 1024,
@@ -133,7 +138,7 @@ const UserPage: React.FC = () => {
               className={classes.profileSubheader}
               style={{ zIndex: 1001 }}
             >
-              <Avatar src={avatar} className={classes.avatar} />
+              <Avatar src={user.avatar} className={classes.avatar} />
               <div className={classes.profileSubheaderText}>
                 <Typography variant="h5" className={classes.username}>
                   @{username}
@@ -163,7 +168,7 @@ const UserPage: React.FC = () => {
           title: `@${username}`,
           images: [
             {
-              url: user?.avatar as string,
+              url: user.avatar,
               alt: `@${username}`,
             },
           ],

@@ -13,7 +13,7 @@ import { DefaultSeo } from 'next-seo';
 import ThemeProvider from '../components/common/ThemeProvider';
 import queryClient from '../utils/queryClient';
 
-import '../assets/scss/material-kit-react.scss';
+// import '../assets/scss/material-kit-react.scss';
 import 'animate.css';
 
 const defaultSeo = {
@@ -25,7 +25,7 @@ const defaultSeo = {
   openGraph: {
     type: 'website',
     locale: 'en_IE',
-    url: 'http://ec2-18-217-198-156.us-east-2.compute.amazonaws.com/',
+    url: 'https://lets-choose.herokuapp.com/',
     site_name: "Let's Choose",
   },
 };

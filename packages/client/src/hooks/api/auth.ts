@@ -5,50 +5,9 @@ import {
   MutationFunction,
   UseMutationOptions,
 } from 'react-query';
+import { HttpResponseMessageDto } from '@lets-choose/common';
 
-import {
-  AuthForgotPasswordDto,
-  AuthLoginDto,
-  AuthGoogleLoginDto,
-  AuthRegisterDto,
-  HttpResponseMessageDto,
-  AuthTokenDto,
-} from '@lets-choose/common';
-import api from '../../providers/apiProvider';
-import ROUTES from '../../utils/routes';
-
-const {
-  LOGIN,
-  LOGIN_GOOGLE,
-  LOGOUT,
-  REGISTER,
-  CONFIRM_EMAIL,
-  FORGOT_PASSWORD,
-  RESET_PASSWORD,
-} = ROUTES.API.AUTH;
-
-// TODO refactor
-interface ResetPasswordData {
-  token: string;
-  data: {
-    password: string;
-  };
-}
-
-export const authApi = {
-  login: (data: AuthLoginDto) => api.post<AuthTokenDto>(LOGIN, data),
-  loginGoogle: (data: AuthGoogleLoginDto) =>
-    api.post<AuthTokenDto>(LOGIN_GOOGLE, data),
-  logout: () => api.post<HttpResponseMessageDto>(LOGOUT, {}),
-  register: (data: AuthRegisterDto) =>
-    api.post<HttpResponseMessageDto>(REGISTER, data),
-  confirmEmail: (token: string) =>
-    api.post<HttpResponseMessageDto>(`${CONFIRM_EMAIL}/${token}`),
-  forgotPassword: (data: AuthForgotPasswordDto) =>
-    api.post<HttpResponseMessageDto>(FORGOT_PASSWORD, data),
-  resetPassword: ({ token, data }: ResetPasswordData) =>
-    api.post<HttpResponseMessageDto>(`${RESET_PASSWORD}/${token}`, data),
-};
+import AuthApi from '../../api/auth.api';
 
 export const useAxiosMutation = <
   TResult,
@@ -68,6 +27,8 @@ export const useAxiosMutation = <
     TVariables
   >(mutationFn, config);
 };
+
+export const authApi = new AuthApi();
 
 export const useApiLogin = () => {
   return useMutation(authApi.login);

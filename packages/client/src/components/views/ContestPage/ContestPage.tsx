@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import React from 'react';
 import { NextSeo } from 'next-seo';
 import Fab from '@material-ui/core/Fab';
@@ -38,17 +39,11 @@ import Subheader from '../../common/Subheader';
 import Table from './Table';
 
 const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
-  root: {
-    display: 'flex',
-  },
   headerTitle: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     marginRight: theme.spacing(2),
-  },
-  content: {
-    margin: 'auto',
   },
   subheader: {
     display: 'flex',
@@ -107,7 +102,11 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
 
 const itemsPerPage = 10;
 
-const ContestPage: React.FC = () => {
+export interface ContestPageProps {
+  initialContestData: AxiosResponse<Contest>;
+}
+
+const ContestPage: React.FC<ContestPageProps> = ({ initialContestData }) => {
   const {
     query: { contestId },
     ...router
@@ -117,11 +116,11 @@ const ContestPage: React.FC = () => {
     data: contestResponse,
     isLoading: contestIsLoading,
     remove: removeContest,
-  } = useContestFind(contestId as string, { useErrorBoundary: false });
+  } = useContestFind(contestId as string, { initialData: initialContestData });
   const { data: { data: user } = {} } = useCurrentUser({});
-  const contest = (contestResponse?.data as Contest) || null;
-  const isCurrentUserAuthor = user?._id === contest?.author;
-  const classes = useStyles({ thumbnail: contest?.thumbnail || '' });
+  const contest = (contestResponse || initialContestData)?.data as Contest;
+  const isCurrentUserAuthor = user?._id === contest.author;
+  const classes = useStyles({ thumbnail: contest.thumbnail || '' });
   const { mutateAsync: startGame } = useGameStart();
   const onStartGame = async () => {
     const { data: { gameId = null } = {} } =
@@ -142,19 +141,10 @@ const ContestPage: React.FC = () => {
   const isLoading = contestIsLoading || contestItemsIsLoading;
   const pages = contestItemsData?.pages || [];
   const { totalItems = 0 } = pages?.[0]?.data || {};
-  const { mutateAsync: resetContest } = useContestReset(contest?._id);
-  const { mutateAsync: deleteContest } = useContestDelete(contest?._id);
+  const { mutateAsync: resetContest } = useContestReset(contest._id);
+  const { mutateAsync: deleteContest } = useContestDelete(contest._id);
 
-  if (contestId && !isLoading && !contest) {
-    return (
-      <Page className={classes.root}>
-        <Typography variant="h1" className={classes.content}>
-          Contest not found...
-        </Typography>
-      </Page>
-    );
-  }
-  const thumbnail = contest?.thumbnail.replace(
+  const thumbnail = contest.thumbnail.replace(
     'image/upload',
     'image/upload/c_fill,ar_4:3',
   );
@@ -168,7 +158,7 @@ const ContestPage: React.FC = () => {
   const gamesChip = (
     <Chip
       icon={<PlayCircleOutlineIcon />}
-      label={`${contest?.games} Games`}
+      label={`${contest.games} Games`}
       className={classes.chip}
     />
   );
