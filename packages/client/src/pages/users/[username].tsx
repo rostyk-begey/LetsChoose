@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next';
+
 import UsersApi from '../../api/usersApi';
-import { ContestPageProps } from '../../components/views/ContestPage/ContestPage';
+import { UserPageProps } from '../../components/views/UserPage';
 import ROUTES from '../../utils/routes';
 
 export { default } from '../../components/views/UserPage';
@@ -12,7 +13,7 @@ const usersApi = new UsersApi({
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export const getServerSideProps: GetServerSideProps<
-  ContestPageProps,
+  UserPageProps,
   { username: string }
 > = async ({ params: { username } = {} }) => {
   try {
