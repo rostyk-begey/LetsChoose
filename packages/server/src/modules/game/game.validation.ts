@@ -1,5 +1,5 @@
 /* eslint-disable import/namespace */
-import * as Joi from 'joi';
+import Joi from 'joi';
 
 import { joiObjectIdSchema } from '../../usecases/object-id.schema';
 

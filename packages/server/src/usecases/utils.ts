@@ -1,7 +1,7 @@
 import { CustomValidator } from 'joi';
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import { PathLike } from 'fs';
-import * as fs from 'fs/promises';
+import fs from 'fs/promises';
 
 export const fieldNameFilter = (key: string) => ({
   fieldname,

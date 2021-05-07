@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import { AuthTokenPayload } from '../../../abstract/jwt.service.interface';
 import { JwtConfig } from '../../../config';

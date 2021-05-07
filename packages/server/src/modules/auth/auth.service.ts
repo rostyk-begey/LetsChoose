@@ -16,7 +16,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
-import * as md5 from 'md5';
+import md5 from 'md5';
 
 import { IAuthService } from '../../abstract/auth.service.interface';
 import { IEmailService } from '../../abstract/email.service.interface';

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import * as bcrypt from 'bcryptjs';
+import { hash, compare } from 'bcryptjs';
 
 import { PasswordHashService } from './password.service';
 
@@ -19,11 +19,11 @@ describe('PasswordHashService', () => {
 
   test('hash', async () => {
     await passwordHashService.hash(password, salt);
-    expect(bcrypt.hash).toHaveBeenCalledWith(password, salt);
+    expect(hash).toHaveBeenCalledWith(password, salt);
   });
 
   test('compare', async () => {
     await passwordHashService.compare(password, password);
-    expect(bcrypt.compare).toHaveBeenCalledWith(password, password);
+    expect(compare).toHaveBeenCalledWith(password, password);
   });
 });

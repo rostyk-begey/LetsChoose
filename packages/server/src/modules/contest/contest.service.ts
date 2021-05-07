@@ -7,7 +7,7 @@ import {
   GetItemsResponse,
 } from '@lets-choose/common';
 import { Inject, Injectable } from '@nestjs/common';
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 import { ICloudinaryService } from '../../abstract/cloudinary.service.interface';
 import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';

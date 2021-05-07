@@ -7,6 +7,7 @@ import {
 } from '@lets-choose/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { IContestService } from '../../abstract/contest.service.interface';
 import contestItemRepository from '../contest/__mocks__/contest-item.repository';
 import contestRepository, {
   contest,
@@ -23,6 +24,8 @@ jest.mock('../../usecases/utils', () => ({
   unlinkAsync: jest.fn(() => Promise.resolve()),
 }));
 
+jest.unmock('../../usecases/object-id.schema.ts');
+
 const files = [
   { fieldname: 'thumbnail', path: 'path' },
   { fieldname: 'items[0][image]', path: 'item[0][image]' },
@@ -31,7 +34,7 @@ const files = [
 
 describe('ContestController', () => {
   let controller: ContestController;
-  let contestService: ContestService;
+  let contestService: IContestService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -61,7 +64,7 @@ describe('ContestController', () => {
       ],
     }).compile();
 
-    contestService = module.get<ContestService>(ContestService);
+    contestService = module.get<IContestService>(TYPES.ContestService);
     controller = module.get<ContestController>(ContestController);
   });
 

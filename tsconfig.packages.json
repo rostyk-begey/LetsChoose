@@ -4,6 +4,7 @@
     "target": "es6",
     "sourceMap": true,
     "removeComments": true,
+    "esModuleInterop": true,
     "declaration": true,
     "skipLibCheck": true,
     "lib": [
@@ -13,7 +14,6 @@
     ]
   },
   "exclude": [
-    "node_modules",
-    "legacy"
+//    "node_modules",
   ]
 }

@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import { shuffle } from 'lodash';
 
 import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';

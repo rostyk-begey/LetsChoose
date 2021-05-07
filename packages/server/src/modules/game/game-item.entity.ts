@@ -1,6 +1,6 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import { GameItem as GameItemModel } from '@lets-choose/common';
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 import { ContestItem } from '../contest/contest-item.entity';
 

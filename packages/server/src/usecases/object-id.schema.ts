@@ -1,6 +1,4 @@
-/* eslint-disable import/namespace */
-import { StringSchema } from 'joi';
-import * as Joi from 'joi';
+import Joi, { StringSchema } from 'joi';
 
 import { joiObjectIdValidator } from './utils';
 

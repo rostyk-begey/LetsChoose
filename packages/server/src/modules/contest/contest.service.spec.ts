@@ -1,6 +1,6 @@
 import { GetContestsQuery, GetItemsQuery } from '@lets-choose/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 import gameRepository from '../game/__mocks__/game.repository';
 import cloudinaryService from '../cloudinary/__mocks__/cloudinary.service';

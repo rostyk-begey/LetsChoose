@@ -1,5 +1,5 @@
 /* eslint-disable import/namespace */
-import * as Joi from 'joi';
+import Joi from 'joi';
 
 export const forgotPasswordSchema = Joi.object({
   email: Joi.string().email().message('Invalid email'),
