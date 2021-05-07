@@ -6,17 +6,19 @@ import Api from './api';
 export default class GameApi extends Api {
   private readonly baseURL = ROUTES.API.GAMES;
 
-  start(contestId: string) {
+  start = (contestId: string) => {
     return this.api.post<GameStartResponse>(
       `${this.baseURL}/start/${contestId}`,
     );
-  }
-  getState(id: string) {
+  };
+
+  getState = (id: string) => {
     return this.api.get<GetPairResponse>(`${this.baseURL}/${id}`);
-  }
-  choose(gameId: string, winnerId: string) {
+  };
+
+  choose = (gameId: string, winnerId: string) => {
     return this.api.post<GetPairResponse>(`${this.baseURL}/${gameId}`, {
       winnerId,
     });
-  }
+  };
 }

@@ -6,12 +6,15 @@ const useQueryState = (
   key: string,
   initialValue?: QueryValue,
 ): [QueryValue, (value: QueryValue) => void] => {
-  const { push, pathname, query } = useRouter();
+  const router = useRouter();
 
   return [
-    query[key] || initialValue,
+    router?.query[key] || initialValue,
     (value: QueryValue) => {
-      push({ pathname, query: { ...query, [key]: value } });
+      router?.push({
+        pathname: router.pathname,
+        query: { ...router.query, [key]: value },
+      });
     },
   ];
 };

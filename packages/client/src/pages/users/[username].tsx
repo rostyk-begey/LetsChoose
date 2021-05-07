@@ -2,13 +2,10 @@ import { GetServerSideProps } from 'next';
 
 import UsersApi from '../../api/usersApi';
 import { UserPageProps } from '../../components/views/UserPage';
-import ROUTES from '../../utils/routes';
+
+const usersApi = new UsersApi();
 
 export { default } from '../../components/views/UserPage';
-
-const usersApi = new UsersApi({
-  baseURL: `http://localhost:5000${ROUTES.API.INDEX}`,
-});
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -19,7 +16,7 @@ export const getServerSideProps: GetServerSideProps<
   try {
     const { data: user } = await usersApi.find(username as string);
     return {
-      props: { initialUserData: { data: user } },
+      props: { initialUser: user },
     };
   } catch (e) {
     return {

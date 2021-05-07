@@ -1,7 +1,6 @@
-import { SORT_OPTIONS, UserDto } from '@lets-choose/common';
-import { AxiosResponse } from 'axios';
-import { NextSeo } from 'next-seo';
 import React from 'react';
+import { SORT_OPTIONS, UserDto } from '@lets-choose/common';
+import { NextSeo } from 'next-seo';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Divider from '@material-ui/core/Divider';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -19,7 +18,7 @@ import {
 } from '../common/Layout/constants';
 import Page from '../common/Page';
 import Subheader from '../common/Subheader';
-import { useUserFind, useUserFindRedirect } from '../../hooks/api/user';
+import { useUserFind } from '../../hooks/api/user';
 import useQueryState from '../../hooks/getParams';
 import { useContestAllInfinite } from '../../hooks/api/contest';
 
@@ -80,13 +79,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export interface UserPageProps {
-  initialUserData: AxiosResponse<UserDto>;
+  initialUser: UserDto;
 }
 
-const UserPage: React.FC<UserPageProps> = ({ initialUserData }) => {
-  const {
-    query: { username },
-  } = useRouter();
+const UserPage: React.FC<UserPageProps> = ({ initialUser }) => {
+  const { query: { username = initialUser.username } = {} } = useRouter() || {};
   const classes = useStyles();
   const [sortBy] = useQueryState('sortBy', 'POPULAR');
   const [search] = useQueryState('search', '');
@@ -98,9 +95,9 @@ const UserPage: React.FC<UserPageProps> = ({ initialUserData }) => {
   });
   const pages = data?.pages || [];
   const { data: userResponse, isLoading } = useUserFind(username as string, {
-    initialData: initialUserData,
+    initialData: { data: initialUser } as any,
   });
-  const user = (userResponse || initialUserData).data;
+  const user = (userResponse?.data as UserDto) || initialUser;
   const matchesMaxWidth1024 = useMediaQuery(
     json2mq({
       maxWidth: 1024,

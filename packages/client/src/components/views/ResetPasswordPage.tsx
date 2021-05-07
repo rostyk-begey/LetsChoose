@@ -32,7 +32,7 @@ const inputs: Record<string, FormTextInputProps> = {
 
 const ResetPasswordPage: React.FC = () => {
   const router = useRouter();
-  const token = router.query.token as string;
+  const token = (router?.query?.token as string) || '';
   const {
     mutate: resetPassword,
     ...resetPasswordQuery

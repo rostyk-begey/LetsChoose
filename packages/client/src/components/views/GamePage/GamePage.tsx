@@ -60,10 +60,7 @@ const winnerAnimation = 'animate__animated animate__faster animate__flash';
 
 const GamePage: React.FC = () => {
   const classes = useStyles();
-  const {
-    query: { gameId },
-    ...router
-  } = useRouter();
+  const { query: { gameId = '' } = {}, ...router } = useRouter() || {};
   const inAnimations = getAnimationClassNames();
   const { mutateAsync: choose } = useGameChoose(gameId as string);
   const { mutateAsync: getGameState } = useGameState(gameId as string);

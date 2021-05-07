@@ -104,11 +104,9 @@ const Layout: React.FC<Props> = ({
   className,
 }) => {
   const classes = useStyles();
-  useEffect(() => {
-    cozyScheme.configureEdgeSidebar((builder) => {
-      builder.hide('primarySidebar', !primarySidebar);
-    });
-  }, [primarySidebar]);
+  cozyScheme.configureEdgeSidebar((builder) => {
+    builder.hide('primarySidebar', !primarySidebar);
+  });
 
   return (
     <Root themeProviderOmitted scheme={cozyScheme}>
@@ -122,12 +120,14 @@ const Layout: React.FC<Props> = ({
             </Toolbar>
           </MuiHeader>
           {subHeader}
-          <MuiDrawerSidebar sidebarId="primarySidebar" open={!!primarySidebar}>
-            <MuiSidebarContent className={classes.sidebarContent}>
-              {!!primarySidebar && primarySidebar(sidebar.primarySidebar)}
-            </MuiSidebarContent>
-            <MuiCollapseBtn />
-          </MuiDrawerSidebar>
+          {primarySidebar && (
+            <MuiDrawerSidebar sidebarId="primarySidebar" open>
+              <MuiSidebarContent className={classes.sidebarContent}>
+                {primarySidebar(sidebar.primarySidebar)}
+              </MuiSidebarContent>
+              <MuiCollapseBtn />
+            </MuiDrawerSidebar>
+          )}
           <MuiContent className={classNames(classes.content, className)}>
             {children}
           </MuiContent>

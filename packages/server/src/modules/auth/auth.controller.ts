@@ -100,7 +100,6 @@ export class AuthController {
     @Response({ passthrough: true }) res: any,
     @Body() dto: AuthGoogleLoginDto,
   ): Promise<AuthTokenDto> {
-    this.logger.log(dto, 'loginGoogle');
     const result = await this.authService.loginUserOAuth(dto);
 
     res.cookie(

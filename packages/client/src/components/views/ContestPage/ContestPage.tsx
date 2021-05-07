@@ -103,22 +103,22 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
 const itemsPerPage = 10;
 
 export interface ContestPageProps {
-  initialContestData: AxiosResponse<Contest>;
+  initialContest: Contest;
 }
 
-const ContestPage: React.FC<ContestPageProps> = ({ initialContestData }) => {
-  const {
-    query: { contestId },
-    ...router
-  } = useRouter();
+const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
+  const { query: { contestId = initialContest.id } = {}, ...router } =
+    useRouter() || {};
 
   const {
     data: contestResponse,
     isLoading: contestIsLoading,
     remove: removeContest,
-  } = useContestFind(contestId as string, { initialData: initialContestData });
+  } = useContestFind(contestId as string, {
+    initialData: { data: initialContest } as any,
+  });
   const { data: { data: user } = {} } = useCurrentUser({});
-  const contest = (contestResponse || initialContestData)?.data as Contest;
+  const contest = (contestResponse?.data as Contest) || initialContest;
   const isCurrentUserAuthor = user?._id === contest.author;
   const classes = useStyles({ thumbnail: contest.thumbnail || '' });
   const { mutateAsync: startGame } = useGameStart();
@@ -276,15 +276,17 @@ const ContestPage: React.FC<ContestPageProps> = ({ initialContestData }) => {
       }
     >
       <NextSeo
-        title={contest?.title}
-        description={contest?.excerpt || undefined}
+        title={initialContest.title}
+        description={initialContest.excerpt}
         openGraph={{
-          title: contest?.title,
-          ...(contest?.excerpt && { description: contest?.excerpt }),
+          title: initialContest.title,
+          ...(initialContest.excerpt && {
+            description: initialContest.excerpt,
+          }),
           images: [
             {
-              url: contest?.thumbnail,
-              alt: contest?.title,
+              url: initialContest.thumbnail,
+              alt: initialContest.title,
             },
           ],
         }}

@@ -96,7 +96,6 @@ const Page: React.FC<Props> = ({
         callback: async ({ credential: token }) => {
           try {
             await googleLogin({ token });
-            remove();
             await refetchCurrentUser();
             enqueueSnackbar('Successfully logged in', { variant: 'success' });
           } catch (e) {
@@ -107,7 +106,7 @@ const Page: React.FC<Props> = ({
       window.google.accounts.id.initialize(options);
       window.google.accounts.id.prompt();
     }
-  }, [isFetched, user, typeof window]);
+  }, [isFetched, user]);
 
   const darkModeSwitch = (
     <div>

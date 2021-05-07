@@ -8,15 +8,14 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { StylesProvider } from '@material-ui/core/styles';
 import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { DefaultSeo } from 'next-seo';
+import { DefaultSeo, DefaultSeoProps } from 'next-seo';
 
 import ThemeProvider from '../components/common/ThemeProvider';
 import queryClient from '../utils/queryClient';
 
-// import '../assets/scss/material-kit-react.scss';
 import 'animate.css';
 
-const defaultSeo = {
+const defaultSeo: DefaultSeoProps = {
   title: undefined,
   titleTemplate: "%s | Let's Choose",
   defaultTitle: "Let's Choose",

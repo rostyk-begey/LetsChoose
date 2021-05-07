@@ -15,27 +15,33 @@ import Api from './api';
 export default class ContestApi extends Api {
   private readonly baseURL = ROUTES.API.CONTESTS;
 
-  all(params: GetContestsQuery) {
+  all = (params: GetContestsQuery) => {
     return this.api.get<GetContestsResponse>(this.baseURL, { params });
-  }
-  allItems(id: string, params: GetItemsQuery) {
+  };
+
+  allItems = (id: string, params: GetItemsQuery) => {
     return this.api.get<GetItemsResponse>(`${this.baseURL}/${id}/items`, {
       params,
     });
-  }
-  find(id: string) {
+  };
+
+  find = (id: string) => {
     return this.api.get<Contest>(`${this.baseURL}/${id}`);
-  }
-  create(data: CreateContestData) {
+  };
+
+  create = (data: CreateContestData) => {
     return this.api.post<Contest>(this.baseURL, data);
-  }
-  update(id: string, data: Partial<Omit<UpdateContestData, 'items'>>) {
+  };
+
+  update = (id: string, data: Partial<Omit<UpdateContestData, 'items'>>) => {
     return this.api.post<HttpResponseMessageDto>(`${this.baseURL}/${id}`, data);
-  }
-  reset(id: string) {
+  };
+
+  reset = (id: string) => {
     return this.api.post(`${this.baseURL}/${id}/reset`);
-  }
-  remove(id: string) {
+  };
+
+  remove = (id: string) => {
     return this.api.delete(`${this.baseURL}/${id}`);
-  }
+  };
 }

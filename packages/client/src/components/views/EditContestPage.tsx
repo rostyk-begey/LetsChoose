@@ -8,21 +8,17 @@ import ROUTES from '../../utils/routes';
 import { ContestPageProps } from './ContestPage/ContestPage';
 import EditContestPageTemplate from './EditContestPageTemplate';
 
-const EditContestPage: React.FC<ContestPageProps> = ({
-  initialContestData,
-}) => {
-  const {
-    query: { contestId },
-    ...router
-  } = useRouter();
+const EditContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
+  const { query: { contestId = initialContest.id } = {}, ...router } =
+    useRouter() || {};
 
   const { data: contestResponse } = useContestFind(contestId as string, {
-    initialData: initialContestData,
+    initialData: { data: initialContest } as any,
   });
   const { data: { data: user } = {} } = useCurrentUser({
     redirectTo: ROUTES.HOME,
   });
-  const contest = (contestResponse || initialContestData)?.data as Contest;
+  const contest = (contestResponse?.data as Contest) || initialContest;
   const isCurrentUserAuthor = user?._id === contest?.author;
 
   const { mutateAsync: updateContest } = useContestUpdate(contestId as string);
@@ -44,8 +40,8 @@ const EditContestPage: React.FC<ContestPageProps> = ({
       defaultThumbnail={contest?.thumbnail}
       onSubmit={onSubmit}
       inputsDefaultValues={{
-        title: contest?.title,
-        excerpt: contest?.excerpt,
+        title: initialContest.title,
+        excerpt: initialContest.excerpt,
       }}
     />
   );
