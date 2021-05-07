@@ -8,7 +8,7 @@ import { ContestItem } from '../contest/contest-item.entity';
 export class GameItem extends GameItemModel {
   @Prop({
     type: mongoose.Types.ObjectId,
-    ref: ContestItem,
+    ref: () => ContestItem,
   })
   contestItem: ContestItem | string;
 

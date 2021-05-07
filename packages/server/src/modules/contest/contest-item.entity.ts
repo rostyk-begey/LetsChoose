@@ -31,7 +31,7 @@ export class ContestItem extends ContestItemModel {
   finalWins: number;
 
   @Prop({
-    ref: 'Contest',
+    ref: Contest.name,
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   })

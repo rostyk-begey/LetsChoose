@@ -29,14 +29,13 @@ export class Contest extends ContestModel {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   })
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   author: User | string;
 
   @Prop({ type: Number, default: 0 })
   games: number;
 
   @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: ContestItem.name }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: () => ContestItem }],
   })
   items: ContestItem[];
 

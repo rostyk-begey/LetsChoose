@@ -2,7 +2,7 @@
   "plugins": ["import", "react", "mui-unused-classes"],
   "extends": [
     "plugin:@typescript-eslint/recommended",
-    "prettier/@typescript-eslint",
+    "prettier",
     "plugin:prettier/recommended",
     "plugin:import/errors",
     "plugin:import/warnings",
