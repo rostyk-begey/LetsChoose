@@ -14,19 +14,19 @@ const FormTextInput: React.FC<FormTextInputProps> = ({
   fieldProps = {},
 }) => {
   const {
-    errors: { [name]: error = false },
+    formState: {
+      errors: { [name]: error = false },
+    },
   } = useFormContext();
 
   return (
     <Controller
       name={name}
       rules={validation}
-      render={({ value, onChange }) => (
+      render={({ field }) => (
         <TextField
           size="small"
-          name={name}
-          defaultValue={value}
-          onChange={onChange}
+          {...field}
           {...fieldProps}
           error={error}
           helperText={error?.message || fieldProps?.helperText}
