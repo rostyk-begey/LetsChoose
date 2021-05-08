@@ -104,14 +104,21 @@ const TableRow: React.FC<Props> = ({ row }) => {
     'image/upload/c_fill,ar_4:3',
   );
 
+  const handleExpandClick = (e) => {
+    e.stopPropagation();
+    setOpen((prev) => !prev);
+  };
+
+  const handleRowClick = (e) => matchesMaxWidth960 && handleExpandClick(e);
+
   return (
     <>
-      <MuiTableRow className={classes.root}>
+      <MuiTableRow className={classes.root} onClick={handleRowClick}>
         <TableCell align="center" width={50} className={classes.expandCell}>
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setOpen(!open)}
+            onClick={handleExpandClick}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>

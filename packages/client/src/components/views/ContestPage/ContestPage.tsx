@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios';
 import React from 'react';
 import { NextSeo } from 'next-seo';
 import Fab from '@material-ui/core/Fab';
@@ -44,11 +43,24 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     marginRight: theme.spacing(2),
+    fontSize: '1.2rem',
+    fontWeight: theme.typography.fontWeightMedium,
+    [breakpoints.down('md')]: {
+      fontSize: '1.1rem',
+    },
   },
   subheader: {
     display: 'flex',
     alignItems: 'center',
     color: theme.palette.text.primary,
+    [breakpoints.down('sm')]: {
+      padding: theme.spacing(1, 1.5),
+    },
+  },
+  container: {
+    [breakpoints.down('sm')]: {
+      padding: theme.spacing(0, 1.5),
+    },
   },
   playBtn: {
     marginLeft: 'auto',
@@ -78,25 +90,68 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
     height: 32,
     margin: theme.spacing(0, 3),
   },
+  subheaderText: {},
   subheaderStats: {
     display: 'flex',
     alignItems: 'center',
-    [breakpoints.down('sm')]: {
-      display: 'none',
+    fontSize: '0.8rem',
+    color: theme.palette.text.secondary,
+    '& > span': {
+      display: 'inline-flex',
+      alignItems: 'center',
+      marginRight: theme.spacing(0.5),
+      '& > svg': {
+        fontSize: '1.2rem',
+        marginRight: 2,
+      },
+    },
+  },
+  contestContentCard: {
+    display: 'grid',
+    gridTemplateColumns: '40% auto',
+    '@media (max-width: 768px)': {
+      display: 'block',
     },
   },
   contestContent: {
     display: 'flex',
     flexDirection: 'column',
+    padding: theme.spacing(2),
+    [breakpoints.down('sm')]: {
+      padding: theme.spacing(1.5),
+    },
+    [breakpoints.down('xs')]: {
+      padding: theme.spacing(2, 1, 1),
+    },
+  },
+  contestContentText: {
+    padding: 0,
+  },
+  contestContentTitle: {
+    [breakpoints.down('md')]: {
+      fontSize: '1.3rem',
+      fontWeight: theme.typography.fontWeightMedium,
+    },
+    [breakpoints.down('sm')]: {
+      fontSize: '1.1rem',
+    },
+  },
+  contestContentExcerpt: {
+    [breakpoints.down('md')]: {
+      fontSize: '1rem',
+    },
+    [breakpoints.down('sm')]: {
+      fontSize: '0.9rem',
+    },
   },
   contestActionsBar: {
-    padding: theme.spacing(2),
+    paddingTop: theme.spacing(2),
     marginTop: 'auto',
     display: 'flex',
     alignItems: 'center',
   },
   chip: {
-    margin: theme.spacing(0.5),
+    marginRight: theme.spacing(0.5),
   },
 }));
 
@@ -176,13 +231,20 @@ const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
       subHeader={
         contest ? (
           <Subheader className={classes.subheader}>
-            <Typography variant="h5" className={classes.headerTitle}>
-              {contest.title}
-            </Typography>
-            <div className={classes.subheaderStats}>
-              <Divider orientation="vertical" className={classes.divider} />
-              {itemsChip}
-              {gamesChip}
+            <div className={classes.subheaderText}>
+              <Typography variant="h5" className={classes.headerTitle}>
+                {contest.title}
+              </Typography>
+              <div className={classes.subheaderStats}>
+                <span>
+                  <RecentActorsRoundedIcon />
+                  {totalItems} Items
+                </span>
+                <span>
+                  <PlayCircleOutlineIcon />
+                  {contest.games} Games
+                </span>
+              </div>
             </div>
             {isCurrentUserAuthor ? (
               <DropdownButton
@@ -291,38 +353,39 @@ const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
           ],
         }}
       />
-      <Container>
+      <Container className={classes.container}>
         <Grid container spacing={2} justify="center">
           <Grid item xs={12}>
             <Card>
-              <Grid container>
-                <Grid item md={5} xs={12}>
-                  <figure className={classes.thumbnailContainer}>
-                    {contest ? (
-                      <img
-                        src={thumbnail}
-                        className={classes.thumbnail}
-                        alt=""
-                      />
-                    ) : (
-                      <Skeleton
-                        animation="wave"
-                        width="100%"
-                        height="100%"
-                        variant="rect"
-                        className={classes.thumbnail}
-                      />
-                    )}
-                  </figure>
-                </Grid>
-                <Grid item md={7} xs={12} className={classes.contestContent}>
+              <Grid container className={classes.contestContentCard}>
+                <figure className={classes.thumbnailContainer}>
+                  {contest ? (
+                    <img src={thumbnail} className={classes.thumbnail} alt="" />
+                  ) : (
+                    <Skeleton
+                      animation="wave"
+                      width="100%"
+                      height="100%"
+                      variant="rect"
+                      className={classes.thumbnail}
+                    />
+                  )}
+                </figure>
+                <div className={classes.contestContent}>
                   {contest ? (
                     <>
-                      <CardContent>
-                        <Typography variant="h4" gutterBottom>
+                      <CardContent className={classes.contestContentText}>
+                        <Typography
+                          variant="h4"
+                          className={classes.contestContentTitle}
+                          gutterBottom
+                        >
                           {contest.title}
                         </Typography>
-                        <Typography variant="body1">
+                        <Typography
+                          variant="body1"
+                          className={classes.contestContentExcerpt}
+                        >
                           {contest.excerpt}
                         </Typography>
                       </CardContent>
@@ -362,7 +425,7 @@ const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                       </div>
                     </>
                   )}
-                </Grid>
+                </div>
               </Grid>
             </Card>
           </Grid>
