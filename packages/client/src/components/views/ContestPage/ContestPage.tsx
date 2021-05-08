@@ -212,7 +212,7 @@ const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                         <ListItemIcon>
                           <RotateLeftIcon />
                         </ListItemIcon>
-                        Clear
+                        Reset
                       </>
                     ),
                     onClick: async () => {

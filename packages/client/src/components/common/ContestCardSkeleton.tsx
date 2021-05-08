@@ -69,12 +69,13 @@ const ContestCardSkeleton = () => {
           height={33.45}
           style={{ marginLeft: 12 }}
         />
-        <Skeleton
-          animation="wave"
-          width={20}
-          height={33.45}
-          style={{ marginLeft: 24 }}
-        />
+        {/* TODO: add to favorites skeleton */}
+        {/*<Skeleton*/}
+        {/*  animation="wave"*/}
+        {/*  width={20}*/}
+        {/*  height={33.45}*/}
+        {/*  style={{ marginLeft: 24 }}*/}
+        {/*/>*/}
         <Skeleton
           animation="wave"
           width={20}

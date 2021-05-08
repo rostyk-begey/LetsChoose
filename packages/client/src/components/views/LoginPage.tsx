@@ -63,13 +63,12 @@ const LoginPage: React.FC = () => {
       password: '',
     },
   });
-  const {
-    mutateAsync: googleLogin,
-    error,
-    ...googleLoginQuery
-  } = useAxiosMutation(authApi.loginGoogle, {
-    onSuccess: () => router.push(ROUTES.HOME).then(),
-  });
+  const { mutateAsync: googleLogin, ...googleLoginQuery } = useAxiosMutation(
+    authApi.loginGoogle,
+    {
+      onSuccess: () => router.push(ROUTES.HOME).then(),
+    },
+  );
   const onOAuthSuccess = async (data) => {
     try {
       await googleLogin(data);

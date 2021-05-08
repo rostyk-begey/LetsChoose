@@ -39,6 +39,10 @@ const useStyles = makeStyles<Theme>((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(1),
+      alignItems: 'flex-start',
+    },
   },
   title: {
     overflow: 'hidden',
@@ -47,6 +51,18 @@ const useStyles = makeStyles<Theme>((theme) => ({
     marginRight: theme.spacing(2),
     marginLeft: 'auto',
     color: theme.palette.text.primary,
+    [theme.breakpoints.down('md')]: {
+      fontSize: '1.3rem',
+      whiteSpace: 'normal',
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+      padding: theme.spacing(0.5),
+      marginLeft: 0,
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.9rem',
+    },
   },
   submitButton: {
     marginLeft: 'auto',
@@ -77,25 +93,23 @@ const useStyles = makeStyles<Theme>((theme) => ({
     `,
     gridAutoRows: 'auto',
     [theme.breakpoints.down('md')]: {
+      gridGap: theme.spacing(2),
       gridTemplateColumns: '5fr 7fr',
       gridTemplateAreas: `
         "thumbnailCard    titleCard"
         "thumbnailCard    excerptCard"
+        "thumbnailCard    itemsCard"
         "thumbnailCard    alert"
-        "itemsCard        itemsCard"
         "itemsCardActions itemsCardActions"
       `,
     },
     [theme.breakpoints.down('sm')]: {
       gridTemplateColumns: '1fr',
-      gridTemplateAreas: `
-        "thumbnailCard"
-        "titleCard"
-        "excerptCard"
-        "alert"
-        "itemsCard"
-        "itemsCardActions"
-      `,
+      '& > *': {
+        gridColumn: '1/-1!important',
+        gridRow: 'auto!important',
+      },
+      gridTemplateAreas: 'none!important',
     },
   },
   itemsGrid: {
@@ -105,7 +119,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
     gridAutoRows: 'auto',
   },
   equalPaddingCard: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
   },
   contestThumbnailCard: {
     gridArea: 'thumbnailCard',
@@ -118,17 +132,24 @@ const useStyles = makeStyles<Theme>((theme) => ({
   },
   contestItemsCardActions: {
     gridArea: 'itemsCardActions',
+    [theme.breakpoints.down('sm')]: {
+      order: 2,
+    },
   },
   contestItemsCard: {
     gridArea: 'itemsCard',
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(1, 2),
+    [theme.breakpoints.down('sm')]: {
+      order: 1,
+    },
   },
-  alert: {
-    width: '100%',
-    gridArea: 'alert',
-  },
+  // TODO: update alert
+  // alert: {
+  //   width: '100%',
+  //   gridArea: 'alert',
+  // },
   selectAllButton: {
     marginRight: 'auto',
   },
@@ -181,6 +202,11 @@ const useStyles = makeStyles<Theme>((theme) => ({
     width: '100%',
     ['&:not(:last-child)']: {
       marginBottom: theme.spacing(2),
+    },
+  },
+  itemsUploadHeader: {
+    [theme.breakpoints.down('md')]: {
+      fontSize: '1.2rem',
     },
   },
 }));
@@ -429,7 +455,9 @@ const EditContestPageTemplate: React.FC<Props> = ({
               />
             </Card>
             <Card className={classes.contestItemsCard}>
-              <Typography variant="h5">Items</Typography>
+              <Typography variant="h5" className={classes.itemsUploadHeader}>
+                Items
+              </Typography>
               <Divider
                 flexItem
                 orientation="vertical"
@@ -510,9 +538,9 @@ const EditContestPageTemplate: React.FC<Props> = ({
                 ))}
               </Card>
             )}
-            <Alert severity="info" className={classes.alert}>
-              This is an info alert — check it out!
-            </Alert>
+            {/*<Alert severity="info" className={classes.alert}>*/}
+            {/*  This is an info alert — check it out!*/}
+            {/*</Alert>*/}
           </div>
         </Container>
       </FormProvider>

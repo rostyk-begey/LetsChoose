@@ -1,4 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
+import EditIcon from '@material-ui/icons/Edit';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -23,7 +26,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+// import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -34,6 +37,7 @@ import SwipeableViews from 'react-swipeable-views';
 import {
   useContestDelete,
   useContestItemsInfinite,
+  useContestReset,
 } from '../../hooks/api/contest';
 import { useGameStart } from '../../hooks/api/game';
 import { useCurrentUser } from '../../hooks/api/user';
@@ -160,18 +164,48 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   };
 
   const { mutateAsync: deleteContest } = useContestDelete(id);
+  const { mutateAsync: resetContest } = useContestReset(contest._id);
   const handleDeleteClick = async () => {
-    await deleteContest();
-    handleMenuClose();
-    onDelete && onDelete();
+    if (
+      confirm('Are you sure you want to delete contest? All data will be lost.')
+    ) {
+      await deleteContest();
+      handleMenuClose();
+      onDelete && onDelete();
+    }
   };
+  const handleEditClick = () => {
+    router.push(`${ROUTES.CONTESTS.INDEX}/${contest.id}/edit`);
+  };
+  const handleResetClick = async () => {
+    if (
+      confirm(
+        'Are you sure you want to reset contest? All data will be reset to defaults.',
+      )
+    ) {
+      await resetContest();
+      handleMenuClose();
+      onDelete && onDelete();
+    }
+  };
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleShareClick = () => {
-    navigator?.share?.({
-      text: excerpt,
-      title,
-      url: `${ROUTES.CONTESTS.INDEX}/${contest.id}`,
-    });
+    const url = `${ROUTES.CONTESTS.INDEX}/${contest.id}`;
+    if (navigator?.share) {
+      navigator.share({
+        text: excerpt,
+        title,
+        url,
+      });
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        enqueueSnackbar('Link copied', {
+          variant: 'success',
+          preventDuplicate: true,
+        });
+      });
+    }
   };
 
   return (
@@ -199,6 +233,18 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
                 onClose={handleMenuClose}
                 anchorEl={menuAnchor}
               >
+                <MenuItem>
+                  <ListItemIcon onClick={handleEditClick}>
+                    <EditIcon />
+                  </ListItemIcon>
+                  Edit
+                </MenuItem>
+                <MenuItem>
+                  <ListItemIcon onClick={handleResetClick}>
+                    <RotateLeftIcon />
+                  </ListItemIcon>
+                  Reset
+                </MenuItem>
                 <MenuItem>
                   <ListItemIcon onClick={handleDeleteClick}>
                     <DeleteIcon />
@@ -286,9 +332,10 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
         </Typography>
       </CardContent>
       <CardActions className={classes.actions} disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon fontSize="small" />
-        </IconButton>
+        {/* TODO: add to favorites button */}
+        {/*<IconButton aria-label="add to favorites">*/}
+        {/*  <FavoriteIcon fontSize="small" />*/}
+        {/*</IconButton>*/}
         <IconButton aria-label="share">
           <ShareIcon fontSize="small" onClick={handleShareClick} />
         </IconButton>
