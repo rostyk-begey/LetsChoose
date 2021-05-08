@@ -22,9 +22,8 @@ import { ContestService, CreateContestsData } from './contest.service';
 jest.mock('../../usecases/utils', () => ({
   fieldNameFilter: jest.fn(() => () => true),
   unlinkAsync: jest.fn(() => Promise.resolve()),
+  joiObjectIdValidator: jest.fn((x) => x),
 }));
-
-jest.unmock('../../usecases/object-id.schema.ts');
 
 const files = [
   { fieldname: 'thumbnail', path: 'path' },
