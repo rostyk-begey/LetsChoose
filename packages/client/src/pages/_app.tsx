@@ -15,7 +15,8 @@ import queryClient from '../utils/queryClient';
 
 import 'animate.css';
 
-const defaultSeo: DefaultSeoProps = {
+export const url = 'https://lets-choose.herokuapp.com';
+export const defaultSeo: DefaultSeoProps = {
   title: undefined,
   titleTemplate: "%s | Let's Choose",
   defaultTitle: "Let's Choose",
@@ -24,12 +25,21 @@ const defaultSeo: DefaultSeoProps = {
   openGraph: {
     type: 'website',
     locale: 'en_IE',
-    url: 'https://lets-choose.herokuapp.com/',
+    url,
     site_name: "Let's Choose",
+    images: [
+      {
+        url: `${url}/images/logo.png`,
+        alt: "Let'sChoose",
+      },
+    ],
+  },
+  facebook: {
+    appId: '1153193155159012',
   },
 };
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ Component, pageProps, router }: AppProps) => {
   useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles) {
@@ -54,7 +64,15 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         />
         <script src="https://accounts.google.com/gsi/client" async defer />
       </Head>
-      <DefaultSeo {...defaultSeo} />
+      <DefaultSeo
+        {...{
+          ...defaultSeo,
+          openGraph: {
+            ...defaultSeo.openGraph,
+            url: `${defaultSeo?.openGraph?.url}${router.asPath}`,
+          },
+        }}
+      />
       <ThemeProvider>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>

@@ -1,5 +1,7 @@
-import { useRouter } from 'next/router';
 import React from 'react';
+import { NextSeo } from 'next-seo';
+import { useRouter } from 'next/router';
+
 import { useContestCreate } from '../../hooks/api/contest';
 import ROUTES from '../../utils/routes';
 
@@ -14,15 +16,18 @@ const CreateContestPage: React.FC = () => {
   };
 
   return (
-    <EditContestPageTemplate
-      title="Create a new contest"
-      submitButtonText="Save"
-      onSubmit={onSubmit}
-      inputsDefaultValues={{
-        title: '',
-        excerpt: '',
-      }}
-    />
+    <>
+      <NextSeo title="New contest" />
+      <EditContestPageTemplate
+        title="Create a new contest"
+        submitButtonText="Save"
+        onSubmit={onSubmit}
+        inputsDefaultValues={{
+          title: '',
+          excerpt: '',
+        }}
+      />
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { NextSeo } from 'next-seo';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import RouterLink from 'next/link';
@@ -46,6 +47,7 @@ const ForgotPasswordPage: React.FC = () => {
 
   return (
     <PageWithForm>
+      <NextSeo title="Forgot password" />
       <FormProvider {...form}>
         <AuthFormCard
           title="Forgot password"

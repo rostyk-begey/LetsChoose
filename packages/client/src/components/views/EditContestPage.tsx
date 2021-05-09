@@ -1,4 +1,5 @@
 import { Contest } from '@lets-choose/common';
+import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
@@ -34,16 +35,34 @@ const EditContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
   }, [user, contest, isCurrentUserAuthor]);
 
   return (
-    <EditContestPageTemplate
-      title={contest?.title}
-      submitButtonText="Save"
-      defaultThumbnail={contest?.thumbnail}
-      onSubmit={onSubmit}
-      inputsDefaultValues={{
-        title: initialContest.title,
-        excerpt: initialContest.excerpt,
-      }}
-    />
+    <>
+      <NextSeo
+        title={initialContest.title}
+        description={initialContest.excerpt}
+        openGraph={{
+          title: initialContest.title,
+          ...(initialContest.excerpt && {
+            description: initialContest.excerpt,
+          }),
+          images: [
+            {
+              url: initialContest.thumbnail,
+              alt: initialContest.title,
+            },
+          ],
+        }}
+      />
+      <EditContestPageTemplate
+        title={contest?.title}
+        submitButtonText="Save"
+        defaultThumbnail={contest?.thumbnail}
+        onSubmit={onSubmit}
+        inputsDefaultValues={{
+          title: initialContest.title,
+          excerpt: initialContest.excerpt,
+        }}
+      />
+    </>
   );
 };
 

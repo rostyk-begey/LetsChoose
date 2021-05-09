@@ -1,5 +1,6 @@
-import { useSnackbar } from 'notistack';
 import React from 'react';
+import { NextSeo } from 'next-seo';
+import { useSnackbar } from 'notistack';
 import { AuthRegisterDto } from '@lets-choose/common';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
@@ -8,7 +9,6 @@ import { useForm, FormProvider } from 'react-hook-form';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import AlternateEmailOutlinedIcon from '@material-ui/icons/AlternateEmailOutlined';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-import { UseMutationOptions } from 'react-query';
 
 import FormTextInput, { FormTextInputProps } from '../common/FormTextInput';
 import { authApi, useAxiosMutation } from '../../hooks/api/auth';
@@ -104,6 +104,7 @@ const RegisterPage: React.FC = () => {
 
   return (
     <PageWithForm>
+      <NextSeo title="Sign up" />
       <FormProvider {...form}>
         <AuthFormCardWithOAuth
           googleButtonLabel="Sign up with google"

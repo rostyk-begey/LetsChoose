@@ -191,13 +191,9 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleShareClick = () => {
-    const url = `${ROUTES.CONTESTS.INDEX}/${contest.id}`;
+    const url = `${window.location.origin}${ROUTES.CONTESTS.INDEX}/${contest.id}`;
     if (navigator?.share) {
-      navigator.share({
-        text: excerpt,
-        title,
-        url,
-      });
+      navigator.share({ title, url });
     } else {
       navigator.clipboard.writeText(url).then(() => {
         enqueueSnackbar('Link copied', {

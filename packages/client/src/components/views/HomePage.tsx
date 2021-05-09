@@ -1,4 +1,3 @@
-import { NextSeo } from 'next-seo';
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -35,16 +34,6 @@ const HomePage: React.FC = () => {
         )
       }
     >
-      <NextSeo
-        openGraph={{
-          images: [
-            {
-              url: '/images/logo.png',
-              alt: "Let'sChoose",
-            },
-          ],
-        }}
-      />
       <ContestGrid />
     </Page>
   );

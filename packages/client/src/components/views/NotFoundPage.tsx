@@ -1,4 +1,5 @@
 import React from 'react';
+import { NextSeo } from 'next-seo';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
 
@@ -18,6 +19,7 @@ const NotFoundPage: React.FC = () => {
 
   return (
     <Page className={classes.root}>
+      <NextSeo title="Not found" />
       <Typography variant="h1" className={classes.title}>
         Page not found...
       </Typography>
