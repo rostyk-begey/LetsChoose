@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
+import { GoogleLoginResponse } from 'react-google-login';
 import { useForm, FormProvider } from 'react-hook-form';
 import RouterLink from 'next/link';
 import { AuthLoginDto } from '@lets-choose/common';
@@ -69,9 +70,9 @@ const LoginPage: React.FC = () => {
       onSuccess: () => router.push(ROUTES.HOME).then(),
     },
   );
-  const onOAuthSuccess = async (data) => {
+  const onOAuthSuccess = async ({ tokenId: token }: GoogleLoginResponse) => {
     try {
-      await googleLogin(data);
+      await googleLogin({ token });
     } catch (e) {
       enqueueSnackbar(e.response.data.message, { variant: 'error' });
     }
@@ -93,6 +94,8 @@ const LoginPage: React.FC = () => {
           submitDisabled={
             httpLoginQuery.isLoading || googleLoginQuery.isLoading
           }
+          /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+          // @ts-ignore
           onOAuthSuccess={onOAuthSuccess}
           submitButtonText="Log in"
           onSubmit={onFormSubmit}

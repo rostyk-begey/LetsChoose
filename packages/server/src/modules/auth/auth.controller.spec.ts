@@ -123,18 +123,6 @@ describe('AuthController', () => {
   });
 
   describe('loginGoogle', () => {
-    it('should login user by code correctly', async () => {
-      const dto: AuthGoogleLoginDto = { code: 'code' };
-      const result = await controller.loginGoogle(mockResponse, dto);
-
-      expect(result).toMatchObject(mockAuthTokenDto);
-
-      expectValidCookie(0);
-      expectValidCookie(1);
-
-      expect(authService.loginUserOAuth).toHaveBeenCalledWith(dto);
-    });
-
     it('should login user by token correctly', async () => {
       const dto: AuthGoogleLoginDto = { token: 'token' };
       const result = await controller.loginGoogle(mockResponse, dto);

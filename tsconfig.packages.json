@@ -13,7 +13,5 @@
       "esnext"
     ]
   },
-  "exclude": [
-//    "node_modules",
-  ]
+  "exclude": []
 }

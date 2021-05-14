@@ -18,7 +18,7 @@ COPY ./yarn.lock ./
 COPY ./lerna.json ./
 
 COPY ./packages/common/package.json ./packages/common/
-COPY packages/client/package.json ./packages/client/
+COPY ./packages/client/package.json ./packages/client/
 COPY ./packages/server/package.json ./packages/server/
 
 RUN lerna bootstrap

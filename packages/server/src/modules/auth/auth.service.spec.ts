@@ -185,23 +185,6 @@ describe('AuthService', () => {
       // @ts-ignore
       .mockResolvedValue(ticket);
 
-    it('should login user correctly from code', async () => {
-      const result = await authService.loginUserOAuth({ code });
-
-      expect(result).toMatchObject(tokenPair);
-      expect(getTokenSpy).toBeCalledWith(code);
-      expect(verifyIdTokenSpy).toBeCalledWith({
-        idToken,
-        audience: config().googleOAuth.clientId,
-      });
-      expect(ticket.getPayload).toBeCalled();
-      expect(userRepository.findByEmail).toBeCalledWith(tokenPayload.email);
-      expect(jwtService.generateAuthTokenPair).toBeCalledWith(
-        tokenPair.userId,
-        user.passwordVersion,
-      );
-    });
-
     it('should login user correctly from token', async () => {
       const result = await authService.loginUserOAuth({ token: idToken });
 

@@ -56,7 +56,7 @@ const AuthFormCardWithOAuth: React.FC<Props> = ({
     clientId: process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID as string,
     cookiePolicy: 'single_host_origin',
     redirectUri: 'postmessage',
-    responseType: 'code',
+    responseType: 'id_token',
   });
 
   return (

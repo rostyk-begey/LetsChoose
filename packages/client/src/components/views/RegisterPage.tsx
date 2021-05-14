@@ -5,6 +5,7 @@ import { AuthRegisterDto } from '@lets-choose/common';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import RouterLink from 'next/link';
+import { GoogleLoginResponse } from 'react-google-login';
 import { useForm, FormProvider } from 'react-hook-form';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import AlternateEmailOutlinedIcon from '@material-ui/icons/AlternateEmailOutlined';
@@ -87,9 +88,9 @@ const RegisterPage: React.FC = () => {
     authApi.loginGoogle,
     loginMutationConfig,
   );
-  const onOAuthSuccess = async (data) => {
+  const onOAuthSuccess = async ({ tokenId: token }: GoogleLoginResponse) => {
     try {
-      await googleLogin(data);
+      await googleLogin({ token });
     } catch (e) {
       enqueueSnackbar(e.response.data.message, { variant: 'error' });
     }
@@ -108,6 +109,8 @@ const RegisterPage: React.FC = () => {
       <FormProvider {...form}>
         <AuthFormCardWithOAuth
           googleButtonLabel="Sign up with google"
+          /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+          // @ts-ignore
           onOAuthSuccess={onOAuthSuccess}
           title="Sign up"
           submitButtonText="Sign up"
