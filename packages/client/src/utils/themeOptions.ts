@@ -11,6 +11,17 @@ import {
 } from '../assets/jss/material-kit-react';
 
 const themeOptions: ThemeOptions = {
+  overrides: {
+    MuiCssBaseline: {
+      '@global': {
+        '#__next': {
+          display: 'flex',
+          height: '100vh',
+          flexDirection: 'column',
+        },
+      },
+    },
+  },
   palette: {
     primary: {
       main: primaryColor,

@@ -16,8 +16,10 @@ import {
 import { SidebarState } from '@mui-treasury/layout/types';
 import classNames from 'classnames';
 import styled from 'styled-components';
+import OneTapContainer from '../OneTapContainer';
 
 import {
+  HEADER_HEIGHT,
   PRIMARY_SIDEBAR_ID,
   PRIMARY_SUBHEADER_ID,
   SECONDARY_SUBHEADER_ID,
@@ -88,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flex: 1,
     backgroundColor: theme.palette.background.default,
+    position: 'relative',
   },
   sidebarContent: {
     display: 'flex',
@@ -129,6 +132,7 @@ const Layout: React.FC<Props> = ({
             </MuiDrawerSidebar>
           )}
           <MuiContent className={classNames(classes.content, className)}>
+            <OneTapContainer />
             {children}
           </MuiContent>
           <MuiFooter className={classes.footer}>

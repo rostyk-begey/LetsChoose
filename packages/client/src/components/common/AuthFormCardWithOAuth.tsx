@@ -57,6 +57,7 @@ const AuthFormCardWithOAuth: React.FC<Props> = ({
     cookiePolicy: 'single_host_origin',
     redirectUri: 'postmessage',
     responseType: 'id_token',
+    uxMode: 'popup',
   });
 
   return (

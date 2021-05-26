@@ -1,5 +1,5 @@
-import React, { ReactNode, useEffect } from 'react';
-import { useSnackbar } from 'notistack';
+import React, { ReactNode } from 'react';
+import { useRouter } from 'next/router';
 import Tooltip from '@material-ui/core/Tooltip';
 import RouterLink from 'next/link';
 import Box from '@material-ui/core/Box';
@@ -9,9 +9,9 @@ import Brightness4Icon from '@material-ui/icons/Brightness4';
 import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
 import IconButton from '@material-ui/core/IconButton';
 import classNames from 'classnames';
-import { authApi, useAxiosMutation } from '../../hooks/api/auth';
 
 import { useCurrentUser } from '../../hooks/api/user';
+import useGoogleSignInPrompt from '../../hooks/googleSignInPrompt';
 import Sidebar from './Sidebar';
 import { useDarkMode } from './ThemeProvider';
 import ROUTES from '../../utils/routes';
@@ -50,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const disableOneTapPages = [ROUTES.FORGOT_PASSWORD, ROUTES.GAMES.INDEX];
+
 const Page: React.FC<Props> = ({
   withContestNavigation = false,
   children,
@@ -66,7 +68,7 @@ const Page: React.FC<Props> = ({
   } = useCurrentUser({});
   const { username = '', avatar } = user || {};
   const [darkMode, setDarkMode] = useDarkMode();
-  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const authButtons = (
     <>
@@ -84,29 +86,12 @@ const Page: React.FC<Props> = ({
     </>
   );
 
-  const { mutateAsync: googleLogin } = useAxiosMutation(authApi.loginGoogle);
-
-  useEffect(() => {
-    if (isFetched && !user && window?.google?.accounts) {
-      const options: google.IdConfiguration = {
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID as string,
-        auto_select: false,
-        cancel_on_tap_outside: false,
-        context: 'signin',
-        callback: async ({ credential: token }) => {
-          try {
-            await googleLogin({ token });
-            await refetchCurrentUser();
-            enqueueSnackbar('Successfully logged in', { variant: 'success' });
-          } catch (e) {
-            enqueueSnackbar(e.response.data.message, { variant: 'error' });
-          }
-        },
-      };
-      window.google.accounts.id.initialize(options);
-      window.google.accounts.id.prompt();
-    }
-  }, [isFetched, user]);
+  useGoogleSignInPrompt({
+    enabled:
+      isFetched &&
+      !user &&
+      !disableOneTapPages.some((path) => router.asPath.includes(path)),
+  });
 
   const darkModeSwitch = (
     <div>

@@ -30,17 +30,6 @@ export default class MyDocument extends Document {
             href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
             rel="stylesheet"
           />
-          <style
-            dangerouslySetInnerHTML={{
-              __html: `
-              body > div {
-                display: flex;
-                height: 100vh;
-                flex-direction: column;
-              }
-            `,
-            }}
-          />
         </Head>
         <body>
           <Main />
