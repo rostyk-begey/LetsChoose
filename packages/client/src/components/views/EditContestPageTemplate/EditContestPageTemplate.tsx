@@ -5,7 +5,6 @@ import Button from '@material-ui/core/Button';
 import { Theme } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import ClearIcon from '@material-ui/icons/Clear';
-import Alert from '@material-ui/lab/Alert';
 import jsonToFormData from 'json-form-data';
 import Checkbox from '@material-ui/core/Checkbox';
 import Fab from '@material-ui/core/Fab';
@@ -187,6 +186,14 @@ const useStyles = makeStyles<Theme>((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor:
+      theme.palette.type === 'light'
+        ? 'rgba(0, 0, 0, 0.23)'
+        : 'rgba(255, 255, 255, 0.23)',
+    '&:hover': {
+      borderColor: theme.palette.text.primary,
+    },
   },
   dropzoneTextContainer: {
     position: 'absolute',
