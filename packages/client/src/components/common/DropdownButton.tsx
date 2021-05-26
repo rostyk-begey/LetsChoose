@@ -58,7 +58,6 @@ const DropdownButton: React.FC<DropdownButtonProps> = ({
       >
         <Button {...mainButtonProps} />
         <Button
-          color="primary"
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}
           aria-expanded={open ? 'true' : undefined}

@@ -1,38 +1,35 @@
 import React, { useCallback, useState } from 'react';
-import Divider from '@material-ui/core/Divider';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { Backdrop, CircularProgress } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import Button from '@material-ui/core/Button';
 import { Theme } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import ClearIcon from '@material-ui/icons/Clear';
 import jsonToFormData from 'json-form-data';
-import Checkbox from '@material-ui/core/Checkbox';
 import Fab from '@material-ui/core/Fab';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Card from '@material-ui/core/Card';
-import { DropzoneArea, DropzoneDialog } from 'material-ui-dropzone';
+import { DropzoneArea } from 'material-ui-dropzone';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { useForm, FormProvider } from 'react-hook-form';
 import { DefaultValues } from 'react-hook-form/dist/types/form';
 import SaveIcon from '@material-ui/icons/Save';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import classNames from 'classnames';
-import json2mq from 'json2mq';
 
 import FormTextInput, { FormTextInputProps } from '../../common/FormTextInput';
 import Page from '../../common/Page';
 import Subheader from '../../common/Subheader';
-import ContestItem from './ContestItem';
+import ContestItemsList from './ContestItemsList';
+import ContestItemsNav from './ContestItemsNav';
+import useItemsUpload from './useItemsUpload';
 
 const useStyles = makeStyles<Theme>((theme) => ({
   root: {
     display: 'flex',
   },
   content: {
-    margin: 'auto',
+    margin: '0 auto',
   },
   subheader: {
     display: 'flex',
@@ -66,17 +63,6 @@ const useStyles = makeStyles<Theme>((theme) => ({
   submitButton: {
     marginLeft: 'auto',
   },
-  buttonRow: {
-    display: 'flex',
-    alignItems: 'center',
-    flexGrow: 1,
-  },
-  divider: {
-    margin: theme.spacing(0, 2),
-    height: '30px',
-    width: 1.5,
-    alignSelf: 'center',
-  },
   grid: {
     display: 'grid',
     alignItems: 'start',
@@ -97,12 +83,12 @@ const useStyles = makeStyles<Theme>((theme) => ({
       gridTemplateAreas: `
         "thumbnailCard    titleCard"
         "thumbnailCard    excerptCard"
-        "thumbnailCard    itemsCard"
-        "thumbnailCard    alert"
+        "thumbnailCard    ."
+        "itemsCard        itemsCard"
         "itemsCardActions itemsCardActions"
       `,
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('xs')]: {
       gridTemplateColumns: '1fr',
       '& > *': {
         gridColumn: '1/-1!important',
@@ -111,17 +97,18 @@ const useStyles = makeStyles<Theme>((theme) => ({
       gridTemplateAreas: 'none!important',
     },
   },
-  itemsGrid: {
-    display: 'grid',
-    gridGap: theme.spacing(1),
-    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-    gridAutoRows: 'auto',
-  },
   equalPaddingCard: {
     padding: theme.spacing(1),
   },
   contestThumbnailCard: {
     gridArea: 'thumbnailCard',
+  },
+  contestThumbnailCardInner: {
+    position: 'relative',
+  },
+  thumbnailError: {
+    display: 'inline-block',
+    margin: `${theme.spacing(0.5)}px 14px 0`,
   },
   contestTitleCard: {
     gridArea: 'titleCard',
@@ -144,32 +131,23 @@ const useStyles = makeStyles<Theme>((theme) => ({
       order: 1,
     },
   },
-  // TODO: update alert
-  // alert: {
-  //   width: '100%',
-  //   gridArea: 'alert',
-  // },
-  selectAllButton: {
-    marginRight: 'auto',
-  },
-  selectAllButtonLabel: {
-    color: theme.palette.text.primary,
-  },
   thumbnailActionButton: {
     position: 'absolute',
     right: theme.spacing(3),
     bottom: theme.spacing(3),
   },
-  actionButton: {
-    marginLeft: theme.spacing(2),
-  },
-  actionButtonIcon: {
-    marginRight: theme.spacing(0.5),
-  },
   defaultThumbnailHolder: {
     overflow: 'hidden',
     borderRadius: 4,
-    border: `4px dashed ${theme.palette.divider}`,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    borderColor:
+      theme.palette.type === 'light'
+        ? 'rgba(0, 0, 0, 0.23)'
+        : 'rgba(255, 255, 255, 0.23)',
+    '&:hover': {
+      borderColor: theme.palette.text.primary,
+    },
   },
   defaultThumbnail: ({ defaultThumbnail }: { defaultThumbnail?: string }) => ({
     width: '100%',
@@ -182,8 +160,12 @@ const useStyles = makeStyles<Theme>((theme) => ({
     position: 'relative',
   },
   dropzoneRoot: {
-    position: 'relative',
+    position: 'absolute',
     display: 'flex',
+    top: 0,
+    width: '100%',
+    height: '100%',
+    minHeight: 'unset',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
@@ -200,7 +182,14 @@ const useStyles = makeStyles<Theme>((theme) => ({
     padding: theme.spacing(0, 1),
   },
   dropzoneItemImage: {
+    paddingTop: '75%',
+    display: 'flex',
+    alignItems: 'center',
     '& > img': {
+      position: 'absolute',
+      display: 'block',
+      objectFit: 'cover',
+      objectPosition: 'center',
       width: '100%',
       height: 'auto',
     },
@@ -211,10 +200,9 @@ const useStyles = makeStyles<Theme>((theme) => ({
       marginBottom: theme.spacing(2),
     },
   },
-  itemsUploadHeader: {
-    [theme.breakpoints.down('md')]: {
-      fontSize: '1.2rem',
-    },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 100,
+    color: '#fff',
   },
 }));
 
@@ -249,32 +237,59 @@ interface FieldValues {
   excerpt: string;
 }
 
-interface Item {
-  title: string;
-  image: File;
-}
-
 interface Props {
   title: string;
+  isLoading?: boolean;
   submitButtonText: string;
   onSubmit: (data: any) => any;
   inputsDefaultValues: DefaultValues<FieldValues>;
   defaultThumbnail?: string;
+  withItemsUpload?: boolean;
 }
+
+const useCustomErrors = <T extends string>() => {
+  const [errors, setErrors] = useState<Partial<Record<T, { message: string }>>>(
+    {},
+  );
+
+  const setError = (name: T, error: { message: string }) => {
+    setErrors((errors) => ({
+      ...errors,
+      [name]: error,
+    }));
+  };
+
+  const clearError = (name: T) => {
+    setErrors((errors) => ({
+      ...errors,
+      [name]: null,
+    }));
+  };
+
+  const resetErrors = () => {
+    setErrors({});
+  };
+
+  return {
+    errors,
+    setError,
+    clearError,
+    resetErrors,
+  };
+};
 
 const EditContestPageTemplate: React.FC<Props> = ({
   title,
-  defaultThumbnail,
+  isLoading = false,
+  defaultThumbnail = '',
   submitButtonText,
   onSubmit,
   inputsDefaultValues,
+  withItemsUpload,
 }) => {
-  const classes = useStyles({ defaultThumbnail });
-  const [itemsDialogOpen, setItemsDialogOpen] = useState(false);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const [items, setItems] = useState<Item[]>([]);
-  const [editedItem, setEditedItem] = useState<number>(-1);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [thumbnailSrc, setThumbnailSrc] = useState<string>(defaultThumbnail);
+  const classes = useStyles({ defaultThumbnail: thumbnailSrc });
   const [isThumbnailEditing, setIsThumbnailEditing] = useState<boolean>(
     !defaultThumbnail,
   );
@@ -282,60 +297,50 @@ const EditContestPageTemplate: React.FC<Props> = ({
   const form = useForm<FieldValues>({
     defaultValues: inputsDefaultValues,
   });
-  const addFiles = (files) => {
-    setItems((prevFiles) => [
-      ...prevFiles,
-      ...files.map((file) => ({
-        title: file.name,
-        image: file,
-      })),
-    ]);
-    setItemsDialogOpen(false);
-  };
-  const deleteItem = (index: number) => () => {
-    setItems((files) => {
-      files.splice(index, 1);
-      return [...files];
-    });
-  };
-  const deleteSelectedItems = useCallback(() => {
-    setItems(items.filter((_, i) => !selectedItems.includes(i)));
-    setSelectedItems([]);
-  }, [items, selectedItems]);
-  const toggleSelectItem = (index: number) => () => {
-    setSelectedItems((items) => {
-      const set = new Set(items);
-      if (set.has(index)) {
-        set.delete(index);
-      } else {
-        set.add(index);
-      }
-      return [...set];
-    });
-  };
-  const onSelectAllToggle = useCallback(() => {
-    if (selectedItems.length === 0) {
-      setSelectedItems(items.map((_, i) => i));
-    } else {
-      setSelectedItems([]);
-    }
-  }, [items, selectedItems]);
-  const saveContest = useCallback(
+  const { errors, setError, clearError } = useCustomErrors<
+    'thumbnail' | 'items'
+  >();
+
+  const {
+    items,
+    editedItem,
+    selectedItems,
+    addFiles,
+    deleteItem,
+    deleteSelectedItems,
+    toggleSelectItem,
+    toggleEditItem,
+    updateItem,
+    toggleSelectAll,
+  } = useItemsUpload();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleSubmit = useCallback(
     (contestData) => {
-      onSubmit(
-        jsonToFormData({
-          ...contestData,
-          thumbnail,
-          items,
-        } as any),
-      );
+      if (isLoading) return;
+
+      try {
+        if (!thumbnail && !defaultThumbnail) {
+          setError('thumbnail', { message: 'Please add thumbnail' });
+          return;
+        }
+        if (withItemsUpload && items.length < 2) {
+          setError('items', { message: 'Please add at least 2 items' });
+          return;
+        }
+
+        onSubmit(
+          jsonToFormData({
+            ...contestData,
+            thumbnail,
+            items,
+          } as any),
+        );
+      } catch (e) {
+        enqueueSnackbar(e.message, { variant: 'error' });
+      }
     },
-    [thumbnail, items],
-  );
-  const matchesMinWidth600 = useMediaQuery(
-    json2mq({
-      minWidth: 600,
-    }),
+    [isLoading, form, thumbnail, defaultThumbnail, withItemsUpload, items],
   );
 
   return (
@@ -349,7 +354,8 @@ const EditContestPageTemplate: React.FC<Props> = ({
           <Button
             color="primary"
             variant="contained"
-            onClick={form.handleSubmit(saveContest)}
+            onClick={form.handleSubmit(handleSubmit)}
+            disabled={isLoading}
             className={classes.submitButton}
             startIcon={<SaveIcon />}
           >
@@ -358,18 +364,11 @@ const EditContestPageTemplate: React.FC<Props> = ({
         </Subheader>
       }
     >
+      <Backdrop open={isLoading} className={classes.backdrop}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <FormProvider {...form}>
         <Container className={classes.content}>
-          <DropzoneDialog
-            filesLimit={100}
-            open={itemsDialogOpen}
-            onSave={addFiles}
-            acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
-            showPreviews
-            maxFileSize={5000000}
-            showAlerts={['error', 'info']}
-            onClose={() => setItemsDialogOpen(false)}
-          />
           <div className={classes.grid}>
             <Card
               className={classNames(
@@ -378,7 +377,7 @@ const EditContestPageTemplate: React.FC<Props> = ({
                 classes.equalPaddingCard,
               )}
             >
-              {!isThumbnailEditing && (
+              <div className={classes.contestThumbnailCardInner}>
                 <div className={classes.defaultThumbnailHolder}>
                   <div className={classes.defaultThumbnail} />
                   <Fab
@@ -391,47 +390,61 @@ const EditContestPageTemplate: React.FC<Props> = ({
                     <EditIcon />
                   </Fab>
                 </div>
-              )}
-              {isThumbnailEditing && (
-                <DropzoneArea
-                  classes={{
-                    root: classes.dropzoneRoot,
-                    textContainer: classes.dropzoneTextContainer,
-                  }}
-                  filesLimit={1}
-                  previewChipProps={{
-                    style: {
-                      display: 'none',
-                    },
-                  }}
-                  previewGridProps={{
-                    item: {
-                      xs: 12,
-                    },
-                  }}
-                  previewGridClasses={{
-                    item: classes.dropzoneItemImage,
-                  }}
-                  showPreviewsInDropzone
-                  showAlerts={['error', 'info']}
-                  useChipsForPreview={false}
-                  onChange={([thumbnail]) => setThumbnail(thumbnail)}
-                />
-              )}
-              {defaultThumbnail && isThumbnailEditing && (
-                <Fab
-                  color="primary"
-                  size="small"
-                  aria-label="cancel-edit"
-                  className={classes.thumbnailActionButton}
-                  onClick={() => {
-                    setIsThumbnailEditing(false);
-                    setThumbnail(null);
-                  }}
-                >
-                  <ClearIcon />
-                </Fab>
-              )}
+                {isThumbnailEditing && (
+                  <DropzoneArea
+                    classes={{
+                      root: classes.dropzoneRoot,
+                      textContainer: classes.dropzoneTextContainer,
+                    }}
+                    filesLimit={1}
+                    previewChipProps={{
+                      style: {
+                        display: 'none',
+                      },
+                    }}
+                    previewGridProps={{
+                      item: {
+                        xs: 12,
+                      },
+                    }}
+                    previewGridClasses={{
+                      item: classes.dropzoneItemImage,
+                    }}
+                    showPreviewsInDropzone
+                    showAlerts={['error', 'info']}
+                    useChipsForPreview={false}
+                    onChange={([thumbnail]) => {
+                      setThumbnail(thumbnail);
+                      thumbnail &&
+                        setThumbnailSrc(URL.createObjectURL(thumbnail));
+                      clearError('thumbnail');
+                    }}
+                  />
+                )}
+                {defaultThumbnail && isThumbnailEditing && (
+                  <Fab
+                    color="primary"
+                    size="small"
+                    aria-label="cancel-edit"
+                    className={classes.thumbnailActionButton}
+                    onClick={() => {
+                      setIsThumbnailEditing(false);
+                      setThumbnail(null);
+                    }}
+                  >
+                    <ClearIcon />
+                  </Fab>
+                )}
+                {errors?.thumbnail && (
+                  <Typography
+                    variant="caption"
+                    color="error"
+                    className={classes.thumbnailError}
+                  >
+                    {errors?.thumbnail?.message}
+                  </Typography>
+                )}
+              </div>
             </Card>
             <Card
               className={classNames(
@@ -461,93 +474,32 @@ const EditContestPageTemplate: React.FC<Props> = ({
                 }}
               />
             </Card>
-            <Card className={classes.contestItemsCard}>
-              <Typography variant="h5" className={classes.itemsUploadHeader}>
-                Items
-              </Typography>
-              <Divider
-                flexItem
-                orientation="vertical"
-                className={classes.divider}
-              />
-              <div className={classes.buttonRow}>
-                <FormControlLabel
-                  className={classes.selectAllButton}
-                  classes={{
-                    label: classes.selectAllButtonLabel,
+            {withItemsUpload && (
+              <>
+                <ContestItemsNav
+                  className={classes.contestItemsCard}
+                  onSelectAllToggle={toggleSelectAll}
+                  items={items}
+                  onAddItems={(files) => {
+                    addFiles(files);
+                    clearError('items');
                   }}
-                  disabled={items.length === 0}
-                  control={
-                    <Checkbox
-                      checked={selectedItems.length > 0}
-                      onChange={onSelectAllToggle}
-                      color="primary"
-                      indeterminate={
-                        !!selectedItems.length &&
-                        selectedItems.length < items.length
-                      }
-                    />
-                  }
-                  label={selectedItems.length === 0 ? 'Select All' : 'Unselect'}
+                  selectedItems={selectedItems}
+                  onDeleteSelectedItems={deleteSelectedItems}
                 />
-                <Fab
-                  color="primary"
-                  variant="extended"
-                  size="small"
-                  className={classes.actionButton}
-                  disabled={selectedItems.length === 0}
-                  onClick={deleteSelectedItems}
-                >
-                  <DeleteForeverIcon fontSize="small" />
-                </Fab>
-                <Fab
-                  color="primary"
-                  variant="extended"
-                  size="small"
-                  className={classes.actionButton}
-                  onClick={() => setItemsDialogOpen(true)}
-                >
-                  <AddCircleIcon
-                    fontSize="small"
-                    className={classes.actionButtonIcon}
-                  />
-                  Add {matchesMinWidth600 && 'items'}
-                </Fab>
-              </div>
-            </Card>
-            {!!items.length && (
-              <Card
-                className={classNames(
-                  classes.contestItemsCardActions,
-                  classes.equalPaddingCard,
-                  classes.itemsGrid,
-                )}
-              >
-                {items.map(({ title, image }, i) => (
-                  <ContestItem
-                    key={i + title}
-                    isEditing={editedItem === i && !selectedItems.includes(i)}
-                    isSelected={selectedItems.includes(i)}
-                    onEditChange={(title) =>
-                      setItems((prevFiles) => {
-                        prevFiles[i].title = title;
-                        return [...prevFiles];
-                      })
-                    }
-                    onToggleEdit={() =>
-                      setEditedItem((active) => (active === i ? -1 : i))
-                    }
-                    onSelect={toggleSelectItem(i)}
-                    onDeleteClick={deleteItem(i)}
-                    img={URL.createObjectURL(image)}
-                    title={title}
-                  />
-                ))}
-              </Card>
+                <ContestItemsList
+                  className={classes.contestItemsCardActions}
+                  error={errors?.items}
+                  items={items}
+                  editedItem={editedItem}
+                  selectedItems={selectedItems}
+                  onItemChange={updateItem}
+                  onToggleItemEdit={toggleEditItem}
+                  onToggleSelectItem={toggleSelectItem}
+                  onDeleteItem={deleteItem}
+                />
+              </>
             )}
-            {/*<Alert severity="info" className={classes.alert}>*/}
-            {/*  This is an info alert — check it out!*/}
-            {/*</Alert>*/}
           </div>
         </Container>
       </FormProvider>

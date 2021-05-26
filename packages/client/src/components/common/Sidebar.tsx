@@ -55,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     transition: 'all 0.3s ease 0s',
     minWidth: 'unset',
     marginRight: 0,
+    color: theme.palette.primary.main,
   },
   menuItemIconOpen: {
     marginRight: theme.spacing(4),

@@ -9,7 +9,7 @@ import EditContestPageTemplate from './EditContestPageTemplate';
 
 const CreateContestPage: React.FC = () => {
   const router = useRouter();
-  const { mutateAsync: createContest } = useContestCreate();
+  const { isLoading, mutateAsync: createContest } = useContestCreate();
   const onSubmit = async (data) => {
     const { data: contest } = await createContest(data);
     await router.push(`${ROUTES.CONTESTS.INDEX}/${contest.id}`);
@@ -19,9 +19,11 @@ const CreateContestPage: React.FC = () => {
     <>
       <NextSeo title="New contest" />
       <EditContestPageTemplate
+        withItemsUpload
         title="Create a new contest"
         submitButtonText="Save"
         onSubmit={onSubmit}
+        isLoading={isLoading}
         inputsDefaultValues={{
           title: '',
           excerpt: '',

@@ -22,7 +22,9 @@ const EditContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
   const contest = (contestResponse?.data as Contest) || initialContest;
   const isCurrentUserAuthor = user?._id === contest?.author;
 
-  const { mutateAsync: updateContest } = useContestUpdate(contestId as string);
+  const { isLoading, mutateAsync: updateContest } = useContestUpdate(
+    contestId as string,
+  );
   const onSubmit = async (data) => {
     await updateContest(data);
     await router.push(`${ROUTES.CONTESTS.INDEX}/${contestId}`);
@@ -53,6 +55,7 @@ const EditContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
         }}
       />
       <EditContestPageTemplate
+        isLoading={isLoading}
         title={contest?.title}
         submitButtonText="Save"
         defaultThumbnail={contest?.thumbnail}

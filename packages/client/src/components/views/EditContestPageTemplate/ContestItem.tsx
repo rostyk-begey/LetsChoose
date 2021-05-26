@@ -12,16 +12,18 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import classNames from 'classnames';
 
 import { FormTextInputProps } from '../../common/FormTextInput';
+import ContestItemsList from './ContestItemsList';
 
 interface Props {
   isEditing: boolean;
   isSelected: boolean;
-  onDeleteClick: () => any;
-  onEditChange: (title: string) => any;
-  onToggleEdit: () => any;
-  onSelect: () => any;
+  onDeleteClick: () => void;
+  onChange: (title: string) => void;
+  onToggleEdit: () => void;
+  onSelect: () => void;
   img: string;
   title: string;
+  idx: string;
 }
 
 const titleInput: FormTextInputProps = {
@@ -111,11 +113,12 @@ const ContestItem: React.FC<Props> = memo(
     isEditing,
     isSelected,
     onDeleteClick,
-    onEditChange,
+    onChange,
     onToggleEdit,
     onSelect,
     img: image,
     title,
+    idx,
     ...props
   }) => {
     const classes = useStyles({ isSelected, isEditing, image });
@@ -136,7 +139,7 @@ const ContestItem: React.FC<Props> = memo(
           <TextField
             size="small"
             defaultValue={title}
-            onChange={({ target: { value } }) => onEditChange(value)}
+            onChange={({ target: { value } }) => onChange(value)}
             {...titleInput.fieldProps}
           />
         </Box>
@@ -191,6 +194,13 @@ const ContestItem: React.FC<Props> = memo(
           }
         />
       </div>
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.title === nextProps.title &&
+      prevProps.isEditing === nextProps.isEditing &&
+      prevProps.isSelected === nextProps.isSelected
     );
   },
 );

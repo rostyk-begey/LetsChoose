@@ -21,7 +21,7 @@ export class Contest extends ContestModel {
   @Prop({ type: String, required: true })
   title: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, default: '' })
   excerpt: string;
 
   @Prop({

@@ -93,7 +93,7 @@ export class ContestService implements IContestService {
 
   public async createContest(
     userId: string,
-    { files, title, excerpt, items }: CreateContestsData,
+    { files, title, excerpt = '', items }: CreateContestsData,
   ): Promise<Contest> {
     const thumbnail = files.find(fieldNameFilter('thumbnail'));
 
@@ -134,7 +134,7 @@ export class ContestService implements IContestService {
 
     await Promise.all(savingItems);
 
-    return contest;
+    return { ...contest, id: `${contestId}` };
   }
 
   public async updateContest(

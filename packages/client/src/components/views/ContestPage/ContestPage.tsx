@@ -63,6 +63,7 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
     },
   },
   playBtn: {
+    color: theme.palette.common.white,
     marginLeft: 'auto',
   },
   actionButtonIcon: {
@@ -309,7 +310,7 @@ const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
               />
             ) : (
               <Button
-                color="primary"
+                color="secondary"
                 variant="contained"
                 onClick={onStartGame}
                 className={classes.playBtn}
@@ -393,7 +394,7 @@ const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                         {itemsChip}
                         {gamesChip}
                         <Fab
-                          color="primary"
+                          color="secondary"
                           variant="extended"
                           size="small"
                           className={classes.playBtn}
