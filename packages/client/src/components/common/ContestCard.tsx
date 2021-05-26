@@ -1,7 +1,5 @@
-import Tooltip from '@material-ui/core/Tooltip';
-import Brightness4Icon from '@material-ui/icons/Brightness4';
-import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
 import React, { useCallback, useEffect, useState } from 'react';
+import Tooltip from '@material-ui/core/Tooltip';
 import { useSnackbar } from 'notistack';
 import EditIcon from '@material-ui/icons/Edit';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
@@ -109,21 +107,12 @@ interface Props {
 const itemsPerPage = 5;
 const loadingOffset = 1;
 
-const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
-  const classes = useStyles();
-  const shadowStyles = useOverShadowStyles();
-  const router = useRouter();
-  const [isLinkCopied, setIsLinkCopied] = useState(false);
-
-  const { id, thumbnail, title, excerpt, author, games, createdAt } = contest;
-  const username = (author as UserDto).username;
-  const { data: { data: user } = {} } = useCurrentUser({});
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isLoading,
-  } = useContestItemsInfinite(contest.id, { page: 2, perPage: itemsPerPage });
+const useContestItemsSlider = (contestId: string) => {
+  const query = useContestItemsInfinite(contestId, {
+    page: 2,
+    perPage: itemsPerPage,
+  });
+  const { data, fetchNextPage, hasNextPage, isLoading } = query;
   const pages = data?.pages || [];
   const { totalItems = 0 } = pages?.[0]?.data || {};
   const currentItemsLength = pages.reduce(
@@ -135,20 +124,9 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
     ({ currentPage = 0 } = pages[pages.length - 1].data);
   }
   const maxSteps = totalItems + 1;
-  const { mutateAsync: startGame } = useGameStart();
-  const handleStartGameClick = async () => {
-    const { data: { gameId = null } = {} } = (await startGame(id)) || {};
-    await router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
-  };
+
   const [activeStep, setActiveStep] = useState(0);
-  useEffect(() => {
-    if (activeStep > 0) {
-      const timeout = setTimeout(() => setActiveStep(0), 3000);
-      return () => {
-        clearTimeout(timeout);
-      };
-    }
-  }, [activeStep]);
+
   const handleNext = useCallback(async () => {
     const itemsUpToCurrentPage = currentPage * itemsPerPage;
     const shouldFetchMore = activeStep > 0 && activeStep % itemsPerPage === 0;
@@ -169,6 +147,30 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
+
+  useEffect(() => {
+    if (activeStep > 0) {
+      const timeout = setTimeout(() => setActiveStep(0), 3000);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [activeStep]);
+
+  return {
+    query,
+    pages,
+    maxSteps,
+    currentItemsLength,
+    totalItems,
+    activeStep,
+    handleNext,
+    handleBack,
+    handleStepChange,
+  };
+};
+
+const useMenu = () => {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -179,6 +181,35 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
     setMenuAnchor(null);
   };
 
+  return { menuAnchor, handleMenuClick, handleMenuClose };
+};
+
+const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
+  const classes = useStyles();
+  const shadowStyles = useOverShadowStyles();
+  const router = useRouter();
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
+
+  const { id, thumbnail, title, excerpt, author, games, createdAt } = contest;
+  const username = (author as UserDto).username;
+  const { data: { data: user } = {} } = useCurrentUser({});
+  const { mutateAsync: startGame } = useGameStart();
+  const handleStartGameClick = async () => {
+    const { data: { gameId = null } = {} } = (await startGame(id)) || {};
+    await router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
+  };
+  const {
+    query: { isLoading: isSliderLoading },
+    pages,
+    maxSteps,
+    currentItemsLength,
+    totalItems,
+    activeStep,
+    handleNext,
+    handleBack,
+    handleStepChange,
+  } = useContestItemsSlider(contest.id);
+  const { menuAnchor, handleMenuClick, handleMenuClose } = useMenu();
   const { mutateAsync: deleteContest } = useContestDelete(id);
   const { mutateAsync: resetContest } = useContestReset(contest._id);
   const handleDeleteClick = async () => {
@@ -328,7 +359,7 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
           <Button
             size="small"
             onClick={handleNext}
-            disabled={isLoading && activeStep === maxSteps - 1}
+            disabled={isSliderLoading || activeStep === maxSteps - 1}
           >
             Next
             <KeyboardArrowRight />
