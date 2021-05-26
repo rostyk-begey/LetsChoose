@@ -1,3 +1,6 @@
+import Tooltip from '@material-ui/core/Tooltip';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import EditIcon from '@material-ui/icons/Edit';
@@ -16,7 +19,7 @@ import classNames from 'classnames';
 import RouterLink from 'next/link';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Link from '@material-ui/core/Link';
-import { makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -43,48 +46,60 @@ import { useGameStart } from '../../hooks/api/game';
 import { useCurrentUser } from '../../hooks/api/user';
 import ROUTES from '../../utils/routes';
 
-export const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: 345,
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    borderRadius: 8,
-  },
-  media: {
-    height: 0,
-    paddingTop: '75%',
-  },
-  cursorPointer: {
-    cursor: 'pointer',
-  },
-  title: {
-    textTransform: 'none',
-    color: theme.palette.text.primary,
-    fontWeight: theme.typography.fontWeightMedium,
-    '&:hover': {
-      textDecoration: 'underline',
-      color: theme.palette.text.primary,
+export const useStyles = makeStyles((theme) =>
+  createStyles({
+    root: {
+      width: '100%',
+      maxWidth: 345,
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      borderRadius: 8,
+      overflow: 'visible',
     },
-  },
-  actions: {
-    marginTop: 'auto',
-    padding: theme.spacing(0),
-  },
-  playBtn: {
-    marginLeft: 'auto',
-  },
-  cardHeader: {
-    padding: theme.spacing(1, 1.5),
-  },
-  cardContent: {
-    padding: theme.spacing(1, 1.5),
-  },
-  sliderNavigation: {
-    padding: theme.spacing(0.5, 0),
-  },
-}));
+    media: {
+      height: 0,
+      paddingTop: '75%',
+    },
+    cursorPointer: {
+      cursor: 'pointer',
+    },
+    title: {
+      textTransform: 'none',
+      color: theme.palette.text.primary,
+      fontWeight: theme.typography.fontWeightMedium,
+      '&:hover': {
+        textDecoration: 'underline',
+        color: theme.palette.text.primary,
+      },
+    },
+    actions: {
+      marginTop: 'auto',
+      padding: theme.spacing(0, 0.5, 0.5),
+    },
+    playBtn: {
+      marginLeft: 'auto',
+    },
+    cardHeader: {
+      padding: theme.spacing(1, 1.5),
+    },
+    cardContent: {
+      padding: theme.spacing(1, 1.5),
+    },
+    sliderNavigation: {
+      padding: theme.spacing(0.5, 0),
+    },
+    actionBtn: {
+      padding: theme.spacing(1),
+    },
+    settingsBtn: {
+      marginTop: theme.spacing(0.5),
+    },
+    headerAction: {
+      alignSelf: 'center',
+    },
+  }),
+);
 
 interface Props {
   contest: Contest;
@@ -98,6 +113,7 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   const classes = useStyles();
   const shadowStyles = useOverShadowStyles();
   const router = useRouter();
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
 
   const { id, thumbnail, title, excerpt, author, games, createdAt } = contest;
   const username = (author as UserDto).username;
@@ -195,19 +211,27 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
     if (navigator?.share) {
       navigator.share({ title, url });
     } else {
-      navigator.clipboard.writeText(url).then(() => {
-        enqueueSnackbar('Link copied', {
-          variant: 'success',
-          preventDuplicate: true,
+      navigator.clipboard
+        .writeText(url)
+        .then(() => {
+          setIsLinkCopied(true);
+        })
+        .catch(() => {
+          enqueueSnackbar('Failed to copy to clipboard', {
+            variant: 'error',
+            preventDuplicate: true,
+          });
         });
-      });
     }
   };
 
   return (
     <Card className={classNames(classes.root, shadowStyles.root)}>
       <CardHeader
-        className={classes.cardHeader}
+        classes={{
+          root: classes.cardHeader,
+          action: classes.headerAction,
+        }}
         avatar={
           <RouterLink href={`${ROUTES.USERS}/${username}`}>
             <Avatar
@@ -220,7 +244,11 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
         action={
           user?.username === username && (
             <>
-              <IconButton aria-label="settings" onClick={handleMenuClick}>
+              <IconButton
+                aria-label="settings"
+                className={classNames(classes.actionBtn, classes.settingsBtn)}
+                onClick={handleMenuClick}
+              >
                 <MoreVertIcon />
               </IconButton>
               <Menu
@@ -332,14 +360,33 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
         {/*<IconButton aria-label="add to favorites">*/}
         {/*  <FavoriteIcon fontSize="small" />*/}
         {/*</IconButton>*/}
-        <IconButton aria-label="share">
-          <ShareIcon fontSize="small" onClick={handleShareClick} />
-        </IconButton>
+        <Tooltip
+          title={isLinkCopied ? 'Copied!' : 'Copy link'}
+          onClose={() => setIsLinkCopied(false)}
+          placement="right"
+          PopperProps={{ disablePortal: true }}
+          arrow
+        >
+          <IconButton aria-label="share" className={classes.actionBtn}>
+            <ShareIcon fontSize="small" onClick={handleShareClick} />
+          </IconButton>
+        </Tooltip>
         <div className={classes.playBtn}>
           {games}&nbsp;
-          <IconButton aria-label="play" onClick={handleStartGameClick}>
-            <PlayCircleFilledWhiteIcon fontSize="small" color="primary" />
-          </IconButton>
+          <Tooltip
+            title="Play"
+            placement="top"
+            PopperProps={{ disablePortal: true }}
+            arrow
+          >
+            <IconButton
+              aria-label="play"
+              className={classes.actionBtn}
+              onClick={handleStartGameClick}
+            >
+              <PlayCircleFilledWhiteIcon color="secondary" />
+            </IconButton>
+          </Tooltip>
         </div>
       </CardActions>
     </Card>
