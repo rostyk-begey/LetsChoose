@@ -35,10 +35,8 @@ const ForgotPasswordPage: React.FC = () => {
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,
   });
-  const {
-    mutateAsync: httpForgotPassword,
-    ...httpForgotPasswordQuery
-  } = useMutation(authApi.forgotPassword);
+  const { mutateAsync: httpForgotPassword, ...httpForgotPasswordQuery } =
+    useMutation(authApi.forgotPassword);
   const form = useForm<AuthForgotPasswordDto>({
     defaultValues: {
       email: '',

@@ -185,11 +185,8 @@ export class AuthController {
       throw new BadRequestException('Invalid token');
     }
 
-    const {
-      userId,
-      accessToken,
-      refreshToken,
-    } = await this.authService.refreshToken(token);
+    const { userId, accessToken, refreshToken } =
+      await this.authService.refreshToken(token);
 
     res.cookie(
       this.config.accessTokenKey,

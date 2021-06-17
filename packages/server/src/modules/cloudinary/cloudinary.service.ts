@@ -8,11 +8,8 @@ import { CloudinaryConfig } from '../../config';
 @Injectable()
 export class CloudinaryService implements ICloudinaryService {
   constructor(configService: ConfigService) {
-    const {
-      cloudName,
-      apiKey,
-      apiSecret,
-    } = configService.get<CloudinaryConfig>('cloudinary');
+    const { cloudName, apiKey, apiSecret } =
+      configService.get<CloudinaryConfig>('cloudinary');
     cloudinary.config({
       cloud_name: cloudName,
       api_key: apiKey,

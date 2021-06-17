@@ -22,6 +22,7 @@ import Container from '@material-ui/core/Container';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import InfiniteScroll from 'react-infinite-scroller';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import Image from 'next/image';
 
 import {
   useContestDelete,
@@ -31,6 +32,7 @@ import {
 } from '../../../hooks/api/contest';
 import { useGameStart } from '../../../hooks/api/game';
 import { useCurrentUser } from '../../../hooks/api/user';
+import { cloudinaryUploadPath } from '../../../utils/functions';
 import ROUTES from '../../../utils/routes';
 import DropdownButton from '../../common/DropdownButton';
 import Page from '../../common/Page';
@@ -361,7 +363,12 @@ const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
               <Grid container className={classes.contestContentCard}>
                 <figure className={classes.thumbnailContainer}>
                   {contest ? (
-                    <img src={thumbnail} className={classes.thumbnail} alt="" />
+                    <Image
+                      src={cloudinaryUploadPath(thumbnail)}
+                      className={classes.thumbnail}
+                      alt=""
+                      layout="fill"
+                    />
                   ) : (
                     <Skeleton
                       animation="wave"

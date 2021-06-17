@@ -27,6 +27,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import Image from 'next/image';
 // import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
@@ -42,6 +43,7 @@ import {
 } from '../../hooks/api/contest';
 import { useGameStart } from '../../hooks/api/game';
 import { useCurrentUser } from '../../hooks/api/user';
+import { cloudinaryUploadPath } from '../../utils/functions';
 import ROUTES from '../../utils/routes';
 
 export const useStyles = makeStyles((theme) =>
@@ -56,6 +58,7 @@ export const useStyles = makeStyles((theme) =>
       overflow: 'visible',
     },
     media: {
+      position: 'relative',
       height: 0,
       paddingTop: '75%',
     },
@@ -325,16 +328,29 @@ const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
         >
           <CardMedia
             className={classNames(classes.media, classes.cursorPointer)}
-            image={thumbnail}
-          />
+          >
+            <Image
+              src={cloudinaryUploadPath(thumbnail)}
+              alt={title}
+              title={title}
+              objectFit="cover"
+              layout="fill"
+            />
+          </CardMedia>
           {pages.map(({ data: { items } }) =>
             items.map(({ id, image, title }) => (
               <CardMedia
                 key={id}
                 className={classNames(classes.media, classes.cursorPointer)}
-                image={image}
-                title={title}
-              />
+              >
+                <Image
+                  src={cloudinaryUploadPath(image)}
+                  alt={title}
+                  title={title}
+                  objectFit="cover"
+                  layout="fill"
+                />
+              </CardMedia>
             )),
           )}
           {Array.from({ length: totalItems - currentItemsLength }).map(

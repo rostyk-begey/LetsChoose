@@ -128,7 +128,10 @@ describe('GameService', () => {
       winnerId: undefined,
       totalRounds: 2,
     };
-    const findItemById = (id) => ({ contestItem }) => contestItem === id;
+    const findItemById =
+      (id) =>
+      ({ contestItem }) =>
+        contestItem === id;
     const looserId = 'item2';
 
     describe.each`
@@ -164,10 +167,8 @@ describe('GameService', () => {
 
           await gameService.playRound(game.id, winnerId);
 
-          ({
-            items: updatedItems,
-            ...updatedGame
-          } = gameRepository.findByIdAndUpdate.mock.calls[0][1]);
+          ({ items: updatedItems, ...updatedGame } =
+            gameRepository.findByIdAndUpdate.mock.calls[0][1]);
 
           actualWinner = updatedItems.find(findItemById(winnerId));
           expectedWinner = items.find(findItemById(winnerId));

@@ -30,11 +30,11 @@ describe('JoiValidationPipe', () => {
     });
 
     beforeEach(async () => {
-      schema = ({
+      schema = {
         validate: jest
           .fn()
           .mockReturnValue({ value: expectedValue, error: null }),
-      } as unknown) as jest.Mocked<AnySchema>;
+      } as unknown as jest.Mocked<AnySchema>;
       joiValidationPipe = new JoiValidationPipe(schema as AnySchema);
       metadata = { type: 'param' } as ArgumentMetadata;
     });
@@ -68,12 +68,12 @@ describe('JoiValidationPipe', () => {
     });
 
     it('should throw error if validation fails', () => {
-      schema = ({
+      schema = {
         validate: jest.fn().mockReturnValue({
           value: null,
           error: new ValidationError(errorMessage, null, null),
         }),
-      } as unknown) as jest.Mocked<AnySchema>;
+      } as unknown as jest.Mocked<AnySchema>;
       joiValidationPipe = new JoiValidationPipe(schema, metadata.type);
       expect.assertions(2);
 

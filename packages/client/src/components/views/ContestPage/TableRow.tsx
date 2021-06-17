@@ -18,8 +18,9 @@ import Chip from '@material-ui/core/Chip';
 import json2mq from 'json2mq';
 import { Row } from 'react-table';
 import classNames from 'classnames';
+import Image from 'next/image';
 
-import { imageSize } from '../../../utils/functions';
+import { cloudinaryUploadPath, imageSize } from '../../../utils/functions';
 import CircularProgressWithLabel from '../../common/CircularProgressWithLabel';
 import { imageWidth, imageWidthMobile } from './constants';
 
@@ -141,7 +142,12 @@ const TableRow: React.FC<Props> = ({ row }) => {
         </TableCell>
         <TableCell width={250} {...image.getCellProps()}>
           <figure className={classNames(classes.figure, classes.image)}>
-            <img src={imageSrc} className={classes.previewImage} alt="" />
+            <Image
+              src={cloudinaryUploadPath(imageSrc)}
+              className={classes.previewImage}
+              layout="fill"
+              alt={values.title}
+            />
           </figure>
         </TableCell>
         {cells.map((cell, i) =>
@@ -175,7 +181,12 @@ const TableRow: React.FC<Props> = ({ row }) => {
               <Grid container spacing={2}>
                 <Grid item md={5} xs={8}>
                   <figure className={classes.figure}>
-                    <img src={imageSrc} className={classes.imageBig} alt="" />
+                    <Image
+                      src={cloudinaryUploadPath(imageSrc)}
+                      className={classes.imageBig}
+                      alt={values.title}
+                      layout="fill"
+                    />
                   </figure>
                 </Grid>
                 <Grid item md={7} xs={12}>

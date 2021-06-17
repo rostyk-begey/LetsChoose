@@ -6,14 +6,10 @@ import CardMedia from '@material-ui/core/CardMedia';
 import { useFourThreeCardMediaStyles } from '@mui-treasury/styles/cardMedia/fourThree';
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import classNames from 'classnames';
+import Image from 'next/image';
+import { cloudinaryUploadPath } from '../../../utils/functions';
 
 const useStyles = makeStyles(() => ({
-  image: {
-    position: 'absolute',
-    top: '50%',
-    width: '100%',
-    transform: 'translateY(-50%)',
-  },
   imageHolder: {
     position: 'relative',
   },
@@ -43,7 +39,12 @@ const GameCard: React.FC<Props> = ({ item, onClick = () => null }) => {
       onClick={onClick}
     >
       <CardMedia classes={cardMediaStyles} className={classes.imageHolder}>
-        <img src={item.image} alt="" className={classes.image} />
+        <Image
+          src={cloudinaryUploadPath(item.image)}
+          alt={item.title}
+          objectFit="cover"
+          layout="fill"
+        />
       </CardMedia>
     </Card>
   );

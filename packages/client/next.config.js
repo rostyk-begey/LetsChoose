@@ -1,9 +1,9 @@
-const withPlugins = require('next-compose-plugins');
-const withOptimizedImages = require('next-optimized-images');
-
-module.exports = withPlugins([[withOptimizedImages]], {
-  future: {
-    webpack5: true,
+module.exports = {
+  webpack5: true,
+  images: {
+    domains: ['res.cloudinary.com', 'localhost'],
+    loader: 'cloudinary',
+    path: 'https://res.cloudinary.com/dcfzgnkj8/image/upload',
   },
   async rewrites() {
     return [
@@ -13,4 +13,4 @@ module.exports = withPlugins([[withOptimizedImages]], {
       },
     ];
   },
-});
+};

@@ -3,11 +3,11 @@ import mongoose from 'mongoose';
 import { PathLike } from 'fs';
 import fs from 'fs/promises';
 
-export const fieldNameFilter = (key: string) => ({
-  fieldname,
-}: Express.Multer.File) => {
-  return fieldname === key;
-};
+export const fieldNameFilter =
+  (key: string) =>
+  ({ fieldname }: Express.Multer.File) => {
+    return fieldname === key;
+  };
 
 export const unlinkAsync = (path: PathLike) => fs.unlink(path);
 

@@ -8,9 +8,10 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import Image from 'next/image';
 
 import AuthFormCard, { AuthFormCardProps } from './AuthFormCard';
-import GoogleButtonLogo from '../../assets/icons/google-button-dark-logo.svg?sprite';
+import GoogleButtonLogo from '../../../public/images/google-button-dark-logo.svg?sprite';
 
 interface Props extends AuthFormCardProps {
   googleButtonLabel: string;
@@ -75,7 +76,7 @@ const AuthFormCardWithOAuth: React.FC<Props> = ({
                 disabled={props.submitDisabled}
                 className={classes.loginBtnGoogle}
               >
-                <img
+                <Image
                   alt=""
                   src={GoogleButtonLogo}
                   className={classes.loginBtnGoogleIcon}

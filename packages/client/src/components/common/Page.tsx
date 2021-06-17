@@ -9,6 +9,7 @@ import Brightness4Icon from '@material-ui/icons/Brightness4';
 import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
 import IconButton from '@material-ui/core/IconButton';
 import classNames from 'classnames';
+import Image from 'next/image';
 
 import { useCurrentUser } from '../../hooks/api/user';
 import useGoogleSignInPrompt from '../../hooks/googleSignInPrompt';
@@ -17,8 +18,8 @@ import { useDarkMode } from './ThemeProvider';
 import ROUTES from '../../utils/routes';
 import ContestNavigation from './ContestNavigation';
 import Layout from './Layout';
-import logo from '../../assets/icons/logo.png';
-import logoWhite from '../../assets/icons/logo-white.png';
+import logo from '../../../public/images/logo.png';
+import logoWhite from '../../../public/images/logo-white.png';
 
 interface Props {
   withContestNavigation?: boolean;
@@ -112,8 +113,9 @@ const Page: React.FC<Props> = ({
     <Layout
       title={
         <RouterLink href={ROUTES.HOME}>
-          <img
+          <Image
             className={classes.logo}
+            loader={({ src }) => src}
             src={darkMode ? logoWhite : logo}
             alt=""
           />

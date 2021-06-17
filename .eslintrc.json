@@ -1,13 +1,13 @@
 {
-  "plugins": ["import", "react", "mui-unused-classes"],
+  "plugins": ["import", "react", "mui-unused-classes", "@typescript-eslint"],
   "extends": [
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "plugin:prettier/recommended",
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:import/typescript",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:@next/next/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
   ],
   "root": true,
   "env": {

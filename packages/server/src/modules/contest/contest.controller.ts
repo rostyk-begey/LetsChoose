@@ -107,12 +107,10 @@ export class ContestController {
     const thumbnail = files.find(fieldNameFilter('thumbnail'));
     await unlinkAsync(thumbnail.path);
 
-    const deletingFiles = items.map(
-      async (_, i): Promise<void> => {
-        const image = files.find(fieldNameFilter(`items[${i}][image]`));
-        await unlinkAsync(image.path);
-      },
-    );
+    const deletingFiles = items.map(async (_, i): Promise<void> => {
+      const image = files.find(fieldNameFilter(`items[${i}][image]`));
+      await unlinkAsync(image.path);
+    });
 
     await Promise.all(deletingFiles);
 

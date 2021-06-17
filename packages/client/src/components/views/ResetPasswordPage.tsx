@@ -33,10 +33,8 @@ const inputs: Record<string, FormTextInputProps> = {
 const ResetPasswordPage: React.FC = () => {
   const router = useRouter();
   const token = (router?.query?.token as string) || '';
-  const {
-    mutate: resetPassword,
-    ...resetPasswordQuery
-  } = useApiResetPassword();
+  const { mutate: resetPassword, ...resetPasswordQuery } =
+    useApiResetPassword();
   const form = useForm<AuthResetPasswordDto>({
     defaultValues: {
       password: '',

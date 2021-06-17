@@ -13,20 +13,23 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.22.1",
-    "@typescript-eslint/parser": "^4.22.1",
+    "@next/eslint-plugin-next": "^11.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
     "eslint": "^7.25.0",
+    "eslint-config-next": "^11.0.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-mui-unused-classes": "^1.0.3",
+    "eslint-plugin-next": "^0.0.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.23.2",
     "husky": "^6.0.0",
     "lerna": "^4.0.0",
     "lint-staged": "^11.0.0",
     "prettier": "^2.1.2",
-    "typescript": "^4.2.4"
+    "typescript": "^4.3.3"
   },
   "dependencies": {},
   "husky": {

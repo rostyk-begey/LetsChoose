@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import React, { useCallback } from 'react';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -8,8 +9,12 @@ import json2mq from 'json2mq';
 
 import { useContestAllInfinite } from '../../hooks/api/contest';
 import useQueryState from '../../hooks/getParams';
-import ContestCard from './ContestCard';
 import ContestCardSkeleton from './ContestCardSkeleton';
+
+const ContestCard = dynamic(() => import('./ContestCard'), {
+  ssr: false,
+  loading: ContestCardSkeleton,
+});
 
 interface Props {
   author?: string;
@@ -20,18 +25,13 @@ const perPage = 6;
 const ContestGrid: React.FC<Props> = ({ author }) => {
   const [sortBy] = useQueryState('sortBy', 'POPULAR');
   const [search] = useQueryState('search', '');
-  const {
-    data,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    refetch,
-  } = useContestAllInfinite({
-    search: search as string,
-    sortBy: sortBy as '' | keyof typeof SORT_OPTIONS,
-    perPage,
-    author,
-  });
+  const { data, isLoading, fetchNextPage, hasNextPage, refetch } =
+    useContestAllInfinite({
+      search: search as string,
+      sortBy: sortBy as '' | keyof typeof SORT_OPTIONS,
+      perPage,
+      author,
+    });
   const pages = data?.pages || [];
   const matchesMaxWidth960 = useMediaQuery(
     json2mq({

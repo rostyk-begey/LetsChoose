@@ -12,7 +12,7 @@ import AuthApi from '../../api/auth.api';
 export const useAxiosMutation = <
   TResult,
   TVariables,
-  TErrorResult = HttpResponseMessageDto
+  TErrorResult = HttpResponseMessageDto,
 >(
   mutationFn: MutationFunction<AxiosResponse<TResult>, TVariables>,
   config?: UseMutationOptions<

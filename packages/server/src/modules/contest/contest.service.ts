@@ -112,25 +112,23 @@ export class ContestService implements IContestService {
       author: userId,
     });
 
-    const savingItems = items.map(
-      async ({ title }, i): Promise<void> => {
-        const contestItemId = mongoose.Types.ObjectId();
-        const image = files.find(fieldNameFilter(`items[${i}][image]`));
-        const imageUrl = await this.cloudinaryService.upload(
-          image.path,
-          ContestService.getContestItemImagePublicId(
-            contestId.toString(),
-            contestItemId.toString(),
-          ),
-        );
-        await this.contestItemRepository.createContestItem({
-          title,
-          image: imageUrl,
-          _id: `${contestItemId}`,
-          contestId: `${contestId}`,
-        });
-      },
-    );
+    const savingItems = items.map(async ({ title }, i): Promise<void> => {
+      const contestItemId = mongoose.Types.ObjectId();
+      const image = files.find(fieldNameFilter(`items[${i}][image]`));
+      const imageUrl = await this.cloudinaryService.upload(
+        image.path,
+        ContestService.getContestItemImagePublicId(
+          contestId.toString(),
+          contestItemId.toString(),
+        ),
+      );
+      await this.contestItemRepository.createContestItem({
+        title,
+        image: imageUrl,
+        _id: `${contestItemId}`,
+        contestId: `${contestId}`,
+      });
+    });
 
     await Promise.all(savingItems);
 
