@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { JwtService } from './jwt/jwt.service';
-import { EmailService } from './email/email.service';
-import { PasswordHashService } from './password/password.service';
+import { JwtService } from '@modules/common/jwt/jwt.service';
+import { EmailService } from '@modules/common/email/email.service';
+import { PasswordHashService } from '@modules/common/password/password.service';
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],

@@ -1,35 +1,43 @@
-import { IGameRepository } from '../../../abstract/game.repository.interface';
-import { GameItem } from '../game-item.entity';
-import { Game } from '../game.entity';
+import { IGameRepository } from '@abstract/game.repository.interface';
+import { build, fake, oneOf, sequence } from '@jackfranklin/test-data-bot';
+import { Game } from '@modules/game/game.entity';
 
-const gameItem: GameItem = {
-  contestItem: 'contestItemId',
-  wins: 0,
-  compares: 0,
-};
-
-export const game: Game = {
-  pair: ['pair1', 'pair2'],
-  finished: true,
-  _id: 'gameId',
-  id: 'gameId',
-  contestId: 'contestId',
-  pairsInRound: Math.random(),
-  pairNumber: Math.random(),
-  items: [gameItem, gameItem],
-  round: Math.random(),
-  totalRounds: Math.random(),
-  winnerId: 'winnerId',
-};
+export const gameBuilder = build<Game>({
+  fields: {
+    _id: sequence((i) => `game-${i}`),
+    id: sequence((i) => `game-${i}`),
+    contestId: sequence((i) => `contest-${i}`),
+    winnerId: undefined,
+    finished: oneOf(false),
+    totalRounds: 2,
+    items: [],
+    round: 0,
+    pairNumber: 0,
+    pairsInRound: 2,
+    pair: [],
+  },
+  postBuild: (res) => ({
+    ...res,
+    id: res._id,
+  }),
+  traits: {
+    finished: {
+      overrides: {
+        winnerId: sequence((i) => `contest-item-${i}`),
+        finished: fake(() => true),
+      },
+    },
+  },
+});
 
 const gameRepository: jest.Mocked<IGameRepository> = {
-  countDocuments: jest.fn().mockResolvedValue(1),
-  aggregate: jest.fn().mockResolvedValue([game]),
-  findById: jest.fn().mockResolvedValue(game),
-  findByIdAndUpdate: jest.fn().mockResolvedValue(game),
-  deleteGame: jest.fn().mockResolvedValue(game),
-  deleteGames: jest.fn().mockResolvedValue(undefined),
-  createGame: jest.fn().mockResolvedValue(game),
+  countDocuments: jest.fn(),
+  aggregate: jest.fn(),
+  findById: jest.fn(),
+  findByIdAndUpdate: jest.fn(),
+  deleteGame: jest.fn(),
+  deleteGames: jest.fn(),
+  createGame: jest.fn(),
 };
 
 export default gameRepository;

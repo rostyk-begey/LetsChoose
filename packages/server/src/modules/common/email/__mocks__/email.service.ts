@@ -1,4 +1,4 @@
-import { IEmailService } from '../../../../abstract/email.service.interface';
+import { IEmailService } from '@abstract/email.service.interface';
 
 const emailService: jest.Mocked<IEmailService> = {
   sendRegistrationEmail: jest.fn().mockResolvedValue(undefined),

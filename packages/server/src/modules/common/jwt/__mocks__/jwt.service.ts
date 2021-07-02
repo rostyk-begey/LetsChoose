@@ -3,7 +3,7 @@ import {
   IJwtService,
   AuthTokenPayload,
   BaseTokenPayload,
-} from '../../../../abstract/jwt.service.interface';
+} from '@abstract/jwt.service.interface';
 
 const jwtService: IJwtService = {
   generateAuthTokenPair(userId: string, passwordVersion = 0): TokenPair {

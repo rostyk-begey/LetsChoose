@@ -1,5 +1,6 @@
-import { IContestItemRepository } from '../../../abstract/contest-item.repository.interface';
-import { ContestItem } from '../contest-item.entity';
+import { IContestItemRepository } from '@abstract/contest-item.repository.interface';
+import { build, fake, sequence } from '@jackfranklin/test-data-bot';
+import { ContestItem } from '@modules/contest/contest-item.entity';
 
 export interface ExtendedContestItem extends ContestItem {
   winRate?: number;
@@ -7,35 +8,36 @@ export interface ExtendedContestItem extends ContestItem {
   rankScore?: number;
 }
 
-export const contestItem: ExtendedContestItem = {
-  _id: 'contestItemId',
-  title: 'title',
-  image: 'image',
-  contestId: 'contestId',
-  id: 'contestItemId',
-  games: 0,
-  compares: 0,
-  wins: 0,
-  winRate: 0,
-  finalWins: 0,
-  finalWinRate: 0,
-  rankScore: 0,
-};
+export const contestItemBuilder = build<ExtendedContestItem>({
+  fields: {
+    _id: sequence((i) => `contest-item-${i}`),
+    id: sequence((i) => `contest-item-${i}`),
+    title: fake((f) => f.lorem.slug()),
+    image: fake((f) => f.image.image()),
+    contestId: sequence((i) => `contest-${i}`),
+    finalWins: fake((f) => f.random.number({ min: 0, precision: 1 })),
+    wins: fake((f) => f.random.number({ min: 0, precision: 1 })),
+    games: fake((f) => f.random.number({ min: 0, precision: 1 })),
+    compares: fake((f) => f.random.number({ min: 0, precision: 1 })),
+    winRate: fake((f) => f.random.number({ min: 0, precision: 1 })),
+    finalWinRate: fake((f) => f.random.number({ min: 0, precision: 1 })),
+    rankScore: fake((f) => f.random.number({ min: 0, precision: 1 })),
+  },
+  postBuild: (res) => ({
+    ...res,
+    id: res._id,
+  }),
+});
 
 const contestItemRepository: jest.Mocked<IContestItemRepository> = {
-  countDocuments: jest.fn().mockResolvedValue(1),
-  paginate: jest.fn().mockResolvedValue({
-    items: [contestItem],
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 1,
-  }),
-  findById: jest.fn().mockResolvedValue(contestItem),
-  findByContestId: jest.fn().mockResolvedValue([contestItem]),
-  findByIdAndUpdate: jest.fn().mockResolvedValue(contestItem),
-  updateContestItems: jest.fn().mockResolvedValue(undefined),
-  deleteContestItems: jest.fn().mockResolvedValue(undefined),
-  createContestItem: jest.fn().mockResolvedValue(contestItem),
+  countDocuments: jest.fn(),
+  paginate: jest.fn(),
+  findById: jest.fn(),
+  findByContestId: jest.fn(),
+  findByIdAndUpdate: jest.fn(),
+  updateContestItems: jest.fn(),
+  deleteContestItems: jest.fn(),
+  createContestItem: jest.fn(),
 };
 
 export default contestItemRepository;

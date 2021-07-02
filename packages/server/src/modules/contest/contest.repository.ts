@@ -1,4 +1,10 @@
 import {
+  CreateContestData,
+  IContestRepository,
+} from '@abstract/contest.repository.interface';
+import { getPaginationPipelines, getSearchPipelines } from '@usecases/utils';
+import { Contest, ContestDocument } from '@modules/contest/contest.entity';
+import {
   GetContestsQuery,
   GetContestsResponse,
   ISortOptions,
@@ -7,16 +13,6 @@ import {
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  getPaginationPipelines,
-  getSearchPipelines,
-} from '../../usecases/utils';
-
-import { Contest, ContestDocument } from './contest.entity';
-import {
-  CreateContestData,
-  IContestRepository,
-} from '../../abstract/contest.repository.interface';
 
 @Injectable()
 export class ContestRepository implements IContestRepository {

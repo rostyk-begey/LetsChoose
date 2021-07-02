@@ -1,4 +1,4 @@
-import { User } from '../../user.entity';
+import { User } from '@modules/user/user.entity';
 
 export const users: Partial<User>[] = [
   {

@@ -9,15 +9,15 @@ import {
   UsePipes,
 } from '@nestjs/common';
 
-import { TYPES } from '../../injectable.types';
-import { IGameService } from '../../abstract/game.service.interface';
-import { JoiValidationPipe } from '../../pipes/joi-validation.pipe';
-import { ContestItem } from '../contest/contest-item.entity';
+import { TYPES } from '@src/injectable.types';
+import { IGameService } from '@abstract/game.service.interface';
+import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
+import { ContestItem } from '@modules/contest/contest-item.entity';
 import {
   contestIdSchema,
   gameIdSchema,
   gamePlaySchema,
-} from './game.validation';
+} from '@modules/game/game.validation';
 
 @Controller('/api/games')
 export class GameController {

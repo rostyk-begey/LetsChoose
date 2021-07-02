@@ -1,30 +1,27 @@
 import { AuthLoginDto, AuthTokenDto } from '@lets-choose/common';
+import { User } from '@modules/user/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import faker from 'faker';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
 
-import { IAuthService } from '../../abstract/auth.service.interface';
-import jwtService from '../common/jwt/__mocks__/jwt.service';
-import emailService from '../common/email/__mocks__/email.service';
-import passwordHashService from '../common/password/__mocks__/password.service';
-import userRepository, { user } from '../user/__mocks__/user.repository';
-import config from '../../config';
-import { TYPES } from '../../injectable.types';
-import { PasswordHashService } from '../common/password/password.service';
-import { AuthService } from './auth.service';
+import { IAuthService } from '@abstract/auth.service.interface';
+import jwtService from '@modules/common/jwt/__mocks__/jwt.service';
+import emailService from '@modules/common/email/__mocks__/email.service';
+import passwordHashService from '@modules/common/password/__mocks__/password.service';
+import userRepository, {
+  userBuilder,
+} from '@modules/user/__mocks__/user.repository';
+import config from '@src/config';
+import { TYPES } from '@src/injectable.types';
+import { AuthService } from '@modules/auth/auth.service';
+import md5 from 'md5';
 
 describe('AuthService', () => {
   let authService: IAuthService;
-  const { username, password, email } = user;
-  const tokenPair: AuthTokenDto = {
-    userId: user.id,
-    accessToken: 'accessToken',
-    refreshToken: 'refreshToken',
-  };
-  jest
-    .spyOn(jwtService, 'generateAuthTokenPair')
-    .mockImplementation(() => tokenPair);
+  let user: User;
+  let tokenPair: AuthTokenDto;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,7 +34,6 @@ describe('AuthService', () => {
       ],
       providers: [
         AuthService,
-        PasswordHashService,
         {
           provide: TYPES.UserRepository,
           useValue: userRepository,
@@ -59,10 +55,17 @@ describe('AuthService', () => {
 
     authService = module.get<IAuthService>(AuthService);
 
-    jest.clearAllMocks();
-  });
+    user = userBuilder();
+    tokenPair = {
+      userId: user.id,
+      accessToken: faker.random.alphaNumeric(20),
+      refreshToken: faker.random.alphaNumeric(20),
+    };
 
-  afterEach(() => {
+    jest
+      .spyOn(jwtService, 'generateAuthTokenPair')
+      .mockImplementation(() => tokenPair);
+
     jest.clearAllMocks();
   });
 
@@ -73,9 +76,19 @@ describe('AuthService', () => {
       .mockResolvedValueOnce(undefined);
     jest.spyOn(userRepository, 'createUser').mockResolvedValueOnce(user);
 
+    const email = faker.internet.email();
+    const username = faker.internet.userName();
+    const password = faker.internet.password();
+
     await authService.registerUser({ email, username, password });
 
-    expect(userRepository.createUser).toHaveBeenCalled();
+    expect(userRepository.createUser).toHaveBeenCalledWith({
+      email,
+      username,
+      password,
+      avatar: `https://www.gravatar.com/avatar/${md5(email)}?s=200&d=identicon`,
+      bio: '',
+    });
     expect(passwordHashService.hash).toHaveBeenCalledWith(password, 12);
     expect(jwtService.generateEmailToken).toHaveBeenCalledWith(user.id);
     expect(emailService.sendRegistrationEmail).toHaveBeenCalled();
@@ -87,6 +100,7 @@ describe('AuthService', () => {
         login: user.email,
         password: user.password,
       };
+      userRepository.findByEmail.mockResolvedValueOnce(user);
       const result = await authService.loginUser(data);
 
       expect(result).toMatchObject(tokenPair);
@@ -104,6 +118,7 @@ describe('AuthService', () => {
 
     it('should login user by username correctly', async () => {
       userRepository.findByEmail.mockResolvedValueOnce(undefined);
+      userRepository.findByUsername.mockResolvedValueOnce(user);
       const data: AuthLoginDto = {
         login: user.username,
         password: user.password,
@@ -126,8 +141,9 @@ describe('AuthService', () => {
     it("should throw error if password didn't match", async () => {
       const data: AuthLoginDto = {
         login: user.username,
-        password: 'incorrect',
+        password: faker.internet.password(),
       };
+      userRepository.findByEmail.mockResolvedValueOnce(user);
 
       try {
         await authService.loginUser(data);
@@ -159,16 +175,15 @@ describe('AuthService', () => {
   });
 
   describe('loginUserOAuth', () => {
-    const code = 'code';
-    const idToken = 'id_token';
+    const idToken = faker.random.alphaNumeric(20);
     const tokenPayload: TokenPayload = {
       iss: 'iss',
       sub: 'sub',
       aud: 'aud',
       iat: 10,
       exp: 20,
-      email: 'username@email.com',
-      picture: 'picture',
+      email: faker.internet.email(),
+      picture: faker.internet.avatar(),
     };
     const ticket = { getPayload: jest.fn().mockReturnValue(tokenPayload) };
     const getTokenSpy = jest
@@ -186,9 +201,10 @@ describe('AuthService', () => {
       .mockResolvedValue(ticket);
 
     it('should login user correctly from token', async () => {
+      userRepository.findByEmail.mockResolvedValueOnce(user);
       const result = await authService.loginUserOAuth({ token: idToken });
 
-      expect(result).toMatchObject(tokenPair);
+      expect(result).toMatchObject({ ...tokenPair, userId: user.id });
       expect(getTokenSpy).not.toBeCalled();
       expect(verifyIdTokenSpy).toBeCalledWith({
         idToken,
@@ -205,6 +221,9 @@ describe('AuthService', () => {
 
   describe('requestPasswordReset', () => {
     it('should reset password correctly', async () => {
+      userRepository.findByEmail.mockResolvedValueOnce(user);
+      const email = faker.internet.email();
+
       await authService.requestPasswordReset({ email });
 
       expect(userRepository.findByEmail).toBeCalledWith(email);
@@ -216,6 +235,8 @@ describe('AuthService', () => {
       userRepository.findByEmail.mockResolvedValueOnce(undefined);
       expect.assertions(2);
 
+      const email = faker.internet.email();
+
       try {
         await authService.requestPasswordReset({ email });
       } catch (e) {
@@ -226,13 +247,15 @@ describe('AuthService', () => {
   });
 
   describe('resetUsersPassword', () => {
-    const newPassword = 'testNewPassword';
-    const mockToken = 'token';
+    const newPassword = faker.internet.password();
+    const mockToken = faker.lorem.word();
 
     it('should reset user password', async () => {
-      jest
-        .spyOn(jwtService, 'verifyPasswordResetToken')
-        .mockImplementationOnce(() => ({ userId: user.id }));
+      userRepository.findByIdOrFail.mockResolvedValueOnce(user);
+      jwtService.verifyPasswordResetToken.mockImplementationOnce(() => ({
+        userId: user.id,
+      }));
+
       await authService.resetUsersPassword(mockToken, newPassword);
 
       expect(jwtService.verifyPasswordResetToken).toBeCalledWith(mockToken);
@@ -244,11 +267,9 @@ describe('AuthService', () => {
     });
 
     it('should throw error if token is invalid', async () => {
-      jest
-        .spyOn(jwtService, 'verifyPasswordResetToken')
-        .mockImplementationOnce(() => {
-          throw new Error();
-        });
+      jwtService.verifyPasswordResetToken.mockImplementationOnce(() => {
+        throw new Error();
+      });
 
       expect.assertions(1);
 
@@ -261,18 +282,15 @@ describe('AuthService', () => {
   });
 
   describe('refreshToken', () => {
-    const mockToken = 'mockToken';
+    const mockToken = faker.lorem.word();
 
     it('should refresh token correctly', async () => {
-      jest
-        .spyOn(jwtService, 'verifyRefreshToken')
-        .mockImplementationOnce(() => ({
-          userId: user.id,
-          passwordVersion: 1,
-        }));
-      jest
-        .spyOn(jwtService, 'generateAuthTokenPair')
-        .mockImplementation(() => tokenPair);
+      userRepository.findByIdOrFail.mockResolvedValueOnce(user);
+      jwtService.verifyRefreshToken.mockImplementationOnce(() => ({
+        userId: user.id,
+        passwordVersion: 1,
+      }));
+      jwtService.generateAuthTokenPair.mockImplementation(() => tokenPair);
 
       const result = await authService.refreshToken(mockToken);
 
@@ -302,7 +320,7 @@ describe('AuthService', () => {
   });
 
   describe('confirmEmail', () => {
-    const mockToken = 'mockToken';
+    const mockToken = faker.lorem.word();
 
     it('should confirm email correctly', async () => {
       jest

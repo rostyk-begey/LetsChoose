@@ -1,6 +1,6 @@
+import { build, fake, sequence } from '@jackfranklin/test-data-bot';
 import { Contest } from '@lets-choose/common';
-import { IContestRepository } from '../../../abstract/contest.repository.interface';
-import { contestItem } from './contest-item.repository';
+import { IContestRepository } from '@abstract/contest.repository.interface';
 
 export const contest: Contest = {
   _id: 'contestId',
@@ -11,22 +11,35 @@ export const contest: Contest = {
   author: 'author',
   createdAt: new Date().toString(),
   id: 'contestId',
-  items: [contestItem],
+  items: [],
 };
 
-const contestRepository: jest.Mocked<IContestRepository> = {
-  countDocuments: jest.fn().mockResolvedValue(1),
-  paginate: jest.fn().mockResolvedValue({
-    items: [contest],
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 1,
+export const contestBuilder = build<Contest>({
+  fields: {
+    _id: sequence((i) => `contest-${i}`),
+    id: sequence((i) => `contest-${i}`),
+    games: fake((f) => f.random.number({ min: 0, precision: 1 })),
+    thumbnail: fake((f) => f.image.image()),
+    title: fake((f) => f.lorem.slug()),
+    excerpt: fake((f) => f.lorem.slug()),
+    author: fake((f) => f.internet.userName()),
+    createdAt: fake((f) => f.date.past().toString()),
+    items: [],
+  },
+  postBuild: (res) => ({
+    ...res,
+    id: res._id,
   }),
-  findById: jest.fn().mockResolvedValue(contest),
-  findByAuthor: jest.fn().mockResolvedValue(contest),
-  findByIdAndUpdate: jest.fn().mockResolvedValue(contest),
-  deleteContest: jest.fn().mockResolvedValue(contest),
-  createContest: jest.fn().mockResolvedValue(contest),
+});
+
+const contestRepository: jest.Mocked<IContestRepository> = {
+  countDocuments: jest.fn(),
+  paginate: jest.fn(),
+  findById: jest.fn(),
+  findByAuthor: jest.fn(),
+  findByIdAndUpdate: jest.fn(),
+  deleteContest: jest.fn(),
+  createContest: jest.fn(),
 };
 
 export default contestRepository;

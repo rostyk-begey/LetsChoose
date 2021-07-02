@@ -1,5 +1,5 @@
 import { CreateUserDto } from '@lets-choose/common';
-import { User } from '../modules/user/user.entity';
+import { User } from '@modules/user/user.entity';
 
 export interface IUserRepository {
   findById(userId: string): Promise<User>;

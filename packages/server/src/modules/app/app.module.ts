@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { ContestModule } from '../contest/contest.module';
-import { CloudinaryModule } from '../cloudinary/cloudinary.module';
-import { AuthModule } from '../auth/auth.module';
-import { CommonModule } from '../common/common.module';
-import { UserModule } from '../user/user.module';
-import config from '../../config';
-import { GameModule } from '../game/game.module';
+import { ContestModule } from '@modules/contest/contest.module';
+import { CloudinaryModule } from '@modules/cloudinary/cloudinary.module';
+import { AuthModule } from '@modules/auth/auth.module';
+import { CommonModule } from '@modules/common/common.module';
+import { UserModule } from '@modules/user/user.module';
+import { GameModule } from '@modules/game/game.module';
+import config from '@src/config';
 
 @Module({
   imports: [

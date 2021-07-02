@@ -26,15 +26,15 @@ import {
   AuthGoogleLoginDto,
 } from '@lets-choose/common';
 
-import { JwtConfig } from '../../config';
-import { TYPES } from '../../injectable.types';
-import { IAuthService } from '../../abstract/auth.service.interface';
-import { JoiValidationPipe } from '../../pipes/joi-validation.pipe';
+import { JwtConfig } from '@src/config';
+import { TYPES } from '@src/injectable.types';
+import { IAuthService } from '@abstract/auth.service.interface';
+import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
 import {
   loginSchema,
   registerSchema,
   refreshTokenLocation,
-} from './auth.validation';
+} from '@modules/auth/auth.validation';
 
 @ApiTags('auth')
 @Controller('/api/auth')

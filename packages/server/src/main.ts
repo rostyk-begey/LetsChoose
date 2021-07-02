@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 // import csurf from 'csurf';
 import helmet from 'helmet';
 
-import { AppModule } from './modules/app/app.module';
+import { AppModule } from '@modules/app/app.module';
 
 // TODO: refactor
 const whitelist = ['http://localhost:3000', 'http://localhost:4000'];

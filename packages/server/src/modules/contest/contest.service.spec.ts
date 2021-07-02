@@ -1,36 +1,62 @@
-import { GetContestsQuery, GetItemsQuery } from '@lets-choose/common';
+import { build, fake } from '@jackfranklin/test-data-bot';
+import {
+  Contest,
+  ContestItem,
+  GetContestsQuery,
+  GetItemsQuery,
+} from '@lets-choose/common';
+import {
+  PaginationQuery,
+  SearchQuery,
+} from '@lets-choose/common/src/dto/contest.dto';
+import { User } from '@modules/user/user.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import mongoose from 'mongoose';
+import faker from 'faker';
 
-import gameRepository from '../game/__mocks__/game.repository';
-import cloudinaryService from '../cloudinary/__mocks__/cloudinary.service';
-import userRepository, { user } from '../user/__mocks__/user.repository';
-import contestRepository, { contest } from './__mocks__/contest.repository';
+import gameRepository from '@modules/game/__mocks__/game.repository';
+import cloudinaryService from '@modules/cloudinary/__mocks__/cloudinary.service';
+import userRepository, {
+  userBuilder,
+} from '@modules/user/__mocks__/user.repository';
+import contestRepository, {
+  contestBuilder,
+} from '@modules/contest/__mocks__/contest.repository';
 import contestItemRepository, {
-  contestItem,
-} from './__mocks__/contest-item.repository';
-import { TYPES } from '../../injectable.types';
-import { ContestService, CreateContestsData } from './contest.service';
+  contestItemBuilder,
+} from '@modules/contest/__mocks__/contest-item.repository';
+import {
+  ContestService,
+  CreateContestsData,
+} from '@modules/contest/contest.service';
+import { TYPES } from '@src/injectable.types';
+
+const paginatedResultBuilder = build({
+  fields: {
+    items: [],
+    totalItems: fake((f) => f.random.number({ min: 1, precision: 1 })),
+    totalPages: fake((f) => f.random.number({ min: 1, precision: 1 })),
+    currentPage: fake((f) => f.random.number({ min: 1, precision: 1 })),
+  },
+});
+
+const searchPaginationQueryBuilder = build<SearchQuery & PaginationQuery>({
+  fields: {
+    page: fake((f) => f.random.number({ min: 1, precision: 1 })),
+    perPage: fake((f) => f.random.number({ min: 1, precision: 1 })),
+    search: fake((f) => f.lorem.word()),
+  },
+});
 
 describe('ContestService', () => {
   let contestService: ContestService;
-  const { id: contestId } = contest;
-  const contestData = {
-    files: [
-      { fieldname: 'thumbnail', path: 'path' },
-      { fieldname: 'items[0][image]', path: 'item[0][image]' },
-      { fieldname: 'items[1][image]', path: 'item[1][image]' },
-    ],
-    title: 'testContestTitle',
-    excerpt: 'testContestExcerpt',
-    items: [{ title: 'item0' }, { title: 'item1' }],
-  } as CreateContestsData;
-
-  beforeAll(() => {
-    jest
-      .spyOn(mongoose.Types, 'ObjectId')
-      .mockReturnValueOnce(contestId as any);
-  });
+  let contest: Contest;
+  let contestItems: ContestItem[];
+  let contestId: string;
+  let mockContestPaginateResult;
+  let mockContestItemsPaginateResult;
+  let contestData;
+  let user: User;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -61,67 +87,94 @@ describe('ContestService', () => {
 
     contestService = module.get<ContestService>(ContestService);
 
-    jest.clearAllMocks();
-  });
+    user = userBuilder();
+    contest = contestBuilder();
+    contestItems = [
+      contestItemBuilder(),
+      contestItemBuilder(),
+      contestItemBuilder(),
+      contestItemBuilder(),
+      contestItemBuilder(),
+    ];
+    ({ id: contestId } = contest);
 
-  afterEach(() => {
+    mockContestPaginateResult = paginatedResultBuilder({
+      overrides: { items: [contest] },
+    });
+
+    mockContestItemsPaginateResult = paginatedResultBuilder({
+      overrides: { items: contestItems },
+    });
+
+    contestData = {
+      files: [
+        { fieldname: 'thumbnail', path: 'path' },
+        ...contestItems.map((_, i) => ({
+          fieldname: `items[${i}][image]`,
+          path: `items[${i}][image]`,
+        })),
+      ],
+      title: faker.lorem.slug(),
+      excerpt: faker.lorem.slug(),
+      items: contestItems.map(({ title }) => ({ title })),
+    } as CreateContestsData;
+
+    jest.spyOn(mongoose.Types, 'ObjectId').mockReturnValue(contestId as any);
+
+    contestRepository.findById.mockResolvedValue(contest);
+    contestRepository.findByAuthor.mockResolvedValue([contest]);
+    contestRepository.paginate.mockResolvedValue(
+      mockContestPaginateResult as any,
+    );
+    contestItemRepository.paginate.mockResolvedValue(
+      mockContestItemsPaginateResult as any,
+    );
+    contestRepository.findByIdAndUpdate.mockResolvedValue(contest);
+
     jest.clearAllMocks();
   });
 
   test('findById', async () => {
-    const contest = await contestService.findContestById(contestId);
+    const result = await contestService.findContestById(contestId);
 
-    expect(contest).toMatchObject(contest);
+    expect(result).toMatchObject(contest);
     expect(contestRepository.findById).toBeCalledWith(contestId);
   });
 
   test('getContestsPaginate', async () => {
     const options: GetContestsQuery = {
-      page: 1,
-      perPage: 1,
-      author: 'author',
-      sortBy: 'NEWEST',
-      search: 'search',
+      ...searchPaginationQueryBuilder(),
+      author: user.username,
+      sortBy: faker.random.arrayElement(['NEWEST', 'POPULAR']),
     };
+    userRepository.findByUsername.mockResolvedValue(user);
     const response = await contestService.getContestsPaginate(options);
 
-    expect(response).toMatchObject({
-      items: [contest],
-      totalItems: 1,
-      totalPages: 1,
-      currentPage: 1,
-    });
+    expect(response).toMatchObject(mockContestPaginateResult);
     expect(contestRepository.paginate).toBeCalledWith(options);
   });
 
   test('getContestItemsPaginate', async () => {
-    const options: GetItemsQuery = {
-      page: 1,
-      perPage: 1,
-      search: 'search',
-    };
+    const options: GetItemsQuery = searchPaginationQueryBuilder();
     const response = await contestService.getContestItemsPaginate(
       contestId,
       options,
     );
 
-    expect(response).toMatchObject({
-      items: [contestItem],
-      totalItems: 1,
-      totalPages: 1,
-      currentPage: 1,
-    });
+    expect(response).toMatchObject(mockContestItemsPaginateResult);
     expect(contestItemRepository.paginate).toBeCalledWith(contestId, options);
   });
 
   test('findContestsByAuthor', async () => {
     const result = await contestService.findContestsByAuthor(user.id);
 
-    expect(result).toMatchObject(contest);
+    expect(result).toMatchObject([contest]);
     expect(contestRepository.findByAuthor).toBeCalledWith(user.id);
   });
 
   test('createContest', async () => {
+    contestRepository.createContest.mockResolvedValue(contest);
+
     const result = await contestService.createContest(user.id, contestData);
 
     expect(contestRepository.createContest).toBeCalledWith({
@@ -156,11 +209,46 @@ describe('ContestService', () => {
   });
 
   test('removeContest', async () => {
+    contestItemRepository.findByContestId.mockResolvedValueOnce(
+      contestItems as any,
+    );
+
     await contestService.removeContest(contestId);
 
     expect(contestRepository.deleteContest).toBeCalledWith(contestId);
-    // TODO: update tests
+    expect(cloudinaryService.destroy).toBeCalledWith(
+      `contests/${contestId}/thumbnail`,
+    );
+    expect(cloudinaryService.destroyMultiple.mock.calls[0][0]).toHaveLength(
+      contestItems.length,
+    );
+    expect(cloudinaryService.deleteFolder).toHaveBeenCalledWith(
+      `contests/${contestId}`,
+    );
+    expect(contestItemRepository.deleteContestItems).toHaveBeenCalledWith(
+      contestId,
+    );
   });
 
-  test.todo('resetContest');
+  test('resetContest', async () => {
+    contestRepository.findByIdAndUpdate.mockResolvedValueOnce(contest);
+
+    const result = await contestService.resetContest(contestId);
+
+    expect(contestRepository.findByIdAndUpdate).toHaveBeenCalledWith(
+      contestId,
+      { games: 0 },
+    );
+    expect(contestItemRepository.updateContestItems).toHaveBeenCalledWith(
+      contestId,
+      {
+        games: 0,
+        compares: 0,
+        wins: 0,
+        finalWins: 0,
+      },
+    );
+    expect(gameRepository.deleteGames).toHaveBeenCalledWith(contestId);
+    expect(result).toMatchObject(contest);
+  });
 });

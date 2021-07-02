@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { hash, compare } from 'bcryptjs';
 
-import { PasswordHashService } from './password.service';
+import { PasswordHashService } from '@modules/common/password/password.service';
 
 jest.mock('bcryptjs');
 describe('PasswordHashService', () => {

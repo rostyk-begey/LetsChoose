@@ -1,6 +1,6 @@
 import { ArgumentMetadata } from '@nestjs/common';
 import { AnySchema, ValidationError } from 'joi';
-import { JoiValidationPipe } from './joi-validation.pipe';
+import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
 
 describe('JoiValidationPipe', () => {
   let joiValidationPipe: JoiValidationPipe;

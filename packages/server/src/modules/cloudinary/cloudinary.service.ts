@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
 
-import { ICloudinaryService } from '../../abstract/cloudinary.service.interface';
-import { CloudinaryConfig } from '../../config';
+import { ICloudinaryService } from '@abstract/cloudinary.service.interface';
+import { CloudinaryConfig } from '@src/config';
 
 @Injectable()
 export class CloudinaryService implements ICloudinaryService {
@@ -30,5 +30,13 @@ export class CloudinaryService implements ICloudinaryService {
 
   public destroy(publicId: string): Promise<any> {
     return cloudinary.uploader.destroy(publicId);
+  }
+
+  public destroyMultiple(publicIds: string[]): Promise<any> {
+    return cloudinary.api.delete_resources(publicIds);
+  }
+
+  public deleteFolder(folder: string): Promise<any> {
+    return cloudinary.api.delete_folder(folder);
   }
 }

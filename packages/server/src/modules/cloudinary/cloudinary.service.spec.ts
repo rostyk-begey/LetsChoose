@@ -1,9 +1,9 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { v2 as cloudinary } from 'cloudinary';
-import config from '../../config';
+import config from '@src/config';
 
-import { CloudinaryService } from './cloudinary.service';
+import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
 
 describe('CloudinaryService', () => {
   let service: CloudinaryService;

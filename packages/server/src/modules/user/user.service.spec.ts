@@ -1,21 +1,27 @@
+import { IContestService } from '@abstract/contest.service.interface';
+import { Contest } from '@lets-choose/common';
+import { User } from '@modules/user/user.entity';
 import { Test, TestingModule } from '@nestjs/testing';
-
-import { IUserService } from '../../abstract/user.service.interface';
-import contestRepository from '../contest/__mocks__/contest.repository';
-import contestItemRepository from '../contest/__mocks__/contest-item.repository';
-import cloudinaryService from '../cloudinary/__mocks__/cloudinary.service';
-import userRepository from './__mocks__/user.repository';
-import gameRepository from '../game/__mocks__/game.repository';
-import { TYPES } from '../../injectable.types';
-import { ContestService } from '../contest/contest.service';
-import { UserService } from './user.service';
-
-jest.mock('./__mocks__/user.repository');
+import { IUserService } from '@abstract/user.service.interface';
+import { TYPES } from '@src/injectable.types';
+import contestRepository, {
+  contestBuilder,
+} from '@modules/contest/__mocks__/contest.repository';
+import contestItemRepository from '@modules/contest/__mocks__/contest-item.repository';
+import cloudinaryService from '@modules/cloudinary/__mocks__/cloudinary.service';
+import gameRepository from '@modules/game/__mocks__/game.repository';
+import { ContestService } from '@modules/contest/contest.service';
+import { UserService } from '@modules/user/user.service';
+import userRepository, {
+  userBuilder,
+} from '@modules/user/__mocks__/user.repository';
 
 describe('UserService', () => {
   let userService: IUserService;
-  const userId = '5f0e3e8cda24411b78617891';
-  const username = 'rostyk.begey';
+  let contestService: IContestService;
+  let userId, username;
+  let user: User;
+  let contest: Contest;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -43,29 +49,43 @@ describe('UserService', () => {
     }).compile();
 
     userService = module.get<IUserService>(TYPES.UserService);
+    contestService = module.get<IContestService>(TYPES.ContestService);
+    user = userBuilder();
+    contest = contestBuilder();
+    ({ id: userId, username } = user);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test('findById', () => {
-    userService.findById(userId);
+  test('findById', async () => {
+    userRepository.findById.mockResolvedValueOnce(user);
+    await userService.findById(userId);
     expect(userRepository.findByIdOrFail).toHaveBeenCalledWith(userId);
   });
 
-  test('findByUsername', () => {
-    userService.findByUsername(username);
+  test('findByUsername', async () => {
+    userRepository.findByUsername.mockResolvedValueOnce(user);
+    await userService.findByUsername(username);
     expect(userRepository.findByUsername).toHaveBeenCalledWith(username);
   });
 
-  test('removeUserById', () => {
-    userService.removeUserById(userId);
+  test('removeUserById', async () => {
+    userRepository.findByIdOrFail.mockResolvedValueOnce(user);
+    jest
+      .spyOn(contestService, 'findContestsByAuthor')
+      .mockResolvedValueOnce([contest]);
+    jest.spyOn(contestService, 'removeContest').mockImplementation(() => null);
+
+    await userService.removeUserById(userId);
     expect(userRepository.findByIdOrFail).toHaveBeenCalledWith(userId);
   });
 
-  test('removeUserByUsername', () => {
-    userService.removeUserByUsername(username);
+  test('removeUserByUsername', async () => {
+    userRepository.findByUsername.mockResolvedValueOnce(user);
+    jest
+      .spyOn(contestService, 'findContestsByAuthor')
+      .mockResolvedValueOnce([contest]);
+    jest.spyOn(contestService, 'removeContest').mockImplementation(() => null);
+
+    await userService.removeUserByUsername(username);
     expect(userRepository.findByUsername).toHaveBeenCalledWith(username);
   });
 

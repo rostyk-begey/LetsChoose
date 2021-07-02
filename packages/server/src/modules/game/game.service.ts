@@ -2,14 +2,14 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { shuffle } from 'lodash';
 
-import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';
-import { IGameService } from '../../abstract/game.service.interface';
-import { TYPES } from '../../injectable.types';
-import { IContestRepository } from '../../abstract/contest.repository.interface';
-import { IGameRepository } from '../../abstract/game.repository.interface';
-import { GameItem } from './game-item.entity';
-import { ContestItem } from '../contest/contest-item.entity';
-import { Game } from './game.entity';
+import { IContestItemRepository } from '@abstract/contest-item.repository.interface';
+import { IGameService } from '@abstract/game.service.interface';
+import { IContestRepository } from '@abstract/contest.repository.interface';
+import { IGameRepository } from '@abstract/game.repository.interface';
+import { TYPES } from '@src/injectable.types';
+import { ContestItem } from '@modules/contest/contest-item.entity';
+import { GameItem } from '@modules/game/game-item.entity';
+import { Game } from '@modules/game/game.entity';
 
 @Injectable()
 export class GameService implements IGameService {
@@ -36,10 +36,10 @@ export class GameService implements IGameService {
 
   protected static produceGameItems(
     items: ContestItem[],
-    gameItemLength: number,
+    gameItemsLength: number,
   ): GameItem[] {
     return shuffle(items)
-      .slice(0, gameItemLength)
+      .slice(0, gameItemsLength)
       .map(({ _id }) => ({
         contestItem: _id.toString(),
         wins: 0,
@@ -62,14 +62,15 @@ export class GameService implements IGameService {
   ): GameItem[] {
     return gameItems.map((item) => {
       const { contestItem: contestItemId } = item;
+      const resultItems = { ...item };
       if (this.inGamePair(currentPair, contestItemId as string)) {
-        item.compares += 1;
+        resultItems.compares += 1;
       }
       if (winnerId === `${contestItemId}`) {
-        item.wins += 1;
+        resultItems.wins += 1;
       }
 
-      return item;
+      return resultItems;
     });
   }
 
@@ -89,13 +90,13 @@ export class GameService implements IGameService {
       contestId,
     );
 
-    const gameItemLength = GameService.calculateGameItemsLength(
+    const gameItemsLength = GameService.calculateGameItemsLength(
       contestItems.length,
     );
 
     const gameItems = GameService.produceGameItems(
       contestItems,
-      gameItemLength,
+      gameItemsLength,
     );
 
     const pair = GameService.generatePair(gameItems);
@@ -108,7 +109,7 @@ export class GameService implements IGameService {
       items: gameItems,
       finished: false,
       round: 0,
-      pairNumber: 1,
+      pairNumber: 0,
       pairsInRound: gameItems.length / 2,
       totalRounds,
       pair,
@@ -142,7 +143,7 @@ export class GameService implements IGameService {
     // no items left on this round, go to next round
     if (roundItems.length === 0) {
       game.round += 1;
-      game.pairNumber = 0;
+      game.pairNumber = -1;
       roundItems = this.getNextRoundItems(game.items as GameItem[], game.round);
       game.pairsInRound = roundItems.length > 1 ? roundItems.length / 2 : 0;
     }

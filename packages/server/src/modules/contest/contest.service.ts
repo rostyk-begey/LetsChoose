@@ -9,14 +9,14 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 
-import { ICloudinaryService } from '../../abstract/cloudinary.service.interface';
-import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';
-import { IContestRepository } from '../../abstract/contest.repository.interface';
-import { IContestService } from '../../abstract/contest.service.interface';
-import { IGameRepository } from '../../abstract/game.repository.interface';
-import { IUserRepository } from '../../abstract/user.repository.interface';
-import { TYPES } from '../../injectable.types';
-import { fieldNameFilter } from '../../usecases/utils';
+import { ICloudinaryService } from '@abstract/cloudinary.service.interface';
+import { IContestItemRepository } from '@abstract/contest-item.repository.interface';
+import { IContestRepository } from '@abstract/contest.repository.interface';
+import { IContestService } from '@abstract/contest.service.interface';
+import { IGameRepository } from '@abstract/game.repository.interface';
+import { IUserRepository } from '@abstract/user.repository.interface';
+import { TYPES } from '@src/injectable.types';
+import { fieldNameFilter } from '@src/usecases/utils';
 
 export interface CreateContestsData extends CreateContestDTO {
   files: Express.Multer.File[];
@@ -186,12 +186,11 @@ export class ContestService implements IContestService {
       ContestService.getContestThumbnailPublicId(contestId),
     );
     const items = await this.contestItemRepository.findByContestId(contestId);
-    const itemsToDelete = items.map(async ({ _id }) => {
-      await this.cloudinaryService.destroy(
-        ContestService.getContestItemImagePublicId(contestId, _id),
-      );
-    });
-    await Promise.all(itemsToDelete);
+    const itemsToDelete = items.map(({ _id }) =>
+      ContestService.getContestItemImagePublicId(contestId, _id),
+    );
+    await this.cloudinaryService.destroyMultiple(itemsToDelete);
+    await this.cloudinaryService.deleteFolder(`contests/${contestId}`);
     await this.contestItemRepository.deleteContestItems(contestId);
   }
 }

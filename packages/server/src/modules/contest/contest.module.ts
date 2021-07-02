@@ -2,15 +2,18 @@ import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 
-import { GameModule } from '../game/game.module';
-import { UserModule } from '../user/user.module';
-import { ContestService } from './contest.service';
-import { ContestRepository } from './contest.repository';
-import { ContestItemRepository } from './contest-item.repository';
-import { Contest, ContestSchema } from './contest.entity';
-import { ContestItem, ContestItemSchema } from './contest-item.entity';
-import { CloudinaryModule } from '../cloudinary/cloudinary.module';
-import { ContestController } from './contest.controller';
+import { GameModule } from '@modules/game/game.module';
+import { UserModule } from '@modules/user/user.module';
+import { CloudinaryModule } from '@modules/cloudinary/cloudinary.module';
+import { ContestService } from '@modules/contest/contest.service';
+import { ContestRepository } from '@modules/contest/contest.repository';
+import { ContestItemRepository } from '@modules/contest/contest-item.repository';
+import { Contest, ContestSchema } from '@modules/contest/contest.entity';
+import {
+  ContestItem,
+  ContestItemSchema,
+} from '@modules/contest/contest-item.entity';
+import { ContestController } from '@modules/contest/contest.controller';
 
 @Module({
   imports: [

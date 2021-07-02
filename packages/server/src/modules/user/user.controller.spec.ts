@@ -1,15 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import contestItemRepository from '../contest/__mocks__/contest-item.repository';
-import contestRepository from '../contest/__mocks__/contest.repository';
-import gameRepository from '../game/__mocks__/game.repository';
-import userRepository from '../user/__mocks__/user.repository';
-import cloudinaryService from '../cloudinary/__mocks__/cloudinary.service';
-import { TYPES } from '../../injectable.types';
-import { ContestService } from '../contest/contest.service';
-
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import contestItemRepository from '@modules/contest/__mocks__/contest-item.repository';
+import contestRepository from '@modules/contest/__mocks__/contest.repository';
+import gameRepository from '@modules/game/__mocks__/game.repository';
+import userRepository from '@modules/user/__mocks__/user.repository';
+import cloudinaryService from '@modules/cloudinary/__mocks__/cloudinary.service';
+import { ContestService } from '@modules/contest/contest.service';
+import { UserController } from '@modules/user/user.controller';
+import { UserService } from '@modules/user/user.service';
+import { TYPES } from '@src/injectable.types';
 
 describe('UserController', () => {
   let controller: UserController;

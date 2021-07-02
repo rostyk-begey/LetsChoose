@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import contestItemRepository from '../contest/__mocks__/contest-item.repository';
-import contestRepository from '../contest/__mocks__/contest.repository';
-import gameRepository from '../game/__mocks__/game.repository';
-import { TYPES } from '../../injectable.types';
-import { GameController } from './game.controller';
-import { GameService } from './game.service';
+import contestItemRepository from '@modules/contest/__mocks__/contest-item.repository';
+import contestRepository from '@modules/contest/__mocks__/contest.repository';
+import gameRepository from '@modules/game/__mocks__/game.repository';
+import { GameController } from '@modules/game/game.controller';
+import { GameService } from '@modules/game/game.service';
+import { TYPES } from '@src/injectable.types';
 
 jest.mock('../contest/__mocks__/contest-item.repository');
 jest.mock('../contest/__mocks__/contest.repository');

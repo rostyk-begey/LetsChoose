@@ -3,7 +3,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "declaration": true,
+    "declaration": false,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -13,8 +13,16 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "rootDir": ".",
+    "allowJs": true,
     "incremental": true,
     "lib": ["es2019"],
+    "paths": {
+      "@src/*": ["src/*"],
+      "@modules/*": ["src/modules/*"],
+      "@abstract/*": ["src/abstract/*"],
+      "@pipes/*": ["src/pipes/*"],
+      "@usecases/*": ["src/usecases/*"]
+    }
   },
   "include": ["src/**/*", "test/**/*"],
   "references": [

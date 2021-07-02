@@ -5,18 +5,21 @@ import {
   AuthRegisterDto,
   AuthTokenDto,
 } from '@lets-choose/common';
+import { User } from '@modules/user/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { IAuthService } from '../../abstract/auth.service.interface';
-import userRepository, { user } from '../user/__mocks__/user.repository';
-import emailService from '../common/email/__mocks__/email.service';
-import jwtService from '../common/jwt/__mocks__/jwt.service';
-import passwordHashService from '../common/password/__mocks__/password.service';
-import config from '../../config';
-import { TYPES } from '../../injectable.types';
-import { PasswordHashService } from '../common/password/password.service';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { IAuthService } from '@abstract/auth.service.interface';
+import userRepository, {
+  userBuilder,
+} from '@modules/user/__mocks__/user.repository';
+import emailService from '@modules/common/email/__mocks__/email.service';
+import jwtService from '@modules/common/jwt/__mocks__/jwt.service';
+import passwordHashService from '@modules/common/password/__mocks__/password.service';
+import config from '@src/config';
+import { TYPES } from '@src/injectable.types';
+import { AuthController } from '@modules/auth/auth.controller';
+import { AuthService } from '@modules/auth/auth.service';
+import * as faker from 'faker';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -26,17 +29,15 @@ describe('AuthController', () => {
     cookie: jest.fn(),
     clearCookie: jest.fn(),
   };
-  const mockAuthTokenDto: AuthTokenDto = {
-    userId: user.id,
-    accessToken: 'accessToken',
-    refreshToken: 'refreshToken',
-  };
+  let user: User;
+  let mockAuthTokenDto: AuthTokenDto;
   const cookieOptions = {
     httpOnly: true,
     secure: false,
     path: '/',
     sameSite: 'lax',
   };
+
   const expectValidCookie = (callIndex) => {
     expect(mockResponse.cookie.mock.calls[callIndex][0]).toEqual(
       callIndex === 0
@@ -65,7 +66,6 @@ describe('AuthController', () => {
       ],
       providers: [
         AuthService,
-        PasswordHashService,
         {
           provide: TYPES.UserRepository,
           useValue: userRepository,
@@ -86,7 +86,15 @@ describe('AuthController', () => {
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
+
     authService = module.get<IAuthService>(AuthService);
+
+    user = userBuilder();
+    mockAuthTokenDto = {
+      userId: user.id,
+      accessToken: faker.random.alphaNumeric(20),
+      refreshToken: faker.random.alphaNumeric(20),
+    };
 
     jest
       .spyOn(authService, 'loginUser')
@@ -107,8 +115,8 @@ describe('AuthController', () => {
   describe('login', () => {
     it('should login user correctly', async () => {
       const dto: AuthLoginDto = {
-        login: 'login',
-        password: 'password',
+        login: faker.internet.userName(),
+        password: faker.internet.password(),
       };
 
       const result = await controller.login(mockResponse, dto);
@@ -124,7 +132,7 @@ describe('AuthController', () => {
 
   describe('loginGoogle', () => {
     it('should login user by token correctly', async () => {
-      const dto: AuthGoogleLoginDto = { token: 'token' };
+      const dto: AuthGoogleLoginDto = { token: faker.lorem.word() };
       const result = await controller.loginGoogle(mockResponse, dto);
 
       expect(result).toMatchObject(mockAuthTokenDto);
@@ -156,9 +164,9 @@ describe('AuthController', () => {
       jest.spyOn(authService, 'registerUser').mockResolvedValueOnce(undefined);
 
       const dto: AuthRegisterDto = {
-        email: 'email',
-        username: 'username',
-        password: 'password',
+        email: faker.internet.email(),
+        username: faker.internet.userName(),
+        password: faker.internet.password(),
       };
 
       const result = await controller.register(mockResponse, dto);
@@ -178,21 +186,22 @@ describe('AuthController', () => {
 
   describe('forgotPassword', () => {
     it('should request reset password correctly', async () => {
-      const dto: AuthForgotPasswordDto = { email: 'email' };
-      jest.spyOn(authService, 'requestPasswordReset');
+      const dto: AuthForgotPasswordDto = { email: faker.internet.email() };
+      const expectedMessage = `Reset password link has been sent to ${dto.email}!`;
+      jest
+        .spyOn(authService, 'requestPasswordReset')
+        .mockImplementation(() => null);
       const { message } = await controller.forgotPassword(dto);
 
       expect(authService.requestPasswordReset).toHaveBeenCalledWith(dto);
-      expect(message).toEqual(
-        `Reset password link has been sent to ${dto.email}!`,
-      );
+      expect(message).toEqual(expectedMessage);
     });
   });
 
   describe('resetPassword', () => {
     it('should request reset password correctly', async () => {
-      const token = 'token';
-      const password = 'password';
+      const token = faker.lorem.word();
+      const password = faker.internet.password();
       jest
         .spyOn(authService, 'resetUsersPassword')
         .mockResolvedValueOnce(undefined);

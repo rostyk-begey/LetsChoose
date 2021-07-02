@@ -3,14 +3,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { JwtConfig } from '../../config';
-import { TYPES } from '../../injectable.types';
-import { User } from '../user/user.entity';
-import { IUserRepository } from '../../abstract/user.repository.interface';
-import {
-  AuthTokenPayload,
-  IJwtService,
-} from '../../abstract/jwt.service.interface';
+import { JwtConfig } from '@src/config';
+import { TYPES } from '@src/injectable.types';
+import { User } from '@modules/user/user.entity';
+import { IUserRepository } from '@abstract/user.repository.interface';
+import { AuthTokenPayload, IJwtService } from '@abstract/jwt.service.interface';
 
 const cookieExtractor = (req) => {
   if (req?.cookies) {

@@ -1,4 +1,4 @@
-import { IPasswordHashService } from '../../../../abstract/password.service.interface';
+import { IPasswordHashService } from '@abstract/password.service.interface';
 
 const passwordService: jest.Mocked<IPasswordHashService> = {
   hash: jest.fn((password: string, salt) => Promise.resolve(password)),

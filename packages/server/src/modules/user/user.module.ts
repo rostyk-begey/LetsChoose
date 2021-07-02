@@ -1,11 +1,11 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
-import { UserRepository } from './user.repository';
-import { ContestModule } from '../contest/contest.module';
-import { User, UserSchema } from './user.entity';
+import { UserController } from '@modules/user/user.controller';
+import { UserService } from '@modules/user/user.service';
+import { UserRepository } from '@modules/user/user.repository';
+import { User, UserSchema } from '@modules/user/user.entity';
+import { ContestModule } from '@modules/contest/contest.module';
 
 @Module({
   imports: [

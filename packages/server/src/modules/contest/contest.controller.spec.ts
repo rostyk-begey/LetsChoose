@@ -1,4 +1,6 @@
 import {
+  Contest,
+  ContestItem,
   GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
@@ -7,17 +9,22 @@ import {
 } from '@lets-choose/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { IContestService } from '../../abstract/contest.service.interface';
-import contestItemRepository from '../contest/__mocks__/contest-item.repository';
+import { IContestService } from '@abstract/contest.service.interface';
+import contestItemRepository, {
+  contestItemBuilder,
+} from '@modules/contest/__mocks__/contest-item.repository';
 import contestRepository, {
-  contest,
-} from '../contest/__mocks__/contest.repository';
-import gameRepository from '../game/__mocks__/game.repository';
-import userRepository from '../user/__mocks__/user.repository';
-import cloudinaryService from '../cloudinary/__mocks__/cloudinary.service';
-import { TYPES } from '../../injectable.types';
-import { ContestController } from './contest.controller';
-import { ContestService, CreateContestsData } from './contest.service';
+  contestBuilder,
+} from '@modules/contest/__mocks__/contest.repository';
+import gameRepository from '@modules/game/__mocks__/game.repository';
+import userRepository from '@modules/user/__mocks__/user.repository';
+import cloudinaryService from '@modules/cloudinary/__mocks__/cloudinary.service';
+import { TYPES } from '@src/injectable.types';
+import { ContestController } from '@modules/contest/contest.controller';
+import {
+  ContestService,
+  CreateContestsData,
+} from '@modules/contest/contest.service';
 
 jest.mock('../../usecases/utils', () => ({
   fieldNameFilter: jest.fn(() => () => true),
@@ -34,6 +41,9 @@ const files = [
 describe('ContestController', () => {
   let controller: ContestController;
   let contestService: IContestService;
+  let contest: Contest;
+  let contestItems: ContestItem[];
+  let files;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -65,6 +75,22 @@ describe('ContestController', () => {
 
     contestService = module.get<IContestService>(TYPES.ContestService);
     controller = module.get<ContestController>(ContestController);
+
+    contest = contestBuilder();
+    contestItems = [
+      contestItemBuilder(),
+      contestItemBuilder(),
+      contestItemBuilder(),
+      contestItemBuilder(),
+      contestItemBuilder(),
+    ];
+    files = [
+      { fieldname: 'thumbnail', path: 'path' },
+      ...contestItems.map((_, i) => ({
+        fieldname: `items[${i}][image]`,
+        path: `items[${i}][image]`,
+      })),
+    ];
   });
 
   afterEach(() => {

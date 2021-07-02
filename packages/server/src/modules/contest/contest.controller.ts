@@ -27,15 +27,15 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { IContestService } from '../../abstract/contest.service.interface';
-import { TYPES } from '../../injectable.types';
-import { JoiValidationPipe } from '../../pipes/joi-validation.pipe';
-import { fieldNameFilter, unlinkAsync } from '../../usecases/utils';
+import { IContestService } from '@abstract/contest.service.interface';
+import { TYPES } from '@src/injectable.types';
+import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
+import { fieldNameFilter, unlinkAsync } from '@usecases/utils';
 import {
   getContestItemsSchema,
   getContestSchema,
   contestIdSchema,
-} from './contest.validation';
+} from '@modules/contest/contest.validation';
 
 @ApiTags('Contest')
 @Controller('/api/contests')

@@ -1,10 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
 
-import { IUserRepository } from '../../abstract/user.repository.interface';
-import { User } from './user.entity';
-import { TYPES } from '../../injectable.types';
-import { IUserService } from '../../abstract/user.service.interface';
-import { IContestService } from '../../abstract/contest.service.interface';
+import { IUserRepository } from '@abstract/user.repository.interface';
+import { IUserService } from '@abstract/user.service.interface';
+import { IContestService } from '@abstract/contest.service.interface';
+import { User } from '@modules/user/user.entity';
+import { TYPES } from '@src/injectable.types';
 
 @Injectable()
 export class UserService implements IUserService {

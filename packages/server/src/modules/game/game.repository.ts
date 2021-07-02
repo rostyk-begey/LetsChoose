@@ -3,8 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { CreateGameDto } from '@lets-choose/common';
-import { IGameRepository } from '../../abstract/game.repository.interface';
-import { Game, GameDocument } from './game.entity';
+import { IGameRepository } from '@abstract/game.repository.interface';
+import { Game, GameDocument } from '@modules/game/game.entity';
 
 @Injectable()
 export class GameRepository implements IGameRepository {

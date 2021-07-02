@@ -8,12 +8,12 @@ import {
   ISortOptions,
 } from '@lets-choose/common';
 
-import { IContestItemRepository } from '../../abstract/contest-item.repository.interface';
+import { IContestItemRepository } from '@abstract/contest-item.repository.interface';
+import { getPaginationPipelines, getSearchPipelines } from '@usecases/utils';
 import {
-  getPaginationPipelines,
-  getSearchPipelines,
-} from '../../usecases/utils';
-import { ContestItem, ContestItemDocument } from './contest-item.entity';
+  ContestItem,
+  ContestItemDocument,
+} from '@modules/contest/contest-item.entity';
 
 interface SortOptions {
   rankScore: number;

@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ContestItem as ContestItemModel } from '@lets-choose/common';
 import mongoose from 'mongoose';
 
-import { Contest } from './contest.entity';
+import { Contest } from '@modules/contest/contest.entity';
 
 export type ContestItemDocument = ContestItem & mongoose.Document;
 
@@ -31,7 +31,7 @@ export class ContestItem extends ContestItemModel {
   finalWins: number;
 
   @Prop({
-    ref: Contest.name,
+    ref: 'Contest',
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   })
