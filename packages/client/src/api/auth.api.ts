@@ -5,6 +5,8 @@ import {
   AuthRegisterDto,
   AuthTokenDto,
   HttpResponseMessageDto,
+  UpdateUserPasswordDto,
+  UserDto,
 } from '@lets-choose/common';
 
 import ROUTES from '../utils/routes';
@@ -26,6 +28,7 @@ const {
   CONFIRM_EMAIL,
   FORGOT_PASSWORD,
   RESET_PASSWORD,
+  UPDATE_PASSWORD,
 } = ROUTES.API.AUTH;
 
 export default class AuthApi extends Api {
@@ -58,5 +61,9 @@ export default class AuthApi extends Api {
       `${RESET_PASSWORD}/${token}`,
       data,
     );
+  };
+
+  updatePassword = (data: UpdateUserPasswordDto) => {
+    return this.api.post<UserDto>(UPDATE_PASSWORD, data);
   };
 }

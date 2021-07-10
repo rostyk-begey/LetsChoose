@@ -1,6 +1,6 @@
 import Router from 'next/router';
 import { useEffect } from 'react';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { useMutation, useQuery, UseQueryOptions } from 'react-query';
 import { AxiosResponse } from 'axios';
 import { UserDto } from '@lets-choose/common';
 
@@ -8,15 +8,14 @@ import UsersApi from '../../api/usersApi';
 
 const userApi = new UsersApi();
 
+type Config = {
+  redirectTo?: string;
+  redirectIfFound?: boolean;
+};
+
 export const useUserFindRedirect = (
   username,
-  {
-    redirectTo,
-    redirectIfFound,
-  }: {
-    redirectTo?: string;
-    redirectIfFound?: boolean;
-  } = {},
+  { redirectTo, redirectIfFound }: Config = {},
   queryConfig: UseQueryOptions<AxiosResponse<UserDto>> = {},
 ) => {
   const query = useQuery(['user', username], () => userApi.find(username), {
@@ -44,10 +43,7 @@ export const useUserFindRedirect = (
 };
 
 export const useCurrentUser = (
-  config: {
-    redirectTo?: string;
-    redirectIfFound?: boolean;
-  },
+  config: Config = {},
   queryConfig: UseQueryOptions<AxiosResponse<UserDto>> = {},
 ) => {
   return useUserFindRedirect('me', config, queryConfig);
@@ -61,4 +57,12 @@ export const useUserFind = (
     retry: 0,
     ...config,
   });
+};
+
+export const useUserUpdateProfile = () => {
+  return useMutation(userApi.updateProfile);
+};
+
+export const useUserDeleteProfile = () => {
+  return useMutation(userApi.deleteProfile);
 };

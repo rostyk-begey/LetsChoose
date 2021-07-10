@@ -4,6 +4,7 @@ import {
   AuthLoginDto,
   AuthRegisterDto,
   AuthTokenDto,
+  UpdateUserPasswordDto,
 } from '@lets-choose/common';
 import { User } from '@modules/user/user.entity';
 import { ConfigModule } from '@nestjs/config';
@@ -25,10 +26,8 @@ describe('AuthController', () => {
   let controller: AuthController;
   let authService: IAuthService;
   const { jwt: mockJwtConfig } = config();
-  const mockResponse = {
-    cookie: jest.fn(),
-    clearCookie: jest.fn(),
-  };
+  let mockRequest;
+  let mockResponse;
   let user: User;
   let mockAuthTokenDto: AuthTokenDto;
   const cookieOptions = {
@@ -94,6 +93,15 @@ describe('AuthController', () => {
       userId: user.id,
       accessToken: faker.random.alphaNumeric(20),
       refreshToken: faker.random.alphaNumeric(20),
+    };
+
+    mockRequest = {
+      user,
+    };
+
+    mockResponse = {
+      cookie: jest.fn(),
+      clearCookie: jest.fn(),
     };
 
     jest
@@ -213,6 +221,35 @@ describe('AuthController', () => {
         password,
       );
       expect(message).toEqual('Password was successfully changed!');
+    });
+  });
+
+  describe('updatePassword', () => {
+    it("should update user's password correctly", async () => {
+      jest
+        .spyOn(authService, 'updateUsersPassword')
+        .mockResolvedValueOnce(mockAuthTokenDto);
+
+      const dto: UpdateUserPasswordDto = {
+        password: faker.internet.password(),
+        newPassword: faker.internet.password(),
+      };
+
+      const result = await controller.updatePassword(
+        mockRequest,
+        mockResponse,
+        dto,
+      );
+
+      expect(result).toMatchObject(mockAuthTokenDto);
+
+      expectValidCookie(0);
+      expectValidCookie(1);
+
+      expect(authService.updateUsersPassword).toHaveBeenCalledWith(
+        user.id,
+        dto,
+      );
     });
   });
 

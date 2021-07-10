@@ -1,5 +1,10 @@
-import { AuthLoginDto, AuthTokenDto } from '@lets-choose/common';
+import {
+  AuthLoginDto,
+  AuthTokenDto,
+  UpdateUserPasswordDto,
+} from '@lets-choose/common';
 import { User } from '@modules/user/user.entity';
+import { UnauthorizedException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import faker from 'faker';
@@ -67,6 +72,10 @@ describe('AuthService', () => {
       .mockImplementation(() => tokenPair);
 
     jest.clearAllMocks();
+  });
+
+  afterAll(() => {
+    jest.resetAllMocks();
   });
 
   test('registerUser', async () => {
@@ -145,6 +154,8 @@ describe('AuthService', () => {
       };
       userRepository.findByEmail.mockResolvedValueOnce(user);
 
+      expect.assertions(4);
+
       try {
         await authService.loginUser(data);
       } catch (e) {
@@ -190,7 +201,7 @@ describe('AuthService', () => {
       .spyOn(OAuth2Client.prototype, 'getToken')
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      .mockResolvedValue({
+      .mockResolvedValueOnce({
         tokens: { id_token: idToken },
         res: null,
       } as GetTokenResponse);
@@ -198,7 +209,7 @@ describe('AuthService', () => {
       .spyOn(OAuth2Client.prototype, 'verifyIdToken')
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      .mockResolvedValue(ticket);
+      .mockResolvedValueOnce(ticket);
 
     it('should login user correctly from token', async () => {
       userRepository.findByEmail.mockResolvedValueOnce(user);
@@ -288,7 +299,7 @@ describe('AuthService', () => {
       userRepository.findByIdOrFail.mockResolvedValueOnce(user);
       jwtService.verifyRefreshToken.mockImplementationOnce(() => ({
         userId: user.id,
-        passwordVersion: 1,
+        passwordVersion: user.passwordVersion,
       }));
       jwtService.generateAuthTokenPair.mockImplementation(() => tokenPair);
 
@@ -316,6 +327,73 @@ describe('AuthService', () => {
       } catch (e) {
         expect(e.message).toEqual('Unauthorized');
       }
+    });
+  });
+
+  describe('updateUsersPassword', () => {
+    let newPassword: string;
+    let newPasswordVersion: number;
+
+    beforeEach(() => {
+      newPasswordVersion = user.passwordVersion + 1;
+      newPassword = faker.random.alphaNumeric(8);
+    });
+
+    it('should login user by username correctly', async () => {
+      userRepository.findByEmail.mockResolvedValueOnce(undefined);
+      userRepository.findByIdOrFail.mockResolvedValueOnce(user);
+      const password = user.password;
+      const data: UpdateUserPasswordDto = {
+        password,
+        newPassword,
+      };
+      const result = await authService.updateUsersPassword(user.id, data);
+
+      expect(result).toMatchObject(tokenPair);
+      expect(userRepository.findByIdOrFail).toBeCalledWith(user.id);
+      expect(passwordHashService.compare).toBeCalledWith(
+        password,
+        user.password,
+      );
+      expect(passwordHashService.hash).toBeCalledWith(newPassword, 12);
+      expect(userRepository.findByIdAndUpdate).toBeCalledWith(
+        user.id,
+        expect.objectContaining({
+          password: newPassword,
+          passwordVersion: newPasswordVersion,
+        }),
+      );
+      expect(jwtService.generateAuthTokenPair).toBeCalledWith(
+        tokenPair.userId,
+        newPasswordVersion,
+      );
+    });
+
+    it("should throw error if password didn't match", async () => {
+      const password = faker.random.alphaNumeric(8);
+      const data: UpdateUserPasswordDto = {
+        password,
+        newPassword,
+      };
+      userRepository.findByIdOrFail.mockResolvedValueOnce(user);
+
+      expect.assertions(7);
+
+      try {
+        await authService.updateUsersPassword(user.id, data);
+      } catch (e) {
+        expect(e).toBeInstanceOf(UnauthorizedException);
+        expect(e.message).toMatch('Incorrect password');
+      }
+
+      expect(userRepository.findByIdOrFail).toBeCalledWith(user.id);
+      expect(passwordHashService.compare).toBeCalledWith(
+        password,
+        user.password,
+      );
+      expect(passwordHashService.hash).not.toBeCalled();
+      expect(userRepository.findByIdAndUpdate).not.toBeCalled();
+      expect(jwtService.generateAuthTokenPair).not.toBeCalled();
     });
   });
 

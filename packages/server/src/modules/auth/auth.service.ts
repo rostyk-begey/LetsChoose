@@ -4,6 +4,7 @@ import {
   AuthLoginDto,
   AuthRegisterDto,
   AuthTokenDto,
+  UpdateUserPasswordDto,
 } from '@lets-choose/common';
 import {
   BadRequestException,
@@ -232,16 +233,30 @@ export class AuthService implements IAuthService {
     });
   }
 
-  public async refreshToken(token: string): Promise<AuthTokenDto> {
-    let userId;
+  public async updateUsersPassword(
+    userId: string,
+    { password, newPassword }: UpdateUserPasswordDto,
+  ): Promise<AuthTokenDto> {
+    const user = await this.userRepository.findByIdOrFail(userId);
 
-    try {
-      ({ userId } = this.jwtService.verifyRefreshToken(token));
-    } catch (e) {
-      throw new UnauthorizedException('Unauthorized');
+    const isMatch = await this.passwordHashService.compare(
+      password,
+      user.password,
+    );
+
+    if (!isMatch) {
+      throw new UnauthorizedException('Incorrect password');
     }
 
-    const user = await this.userRepository.findByIdOrFail(userId);
+    const newPasswordHash = await this.passwordHashService.hash(
+      newPassword,
+      12,
+    );
+
+    await this.userRepository.findByIdAndUpdate(user.id, {
+      password: newPasswordHash,
+      passwordVersion: ++user.passwordVersion,
+    });
 
     const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
       user.id,
@@ -249,10 +264,35 @@ export class AuthService implements IAuthService {
     );
 
     return {
-      userId,
+      userId: user.id,
       accessToken,
       refreshToken,
     };
+  }
+
+  public async refreshToken(token: string): Promise<AuthTokenDto> {
+    let userId: string, passwordVersion: number;
+
+    try {
+      ({ userId, passwordVersion } = this.jwtService.verifyRefreshToken(token));
+
+      const user = await this.userRepository.findByIdOrFail(userId);
+
+      if (passwordVersion !== user.passwordVersion) {
+        throw new Error();
+      }
+
+      const { accessToken, refreshToken } =
+        this.jwtService.generateAuthTokenPair(user.id, user.passwordVersion);
+
+      return {
+        userId,
+        accessToken,
+        refreshToken,
+      };
+    } catch (e) {
+      throw new UnauthorizedException('Unauthorized');
+    }
   }
 
   public async confirmEmail(confirmEmailToken: string): Promise<void> {

@@ -24,6 +24,7 @@ import {
   RefreshTokenLocation,
   HttpResponseMessageDto,
   AuthGoogleLoginDto,
+  UpdateUserPasswordDto,
 } from '@lets-choose/common';
 
 import { JwtConfig } from '@src/config';
@@ -34,6 +35,7 @@ import {
   loginSchema,
   registerSchema,
   refreshTokenLocation,
+  updatePasswordSchema,
 } from '@modules/auth/auth.validation';
 
 @ApiTags('auth')
@@ -76,7 +78,6 @@ export class AuthController {
     @Response({ passthrough: true }) res: any,
     @Body() dto: AuthLoginDto,
   ): Promise<AuthTokenDto> {
-    this.logger.log(dto, 'login');
     const result = await this.authService.loginUser(dto);
 
     res.cookie(
@@ -156,6 +157,32 @@ export class AuthController {
     return { message: `Reset password link has been sent to ${dto.email}!` };
   }
 
+  @Post('/password/update')
+  @ApiOperation({ summary: 'Update password' })
+  @ApiResponse({ status: 200, type: HttpResponseMessageDto })
+  @UseGuards(AuthGuard('jwt'))
+  @UsePipes(new JoiValidationPipe(updatePasswordSchema))
+  public async updatePassword(
+    @Request() req: any,
+    @Response({ passthrough: true }) res: any,
+    @Body() dto: UpdateUserPasswordDto,
+  ): Promise<AuthTokenDto> {
+    const result = await this.authService.updateUsersPassword(req.user.id, dto);
+
+    res.cookie(
+      this.config.accessTokenKey,
+      result.accessToken,
+      this.getCookieOptions(),
+    );
+    res.cookie(
+      this.config.refreshTokenKey,
+      result.refreshToken,
+      this.getCookieOptions(),
+    );
+
+    return result;
+  }
+
   @Post('/password/reset/:token')
   public async resetPassword(
     @Param('token') token: string,
@@ -167,7 +194,7 @@ export class AuthController {
   }
 
   @Post('/token')
-  @UsePipes(new JoiValidationPipe(refreshTokenLocation, 'query'))
+  // @UsePipes(new JoiValidationPipe(refreshTokenLocation, 'query'))
   public async refreshToken(
     @Request() req: any,
     @Response({ passthrough: true }) res: any,

@@ -4,14 +4,12 @@ import {
   GoogleLoginResponseOffline,
   useGoogleLogin,
 } from 'react-google-login';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+import { Typography, Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Image from 'next/image';
 
 import AuthFormCard, { AuthFormCardProps } from './AuthFormCard';
-import GoogleButtonLogo from '../../../public/images/google-button-dark-logo.svg?sprite';
+import GoogleButtonLogo from '../../../public/images/google-button-dark-logo.svg';
 
 interface Props extends AuthFormCardProps {
   googleButtonLabel: string;
@@ -19,6 +17,8 @@ interface Props extends AuthFormCardProps {
     response: GoogleLoginResponse | GoogleLoginResponseOffline,
   ) => void;
 }
+
+const googleIconHeight = 42;
 
 const useStyles = makeStyles((theme) => ({
   loginBtnGoogle: {
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   loginBtnGoogleIcon: {
     position: 'absolute',
     left: -4,
-    height: 42,
+    height: googleIconHeight,
   },
 }));
 
@@ -76,11 +76,15 @@ const AuthFormCardWithOAuth: React.FC<Props> = ({
                 disabled={props.submitDisabled}
                 className={classes.loginBtnGoogle}
               >
-                <Image
-                  alt=""
-                  src={GoogleButtonLogo}
-                  className={classes.loginBtnGoogleIcon}
-                />
+                <div className={classes.loginBtnGoogleIcon}>
+                  <Image
+                    alt=""
+                    src={GoogleButtonLogo.src}
+                    width={googleIconHeight}
+                    height={googleIconHeight}
+                    loader={({ src }) => src}
+                  />
+                </div>
                 {googleButtonLabel}
               </Button>
             </Grid>

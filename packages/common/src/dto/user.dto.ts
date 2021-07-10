@@ -14,3 +14,13 @@ export abstract class CreateUserDto {
   username: string;
   password: string;
 }
+
+export abstract class UpdateUserProfileDto {
+  username: string;
+  email: string;
+}
+
+export abstract class UpdateUserPasswordDto {
+  password: string;
+  newPassword: string;
+}

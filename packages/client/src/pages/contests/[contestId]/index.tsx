@@ -18,7 +18,6 @@ export const getServerSideProps: GetServerSideProps<
       props: { initialContest: contest },
     };
   } catch (e) {
-    console.log(e);
     return {
       notFound: true,
     };

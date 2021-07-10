@@ -1,17 +1,24 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Box from '@material-ui/core/Box';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Typography from '@material-ui/core/Typography';
+import {
+  Avatar,
+  Box,
+  Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-import AddIcon from '@material-ui/icons/Add';
+import SettingsIcon from '@material-ui/icons/SettingsRounded';
+import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
+import AddIcon from '@material-ui/icons/AddCircleRounded';
+import AddOutlinedIcon from '@material-ui/icons/AddCircleOutlineRounded';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import HomeIcon from '@material-ui/icons/Home';
+import HomeIcon from '@material-ui/icons/HomeRounded';
+import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 import Skeleton from '@material-ui/lab/Skeleton';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -109,19 +116,40 @@ const Sidebar: React.FC<Props> = ({
       href: ROUTES.HOME,
       active: ROUTES.HOME === router.asPath,
       label: 'Home',
-      icon: <HomeIcon />,
+      icon: ROUTES.HOME === router.asPath ? <HomeIcon /> : <HomeOutlinedIcon />,
     },
     {
       href: `${ROUTES.USERS}/${username}`,
       active: `${ROUTES.USERS}/${username}` === router.asPath,
       label: 'My profile',
-      icon: <AccountCircleOutlinedIcon />,
+      icon:
+        `${ROUTES.USERS}/${username}` === router.asPath ? (
+          <AccountCircleIcon />
+        ) : (
+          <AccountCircleOutlinedIcon />
+        ),
     },
     {
       href: ROUTES.CONTESTS.NEW,
       active: ROUTES.CONTESTS.NEW === router.asPath,
       label: 'New Contest',
-      icon: <AddIcon />,
+      icon:
+        ROUTES.CONTESTS.NEW === router.asPath ? (
+          <AddIcon />
+        ) : (
+          <AddOutlinedIcon />
+        ),
+    },
+    {
+      href: ROUTES.SETTINGS,
+      active: ROUTES.SETTINGS === router.asPath,
+      label: 'Settings',
+      icon:
+        ROUTES.SETTINGS === router.asPath ? (
+          <SettingsIcon />
+        ) : (
+          <SettingsOutlinedIcon />
+        ),
     },
   ];
 

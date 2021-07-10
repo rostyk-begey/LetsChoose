@@ -9,6 +9,7 @@ import { StylesProvider } from '@material-ui/core/styles';
 import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { DefaultSeo, DefaultSeoProps } from 'next-seo';
+import { ConfirmProvider } from 'material-ui-confirm';
 
 import ThemeProvider from '../components/common/ThemeProvider';
 import queryClient from '../utils/queryClient';
@@ -87,8 +88,10 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
               </IconButton>
             )}
           >
-            <Component {...pageProps} />
-            <ReactQueryDevtools position="bottom-right" />
+            <ConfirmProvider>
+              <Component {...pageProps} />
+              <ReactQueryDevtools position="bottom-right" />
+            </ConfirmProvider>
           </SnackbarProvider>
         </QueryClientProvider>
       </ThemeProvider>

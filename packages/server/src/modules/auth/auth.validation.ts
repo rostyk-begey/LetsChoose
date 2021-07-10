@@ -32,6 +32,16 @@ export const registerSchema = Joi.object({
   }),
 });
 
+export const updatePasswordSchema = Joi.object({
+  password: Joi.string().exist().messages({
+    'string:base': 'Password should be a string',
+    'string:exist': 'No password provided',
+  }),
+  newPassword: Joi.string().exist().min(6).messages({
+    'string:min': 'Invalid password',
+  }),
+});
+
 export const refreshTokenLocation = Joi.string().valid('body', 'cookies');
 
 export const resetPasswordSchema = Joi.object({

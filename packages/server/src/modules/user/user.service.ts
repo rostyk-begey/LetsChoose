@@ -1,4 +1,5 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { UpdateUserProfileDto } from '@lets-choose/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 
 import { IUserRepository } from '@abstract/user.repository.interface';
 import { IUserService } from '@abstract/user.service.interface';
@@ -22,6 +23,23 @@ export class UserService implements IUserService {
 
   public findByUsername(username: string): Promise<User> {
     return this.userRepository.findByUsername(username);
+  }
+
+  public async updateUserProfile(
+    userId: string,
+    { username, email }: UpdateUserProfileDto,
+  ): Promise<User> {
+    const userByUsername = await this.userRepository.findByUsername(username);
+    if (userByUsername && userByUsername.id.toString() !== userId.toString()) {
+      throw new BadRequestException('Username already taken');
+    }
+
+    const userByEmail = await this.userRepository.findByEmail(email);
+    if (userByEmail && userByEmail.id.toString() !== userId.toString()) {
+      throw new BadRequestException(`User with email ${email} already exists`);
+    }
+
+    return this.userRepository.findByIdAndUpdate(userId, { username, email });
   }
 
   public async removeUserById(id: string): Promise<void> {

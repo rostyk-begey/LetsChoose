@@ -48,3 +48,7 @@ export const useApiConfirmEmail = (token: string, config = {}) => {
     ...config,
   });
 };
+
+export const useUpdateUserPassword = () => {
+  return useMutation(authApi.updatePassword);
+};

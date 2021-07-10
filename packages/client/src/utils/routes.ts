@@ -4,6 +4,7 @@ const ROUTES = {
   REGISTER: '/register',
   FORGOT_PASSWORD: '/password/forgot',
   USERS: '/users',
+  SETTINGS: '/settings',
   CONTESTS: {
     INDEX: '/contests',
     NEW: '/contests/new',
@@ -26,6 +27,7 @@ const ROUTES = {
       CONFIRM_EMAIL: '/auth/email/confirm',
       FORGOT_PASSWORD: '/auth/password/forgot',
       RESET_PASSWORD: '/auth/password/reset',
+      UPDATE_PASSWORD: '/auth/password/update',
     },
   },
 };

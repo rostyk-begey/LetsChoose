@@ -1,6 +1,11 @@
 import { IContestService } from '@abstract/contest.service.interface';
-import { Contest } from '@lets-choose/common';
+import {
+  Contest,
+  UpdateUserPasswordDto,
+  UpdateUserProfileDto,
+} from '@lets-choose/common';
 import { User } from '@modules/user/user.entity';
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IUserService } from '@abstract/user.service.interface';
 import { TYPES } from '@src/injectable.types';
@@ -15,6 +20,7 @@ import { UserService } from '@modules/user/user.service';
 import userRepository, {
   userBuilder,
 } from '@modules/user/__mocks__/user.repository';
+import * as faker from 'faker';
 
 describe('UserService', () => {
   let userService: IUserService;
@@ -56,7 +62,7 @@ describe('UserService', () => {
   });
 
   test('findById', async () => {
-    userRepository.findById.mockResolvedValueOnce(user);
+    userRepository.findByUsername.mockResolvedValueOnce(user);
     await userService.findById(userId);
     expect(userRepository.findByIdOrFail).toHaveBeenCalledWith(userId);
   });
@@ -89,5 +95,71 @@ describe('UserService', () => {
     expect(userRepository.findByUsername).toHaveBeenCalledWith(username);
   });
 
-  // TODO: add more tests
+  describe('updateUserProfile', () => {
+    let data: UpdateUserProfileDto;
+    let otherUser: User;
+
+    beforeEach(() => {
+      data = {
+        username: faker.internet.userName(),
+        email: faker.internet.email(),
+      };
+      otherUser = userBuilder();
+
+      userRepository.findByUsername.mockRestore();
+      userRepository.findByEmail.mockRestore();
+      userRepository.findByIdAndUpdate.mockRestore();
+    });
+
+    it("should update user's account correctly", async () => {
+      userRepository.findByUsername.mockResolvedValueOnce(null);
+      userRepository.findByEmail.mockResolvedValueOnce(null);
+      userRepository.findByIdAndUpdate.mockResolvedValueOnce(otherUser);
+
+      const result = await userService.updateUserProfile(user.id, data);
+
+      expect(userRepository.findByUsername).toHaveBeenCalledWith(data.username);
+      expect(userRepository.findByEmail).toHaveBeenCalledWith(data.email);
+      expect(userRepository.findByIdAndUpdate).toHaveBeenCalledWith(
+        user.id,
+        data,
+      );
+      expect(result).toMatchObject(otherUser);
+    });
+
+    it('should throw error if username is in use', async () => {
+      userRepository.findByUsername.mockResolvedValueOnce(otherUser);
+
+      try {
+        await userService.updateUserProfile(user.id, data);
+      } catch (e) {
+        expect(e).toBeInstanceOf(BadRequestException);
+        expect(userRepository.findByUsername).toHaveBeenCalledWith(
+          data.username,
+        );
+        expect(userRepository.findByEmail).not.toHaveBeenCalled();
+        expect(userRepository.findByIdAndUpdate).not.toHaveBeenCalled();
+      }
+
+      expect.assertions(4);
+    });
+
+    it('should throw error if email is in use', async () => {
+      userRepository.findByUsername.mockResolvedValueOnce(null);
+      userRepository.findByEmail.mockResolvedValueOnce(otherUser);
+
+      try {
+        await userService.updateUserProfile(user.id, data);
+      } catch (e) {
+        expect(e).toBeInstanceOf(BadRequestException);
+        expect(userRepository.findByUsername).toHaveBeenCalledWith(
+          data.username,
+        );
+        expect(userRepository.findByEmail).toHaveBeenCalledWith(data.email);
+        expect(userRepository.findByIdAndUpdate).not.toHaveBeenCalled();
+      }
+
+      expect.assertions(4);
+    });
+  });
 });

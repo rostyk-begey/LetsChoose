@@ -130,7 +130,9 @@ describe('ContestService', () => {
       mockContestItemsPaginateResult as any,
     );
     contestRepository.findByIdAndUpdate.mockResolvedValue(contest);
+  });
 
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
@@ -173,7 +175,7 @@ describe('ContestService', () => {
   });
 
   test('createContest', async () => {
-    contestRepository.createContest.mockResolvedValue(contest);
+    contestRepository.createContest.mockResolvedValueOnce(contest);
 
     const result = await contestService.createContest(user.id, contestData);
 
