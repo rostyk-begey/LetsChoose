@@ -189,13 +189,11 @@ const SettingsPage: React.FC = () => {
         await refetchCurrentUser();
         enqueueSnackbar('Successfully saved', { variant: 'success' });
       } catch (e) {
-        enqueueSnackbar(e.response.data.message, { variant: 'error' });
+        const message = e?.response?.data?.message || 'An error occurred';
+        enqueueSnackbar(message, { variant: 'error' });
       }
     };
-  const handleProfileFormSubmit = submitHandler(
-    updateProfile,
-    ({ username }) => ({ username }),
-  );
+  const handleProfileFormSubmit = submitHandler(updateProfile);
   const handlePasswordFormSubmit = submitHandler(
     updatePassword,
     ({ password, newPassword }) => ({ password, newPassword }),
