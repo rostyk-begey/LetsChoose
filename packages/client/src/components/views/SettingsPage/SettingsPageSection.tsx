@@ -14,12 +14,20 @@ const useStyles = makeStyles((theme) =>
       '&:not(:first-child)': {
         borderTop: `1px solid ${theme.palette.divider}`,
       },
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+      },
     },
     info: {
       flex: '1 1 auto',
       maxWidth: '33.33%',
       width: '100%',
       marginRight: '8.33%',
+      [theme.breakpoints.down('xs')]: {
+        maxWidth: 'unset',
+        marginRight: 0,
+        marginBottom: theme.spacing(5),
+      },
     },
     content: {
       flex: '1 1 auto',

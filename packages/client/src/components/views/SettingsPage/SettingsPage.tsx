@@ -34,9 +34,6 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 auto',
     maxWidth: 1000,
     width: '100%',
-    [theme.breakpoints.down('sm')]: {
-      maxWidth: 550,
-    },
   },
   form: {
     maxWidth: 400,
