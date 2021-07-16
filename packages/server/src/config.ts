@@ -1,7 +1,10 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.join(__dirname, '..', '..', '.env') });
+dotenv.config({
+  path: path.join(__dirname, '..', '.env'),
+  debug: true,
+});
 
 const {
   NODE_ENV,
@@ -15,6 +18,7 @@ const {
   JWT_EMAIL_SECRET,
   JWT_PASSWORD_RESET_SECRET,
   MONGO_URI,
+  MONGO_TEST_URI,
   CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
@@ -100,7 +104,7 @@ const testConfig: Config = {
     emailSecret: 'jwt.emailSecret',
     passwordResetSecret: 'jwt.passwordResetSecret',
   },
-  mongoUri: 'mongoUri',
+  mongoUri: MONGO_TEST_URI as string,
   mongooseDebug: false,
   appUrl: 'appUrl',
   useSSL: false,

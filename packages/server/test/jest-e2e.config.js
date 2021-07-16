@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const { resolve } = require('path');
 const { pathsToModuleNameMapper } = require('ts-jest/utils');
-const { compilerOptions } = require('./tsconfig');
-const path = require('path');
+const { compilerOptions } = require('../tsconfig');
 
 module.exports = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: '.',
-  testRegex: ['.*\\.spec\\.ts$', '.e2e-spec.ts$'],
+  testRegex: '.e2e-spec.ts$',
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
@@ -14,6 +14,6 @@ module.exports = {
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
-    prefix: path.join(__dirname, 'src'),
+    prefix: resolve(__dirname, '..'),
   }),
 };

@@ -40,6 +40,10 @@ describe('JwtService', () => {
     jwtService = module.get<JwtService>(JwtService);
   });
 
+  afterAll(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should get jwt config', () => {
     expect(configService.get).toHaveBeenCalledWith('jwt');
   });

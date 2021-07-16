@@ -2,7 +2,7 @@ import { UserDto } from '@lets-choose/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
-export type UserDocument = User & mongoose.Document;
+export type UserDocument = User & mongoose.Document<mongoose.Types.ObjectId>;
 
 @Schema()
 export class User extends UserDto {

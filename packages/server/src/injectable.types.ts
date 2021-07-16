@@ -1,3 +1,5 @@
+import { DatabaseService } from '@modules/common/database/database.service';
+
 export enum TYPES {
   AuthService = 'AuthService',
   UserService = 'UserService',
@@ -12,6 +14,7 @@ export enum TYPES {
   GameRepository = 'GameRepository',
   ContestItemRepository = 'ContestItemRepository',
   AuthMiddleware = 'AuthMiddleware',
+  DatabaseService = 'DatabaseService',
   IsAuthorMiddleware = 'IsAuthorMiddleware',
   AuthController = 'AuthController',
   UserController = 'UserController',

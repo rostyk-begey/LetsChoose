@@ -1,8 +1,5 @@
 import { IUserService } from '@abstract/user.service.interface';
-import {
-  HttpResponseMessageDto,
-  UpdateUserProfileDto,
-} from '@lets-choose/common';
+import { UpdateUserProfileDto } from '@lets-choose/common';
 import { User } from '@modules/user/user.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -19,7 +16,7 @@ import { UserService } from '@modules/user/user.service';
 import { TYPES } from '@src/injectable.types';
 import faker from 'faker';
 
-describe.skip('UserController', () => {
+describe('UserController', () => {
   let controller: UserController;
   let user: User;
   let mockRequest: any;

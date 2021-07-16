@@ -33,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         cookieExtractor,
       ]),
       ignoreExpiration: false,
-      secretOrKey: configService.get<JwtConfig>('jwt').accessSecret,
+      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
     });
   }
 

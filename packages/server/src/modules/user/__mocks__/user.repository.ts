@@ -1,6 +1,7 @@
 import { IUserRepository } from '@abstract/user.repository.interface';
 import { build, fake, oneOf, sequence } from '@jackfranklin/test-data-bot';
 import { User } from '@modules/user/user.entity';
+import { Types } from 'mongoose';
 
 export const userBuilder = build<User>({
   fields: {
@@ -11,8 +12,15 @@ export const userBuilder = build<User>({
     id: sequence((i) => `user-${i}`),
     _id: sequence((i) => `user-${i}`),
     email: fake((f) => f.internet.email()),
-    username: fake((f) => f.internet.userName()),
+    username: fake((f) => f.internet.userName().toLowerCase()),
     password: fake((f) => f.internet.password()),
+  },
+  traits: {
+    realId: {
+      overrides: {
+        _id: Types.ObjectId().toString(),
+      },
+    },
   },
   postBuild: (res) => ({
     ...res,

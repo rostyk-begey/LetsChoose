@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { ContestModule } from '@modules/contest/contest.module';
@@ -18,9 +18,17 @@ import config from '@src/config';
       load: [config],
     }),
     MongooseModule.forRootAsync({
-      useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('mongoUri'),
-      }),
+      useFactory: (configService: ConfigService) => {
+        const options: MongooseModuleOptions = {
+          uri: configService.get<string>('mongoUri'),
+        };
+
+        if (configService.get<string>('NODE_ENV') === 'test') {
+          options.retryAttempts = 0;
+        }
+
+        return options;
+      },
       inject: [ConfigService],
     }),
     CommonModule,
