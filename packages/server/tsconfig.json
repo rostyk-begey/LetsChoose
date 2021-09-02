@@ -11,17 +11,18 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
-    "rootDir": "./src",
+    "baseUrl": ".",
+    "rootDir": ".",
     "allowJs": true,
     "incremental": true,
     "lib": ["es2019"],
     "paths": {
-      "@src/*": ["*"],
-      "@modules/*": ["modules/*"],
-      "@abstract/*": ["abstract/*"],
-      "@pipes/*": ["pipes/*"],
-      "@usecases/*": ["usecases/*"]
+      "@src/*": ["src/*"],
+      "@test/*": ["test/*"],
+      "@modules/*": ["src/modules/*"],
+      "@abstract/*": ["src/abstract/*"],
+      "@pipes/*": ["src/pipes/*"],
+      "@usecases/*": ["src/usecases/*"]
     }
   },
   "include": ["src/**/*", "test/**/*"],

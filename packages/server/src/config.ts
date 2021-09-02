@@ -1,13 +1,17 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
 dotenv.config({
-  path: path.join(__dirname, '..', '.env'),
-  debug: true,
+  path:
+    NODE_ENV === 'test'
+      ? path.join(__dirname, '..', '..', '.env')
+      : path.join(__dirname, '..', '.env'),
+  debug: NODE_ENV !== 'production',
 });
 
 const {
-  NODE_ENV,
   USE_SSL,
   APP_URL,
   MONGOOSE_DEBUG,

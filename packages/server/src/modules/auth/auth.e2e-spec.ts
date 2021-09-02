@@ -1,40 +1,30 @@
 import { IDatabaseService } from '@abstract/database.service.interface';
-import { AuthLoginDto } from '@lets-choose/common';
-import { AuthRegisterDto } from '@lets-choose/common/src/dto/auth.dto';
+import { AuthLoginDto, AuthRegisterDto } from '@lets-choose/common';
+import { AuthGoogleLoginDto } from '@lets-choose/common/src/dto/auth.dto';
+import { AuthModule } from '@modules/auth/auth.module';
 import { userBuilder } from '@modules/user/__mocks__/user.repository';
-import { ConfigService } from '@nestjs/config';
-import { Test, TestingModule } from '@nestjs/testing';
 import { HttpServer, INestApplication } from '@nestjs/common';
+import { TestingModule } from '@nestjs/testing';
+import { TYPES } from '@src/injectable.types';
+import bcrypt from 'bcryptjs';
+import * as faker from 'faker';
+import { OAuth2Client } from 'google-auth-library';
+import {
+  LoginTicket,
+  TokenPayload,
+} from 'google-auth-library/build/src/auth/loginticket';
 import { Connection } from 'mongoose';
 import request from 'supertest';
-import bcrypt from 'bcryptjs';
+import { createTestingModule } from '@test/utils';
 
-import { AppModule } from '@modules/app/app.module';
-import { TYPES } from '@src/injectable.types';
-
-// describe('AppController (e2e)', () => {
-//   let app: INestApplication;
-//
-//   beforeAll(async () => {
-//     const moduleFixture: TestingModule = await Test.createTestingModule({
-//       imports: [AppModule],
-//     }).compile();
-//
-//     app = moduleFixture.createNestApplication();
-//     await app.init();
-//   });
-//
-//   afterAll(async () => {
-//     await app.close();
-//   });
-//
-//   it('/ (GET)', () => {
-//     return request(app.getHttpServer())
-//       .get('/')
-//       .expect(200)
-//       .expect('Hello World!');
-//   });
-// });
+const ticket = { getPayload: jest.fn() } as unknown as jest.Mocked<LoginTicket>;
+const verifyIdToken = jest.fn(() => ({ ticket }));
+const MockedOAuth2Client = jest.fn(() => ({
+  verifyIdToken,
+})) as unknown as jest.MockedClass<typeof OAuth2Client>;
+jest.doMock('google-auth-library', () => ({
+  MockedOAuth2Client,
+}));
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -42,8 +32,8 @@ describe('AuthController (e2e)', () => {
   let dbConnection: Connection;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+    const moduleFixture: TestingModule = await createTestingModule({
+      imports: [AuthModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -108,4 +98,38 @@ describe('AuthController (e2e)', () => {
       refreshToken: expect.any(String),
     });
   });
+
+  it.todo('/api/auth/login/google (POST)', async () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(true as any);
+    const ticketPayload = {
+      email: faker.internet.email(),
+      picture: faker.internet.avatar(),
+    } as TokenPayload;
+    ticket.getPayload.mockReturnValueOnce(ticketPayload);
+    const { id, ...user } = userBuilder({ traits: 'realId' });
+    await dbConnection.collection('users').insertOne(user);
+    const data: AuthGoogleLoginDto = {
+      token: faker.random.alphaNumeric(20),
+    };
+
+    const { status, body } = await request(httpServer)
+      .post('/api/auth/login/google')
+      .send(data);
+
+    expect(status).toEqual(201);
+    expect(body).toMatchObject({
+      userId: id,
+      accessToken: expect.any(String),
+      refreshToken: expect.any(String),
+    });
+  });
+
+  test.todo('/api/auth/logout');
+  test.todo('/api/auth/password/forgot');
+  test.todo('/api/auth/password/update');
+  test.todo('/api/auth/password/reset/:token');
+  test.todo('/api/auth/token');
+  test.todo('/api/auth/email/confirm/:token');
 });
