@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.packages.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
@@ -38,7 +38,7 @@
   },
   "include": [
     "**/*.ts",
-    "**/*.tsx",
+    "**/*.tsx"
   ],
   "references": [
     {
@@ -46,6 +46,6 @@
     }
   ],
   "exclude": [
-    "node_modules",
+    "node_modules"
   ]
 }

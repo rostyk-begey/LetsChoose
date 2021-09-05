@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "projects": {
+    "@lets-choose/client": {
+      "root": "packages/client"
+    },
+    "@lets-choose/common": {
+      "root": "packages/common"
+    },
+    "@lets-choose/server": {
+      "root": "packages/server"
+    }
+  }
+}
