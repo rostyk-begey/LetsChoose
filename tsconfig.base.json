@@ -1,17 +1,28 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
+    "rootDir": ".",
     "sourceMap": true,
-    "removeComments": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "declaration": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom", "esnext"],
     "skipLibCheck": true,
-    "lib": [
-      "es5",
-      "es6",
-      "esnext"
-    ]
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@lets-choose/client/api": ["libs/client/api/src/index.ts"],
+      "@lets-choose/client/components": ["libs/client/components/src/index.ts"],
+      "@lets-choose/client/hooks": ["libs/client/hooks/src/index.ts"],
+      "@lets-choose/client/pages": ["libs/client/pages/src/index.ts"],
+      "@lets-choose/client/utils": ["libs/client/utils/src/index.ts"],
+      "@lets-choose/common/dto": ["libs/common/dto/src/index.ts"]
+    }
   },
-  "exclude": []
+  "exclude": ["node_modules", "tmp"]
 }

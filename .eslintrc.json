@@ -1,52 +1,35 @@
 {
-  "plugins": ["import", "react", "mui-unused-classes", "@typescript-eslint"],
-  "extends": [
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:import/typescript",
-    "plugin:react/recommended",
-    "plugin:@next/next/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended"
-  ],
   "root": true,
-  "env": {
-    "node": true,
-    "jest": true
-  },
-  "rules": {
-    "@typescript-eslint/interface-name-prefix": "off",
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "import/default": 0,
-    "import/imports-first": 1,
-    "import/prefer-default-export": "off",
-    "import/no-extraneous-dependencies": "off",
-    "import/extensions": "off",
-    "mui-unused-classes/unused-classes": 2,
-    "import/order": "off",
-    "import/no-unresolved": [
-      "error",
-      {
-        "ignore": [
-          "\\.(png|jpg|svg)\\?(sprite)$"
+  "ignorePatterns": ["**/*"],
+  "plugins": ["@nrwl/nx"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "@nrwl/nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allow": [],
+            "depConstraints": [
+              {
+                "sourceTag": "*",
+                "onlyDependOnLibsWithTags": ["*"]
+              }
+            ]
+          }
         ]
       }
-    ],
-    "react/prop-types": "off"
-  },
-  "settings": {
-    "react": {
-      "version": "detect"
     },
-    "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": ["plugin:@nrwl/nx/typescript"],
+      "rules": {}
     },
-    "import/resolver": {
-      "typescript": {
-        "project": "packages/*/tsconfig.json"
-      }
+    {
+      "files": ["*.js", "*.jsx"],
+      "extends": ["plugin:@nrwl/nx/javascript"],
+      "rules": {}
     }
-  }
+  ]
 }

@@ -1,17 +1,10 @@
 {
-  "extends": "@nrwl/workspace/presets/npm.json",
   "npmScope": "lets-choose",
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/nx-cloud",
       "options": {
-        "cacheableOperations": [
-          "build",
-          "test",
-          "lint",
-          "package",
-          "prepare"
-        ],
+        "cacheableOperations": ["build", "test", "lint", "package", "prepare"],
         "accessToken": "Yzc3YTU4NWYtYzE2Yy00NzljLTk3MmQtYjk2YjQwMGM0NTJlfHJlYWQtd3JpdGU="
       }
     }
@@ -40,11 +33,36 @@
     "@lets-choose/client": {
       "implicitDependencies": []
     },
-    "@lets-choose/common": {
-      "implicitDependencies": []
-    },
     "@lets-choose/server": {
       "implicitDependencies": []
+    },
+    "api": {
+      "tags": []
+    },
+    "client": {
+      "tags": []
+    },
+    "client-api": {
+      "tags": []
+    },
+    "client-components": {
+      "tags": []
+    },
+    "client-e2e": {
+      "tags": [],
+      "implicitDependencies": ["client"]
+    },
+    "client-hooks": {
+      "tags": []
+    },
+    "client-pages": {
+      "tags": []
+    },
+    "client-utils": {
+      "tags": []
+    },
+    "common-dto": {
+      "tags": []
     }
   },
   "affected": {
