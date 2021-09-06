@@ -30,12 +30,6 @@
     ]
   },
   "projects": {
-    "@lets-choose/client": {
-      "implicitDependencies": []
-    },
-    "@lets-choose/server": {
-      "implicitDependencies": []
-    },
     "api": {
       "tags": []
     },

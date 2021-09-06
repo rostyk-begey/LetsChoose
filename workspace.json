@@ -1,12 +1,6 @@
 {
   "version": 2,
   "projects": {
-    "@lets-choose/client": {
-      "root": "apps/client-old"
-    },
-    "@lets-choose/server": {
-      "root": "apps/server"
-    },
     "api": {
       "root": "apps/api",
       "sourceRoot": "apps/api/src",

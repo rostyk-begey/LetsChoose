@@ -1,5 +1,6 @@
 import { Contest, UpdateContestData } from '@lets-choose/common/dto';
 import { NextSeo } from 'next-seo';
+import { NextRouter } from 'next/dist/shared/lib/router/router';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
@@ -32,12 +33,12 @@ export const EditContestPage: React.FC<ContestPageProps> = ({
   );
   const onSubmit = async (data: UpdateContestData) => {
     await updateContest(data);
-    await router.push(`${ROUTES.CONTESTS.INDEX}/${contestId}`);
+    await (router as NextRouter).push(`${ROUTES.CONTESTS.INDEX}/${contestId}`);
   };
 
   useEffect(() => {
     if (user && !isCurrentUserAuthor) {
-      router.push(ROUTES.HOME);
+      (router as NextRouter).push(ROUTES.HOME);
     }
   }, [user, contest, isCurrentUserAuthor]);
 

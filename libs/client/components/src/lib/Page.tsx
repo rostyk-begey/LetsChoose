@@ -20,8 +20,9 @@ import { useDarkMode } from './ThemeProvider';
 import { ROUTES } from '@lets-choose/client/utils';
 import ContestNavigation from './ContestNavigation';
 import Layout from './Layout';
-import logo from '../../../../../apps/client/public/images/logo.png';
-import logoWhite from '../../../../../apps/client/public/images/logo-white.png';
+
+const logo = 'logo.png';
+const logoWhite = 'logo-white.png';
 
 interface Props {
   withContestNavigation?: boolean;
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
     flexShrink: 0,
   },
   logo: {
+    width: 182,
     [theme.breakpoints.down('md')]: {
       width: 150,
     },
@@ -118,10 +120,9 @@ export const Page: React.FC<Props> = ({
           <Image
             className={classes.logo}
             loader={({ src }) => src}
-            // src={darkMode ? '/images/logo-white.png' : '/images/logo.png'}
-            // layout="fill"
-            // width="100%"
-            // height="100%"
+            width={182}
+            height={46}
+            unoptimized
             src={darkMode ? logoWhite : logo}
             alt=""
           />

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  createMuiTheme,
+  createTheme as createMuiTheme,
   Divider,
   Button,
   makeStyles,
@@ -153,7 +153,7 @@ const inputs: Record<string, FormTextInputProps> = {
 
 const redTheme = createMuiTheme({ palette: { primary: red } });
 
-const SettingsPage: React.FC = () => {
+export const SettingsPage: React.FC = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const confirm = useConfirm();
@@ -180,19 +180,22 @@ const SettingsPage: React.FC = () => {
       confirmPassword: '',
     },
   });
-  const submitHandler =
-    (onSubmit, selectData = (data) => data) =>
-    async (data) => {
+  function submitHandler<T>(
+    onSubmit: (data: T) => Promise<any>,
+    selectData = (data: T) => data,
+  ) {
+    return async (data: T) => {
       try {
         await onSubmit(selectData(data));
         remove();
         await refetchCurrentUser();
         enqueueSnackbar('Successfully saved', { variant: 'success' });
-      } catch (e) {
+      } catch (e: any) {
         const message = e?.response?.data?.message || 'An error occurred';
         enqueueSnackbar(message, { variant: 'error' });
       }
     };
+  }
   const handleProfileFormSubmit = submitHandler(updateProfile);
   const handlePasswordFormSubmit = submitHandler(
     updatePassword,

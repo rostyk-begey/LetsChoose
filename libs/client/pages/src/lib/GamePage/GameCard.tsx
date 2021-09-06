@@ -3,7 +3,9 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { ContestItem } from '@lets-choose/common/dto';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
+// @ts-ignore
 import { useFourThreeCardMediaStyles } from '@mui-treasury/styles/cardMedia/fourThree';
+// @ts-ignore
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import classNames from 'classnames';
 import Image from 'next/image';

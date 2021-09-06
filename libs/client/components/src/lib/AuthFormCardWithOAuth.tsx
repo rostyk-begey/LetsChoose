@@ -9,7 +9,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Image from 'next/image';
 
 import AuthFormCard, { AuthFormCardProps } from './AuthFormCard';
-import GoogleButtonLogo from '../../../../../apps/client/public/images/google-button-dark-logo.svg';
 
 interface Props extends AuthFormCardProps {
   googleButtonLabel: string;
@@ -79,7 +78,7 @@ export const AuthFormCardWithOAuth: React.FC<Props> = ({
                 <div className={classes.loginBtnGoogleIcon}>
                   <Image
                     alt=""
-                    src={GoogleButtonLogo}
+                    src="/images/google-button-dark-logo.svg"
                     width={googleIconHeight}
                     height={googleIconHeight}
                     loader={({ src }) => src}

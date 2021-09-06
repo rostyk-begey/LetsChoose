@@ -1,27 +1,27 @@
 import { UserDto } from './user.dto';
 
 export abstract class ContestItem {
-  _id: string;
-  readonly id: string;
-  image: string;
-  title: string;
-  games: number;
-  compares: number;
-  wins: number;
-  finalWins: number;
-  contestId: string | Contest;
+  _id!: string;
+  readonly id!: string;
+  image!: string;
+  title!: string;
+  games!: number;
+  compares!: number;
+  wins!: number;
+  finalWins!: number;
+  contestId!: string | Contest;
 }
 
 export abstract class Contest {
-  _id: string;
-  id: string;
-  thumbnail: string;
-  title: string;
-  excerpt: string;
-  author: UserDto | string;
-  games: number;
-  items: ContestItem[];
-  createdAt: string;
+  _id!: string;
+  id!: string;
+  thumbnail!: string;
+  title!: string;
+  excerpt!: string;
+  author!: UserDto | string;
+  games!: number;
+  items!: ContestItem[];
+  createdAt!: string;
 }
 
 export enum SORT_OPTIONS {
@@ -30,49 +30,49 @@ export enum SORT_OPTIONS {
 }
 
 export abstract class PaginationQuery {
-  page: number;
-  perPage: number;
+  page!: number;
+  perPage!: number;
 }
 
 export abstract class SearchQuery {
-  search: string;
+  search!: string;
 }
 
 export abstract class FindParams {
-  id: string;
+  id!: string;
 }
 
 export abstract class GetContestsQuery implements SearchQuery, PaginationQuery {
-  author: string;
-  sortBy: '' | keyof typeof SORT_OPTIONS;
-  search: string;
-  page: number;
-  perPage: number;
+  author!: string;
+  sortBy!: '' | keyof typeof SORT_OPTIONS;
+  search!: string;
+  page!: number;
+  perPage!: number;
   nextCursor?: string;
 }
 
 abstract class PaginatedResponse<T extends any> {
-  items: T[];
-  totalPages: number;
-  totalItems: number;
-  currentPage: number;
+  items!: T[];
+  totalPages!: number;
+  totalItems!: number;
+  currentPage!: number;
 }
 
 export abstract class GetContestsResponse extends PaginatedResponse<Contest> {}
 
 export abstract class GetItemsQuery implements SearchQuery, PaginationQuery {
-  search: string;
-  page: number;
-  perPage: number;
+  search!: string;
+  page!: number;
+  perPage!: number;
 }
 
 export abstract class GetItemsResponse extends PaginatedResponse<ContestItem> {}
 
 export abstract class CreateContestDTO {
-  title: string;
-  excerpt: string;
-  items: Pick<ContestItem, 'title'>[];
-  files: any[];
+  title!: string;
+  excerpt!: string;
+  items!: Pick<ContestItem, 'title'>[];
+  files!: any[];
 }
 
 export type CreateContestData = Omit<CreateContestDTO, 'files'>;

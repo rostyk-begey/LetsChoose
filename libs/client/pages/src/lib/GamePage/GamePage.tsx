@@ -1,3 +1,4 @@
+import { NextRouter } from 'next/dist/shared/lib/router/router';
 import React, { useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { GetPairResponse } from '@lets-choose/common/dto';
@@ -79,7 +80,9 @@ export const GamePage: React.FC = () => {
         const { data: game } = (await getGameState()) || {};
 
         if (game?.finished && !initial) {
-          await router.push(`${ROUTES.CONTESTS.INDEX}/${game.contestId}`);
+          await (router as NextRouter).push(
+            `${ROUTES.CONTESTS.INDEX}/${game.contestId}`,
+          );
         }
 
         setGame(game);

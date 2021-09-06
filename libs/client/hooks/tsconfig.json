@@ -10,8 +10,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "files": [],
-  "include": [],
+  "files": ["../../../node_modules/@types/google-one-tap/index.d.ts"],
+  "include": ["../../../node_modules/@types/google-one-tap/index.d.ts"],
   "references": [
     {
       "path": "./tsconfig.lib.json"

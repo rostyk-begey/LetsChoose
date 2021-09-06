@@ -1,3 +1,4 @@
+import { NextRouter } from 'next/dist/shared/lib/router/router';
 import React from 'react';
 import { NextSeo } from 'next-seo';
 import Fab from '@material-ui/core/Fab';
@@ -184,7 +185,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
   const onStartGame = async () => {
     const { data: { gameId = null } = {} } =
       (await startGame(contestId as string)) || {};
-    await router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
+    await (router as NextRouter).push(`${ROUTES.GAMES.INDEX}/${gameId}`);
   };
   const {
     data: contestItemsData,
@@ -269,7 +270,9 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                       </>
                     ),
                     onClick: () => {
-                      router.push(`${ROUTES.CONTESTS.INDEX}/${contestId}/edit`);
+                      (router as NextRouter).push(
+                        `${ROUTES.CONTESTS.INDEX}/${contestId}/edit`,
+                      );
                     },
                   },
                   {
@@ -305,7 +308,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                     onClick: async () => {
                       if (confirm('Are you sure you want to delete?')) {
                         await deleteContest();
-                        await router.push(ROUTES.HOME);
+                        await (router as NextRouter).push(ROUTES.HOME);
                       }
                     },
                   },

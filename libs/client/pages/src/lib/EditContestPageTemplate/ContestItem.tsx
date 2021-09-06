@@ -11,8 +11,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import classNames from 'classnames';
 
-import { FormTextInputProps } from '../../common/FormTextInput';
-import ContestItemsList from './ContestItemsList';
+import { FormTextInputProps } from '@lets-choose/client/components';
 
 interface Props {
   isEditing: boolean;

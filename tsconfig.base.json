@@ -16,12 +16,18 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@abstract/*": ["apps/api/src/abstract/*"],
       "@lets-choose/client/api": ["libs/client/api/src/index.ts"],
       "@lets-choose/client/components": ["libs/client/components/src/index.ts"],
       "@lets-choose/client/hooks": ["libs/client/hooks/src/index.ts"],
       "@lets-choose/client/pages": ["libs/client/pages/src/index.ts"],
       "@lets-choose/client/utils": ["libs/client/utils/src/index.ts"],
-      "@lets-choose/common/dto": ["libs/common/dto/src/index.ts"]
+      "@lets-choose/common/dto": ["libs/common/dto/src/index.ts"],
+      "@modules/*": ["apps/api/src/modules/*"],
+      "@pipes/*": ["apps/api/src/pipes/*"],
+      "@src/*": ["apps/api/src/*"],
+      "@test/*": ["apps/api/test/*"],
+      "@usecases/*": ["apps/api/src/usecases/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]
