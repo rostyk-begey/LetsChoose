@@ -45,8 +45,7 @@ export const useContestAllInfinite = (
     ({ pageParam: page = 1 }) => contestApi.all({ ...queryParams, page }),
     {
       ...options,
-      getNextPageParam: (lastPage: any) => {
-        // TODO: ts any
+      getNextPageParam: (lastPage: AxiosResponse<GetContestsResponse>) => {
         const {
           data: { currentPage, totalPages },
         } = lastPage;
@@ -74,13 +73,13 @@ export const useContestItemsInfinite = (
       contestApi.allItems(contestId, { ...queryParams, page }),
     {
       ...options,
-      getNextPageParam: (lastPage: any) => {
-        // TODO: ts any
+      getNextPageParam: (lastPage: AxiosResponse<GetItemsResponse>) => {
         try {
           const {
             data: { currentPage, totalPages },
           } = lastPage;
           if (currentPage < totalPages) return currentPage + 1;
+          // eslint-disable-next-line no-empty
         } catch (e) {}
         return undefined;
       },

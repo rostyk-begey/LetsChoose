@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -16,18 +16,17 @@ import {
 import { SidebarState } from '@mui-treasury/layout/types';
 import classNames from 'classnames';
 import styled from 'styled-components';
-import OneTapContainer from '../OneTapContainer';
+import { OneTapContainer } from '../OneTapContainer';
 
 import {
-  HEADER_HEIGHT,
   PRIMARY_SIDEBAR_ID,
   PRIMARY_SUBHEADER_ID,
   SECONDARY_SUBHEADER_ID,
   SUBHEADER_CONFIG,
 } from './constants';
-import Footer from '../Footer';
+import { Footer } from '../Footer';
 
-interface Props {
+export interface LayoutProps {
   className?: string;
   title?: ReactNode;
   subHeader?: ReactNode;
@@ -98,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Layout: React.FC<Props> = ({
+export const Layout: React.FC<LayoutProps> = ({
   title,
   subHeader,
   toolbarContent,
@@ -143,5 +142,3 @@ const Layout: React.FC<Props> = ({
     </Root>
   );
 };
-
-export default Layout;

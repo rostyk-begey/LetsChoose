@@ -5,7 +5,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 const useStyles = makeStyles(
   ({ typography, palette, breakpoints, ...theme }) => ({
-    // eslint-disable-next-line mui-unused-classes/unused-classes
     legalLink: {
       ...typography.caption,
       justifyContent: 'center',
@@ -37,7 +36,6 @@ const useStyles = makeStyles(
         flexDirection: 'column',
       },
     },
-    // eslint-disable-next-line mui-unused-classes/unused-classes
     navMenu: {
       display: 'flex',
       flex: '1 0 auto',
@@ -70,5 +68,3 @@ export const Footer: React.FC = () => {
     </div>
   );
 };
-
-export default Footer;

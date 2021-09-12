@@ -8,9 +8,9 @@ import { Typography, Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Image from 'next/image';
 
-import AuthFormCard, { AuthFormCardProps } from './AuthFormCard';
+import { AuthFormCard, AuthFormCardProps } from './AuthFormCard';
 
-interface Props extends AuthFormCardProps {
+export interface AuthFormCardWithOAuthProps extends AuthFormCardProps {
   googleButtonLabel: string;
   onOAuthSuccess: (
     response: GoogleLoginResponse | GoogleLoginResponseOffline,
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AuthFormCardWithOAuth: React.FC<Props> = ({
+export const AuthFormCardWithOAuth: React.FC<AuthFormCardWithOAuthProps> = ({
   onOAuthSuccess,
   googleButtonLabel,
   cardAfter,
@@ -94,5 +94,3 @@ export const AuthFormCardWithOAuth: React.FC<Props> = ({
     />
   );
 };
-
-export default AuthFormCardWithOAuth;

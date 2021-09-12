@@ -84,5 +84,3 @@ export const ContestNavigation: React.FC = () => {
     </>
   );
 };
-
-export default ContestNavigation;

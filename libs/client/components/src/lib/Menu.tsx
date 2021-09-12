@@ -11,7 +11,7 @@ export interface MenuLink {
   icon?: ReactNode;
 }
 
-interface Props {
+export interface MenuProps {
   links: MenuLink[];
 }
 
@@ -29,7 +29,7 @@ export const NavLink: React.FC<{ active: boolean } & LinkProps> = ({
   );
 };
 
-const Menu: React.FC<Props> = ({ links }) => (
+export const Menu: React.FC<MenuProps> = ({ links }) => (
   <Box height={40} display="flex" marginRight="auto">
     <NavMenu useStyles={useFloatNavigationMenuStyles}>
       {links.map(({ href, active, label, icon }) => (
@@ -43,5 +43,3 @@ const Menu: React.FC<Props> = ({ links }) => (
     </NavMenu>
   </Box>
 );
-
-export default Menu;

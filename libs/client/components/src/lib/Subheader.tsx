@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 import { PRIMARY_SUBHEADER_ID } from './Layout/constants';
 
-interface Props {
+export interface SubheaderProps {
   id?: string;
   animated?: boolean;
   height?: number;
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Subheader: React.FC<Props> = ({
+export const Subheader: React.FC<SubheaderProps> = ({
   id = PRIMARY_SUBHEADER_ID,
   classes: { root: rootClassName, container: containerClassName } = {},
   className,
@@ -58,5 +58,3 @@ export const Subheader: React.FC<Props> = ({
     </MuiSubheader>
   );
 };
-
-export default Subheader;

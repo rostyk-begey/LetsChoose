@@ -7,10 +7,14 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { useGutterBorderedGridStyles } from '@mui-treasury/styles/grid/gutterBordered';
 
-interface Props {
+export interface ProfileCardProps {
   user: UserDto;
 }
 
@@ -53,7 +57,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-export const ProfileCard: React.FC<Props> = ({
+export const ProfileCard: React.FC<ProfileCardProps> = ({
   user: { username, avatar },
 }) => {
   const classes = useStyles();
@@ -84,5 +88,3 @@ export const ProfileCard: React.FC<Props> = ({
     </Card>
   );
 };
-
-export default ProfileCard;

@@ -11,6 +11,8 @@ import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import { useRouter } from 'next/router';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import humanTime from 'human-time';
 import clip from 'text-clipper';
 import classNames from 'classnames';
@@ -32,6 +34,8 @@ import Image from 'next/image';
 import ShareIcon from '@material-ui/icons/Share';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import { Contest, UserDto } from '@lets-choose/common/dto';
 import SwipeableViews from 'react-swipeable-views';
@@ -101,9 +105,9 @@ export const useStyles = makeStyles((theme) =>
   }),
 );
 
-interface Props {
+export interface ContestCardProps {
   contest: Contest;
-  onDelete?: () => any;
+  onDelete?: () => void;
 }
 
 const itemsPerPage = 5;
@@ -140,7 +144,14 @@ const useContestItemsSlider = (contestId: string) => {
     if (!isLoading && canProceed && activeStep < totalItems) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
-  }, [activeStep, totalItems, currentPage]);
+  }, [
+    activeStep,
+    totalItems,
+    currentPage,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+  ]);
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -158,7 +169,7 @@ const useContestItemsSlider = (contestId: string) => {
       };
     }
 
-    return () => {};
+    return () => null;
   }, [activeStep]);
 
   return {
@@ -188,7 +199,10 @@ const useMenu = () => {
   return { menuAnchor, handleMenuClick, handleMenuClose };
 };
 
-export const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
+export const ContestCard: React.FC<ContestCardProps> = ({
+  contest,
+  onDelete,
+}) => {
   const classes = useStyles();
   const shadowStyles = useOverShadowStyles();
   const router = useRouter();
@@ -218,7 +232,9 @@ export const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   const { mutateAsync: resetContest } = useContestReset(contest._id);
   const handleDeleteClick = async () => {
     if (
-      confirm('Are you sure you want to delete contest? All data will be lost.')
+      window.confirm(
+        'Are you sure you want to delete contest? All data will be lost.',
+      )
     ) {
       await deleteContest();
       handleMenuClose();
@@ -230,7 +246,7 @@ export const ContestCard: React.FC<Props> = ({ contest, onDelete }) => {
   };
   const handleResetClick = async () => {
     if (
-      confirm(
+      window.confirm(
         'Are you sure you want to reset contest? All data will be reset to defaults.',
       )
     ) {

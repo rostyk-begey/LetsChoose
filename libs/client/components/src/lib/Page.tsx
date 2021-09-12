@@ -15,16 +15,16 @@ import {
   useCurrentUser,
   useGoogleSignInPrompt,
 } from '@lets-choose/client/hooks';
-import Sidebar from './Sidebar';
-import { useDarkMode } from './ThemeProvider';
 import { ROUTES } from '@lets-choose/client/utils';
-import ContestNavigation from './ContestNavigation';
-import Layout from './Layout';
+import { Sidebar } from './Sidebar';
+import { useDarkMode } from './ThemeProvider';
+import { ContestNavigation } from './ContestNavigation';
+import { Layout } from './Layout';
 
-const logo = 'logo.png';
-const logoWhite = 'logo-white.png';
+const logo = '/images/logo.png';
+const logoWhite = '/images/logo-white.png';
 
-interface Props {
+export interface PageProps {
   withContestNavigation?: boolean;
   className?: string;
   subHeader?: ReactNode;
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 
 const disableOneTapPages = [ROUTES.FORGOT_PASSWORD, ROUTES.GAMES.INDEX];
 
-export const Page: React.FC<Props> = ({
+export const Page: React.FC<PageProps> = ({
   withContestNavigation = false,
   children,
   className,
@@ -159,5 +159,3 @@ export const Page: React.FC<Props> = ({
     </Layout>
   );
 };
-
-export default Page;

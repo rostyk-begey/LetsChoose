@@ -66,5 +66,3 @@ export const AuthFormCard: React.FC<AuthFormCardProps> = ({
     </Card>
   );
 };
-
-export default AuthFormCard;

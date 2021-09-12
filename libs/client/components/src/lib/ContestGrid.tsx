@@ -11,20 +11,20 @@ import {
   useContestAllInfinite,
   useQueryState,
 } from '@lets-choose/client/hooks';
-import ContestCardSkeleton from './ContestCardSkeleton';
+import { ContestCardSkeleton } from './ContestCardSkeleton';
 
 const ContestCard = dynamic(() => import('./ContestCard'), {
   ssr: false,
-  loading: ContestCardSkeleton,
+  loading: () => <ContestCardSkeleton />,
 });
 
-interface Props {
+export interface ContestGridProps {
   author?: string;
 }
 
 const perPage = 6;
 
-export const ContestGrid: React.FC<Props> = ({ author }) => {
+export const ContestGrid: React.FC<ContestGridProps> = ({ author }) => {
   const [sortBy] = useQueryState('sortBy', 'POPULAR');
   const [search] = useQueryState('search', '');
   const { data, isLoading, fetchNextPage, hasNextPage, refetch } =
@@ -111,5 +111,3 @@ export const ContestGrid: React.FC<Props> = ({ author }) => {
     </Container>
   );
 };
-
-export default ContestGrid;

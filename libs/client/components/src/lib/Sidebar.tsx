@@ -29,7 +29,7 @@ import { authApi } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
 import { MenuLink } from './Menu';
 
-interface Props {
+export interface SidebarProps {
   open?: boolean;
   collapsed?: boolean;
   isLoading?: boolean;
@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Sidebar: React.FC<Props> = ({
+export const Sidebar: React.FC<SidebarProps> = ({
   username,
   avatar,
   open,
@@ -255,5 +255,3 @@ export const Sidebar: React.FC<Props> = ({
     </>
   );
 };
-
-export default Sidebar;

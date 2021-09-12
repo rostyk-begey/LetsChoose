@@ -1,7 +1,7 @@
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
 
-import { oneTapContainerId } from '@lets-choose/client/components';
+import { oneTapContainerId } from '@lets-choose/client/utils';
 import { authApi, useAxiosMutation } from './api/auth';
 import { useCurrentUser } from './api/user';
 
@@ -44,5 +44,5 @@ export const useGoogleSignInPrompt = ({
       window.google.accounts.id.initialize(options);
       window.google.accounts.id.prompt();
     }
-  }, [enabled]);
+  }, [enabled, enqueueSnackbar, googleLogin, refetchCurrentUser]);
 };

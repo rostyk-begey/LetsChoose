@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import Page from './Page';
+import { Page } from './Page';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -25,5 +25,3 @@ export const PageWithForm: React.FC = ({ children }) => {
     </Page>
   );
 };
-
-export default PageWithForm;

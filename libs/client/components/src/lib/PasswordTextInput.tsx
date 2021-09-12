@@ -4,7 +4,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import FormTextInput, { FormTextInputProps } from './FormTextInput';
+import { FormTextInput, FormTextInputProps } from './FormTextInput';
 
 export const PasswordTextInput: React.FC<FormTextInputProps> = ({
   fieldProps,
@@ -46,5 +46,3 @@ export const PasswordTextInput: React.FC<FormTextInputProps> = ({
     />
   );
 };
-
-export default PasswordTextInput;

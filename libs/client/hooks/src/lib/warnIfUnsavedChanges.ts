@@ -6,19 +6,19 @@ export const useWarnIfUnsavedChanges = (unsavedChanges: boolean) => {
 
   useEffect(() => {
     const routeChangeStart = (url: string) => {
-      if (Router.asPath !== url && unsavedChanges && !confirm(message)) {
+      if (Router.asPath !== url && unsavedChanges && !window.confirm(message)) {
         Router.events.emit('routeChangeError');
         Router.replace(Router, Router.asPath);
         throw 'Abort route change. Please ignore this error.';
       }
     };
 
-    const beforeunload: EventListenerOrEventListenerObject = (e) => {
+    const beforeunload: EventListenerOrEventListenerObject = (e: Event) => {
       if (unsavedChanges) {
         e.preventDefault();
-        e.returnValue = Boolean(message);
         return message;
       }
+      return;
     };
 
     window.addEventListener('beforeunload', beforeunload);

@@ -2,7 +2,7 @@ import React, { ElementType } from 'react';
 import Grid from '@material-ui/core/Grid';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-interface Props {
+export interface InputWithIconProps {
   icon: ElementType;
 }
 
@@ -18,7 +18,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const InputWithIcon: React.FC<Props> = ({ icon: Icon, children }) => {
+export const InputWithIcon: React.FC<InputWithIconProps> = ({
+  icon: Icon,
+  children,
+}) => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
@@ -33,5 +36,3 @@ export const InputWithIcon: React.FC<Props> = ({ icon: Icon, children }) => {
     </div>
   );
 };
-
-export default InputWithIcon;

@@ -1,7 +1,6 @@
 import React from 'react';
+import { oneTapContainerId } from '@lets-choose/client/utils';
 import { HEADER_HEIGHT } from './Layout/constants';
-
-export const oneTapContainerId = 'g_id_onload';
 
 export const OneTapContainer: React.FC = () => (
   <div
@@ -18,5 +17,3 @@ export const OneTapContainer: React.FC = () => (
     }}
   />
 );
-
-export default OneTapContainer;

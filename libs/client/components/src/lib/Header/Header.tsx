@@ -21,16 +21,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import MenuIcon from '@material-ui/icons/Menu';
 import classNames from 'classnames';
 import { useMutation } from 'react-query';
-import { authApi } from '../../../../hooks/src/lib/api/auth';
-import { useCurrentUser } from '../../../../hooks/src/lib/api/user';
+import { authApi, useCurrentUser } from '@lets-choose/client/hooks';
 
-import ContestNavigation from '../ContestNavigation';
-import Menu, { MenuLink } from '../Menu';
+import { ContestNavigation } from '../ContestNavigation';
+import { Menu, MenuLink } from '../Menu';
 import styles from './styles';
 
 const useStyles = makeStyles(styles);
 
-interface Props {
+export interface HeaderProps {
   color?:
     | 'transparent'
     | 'white'
@@ -48,7 +47,7 @@ interface Props {
   withoutSubmenu?: boolean;
 }
 
-const Header: React.FC<Props> = ({
+export const Header: React.FC<HeaderProps> = ({
   color = 'white',
   rightLinks,
   leftLinks,
@@ -180,5 +179,3 @@ const Header: React.FC<Props> = ({
     </>
   );
 };
-
-export default Header;

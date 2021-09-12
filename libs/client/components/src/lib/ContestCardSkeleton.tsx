@@ -7,13 +7,14 @@ import CardHeader from '@material-ui/core/CardHeader';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Skeleton from '@material-ui/lab/Skeleton';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import classNames from 'classnames';
 
 import { useStyles } from './ContestCard';
 
-export const ContestCardSkeleton = () => {
+export const ContestCardSkeleton: React.FC = () => {
   const classes = useStyles();
   const shadowStyles = useOverShadowStyles();
   return (
@@ -87,5 +88,3 @@ export const ContestCardSkeleton = () => {
     </Card>
   );
 };
-
-export default ContestCardSkeleton;
