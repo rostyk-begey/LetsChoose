@@ -11,7 +11,7 @@ const useItemsUpload = () => {
   const [editedItem, setEditedItem] = useState<number>(-1);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
-  const addFiles = (files) => {
+  const addFiles = (files: File[]) => {
     setItems((prevFiles) => [
       ...prevFiles,
       ...files.map((file, i) => ({

@@ -5,7 +5,7 @@
       "runner": "@nrwl/nx-cloud",
       "options": {
         "cacheableOperations": ["build", "test", "lint", "package", "prepare"],
-        "accessToken": "Yzc3YTU4NWYtYzE2Yy00NzljLTk3MmQtYjk2YjQwMGM0NTJlfHJlYWQtd3JpdGU="
+        "accessToken": "Y2U2MTU0NWMtMTcxNC00ZTVjLTkxZjUtYzdlZGNlMjQzYzMyfHJlYWQtd3JpdGU="
       }
     }
   },
@@ -33,6 +33,9 @@
     "api": {
       "tags": []
     },
+    "api--health": {
+      "tags": []
+    },
     "client": {
       "tags": []
     },
@@ -41,6 +44,10 @@
     },
     "client-components": {
       "tags": []
+    },
+    "client-components-e2e": {
+      "tags": [],
+      "implicitDependencies": ["client-components"]
     },
     "client-e2e": {
       "tags": [],
@@ -56,6 +63,9 @@
       "tags": []
     },
     "common-dto": {
+      "tags": []
+    },
+    "common-utils": {
       "tags": []
     }
   },

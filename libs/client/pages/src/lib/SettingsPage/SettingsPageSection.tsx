@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles, createStyles, Typography } from '@material-ui/core';
 
-interface Props {
+export interface SettingsPageSectionProps {
   name: string;
   description?: React.ReactElement | string;
 }
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-const SettingsPageSection: React.FC<Props> = ({
+export const SettingsPageSection: React.FC<SettingsPageSectionProps> = ({
   name,
   description,
   children,
@@ -56,5 +56,3 @@ const SettingsPageSection: React.FC<Props> = ({
     </div>
   );
 };
-
-export default SettingsPageSection;

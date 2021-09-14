@@ -1,11 +1,11 @@
+import React from 'react';
 import { ROUTES } from '@lets-choose/client/utils';
 import { CreateContestData } from '@lets-choose/common/dto';
-import React from 'react';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { useContestCreate, useCurrentUser } from '@lets-choose/client/hooks';
 
-import EditContestPageTemplate from './EditContestPageTemplate';
+import { EditContestPageTemplate } from './EditContestPageTemplate';
 
 export const CreateContestPage: React.FC = () => {
   const router = useRouter();
@@ -33,5 +33,3 @@ export const CreateContestPage: React.FC = () => {
     </>
   );
 };
-
-export default CreateContestPage;

@@ -9,15 +9,15 @@ import MuiTableRow from '@material-ui/core/TableRow';
 import { useTable, Column } from 'react-table';
 import json2mq from 'json2mq';
 
-import TableRow from './TableRow';
-import TableRowSkeleton from './TableRowSkeleton';
+import { TableRow } from './TableRow';
+import { TableRowSkeleton } from './TableRowSkeleton';
 
-interface Props {
+export interface TableProps {
   data: any;
   skeleton?: boolean;
 }
 
-const Table: React.FC<Props> = ({ data, skeleton }) => {
+export const Table: React.FC<TableProps> = ({ data, skeleton }) => {
   const columns: Array<Column<any>> = useMemo(
     () => [
       {
@@ -95,41 +95,37 @@ const Table: React.FC<Props> = ({ data, skeleton }) => {
     } else {
       setHiddenColumns(defaultHiddenColumns);
     }
-  }, [matchesMaxWidth700]);
+  }, [matchesMaxWidth700, setHiddenColumns]);
 
   /*
     Render the UI for your table
     - react-table doesn't have UI, it's headless. We just need to put the react-table props from the Hooks, and it will do its magic automatically
   */
   return (
-    <>
-      <TableContainer>
-        <MuiTable size="small" stickyHeader {...getTableProps()}>
-          <TableHead>
-            {headerGroups.map((headerGroup, i) => (
-              <MuiTableRow key={i} {...headerGroup.getHeaderGroupProps()}>
-                <TableCell />
-                {headerGroup.headers.map((column, j) => (
-                  <TableCell key={j} {...column.getHeaderProps()}>
-                    {column.render('Header')}
-                  </TableCell>
-                ))}
-              </MuiTableRow>
-            ))}
-          </TableHead>
-          <TableBody {...getTableBodyProps()}>
-            {rows.map((row, i) => {
-              prepareRow(row);
-              if (skeleton) {
-                return <TableRowSkeleton key={`row-${i}`} row={row} />;
-              }
-              return <TableRow key={`row-${i}`} row={row} />;
-            })}
-          </TableBody>
-        </MuiTable>
-      </TableContainer>
-    </>
+    <TableContainer>
+      <MuiTable size="small" stickyHeader {...getTableProps()}>
+        <TableHead>
+          {headerGroups.map((headerGroup) => (
+            <MuiTableRow {...headerGroup.getHeaderGroupProps()}>
+              <TableCell />
+              {headerGroup.headers.map((column) => (
+                <TableCell {...column.getHeaderProps()}>
+                  {column.render('Header')}
+                </TableCell>
+              ))}
+            </MuiTableRow>
+          ))}
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
+          {rows.map((row, i) => {
+            prepareRow(row);
+            if (skeleton) {
+              return <TableRowSkeleton key={`row-${i}`} row={row} />;
+            }
+            return <TableRow key={`row-${i}`} row={row} />;
+          })}
+        </TableBody>
+      </MuiTable>
+    </TableContainer>
   );
 };
-
-export default Table;

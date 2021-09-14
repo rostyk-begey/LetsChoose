@@ -148,5 +148,3 @@ export const RegisterPage: React.FC = () => {
     </PageWithForm>
   );
 };
-
-export default RegisterPage;

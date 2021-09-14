@@ -1,13 +1,13 @@
+import React from 'react';
 import { Alert } from '@material-ui/lab';
-import React, { memo } from 'react';
 import Card from '@material-ui/core/Card';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 
-import ContestItem from './ContestItem';
+import { ContestItem } from './ContestItem';
 import { Item } from './useItemsUpload';
 
-interface Props {
+export interface ContestItemListProps {
   className?: string;
   items: Item[];
   error?: { message: string };
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-const ContestItemsList: React.FC<Props> = ({
+export const ContestItemsList: React.FC<ContestItemListProps> = ({
   items,
   error,
   className,
@@ -79,5 +79,3 @@ const ContestItemsList: React.FC<Props> = ({
 };
 
 ContestItemsList.displayName = 'ContestItemsList';
-
-export default ContestItemsList;

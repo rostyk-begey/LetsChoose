@@ -13,7 +13,7 @@ import classNames from 'classnames';
 
 import { FormTextInputProps } from '@lets-choose/client/components';
 
-interface Props {
+export interface ContestItemProps {
   isEditing: boolean;
   isSelected: boolean;
   onDeleteClick: () => void;
@@ -107,7 +107,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const ContestItem: React.FC<Props> = memo(
+export const ContestItem: React.FC<ContestItemProps> = memo(
   ({
     isEditing,
     isSelected,
@@ -204,4 +204,4 @@ const ContestItem: React.FC<Props> = memo(
   },
 );
 
-export default ContestItem;
+ContestItem.displayName = 'ContestItem';

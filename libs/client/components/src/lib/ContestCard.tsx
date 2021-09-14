@@ -276,6 +276,8 @@ export const ContestCard: React.FC<ContestCardProps> = ({
     }
   };
 
+  console.log(author);
+
   return (
     <Card className={classNames(classes.root, shadowStyles.root)}>
       <CardHeader

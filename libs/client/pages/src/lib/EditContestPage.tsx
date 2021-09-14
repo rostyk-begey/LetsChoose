@@ -1,8 +1,7 @@
+import React, { useEffect } from 'react';
 import { Contest, UpdateContestData } from '@lets-choose/common/dto';
 import { NextSeo } from 'next-seo';
-import { NextRouter } from 'next/dist/shared/lib/router/router';
-import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import { NextRouter, useRouter } from 'next/router';
 
 import {
   useContestFind,
@@ -10,8 +9,8 @@ import {
   useCurrentUser,
 } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
-import { ContestPageProps } from './ContestPage/ContestPage';
-import EditContestPageTemplate from './EditContestPageTemplate';
+import { ContestPageProps } from './ContestPage';
+import { EditContestPageTemplate } from './EditContestPageTemplate';
 
 export const EditContestPage: React.FC<ContestPageProps> = ({
   initialContest,
@@ -74,5 +73,3 @@ export const EditContestPage: React.FC<ContestPageProps> = ({
     </>
   );
 };
-
-export default EditContestPage;

@@ -1,10 +1,9 @@
-import { NextRouter } from 'next/dist/shared/lib/router/router';
 import React, { useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { GetPairResponse } from '@lets-choose/common/dto';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
-import { useRouter } from 'next/router';
+import { NextRouter, useRouter } from 'next/router';
 import classNames from 'classnames';
 
 import { Page, Subheader } from '@lets-choose/client/components';
@@ -15,7 +14,7 @@ import {
 } from '@lets-choose/client/hooks';
 import { sleep, ROUTES } from '@lets-choose/client/utils';
 
-import GameCard from './GameCard';
+import { GameCard } from './GameCard';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -159,5 +158,3 @@ export const GamePage: React.FC = () => {
     </Page>
   );
 };
-
-export default GamePage;

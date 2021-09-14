@@ -1,1 +1,1 @@
-export { default } from './EditContestPageTemplate';
+export * from './EditContestPageTemplate';

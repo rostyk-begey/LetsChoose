@@ -1,7 +1,7 @@
+import React, { useState } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import classNames from 'classnames';
 import { DropzoneDialog } from 'material-ui-dropzone';
-import React, { useState } from 'react';
 import Card from '@material-ui/core/Card';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
@@ -15,7 +15,7 @@ import json2mq from 'json2mq';
 
 import { Item } from './useItemsUpload';
 
-interface Props {
+export interface ContestItemsNavProps {
   className?: string;
   items: Item[];
   onAddItems: (files: File[]) => void;
@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-const ContestItemsNav: React.FC<Props> = ({
+export const ContestItemsNav: React.FC<ContestItemsNavProps> = ({
   items,
   className,
   onAddItems,
@@ -148,5 +148,3 @@ const ContestItemsNav: React.FC<Props> = ({
     </>
   );
 };
-
-export default ContestItemsNav;

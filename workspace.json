@@ -6,6 +6,16 @@
       "sourceRoot": "apps/api/src",
       "projectType": "application",
       "targets": {
+        "deploy": {
+          "executor": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "nx build api",
+              "docker build -f ./apps/api/Dockerfile . -t api"
+            ],
+            "parallel": false
+          }
+        },
         "build": {
           "executor": "@nrwl/node:build",
           "outputs": ["{options.outputPath}"],
@@ -13,7 +23,8 @@
             "outputPath": "dist/apps/api",
             "main": "apps/api/src/main.ts",
             "tsConfig": "apps/api/tsconfig.app.json",
-            "assets": ["apps/api/src/assets"]
+            "assets": ["apps/api/src/assets"],
+            "generatePackageJson": true
           },
           "configurations": {
             "production": {
@@ -51,6 +62,28 @@
         }
       }
     },
+    "api--health": {
+      "root": "libs/api//health",
+      "sourceRoot": "libs/api/health/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/api//health/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/health"],
+          "options": {
+            "jestConfig": "libs/api/health/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "client": {
       "root": "apps/client",
       "sourceRoot": "apps/client",
@@ -61,7 +94,8 @@
           "outputs": ["{options.outputPath}"],
           "options": {
             "root": "apps/client",
-            "outputPath": "dist/apps/client"
+            "outputPath": "dist/apps/client",
+            "generatePackageJson": true
           },
           "configurations": {
             "production": {}
@@ -142,6 +176,62 @@
           "options": {
             "jestConfig": "libs/client/components/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "storybook": {
+          "executor": "@nrwl/storybook:storybook",
+          "options": {
+            "uiFramework": "@storybook/react",
+            "port": 4400,
+            "config": {
+              "configFolder": "libs/client/components/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
+          }
+        },
+        "build-storybook": {
+          "executor": "@nrwl/storybook:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "uiFramework": "@storybook/react",
+            "outputPath": "dist/storybook/client-components",
+            "config": {
+              "configFolder": "libs/client/components/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
+          }
+        }
+      }
+    },
+    "client-components-e2e": {
+      "root": "apps/client-components-e2e",
+      "sourceRoot": "apps/client-components-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/client-components-e2e/cypress.json",
+            "devServerTarget": "client-components:storybook"
+          },
+          "configurations": {
+            "ci": {
+              "devServerTarget": "client-components:storybook:ci"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/client-components-e2e/**/*.{js,ts}"]
           }
         }
       }
@@ -244,6 +334,28 @@
           "executor": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["libs/common/dto/**/*.ts"]
+          }
+        }
+      }
+    },
+    "common-utils": {
+      "root": "libs/common/utils",
+      "sourceRoot": "libs/common/utils/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/common/utils/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/common/utils"],
+          "options": {
+            "jestConfig": "libs/common/utils/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }

@@ -1,5 +1,5 @@
-import dynamic from 'next/dynamic';
 import React, { useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';

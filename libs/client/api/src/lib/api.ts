@@ -1,6 +1,7 @@
 import { ROUTES, queryClient } from '@lets-choose/client/utils';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Router from 'next/router';
+import getConfig from 'next/config';
 
 export abstract class Api {
   protected readonly api: AxiosInstance;
@@ -11,7 +12,7 @@ export abstract class Api {
     const baseURL =
       typeof window !== 'undefined'
         ? ROUTES.API.INDEX
-        : `http://localhost:5000${ROUTES.API.INDEX}`;
+        : `http://api:5000${ROUTES.API.INDEX}`;
 
     this.api = axios.create({
       baseURL,
@@ -19,6 +20,7 @@ export abstract class Api {
         accepts: 'application/json',
         'Content-Type': 'application/json',
       },
+      withCredentials: true,
       ...config,
     });
 
@@ -40,6 +42,7 @@ export abstract class Api {
           return (
             this.api
               .post(ROUTES.API.AUTH.REFRESH_TOKEN)
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore TODO: ts-ignore
               .then((res) => {
                 if (res.status === 201) {

@@ -24,7 +24,7 @@ import { cloudinaryUploadPath, imageSize } from '@lets-choose/client/utils';
 import { CircularProgressWithLabel } from '@lets-choose/client/components';
 import { imageWidth, imageWidthMobile } from './constants';
 
-export interface Props {
+export interface TableRowProps {
   row: Row;
 }
 
@@ -87,7 +87,7 @@ const StatisticRow: React.FC<{ title: string }> = ({ title, children }) => (
   </MuiTableRow>
 );
 
-const TableRow: React.FC<Props> = ({ row }) => {
+export const TableRow: React.FC<TableRowProps> = ({ row }) => {
   const [open, setOpen] = useState(false);
   const {
     cells: [rank, image, ...cells],
@@ -241,5 +241,3 @@ const TableRow: React.FC<Props> = ({ row }) => {
     </>
   );
 };
-
-export default TableRow;

@@ -1,1 +1,1 @@
-export { default } from './ContestPage';
+export * from './ContestPage';

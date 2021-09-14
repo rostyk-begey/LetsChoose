@@ -1,11 +1,10 @@
-import { NextRouter } from 'next/dist/shared/lib/router/router';
 import React from 'react';
 import { NextSeo } from 'next-seo';
 import Fab from '@material-ui/core/Fab';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { useRouter } from 'next/router';
+import { NextRouter, useRouter } from 'next/router';
 import { Contest, ContestItem } from '@lets-choose/common/dto';
 import Chip from '@material-ui/core/Chip';
 import { Theme } from '@material-ui/core/styles';
@@ -39,7 +38,8 @@ import {
   Page,
   Subheader,
 } from '@lets-choose/client/components';
-import Table from './Table';
+import { Table } from './Table';
+import { AxiosResponse } from 'axios';
 
 const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
   headerTitle: {
@@ -175,7 +175,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
     isLoading: contestIsLoading,
     remove: removeContest,
   } = useContestFind(contestId as string, {
-    initialData: { data: initialContest } as any,
+    initialData: { data: initialContest } as AxiosResponse<Contest>,
   });
   const { data: { data: user } = {} } = useCurrentUser({});
   const contest = (contestResponse?.data as Contest) || initialContest;
@@ -286,7 +286,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                     ),
                     onClick: async () => {
                       if (
-                        confirm(
+                        window.confirm(
                           'Are you sure you want to reset contest? All data will be reset to defaults.',
                         )
                       ) {
@@ -306,7 +306,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                       </>
                     ),
                     onClick: async () => {
-                      if (confirm('Are you sure you want to delete?')) {
+                      if (window.confirm('Are you sure you want to delete?')) {
                         await deleteContest();
                         await (router as NextRouter).push(ROUTES.HOME);
                       }
@@ -467,5 +467,3 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
     </Page>
   );
 };
-
-export default ContestPage;

@@ -25,7 +25,7 @@ import {
   Page,
   Subheader,
 } from '@lets-choose/client/components';
-import SettingsPageSection from './SettingsPageSection';
+import { SettingsPageSection } from './SettingsPageSection';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -181,7 +181,7 @@ export const SettingsPage: React.FC = () => {
     },
   });
   function submitHandler<T>(
-    onSubmit: (data: T) => Promise<any>,
+    onSubmit: (data: T) => Promise<unknown>,
     selectData = (data: T) => data,
   ) {
     return async (data: T) => {
@@ -332,5 +332,3 @@ export const SettingsPage: React.FC = () => {
     </Page>
   );
 };
-
-export default SettingsPage;

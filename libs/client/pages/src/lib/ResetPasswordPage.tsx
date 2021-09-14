@@ -71,5 +71,3 @@ export const ResetPasswordPage: React.FC = () => {
     </PageWithForm>
   );
 };
-
-export default ResetPasswordPage;

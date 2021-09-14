@@ -5,9 +5,9 @@ import TableCell from '@material-ui/core/TableCell';
 import MuiTableRow from '@material-ui/core/TableRow';
 import json2mq from 'json2mq';
 
-import { useStyles, Props } from './TableRow';
+import { useStyles, TableRowProps } from './TableRow';
 
-const TableRowSkeleton: React.FC<Props> = ({
+export const TableRowSkeleton: React.FC<TableRowProps> = ({
   row: {
     index,
     cells: [rank, image, ...cells],
@@ -37,7 +37,7 @@ const TableRowSkeleton: React.FC<Props> = ({
         <Skeleton animation="wave" className={classes.image} />
       </TableCell>
       {cells.map((cell, i) => (
-        <TableCell key={i} {...cell.getCellProps()}>
+        <TableCell {...cell.getCellProps()}>
           {matchesMaxWidth960 ? (
             <Skeleton animation="wave" width={32} height={32} />
           ) : (
@@ -48,5 +48,3 @@ const TableRowSkeleton: React.FC<Props> = ({
     </MuiTableRow>
   );
 };
-
-export default TableRowSkeleton;

@@ -265,7 +265,6 @@ describe('GameService', () => {
     const game = gameBuilder();
     const { id: gameId } = game;
 
-    console.log(new mongoose.Types.ObjectId());
     jest
       .spyOn(mongoose.Types, 'ObjectId')
       .mockReturnValue({ toString: () => gameId } as any);
