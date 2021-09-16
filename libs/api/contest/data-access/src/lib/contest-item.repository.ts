@@ -10,10 +10,7 @@ import {
 
 import { IContestItemRepository } from '@abstract/contest-item.repository.interface';
 import { getPaginationPipelines, getSearchPipelines } from '@usecases/utils';
-import {
-  ContestItem,
-  ContestItemDocument,
-} from '@modules/contest/contest-item.entity';
+import { ContestItem, ContestItemDocument } from './contest-item.entity';
 
 interface SortOptions {
   rankScore: number;

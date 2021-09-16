@@ -5,7 +5,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { NextRouter, useRouter } from 'next/router';
-import { Contest, ContestItem } from '@lets-choose/common/dto';
+import { ContestDto, ContestItem } from '@lets-choose/common/dto';
 import Chip from '@material-ui/core/Chip';
 import { Theme } from '@material-ui/core/styles';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -163,7 +163,7 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
 const itemsPerPage = 10;
 
 export interface ContestPageProps {
-  initialContest: Contest;
+  initialContest: ContestDto;
 }
 
 export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
@@ -175,10 +175,10 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
     isLoading: contestIsLoading,
     remove: removeContest,
   } = useContestFind(contestId as string, {
-    initialData: { data: initialContest } as AxiosResponse<Contest>,
+    initialData: { data: initialContest } as AxiosResponse<ContestDto>,
   });
   const { data: { data: user } = {} } = useCurrentUser({});
-  const contest = (contestResponse?.data as Contest) || initialContest;
+  const contest = (contestResponse?.data as ContestDto) || initialContest;
   const isCurrentUserAuthor = user?._id === contest.author;
   const classes = useStyles({ thumbnail: contest.thumbnail || '' });
   const { mutateAsync: startGame } = useGameStart();

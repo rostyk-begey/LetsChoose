@@ -8,8 +8,8 @@ import {
   SearchQuery,
 } from '@lets-choose/common/dto';
 import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
-import { ContestItemRepository } from '@modules/contest/contest-item.repository';
-import { ContestRepository } from '@modules/contest/contest.repository';
+import { ContestItemRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.repository';
+import { ContestRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest.repository';
 import { GameRepository } from '@modules/game/game.repository';
 import { UserRepository } from '../../../../../libs/api/user/data-access/src/lib/user.repository';
 import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';

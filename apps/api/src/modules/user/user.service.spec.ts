@@ -4,7 +4,7 @@ import {
   UpdateUserPasswordDto,
   UpdateUserProfileDto,
 } from '@lets-choose/common/dto';
-import { ContestRepository } from '@modules/contest/contest.repository';
+import { ContestRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest.repository';
 import { UserRepository } from '../../../../../libs/api/user/data-access/src/lib/user.repository';
 import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';
 import { BadRequestException } from '@nestjs/common';

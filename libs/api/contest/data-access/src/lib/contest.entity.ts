@@ -2,8 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ContestDto as ContestModel } from '@lets-choose/common/dto';
 import mongoose from 'mongoose';
 
-import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';
-import { ContestItem } from '@modules/contest/contest-item.entity';
+import { User } from '@lets-choose/api/user/data-access';
+import { ContestItem } from './contest-item.entity';
 
 export type ContestDocument = Contest & mongoose.Document;
 

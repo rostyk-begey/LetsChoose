@@ -2,8 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Game as GameModel } from '@lets-choose/common/dto';
 import mongoose from 'mongoose';
 
-import { Contest } from '@modules/contest/contest.entity';
-import { ContestItem } from '@modules/contest/contest-item.entity';
+import { Contest } from '../../../../../libs/api/contest/data-access/src/lib/contest.entity';
+import { ContestItem } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.entity';
 import { GameItem } from '@modules/game/game-item.entity';
 
 export type GameDocument = Game & mongoose.Document;

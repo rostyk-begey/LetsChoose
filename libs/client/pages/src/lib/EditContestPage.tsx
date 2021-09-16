@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Contest, UpdateContestData } from '@lets-choose/common/dto';
+import { ContestDto, UpdateContestData } from '@lets-choose/common/dto';
 import { NextSeo } from 'next-seo';
 import { NextRouter, useRouter } from 'next/router';
 
@@ -24,7 +24,7 @@ export const EditContestPage: React.FC<ContestPageProps> = ({
   const { data: { data: user } = {} } = useCurrentUser({
     redirectTo: ROUTES.HOME,
   });
-  const contest = (contestResponse?.data as Contest) || initialContest;
+  const contest = (contestResponse?.data as ContestDto) || initialContest;
   const isCurrentUserAuthor = user?._id === contest?.author;
 
   const { isLoading, mutateAsync: updateContest } = useContestUpdate(

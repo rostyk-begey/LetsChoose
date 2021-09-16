@@ -19,6 +19,9 @@
       "@abstract/*": ["apps/api/src/abstract/*"],
       "@lets-choose/api//health": ["libs/api/health/src/index.ts"],
       "@lets-choose/api/auth/feature": ["libs/api/auth/feature/src/index.ts"],
+      "@lets-choose/api/contest/data-access": [
+        "libs/api/contest/data-access/src/index.ts"
+      ],
       "@lets-choose/api/user/data-access": [
         "libs/api/user/data-access/src/index.ts"
       ],

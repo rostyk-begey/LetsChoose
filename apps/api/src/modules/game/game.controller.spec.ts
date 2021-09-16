@@ -1,5 +1,5 @@
-import { ContestItemRepository } from '@modules/contest/contest-item.repository';
-import { ContestRepository } from '@modules/contest/contest.repository';
+import { ContestItemRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.repository';
+import { ContestRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest.repository';
 import { GameRepository } from '@modules/game/game.repository';
 import { Test, TestingModule } from '@nestjs/testing';
 import contestItemRepository from '@modules/contest/__mocks__/contest-item.repository';

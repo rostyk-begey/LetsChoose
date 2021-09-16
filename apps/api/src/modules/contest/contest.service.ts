@@ -7,8 +7,10 @@ import {
   GetItemsResponse,
 } from '@lets-choose/common/dto';
 import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
-import { ContestItemRepository } from '@modules/contest/contest-item.repository';
-import { ContestRepository } from '@modules/contest/contest.repository';
+import {
+  ContestRepository,
+  ContestItemRepository,
+} from '@lets-choose/api/contest/data-access';
 import { GameRepository } from '@modules/game/game.repository';
 import { Inject, Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';

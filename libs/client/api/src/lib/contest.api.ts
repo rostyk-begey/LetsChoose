@@ -1,6 +1,6 @@
 import { ROUTES } from '@lets-choose/client/utils';
 import {
-  Contest,
+  ContestDto,
   CreateContestData,
   GetContestsQuery,
   GetContestsResponse,
@@ -26,11 +26,11 @@ export class ContestApi extends Api {
   };
 
   find = (id: string) => {
-    return this.api.get<Contest>(`${this.baseURL}/${id}`);
+    return this.api.get<ContestDto>(`${this.baseURL}/${id}`);
   };
 
   create = (data: CreateContestData) => {
-    return this.api.post<Contest>(this.baseURL, data);
+    return this.api.post<ContestDto>(this.baseURL, data);
   };
 
   update = (id: string, data: Partial<Omit<UpdateContestData, 'items'>>) => {

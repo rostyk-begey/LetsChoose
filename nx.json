@@ -36,6 +36,9 @@
     "api-auth-feature": {
       "tags": []
     },
+    "api-contest-data-access": {
+      "tags": []
+    },
     "api-health": {
       "tags": []
     },

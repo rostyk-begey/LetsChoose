@@ -1,6 +1,6 @@
 import { IContestItemRepository } from '@abstract/contest-item.repository.interface';
 import { build, fake, sequence } from '@jackfranklin/test-data-bot';
-import { ContestItem } from '@modules/contest/contest-item.entity';
+import { ContestItem } from '../../../../../../libs/api/contest/data-access/src/lib/contest-item.entity';
 
 export interface ExtendedContestItem extends ContestItem {
   winRate?: number;

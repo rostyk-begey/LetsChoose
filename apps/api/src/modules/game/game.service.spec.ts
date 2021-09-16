@@ -3,12 +3,12 @@ import { ContestDto } from '@lets-choose/common/dto';
 import contestRepository, {
   contestBuilder,
 } from '@modules/contest/__mocks__/contest.repository';
-import { ContestItem } from '@modules/contest/contest-item.entity';
+import { ContestItem } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.entity';
 import contestItemRepository, {
   contestItemBuilder,
 } from '@modules/contest/__mocks__/contest-item.repository';
-import { ContestItemRepository } from '@modules/contest/contest-item.repository';
-import { ContestRepository } from '@modules/contest/contest.repository';
+import { ContestItemRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.repository';
+import { ContestRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest.repository';
 import gameRepository, {
   gameBuilder,
 } from '@modules/game/__mocks__/game.repository';

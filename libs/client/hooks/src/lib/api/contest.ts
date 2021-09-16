@@ -8,7 +8,7 @@ import {
   UseQueryOptions,
 } from 'react-query';
 import {
-  Contest,
+  ContestDto,
   GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
@@ -20,7 +20,7 @@ export const contestApi = new ContestApi();
 
 export const useContestFind = (
   id: string,
-  options: UseQueryOptions<AxiosResponse<Contest>> = {},
+  options: UseQueryOptions<AxiosResponse<ContestDto>> = {},
 ) => {
   return useQuery(['contest', id], () => contestApi.find(id), {
     retry: 0,

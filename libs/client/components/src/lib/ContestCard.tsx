@@ -37,7 +37,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
-import { Contest, UserDto } from '@lets-choose/common/dto';
+import { ContestDto, UserDto } from '@lets-choose/common/dto';
 import SwipeableViews from 'react-swipeable-views';
 
 import {
@@ -106,7 +106,7 @@ export const useStyles = makeStyles((theme) =>
 );
 
 export interface ContestCardProps {
-  contest: Contest;
+  contest: ContestDto;
   onDelete?: () => void;
 }
 

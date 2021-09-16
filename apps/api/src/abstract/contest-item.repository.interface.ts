@@ -3,7 +3,7 @@ import {
   GetItemsQuery,
   GetItemsResponse,
 } from '@lets-choose/common/dto';
-import { ContestItem } from '@modules/contest/contest-item.entity';
+import { ContestItem } from '@lets-choose/api/contest/data-access';
 
 export interface IContestItemRepository {
   countDocuments(contestId?: string): Promise<number>;

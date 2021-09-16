@@ -3,7 +3,7 @@ import {
   IContestRepository,
 } from '@abstract/contest.repository.interface';
 import { getPaginationPipelines, getSearchPipelines } from '@usecases/utils';
-import { Contest, ContestDocument } from '@modules/contest/contest.entity';
+import { Contest, ContestDocument } from './contest.entity';
 import {
   ContestDto,
   GetContestsQuery,
@@ -31,7 +31,7 @@ export class ContestRepository implements IContestRepository {
 
   protected static getSortPipeline(
     search: string,
-    sortBy: string | keyof typeof SORT_OPTIONS = SORT_OPTIONS.POPULAR,
+    sortBy: SORT_OPTIONS = SORT_OPTIONS.POPULAR,
   ): { $sort: ISortOptions } {
     const sortOptions: any[] = [];
 
@@ -71,6 +71,8 @@ export class ContestRepository implements IContestRepository {
       },
       { $unwind: '$author' },
       ...getMatchPipeline(),
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       ContestRepository.getSortPipeline(search, SORT_OPTIONS[sortBy]),
       {
         $project: {
