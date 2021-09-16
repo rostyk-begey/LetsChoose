@@ -128,23 +128,23 @@
         }
       }
     },
-    "api-health": {
-      "root": "libs/api/health",
-      "sourceRoot": "libs/api/health/src",
+    "api-health-feature": {
+      "root": "libs/api/health/feature",
+      "sourceRoot": "libs/api/health/feature/src",
       "projectType": "library",
       "targets": {
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": ["libs/api/health/**/*.ts"]
+            "lintFilePatterns": ["libs/api/health/feature/**/*.ts"]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/api/health"],
+          "outputs": ["coverage/libs/api/health/feature"],
           "options": {
-            "jestConfig": "libs/api/health/jest.config.js",
+            "jestConfig": "libs/api/health/feature/jest.config.js",
             "passWithNoTests": true
           }
         }

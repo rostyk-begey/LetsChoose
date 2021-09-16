@@ -22,10 +22,7 @@ import { IContestService } from '@abstract/contest.service.interface';
 import { IGameRepository } from '@abstract/game.repository.interface';
 import { IUserRepository } from '@abstract/user.repository.interface';
 import { fieldNameFilter } from '@src/usecases/utils';
-import {
-  UserDocument,
-  UserRepository,
-} from '@lets-choose/api/user/data-access';
+import { UserRepository } from '@lets-choose/api/user/data-access';
 
 export interface CreateContestsData extends CreateContestDTO {
   files: Express.Multer.File[];
@@ -47,7 +44,7 @@ export class ContestService implements IContestService {
     protected readonly cloudinaryService: ICloudinaryService,
 
     @Inject(UserRepository)
-    protected readonly userRepository: IUserRepository<UserDocument>,
+    protected readonly userRepository: IUserRepository,
   ) {}
 
   protected static getContestThumbnailPublicId(contestId: string): string {

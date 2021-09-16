@@ -5,6 +5,7 @@ import {
   AuthRegisterDto,
   AuthTokenDto,
   UpdateUserPasswordDto,
+  UserDto,
 } from '@lets-choose/common/dto';
 import { EmailService } from '@modules/common/email/email.service';
 import { JwtService } from '@modules/common/jwt/jwt.service';
@@ -25,10 +26,7 @@ import { IEmailService } from '@abstract/email.service.interface';
 import { IJwtService } from '@abstract/jwt.service.interface';
 import { IPasswordHashService } from '@abstract/password.service.interface';
 import { IUserRepository } from '@abstract/user.repository.interface';
-import {
-  UserDocument,
-  UserRepository,
-} from '@lets-choose/api/user/data-access';
+import { UserRepository } from '@lets-choose/api/user/data-access';
 import { GoogleOAuth } from '@src/config';
 
 @Injectable()
@@ -42,7 +40,7 @@ export class AuthService implements IAuthService {
 
   constructor(
     @Inject(UserRepository)
-    protected readonly userRepository: IUserRepository<UserDocument>,
+    protected readonly userRepository: IUserRepository,
 
     @Inject(JwtService)
     protected readonly jwtService: IJwtService,
@@ -77,7 +75,7 @@ export class AuthService implements IAuthService {
     username,
     password,
     avatar,
-  }: { avatar?: string } & AuthRegisterDto): Promise<UserDocument> {
+  }: { avatar?: string } & AuthRegisterDto): Promise<UserDto> {
     const hashedPassword: string = await this.passwordHashService.hash(
       password,
       12,
@@ -111,7 +109,7 @@ export class AuthService implements IAuthService {
       password,
     });
 
-    const emailToken = this.jwtService.generateEmailToken(user.id);
+    const emailToken = this.jwtService.generateEmailToken(user._id);
 
     this.emailService.sendRegistrationEmail(
       user.email,
@@ -148,12 +146,14 @@ export class AuthService implements IAuthService {
     // }
 
     const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
-      user.id,
+      user._id,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       user.passwordVersion,
     );
 
     return {
-      userId: user.id,
+      userId: user._id,
       accessToken,
       refreshToken,
     };
@@ -177,12 +177,14 @@ export class AuthService implements IAuthService {
     }
 
     const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
-      user.id,
+      user._id,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       user.passwordVersion,
     );
 
     return {
-      userId: user.id,
+      userId: user._id,
       accessToken,
       refreshToken,
     };
@@ -207,7 +209,7 @@ export class AuthService implements IAuthService {
     }
 
     const resetPasswordToken = this.jwtService.generateResetPasswordToken(
-      user.id,
+      user._id,
     );
 
     this.emailService.sendResetPasswordEmail(
@@ -232,8 +234,10 @@ export class AuthService implements IAuthService {
 
     const newPassword = await this.passwordHashService.hash(password, 12);
 
-    await this.userRepository.findByIdAndUpdate(user.id, {
+    await this.userRepository.findByIdAndUpdate(user._id, {
       password: newPassword,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       passwordVersion: user.passwordVersion + 1,
     });
   }
@@ -258,18 +262,22 @@ export class AuthService implements IAuthService {
       12,
     );
 
-    await this.userRepository.findByIdAndUpdate(user.id, {
+    await this.userRepository.findByIdAndUpdate(user._id, {
       password: newPasswordHash,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       passwordVersion: ++user.passwordVersion,
     });
 
     const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
-      user.id,
+      user._id,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       user.passwordVersion,
     );
 
     return {
-      userId: user.id,
+      userId: user._id,
       accessToken,
       refreshToken,
     };
@@ -283,11 +291,15 @@ export class AuthService implements IAuthService {
 
       const user = await this.userRepository.findByIdOrFail(userId);
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       if (passwordVersion !== user.passwordVersion) {
         throw new Error();
       }
 
       const { accessToken, refreshToken } =
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         this.jwtService.generateAuthTokenPair(user.id, user.passwordVersion);
 
       return {
@@ -303,6 +315,8 @@ export class AuthService implements IAuthService {
   public async confirmEmail(confirmEmailToken: string): Promise<void> {
     try {
       const { userId } = this.jwtService.verifyEmailToken(confirmEmailToken);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       await this.userRepository.findByIdAndUpdate(userId, { confirmed: true });
     } catch (e) {
       throw new BadRequestException('Invalid url');

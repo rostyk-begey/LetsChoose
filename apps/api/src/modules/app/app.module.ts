@@ -1,3 +1,4 @@
+import { ApiHealthModule } from '@lets-choose/api-health-feature';
 import { Module } from '@nestjs/common';
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -37,6 +38,7 @@ import config from '@src/config';
     GameModule,
     ContestModule,
     CloudinaryModule,
+    ApiHealthModule,
   ],
   controllers: [],
   providers: [],

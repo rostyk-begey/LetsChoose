@@ -17,7 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "@abstract/*": ["apps/api/src/abstract/*"],
-      "@lets-choose/api//health": ["libs/api/health/src/index.ts"],
+      "@lets-choose/api-health-feature": [
+        "libs/api/health/feature/src/index.ts"
+      ],
       "@lets-choose/api/auth/feature": ["libs/api/auth/feature/src/index.ts"],
       "@lets-choose/api/contest/data-access": [
         "libs/api/contest/data-access/src/index.ts"
