@@ -84,6 +84,28 @@
         }
       }
     },
+    "api-common-services": {
+      "root": "libs/api/common/services",
+      "sourceRoot": "libs/api/common/services/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/api/common/services/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/common/services"],
+          "options": {
+            "jestConfig": "libs/api/common/services/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "api-contest-data-access": {
       "root": "libs/api/contest/data-access",
       "sourceRoot": "libs/api/contest/data-access/src",

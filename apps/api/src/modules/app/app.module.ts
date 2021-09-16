@@ -1,4 +1,5 @@
 import { ApiHealthModule } from '@lets-choose/api-health-feature';
+import { ApiCommonServicesModule } from '@lets-choose/api/common/services';
 import { Module } from '@nestjs/common';
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -6,7 +7,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ContestModule } from '@modules/contest/contest.module';
 import { CloudinaryModule } from '@modules/cloudinary/cloudinary.module';
 import { AuthModule } from '@modules/auth/auth.module';
-import { CommonModule } from '@modules/common/common.module';
 import { UserModule } from '@modules/user/user.module';
 import { GameModule } from '@modules/game/game.module';
 import config from '@src/config';
@@ -32,7 +32,7 @@ import config from '@src/config';
       },
       inject: [ConfigService],
     }),
-    CommonModule,
+    ApiCommonServicesModule,
     AuthModule,
     UserModule,
     GameModule,

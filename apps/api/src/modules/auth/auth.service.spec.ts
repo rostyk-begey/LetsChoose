@@ -3,8 +3,11 @@ import {
   AuthTokenDto,
   UpdateUserPasswordDto,
 } from '@lets-choose/common/dto';
-import { EmailService } from '@modules/common/email/email.service';
-import { JwtService } from '@modules/common/jwt/jwt.service';
+import {
+  JwtService,
+  EmailService,
+  PasswordHashService,
+} from '@lets-choose/api/common/services';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { UnauthorizedException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -14,16 +17,15 @@ import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
 
 import { IAuthService } from '@abstract/auth.service.interface';
-import jwtService from '@modules/common/jwt/__mocks__/jwt.service';
-import emailService from '@modules/common/email/__mocks__/email.service';
-import passwordHashService from '@modules/common/password/__mocks__/password.service';
+import jwtService from '../../../../../libs/api/common/services/src/lib/__mocks__/jwt.service';
+import emailService from '../../../../../libs/api/common/services/src/lib/__mocks__/email.service';
+import passwordHashService from '../../../../../libs/api/common/services/src/lib/__mocks__/password.service';
 import userRepository, {
   userBuilder,
 } from '@modules/user/__mocks__/user.repository';
 import config from '@src/config';
 import { AuthService } from '@modules/auth/auth.service';
 import md5 from 'md5';
-import { PasswordHashService } from '@modules/common/password/password.service';
 
 describe('AuthService', () => {
   let authService: IAuthService;

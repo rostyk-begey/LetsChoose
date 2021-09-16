@@ -1,5 +1,5 @@
 import { UserDto } from '@lets-choose/common/dto';
-import { JwtService } from '@modules/common/jwt/jwt.service';
+import { JwtService } from '@lets-choose/api/common/services';
 import { PassportStrategy } from '@nestjs/passport';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

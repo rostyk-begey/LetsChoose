@@ -6,9 +6,11 @@ import {
   AuthTokenDto,
   UpdateUserPasswordDto,
 } from '@lets-choose/common/dto';
-import { EmailService } from '@modules/common/email/email.service';
-import { JwtService } from '@modules/common/jwt/jwt.service';
-import { PasswordHashService } from '@modules/common/password/password.service';
+import {
+  JwtService,
+  PasswordHashService,
+  EmailService,
+} from '@lets-choose/api/common/services';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -16,9 +18,9 @@ import { IAuthService } from '@abstract/auth.service.interface';
 import userRepository, {
   userBuilder,
 } from '@modules/user/__mocks__/user.repository';
-import emailService from '@modules/common/email/__mocks__/email.service';
-import jwtService from '@modules/common/jwt/__mocks__/jwt.service';
-import passwordHashService from '@modules/common/password/__mocks__/password.service';
+import emailService from '../../../../../libs/api/common/services/src/lib/__mocks__/email.service';
+import jwtService from '../../../../../libs/api/common/services/src/lib/__mocks__/jwt.service';
+import passwordHashService from '../../../../../libs/api/common/services/src/lib/__mocks__/password.service';
 import config from '@src/config';
 import { AuthController } from '@modules/auth/auth.controller';
 import { AuthService } from '@modules/auth/auth.service';

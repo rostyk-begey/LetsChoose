@@ -7,9 +7,11 @@ import {
   UpdateUserPasswordDto,
   UserDto,
 } from '@lets-choose/common/dto';
-import { EmailService } from '@modules/common/email/email.service';
-import { JwtService } from '@modules/common/jwt/jwt.service';
-import { PasswordHashService } from '@modules/common/password/password.service';
+import {
+  JwtService,
+  EmailService,
+  PasswordHashService,
+} from '@lets-choose/api/common/services';
 import {
   BadRequestException,
   Inject,

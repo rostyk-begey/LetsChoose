@@ -21,6 +21,9 @@
         "libs/api/health/feature/src/index.ts"
       ],
       "@lets-choose/api/auth/feature": ["libs/api/auth/feature/src/index.ts"],
+      "@lets-choose/api/common/services": [
+        "libs/api/common/services/src/index.ts"
+      ],
       "@lets-choose/api/contest/data-access": [
         "libs/api/contest/data-access/src/index.ts"
       ],

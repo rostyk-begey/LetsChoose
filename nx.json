@@ -36,6 +36,9 @@
     "api-auth-feature": {
       "tags": []
     },
+    "api-common-services": {
+      "tags": []
+    },
     "api-contest-data-access": {
       "tags": []
     },

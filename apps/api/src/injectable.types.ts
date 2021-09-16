@@ -1,5 +1,3 @@
-import { DatabaseService } from '@modules/common/database/database.service';
-
 export enum TYPES {
   AuthService = 'AuthService',
   UserService = 'UserService',

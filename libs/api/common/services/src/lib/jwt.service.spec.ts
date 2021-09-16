@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 import { AuthTokenPayload } from '@abstract/jwt.service.interface';
 import { JwtConfig } from '@src/config';
-import { JwtService } from '@modules/common/jwt/jwt.service';
+import { JwtService } from './jwt.service';
 
 jest.mock('jsonwebtoken');
 describe('JwtService', () => {
