@@ -10,7 +10,7 @@ import gameRepository from '@modules/game/__mocks__/game.repository';
 import userRepository, {
   userBuilder,
 } from '@modules/user/__mocks__/user.repository';
-import cloudinaryService from '@modules/../../../../../libs/api/cloudinary/src/lib/__mocks__/cloudinary.service';
+import cloudinaryService from '../../../../../libs/api/cloudinary/src/lib/__mocks__/cloudinary.service';
 import { ContestService } from '@modules/contest/contest.service';
 import { UserController } from '@modules/user/user.controller';
 import { UserService } from '@modules/user/user.service';

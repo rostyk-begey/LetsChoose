@@ -28,7 +28,7 @@ export const userBuilder = build<User>({
   }),
 });
 
-const userRepository: jest.Mocked<IUserRepository<UserDocument>> = {
+const userRepository: jest.Mocked<IUserRepository> = {
   findById: jest.fn(),
   findByIdOrFail: jest.fn(),
   findByIdAndUpdate: jest.fn(),

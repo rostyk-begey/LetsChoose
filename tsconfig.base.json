@@ -23,6 +23,7 @@
       "@lets-choose/api/abstract": ["libs/api/abstract/src/index.ts"],
       "@lets-choose/api/auth/feature": ["libs/api/auth/feature/src/index.ts"],
       "@lets-choose/api/cloudinary": ["libs/api/cloudinary/src/index.ts"],
+      "@lets-choose/api/common/pipes": ["libs/api/common/pipes/src/index.ts"],
       "@lets-choose/api/common/services": [
         "libs/api/common/services/src/index.ts"
       ],

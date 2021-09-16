@@ -31,7 +31,7 @@ import {
 import { Response as ExpressResponse } from 'express';
 import { JwtConfig } from '@src/config';
 import { IAuthService } from '@lets-choose/api/abstract';
-import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
+import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
 import {
   loginSchema,
   registerSchema,

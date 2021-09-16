@@ -30,7 +30,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IContestService } from '@lets-choose/api/abstract';
-import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
+import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
 import { fieldNameFilter, unlinkAsync } from '@usecases/utils';
 import {
   getContestItemsSchema,

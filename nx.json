@@ -42,6 +42,9 @@
     "api-cloudinary": {
       "tags": []
     },
+    "api-common-pipes": {
+      "tags": []
+    },
     "api-common-services": {
       "tags": []
     },

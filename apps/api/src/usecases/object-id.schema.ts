@@ -8,5 +8,3 @@ export const joiObjectIdSchema = (param = 'Url param'): StringSchema =>
     .messages({
       'objectId.invalid': `${param} is invalid`,
     });
-
-export default joiObjectIdSchema;

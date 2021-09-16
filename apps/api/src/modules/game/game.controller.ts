@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 
 import { IGameService } from '@lets-choose/api/abstract';
-import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
+import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
 import { ContestItem } from '@lets-choose/api/contest/data-access';
 import {
   contestIdSchema,

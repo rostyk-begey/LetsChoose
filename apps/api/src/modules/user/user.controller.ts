@@ -22,7 +22,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { User } from '@lets-choose/api/user/data-access';
-import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
+import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
 import { IUserService } from '@lets-choose/api/abstract';
 
 @ApiTags('User')
