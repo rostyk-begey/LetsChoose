@@ -36,6 +36,9 @@
     "api-auth-feature": {
       "tags": []
     },
+    "api-cloudinary": {
+      "tags": []
+    },
     "api-common-services": {
       "tags": []
     },

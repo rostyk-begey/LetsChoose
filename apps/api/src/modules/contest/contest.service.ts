@@ -6,7 +6,7 @@ import {
   GetItemsQuery,
   GetItemsResponse,
 } from '@lets-choose/common/dto';
-import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../../../../../libs/api/cloudinary/src/lib/cloudinary.service';
 import {
   ContestRepository,
   ContestItemRepository,

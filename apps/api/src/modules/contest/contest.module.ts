@@ -1,17 +1,16 @@
+import { ApiCloudinaryModule } from '@lets-choose/api/cloudinary';
 import { ApiContestDataAccessModule } from '@lets-choose/api/contest/data-access';
 import { ApiGameDataAccessModule } from '@lets-choose/api/game/data-access';
 import { ApiUserDataAccessModule } from '@lets-choose/api/user/data-access';
-import { forwardRef, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 
-import { CloudinaryModule } from '@modules/cloudinary/cloudinary.module';
 import { ContestService } from '@modules/contest/contest.service';
 import { ContestController } from '@modules/contest/contest.controller';
 
 @Module({
   imports: [
-    CloudinaryModule,
+    ApiCloudinaryModule,
     MulterModule.register({
       dest: './uploads',
     }),

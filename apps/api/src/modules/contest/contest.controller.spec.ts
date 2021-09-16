@@ -7,7 +7,7 @@ import {
   GetItemsResponse,
   UpdateContestData,
 } from '@lets-choose/common/dto';
-import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../../../../../libs/api/cloudinary/src/lib/cloudinary.service';
 import {
   ContestRepository,
   ContestItemRepository,
@@ -25,7 +25,7 @@ import contestRepository, {
 } from '@modules/contest/__mocks__/contest.repository';
 import gameRepository from '@modules/game/__mocks__/game.repository';
 import userRepository from '@modules/user/__mocks__/user.repository';
-import cloudinaryService from '@modules/cloudinary/__mocks__/cloudinary.service';
+import cloudinaryService from '@modules/../../../../../libs/api/cloudinary/src/lib/__mocks__/cloudinary.service';
 import { ContestController } from '@modules/contest/contest.controller';
 import {
   ContestService,

@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { v2 as cloudinary } from 'cloudinary';
 import config from '@src/config';
 
-import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
+import { CloudinaryService } from './cloudinary.service';
 
 describe('CloudinaryService', () => {
   let service: CloudinaryService;

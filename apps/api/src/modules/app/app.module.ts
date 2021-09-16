@@ -5,7 +5,6 @@ import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { ContestModule } from '@modules/contest/contest.module';
-import { CloudinaryModule } from '@modules/cloudinary/cloudinary.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { UserModule } from '@modules/user/user.module';
 import { GameModule } from '@modules/game/game.module';
@@ -37,7 +36,6 @@ import config from '@src/config';
     UserModule,
     GameModule,
     ContestModule,
-    CloudinaryModule,
     ApiHealthModule,
   ],
   controllers: [],

@@ -9,7 +9,7 @@ import contestRepository, {
   contestBuilder,
 } from '@modules/contest/__mocks__/contest.repository';
 import contestItemRepository from '@modules/contest/__mocks__/contest-item.repository';
-import cloudinaryService from '@modules/cloudinary/__mocks__/cloudinary.service';
+import cloudinaryService from '@modules/../../../../../libs/api/cloudinary/src/lib/__mocks__/cloudinary.service';
 import gameRepository from '@modules/game/__mocks__/game.repository';
 import { ContestService } from '@modules/contest/contest.service';
 import { UserService } from '@modules/user/user.service';

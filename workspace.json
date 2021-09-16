@@ -84,6 +84,28 @@
         }
       }
     },
+    "api-cloudinary": {
+      "root": "libs/api/cloudinary",
+      "sourceRoot": "libs/api/cloudinary/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/api/cloudinary/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/cloudinary"],
+          "options": {
+            "jestConfig": "libs/api/cloudinary/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "api-common-services": {
       "root": "libs/api/common/services",
       "sourceRoot": "libs/api/common/services/src",

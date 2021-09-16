@@ -7,7 +7,7 @@ import {
   PaginationQuery,
   SearchQuery,
 } from '@lets-choose/common/dto';
-import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../../../../../libs/api/cloudinary/src/lib/cloudinary.service';
 import {
   ContestRepository,
   ContestItemRepository,
@@ -19,7 +19,7 @@ import mongoose from 'mongoose';
 import faker from 'faker';
 
 import gameRepository from '@modules/game/__mocks__/game.repository';
-import cloudinaryService from '@modules/cloudinary/__mocks__/cloudinary.service';
+import cloudinaryService from '@modules/../../../../../libs/api/cloudinary/src/lib/__mocks__/cloudinary.service';
 import userRepository, {
   userBuilder,
 } from '@modules/user/__mocks__/user.repository';

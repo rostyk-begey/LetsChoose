@@ -1,4 +1,4 @@
-import { CommonModule } from '@modules/common/common.module';
+import { ApiCommonServicesModule } from '@lets-choose/api/common/services';
 import { ModuleMetadata } from '@nestjs/common/interfaces/modules/module-metadata.interface';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
@@ -39,7 +39,7 @@ export const createTestingModule = (
         },
         inject: [ConfigService],
       }),
-      CommonModule,
+      ApiCommonServicesModule,
       ...meta.imports,
     ],
     exports: [ConfigModule, ...meta.exports],
