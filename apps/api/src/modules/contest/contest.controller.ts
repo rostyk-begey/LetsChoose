@@ -1,5 +1,5 @@
 import {
-  Contest,
+  ContestDto,
   CreateContestDTO,
   GetContestsQuery,
   GetContestsResponse,
@@ -8,6 +8,7 @@ import {
   HttpResponseMessageDto,
   UpdateContestData,
 } from '@lets-choose/common/dto';
+import { API_ROUTES } from '@lets-choose/common/utils';
 import { ContestService } from '@modules/contest/contest.service';
 import {
   Body,
@@ -39,7 +40,7 @@ import {
 } from '@modules/contest/contest.validation';
 
 @ApiTags('Contest')
-@Controller('/api/contests')
+@Controller(API_ROUTES.CONTESTS)
 export class ContestController {
   constructor(
     @Inject(ContestService)
@@ -63,10 +64,12 @@ export class ContestController {
   @ApiOperation({ summary: 'Find contest by id' })
   @ApiResponse({
     status: 200,
-    type: Contest,
+    type: ContestDto,
   })
   @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
-  public async find(@Param('contestId') contestId: string): Promise<Contest> {
+  public async find(
+    @Param('contestId') contestId: string,
+  ): Promise<ContestDto> {
     return await this.contestService.findContestById(contestId);
   }
 
@@ -90,7 +93,7 @@ export class ContestController {
   @ApiOperation({ summary: 'Create new contest' })
   @ApiResponse({
     status: 200,
-    type: Contest,
+    type: ContestDto,
   })
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
@@ -98,7 +101,7 @@ export class ContestController {
     @Body() { title, excerpt, items }: CreateContestDTO,
     @UploadedFiles() files,
     @Req() { user }: any,
-  ): Promise<Contest> {
+  ): Promise<ContestDto> {
     const contest = await this.contestService.createContest(user.id, {
       title,
       excerpt,
@@ -146,14 +149,14 @@ export class ContestController {
   @ApiOperation({ summary: 'Reset contest' })
   @ApiResponse({
     status: 200,
-    type: Contest,
+    type: ContestDto,
   })
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
   public async reset(
     @Param('contestId') contestId: string,
     @Req() { user }: any,
-  ): Promise<Contest> {
+  ): Promise<ContestDto> {
     const { author } = await this.contestService.findContestById(contestId);
     if (author.toString() !== user.id.toString()) {
       throw new ForbiddenException();

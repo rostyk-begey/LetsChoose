@@ -18,6 +18,10 @@
     "paths": {
       "@abstract/*": ["apps/api/src/abstract/*"],
       "@lets-choose/api//health": ["libs/api/health/src/index.ts"],
+      "@lets-choose/api/auth/feature": ["libs/api/auth/feature/src/index.ts"],
+      "@lets-choose/api/user/data-access": [
+        "libs/api/user/data-access/src/index.ts"
+      ],
       "@lets-choose/client/api": ["libs/client/api/src/index.ts"],
       "@lets-choose/client/components": ["libs/client/components/src/index.ts"],
       "@lets-choose/client/hooks": ["libs/client/hooks/src/index.ts"],

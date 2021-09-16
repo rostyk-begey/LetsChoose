@@ -16,12 +16,9 @@ uploads
 .eslintignore
 .prettierrc
 docker-compose.yml
-docker-compose.test.yml
 lets-choose-key-pair.pem
-test.Dockerfile
 README.md
 Dockerfile
-Dockerfile.test.dockerignore
 apps/client-old
 apps/client-components-e2e
 apps/server

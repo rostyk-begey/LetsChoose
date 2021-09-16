@@ -9,8 +9,8 @@ import {
 import { EmailService } from '@modules/common/email/email.service';
 import { JwtService } from '@modules/common/jwt/jwt.service';
 import { PasswordHashService } from '@modules/common/password/password.service';
-import { UserRepository } from '@modules/user/user.repository';
-import { User } from '../user/user.entity';
+import { UserRepository } from '../../../../../libs/api/user/data-access/src/lib/user.repository';
+import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IAuthService } from '@abstract/auth.service.interface';

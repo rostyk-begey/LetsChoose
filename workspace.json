@@ -62,8 +62,30 @@
         }
       }
     },
-    "api--health": {
-      "root": "libs/api//health",
+    "api-auth-feature": {
+      "root": "libs/api/auth/feature",
+      "sourceRoot": "libs/api/auth/feature/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/api/auth/feature/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/auth/feature"],
+          "options": {
+            "jestConfig": "libs/api/auth/feature/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "api-health": {
+      "root": "libs/api/health",
       "sourceRoot": "libs/api/health/src",
       "projectType": "library",
       "targets": {
@@ -71,7 +93,7 @@
           "executor": "@nrwl/linter:eslint",
           "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": ["libs/api//health/**/*.ts"]
+            "lintFilePatterns": ["libs/api/health/**/*.ts"]
           }
         },
         "test": {
@@ -79,6 +101,28 @@
           "outputs": ["coverage/libs/api/health"],
           "options": {
             "jestConfig": "libs/api/health/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "api-user-data-access": {
+      "root": "libs/api/user/data-access",
+      "sourceRoot": "libs/api/user/data-access/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/api/user/data-access/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/user/data-access"],
+          "options": {
+            "jestConfig": "libs/api/user/data-access/jest.config.js",
             "passWithNoTests": true
           }
         }

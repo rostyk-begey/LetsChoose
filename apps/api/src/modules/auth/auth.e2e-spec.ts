@@ -1,6 +1,6 @@
 import { IDatabaseService } from '@abstract/database.service.interface';
 import { AuthLoginDto, AuthRegisterDto } from '@lets-choose/common/dto';
-import { AuthGoogleLoginDto } from '@lets-choose/common/dto/src/dto/auth.dto';
+import { AuthGoogleLoginDto } from '@lets-choose/common/dto';
 import { AuthModule } from '@modules/auth/auth.module';
 import { userBuilder } from '@modules/user/__mocks__/user.repository';
 import { HttpServer, INestApplication } from '@nestjs/common';

@@ -1,5 +1,5 @@
 import {
-  Contest,
+  ContestDto,
   CreateContestDTO,
   GetContestsQuery,
   GetContestsResponse,
@@ -10,14 +10,14 @@ import {
 
 export interface IContestService {
   getContestsPaginate(query: GetContestsQuery): Promise<GetContestsResponse>;
-  findContestById(id: string): Promise<Contest>;
-  findContestsByAuthor(author: string): Promise<Contest[]>;
+  findContestById(id: string): Promise<ContestDto>;
+  findContestsByAuthor(author: string): Promise<ContestDto[]>;
   getContestItemsPaginate(
     contestId: string,
     query: GetItemsQuery,
   ): Promise<GetItemsResponse>;
-  createContest(userId: string, data: CreateContestDTO): Promise<Contest>;
-  updateContest(contestId: string, data: UpdateContestDTO): Promise<Contest>;
-  resetContest(contestId: string): Promise<Contest>;
+  createContest(userId: string, data: CreateContestDTO): Promise<ContestDto>;
+  updateContest(contestId: string, data: UpdateContestDTO): Promise<ContestDto>;
+  resetContest(contestId: string): Promise<ContestDto>;
   removeContest(contestId: string): Promise<void>;
 }

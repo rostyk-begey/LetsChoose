@@ -1,23 +1,23 @@
 import {
-  Contest,
+  ContestDto,
   GetContestsQuery,
   GetContestsResponse,
 } from '@lets-choose/common/dto';
 
 export type CreateContestData = Omit<
-  Contest,
+  ContestDto,
   'id' | 'items' | 'games' | 'createdAt'
 >;
 
 export interface IContestRepository {
   countDocuments(authorId?: string): Promise<number>;
   paginate(data: GetContestsQuery): Promise<GetContestsResponse>;
-  findById(contestId: string): Promise<Contest>;
-  findByAuthor(author: string): Promise<Contest[]>;
+  findById(contestId: string): Promise<ContestDto>;
+  findByAuthor(author: string): Promise<ContestDto[]>;
   findByIdAndUpdate(
     contestId: string,
-    data: Partial<Contest>,
-  ): Promise<Contest>;
-  deleteContest(contestId: string): Promise<Contest>;
-  createContest(data: CreateContestData): Promise<Contest>;
+    data: Partial<ContestDto>,
+  ): Promise<ContestDto>;
+  deleteContest(contestId: string): Promise<ContestDto>;
+  createContest(data: CreateContestData): Promise<ContestDto>;
 }

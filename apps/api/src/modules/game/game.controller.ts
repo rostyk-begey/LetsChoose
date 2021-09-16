@@ -1,4 +1,5 @@
-import { GetPairResponse } from '@lets-choose/common/dto';
+import { GameStartResponse, GetPairResponse } from '@lets-choose/common/dto';
+import { API_ROUTES } from '@lets-choose/common/utils';
 import { GameService } from '@modules/game/game.service';
 import {
   Body,
@@ -20,7 +21,7 @@ import {
   gamePlaySchema,
 } from '@modules/game/game.validation';
 
-@Controller('/api/games')
+@Controller(API_ROUTES.GAMES)
 export class GameController {
   constructor(
     @Inject(GameService)
@@ -29,7 +30,9 @@ export class GameController {
 
   @Post('/start/:contestId')
   @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
-  public async start(@Param('contestId') contestId: string): Promise<any> {
+  public async start(
+    @Param('contestId') contestId: string,
+  ): Promise<GameStartResponse> {
     const game = await this.gameService.start(contestId);
 
     return {

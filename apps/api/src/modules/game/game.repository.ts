@@ -22,12 +22,13 @@ export class GameRepository implements IGameRepository {
     return this.gameModel.aggregate(aggregations).exec();
   }
 
-  public async findById(gameId: string): Promise<Game> {
+  public async findById(gameId: string): Promise<GameDocument> {
     const game = await this.gameModel
       .findById(gameId)
       .populate('items')
       .populate('pair');
 
+    console.log('GameRepository.findById', game);
     if (!game) {
       throw new NotFoundException('Game not found');
     }
@@ -38,7 +39,7 @@ export class GameRepository implements IGameRepository {
     gameId: string,
     data: Partial<Game>,
   ): Promise<Game> {
-    const game = await this.gameModel.findByIdAndUpdate(gameId, data);
+    const game = await this.gameModel.findByIdAndUpdate(gameId, { $set: data });
     if (!game) {
       throw new NotFoundException('Game not found');
     }

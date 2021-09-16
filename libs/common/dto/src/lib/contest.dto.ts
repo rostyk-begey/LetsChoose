@@ -9,10 +9,10 @@ export abstract class ContestItem {
   compares!: number;
   wins!: number;
   finalWins!: number;
-  contestId!: string | Contest;
+  contestId!: string | ContestDto;
 }
 
-export abstract class Contest {
+export abstract class ContestDto {
   _id!: string;
   id!: string;
   thumbnail!: string;
@@ -58,7 +58,7 @@ abstract class PaginatedResponse<T extends any> {
   currentPage!: number;
 }
 
-export abstract class GetContestsResponse extends PaginatedResponse<Contest> {}
+export abstract class GetContestsResponse extends PaginatedResponse<ContestDto> {}
 
 export abstract class GetItemsQuery implements SearchQuery, PaginationQuery {
   search!: string;

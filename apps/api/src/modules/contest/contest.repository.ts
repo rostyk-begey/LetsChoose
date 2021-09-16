@@ -5,6 +5,7 @@ import {
 import { getPaginationPipelines, getSearchPipelines } from '@usecases/utils';
 import { Contest, ContestDocument } from '@modules/contest/contest.entity';
 import {
+  ContestDto,
   GetContestsQuery,
   GetContestsResponse,
   ISortOptions,
@@ -97,7 +98,7 @@ export class ContestRepository implements IContestRepository {
     return result[0];
   }
 
-  public async findById(contestId: string): Promise<Contest> {
+  public async findById(contestId: string): Promise<ContestDocument> {
     const contest = await this.contestModel.findById(contestId);
     if (!contest) {
       throw new NotFoundException('Contest not found');
@@ -105,7 +106,7 @@ export class ContestRepository implements IContestRepository {
     return contest;
   }
 
-  public async findByAuthor(author: string): Promise<Contest[]> {
+  public async findByAuthor(author: string): Promise<ContestDocument[]> {
     const contests = await this.contestModel.find({ author });
     if (!contests) {
       throw new NotFoundException('Contest not found');
@@ -115,16 +116,18 @@ export class ContestRepository implements IContestRepository {
 
   public async findByIdAndUpdate(
     contestId: string,
-    data: Partial<Contest>,
-  ): Promise<Contest> {
-    const contest = await this.contestModel.findByIdAndUpdate(contestId, data);
+    data: Partial<ContestDto>,
+  ): Promise<ContestDocument> {
+    const contest = await this.contestModel.findByIdAndUpdate(contestId, {
+      $set: data,
+    });
     if (!contest) {
       throw new NotFoundException('Contest not found');
     }
     return contest;
   }
 
-  public async deleteContest(contestId: string): Promise<Contest> {
+  public async deleteContest(contestId: string): Promise<ContestDocument> {
     const contest = await this.contestModel.findByIdAndRemove(contestId);
     if (!contest) {
       throw new NotFoundException('Contest not found');
@@ -132,7 +135,9 @@ export class ContestRepository implements IContestRepository {
     return contest;
   }
 
-  public async createContest(data: CreateContestData): Promise<Contest> {
+  public async createContest(
+    data: CreateContestData,
+  ): Promise<ContestDocument> {
     const contest = new this.contestModel(data);
     await contest.save();
     return contest;

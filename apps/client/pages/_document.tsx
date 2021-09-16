@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, { Children } from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { SimplePaletteColorOptions } from '@material-ui/core/styles/createPalette';

@@ -1,6 +1,6 @@
 import { build, fake } from '@jackfranklin/test-data-bot';
 import {
-  Contest,
+  ContestDto,
   ContestItem,
   GetContestsQuery,
   GetItemsQuery,
@@ -11,8 +11,8 @@ import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
 import { ContestItemRepository } from '@modules/contest/contest-item.repository';
 import { ContestRepository } from '@modules/contest/contest.repository';
 import { GameRepository } from '@modules/game/game.repository';
-import { UserRepository } from '@modules/user/user.repository';
-import { User } from '../user/user.entity';
+import { UserRepository } from '../../../../../libs/api/user/data-access/src/lib/user.repository';
+import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import mongoose from 'mongoose';
 import faker from 'faker';
@@ -53,7 +53,7 @@ const searchPaginationQueryBuilder = build<SearchQuery & PaginationQuery>({
 
 describe('ContestService', () => {
   let contestService: ContestService;
-  let contest: Contest;
+  let contest: ContestDto;
   let contestItems: ContestItem[];
   let contestId: string;
   let mockContestPaginateResult;

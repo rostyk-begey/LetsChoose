@@ -7,16 +7,16 @@ import { User, UserDocument } from './user.entity';
 import { IUserRepository } from '@abstract/user.repository.interface';
 
 @Injectable()
-export class UserRepository implements IUserRepository {
+export class UserRepository implements IUserRepository<UserDocument> {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  public async findById(userId: string): Promise<User> {
+  public async findById(userId: string): Promise<UserDocument | null> {
     return this.userModel.findById(userId);
   }
 
-  public async findByIdOrFail(userId: string): Promise<User> {
+  public async findByIdOrFail(userId: string): Promise<UserDocument> {
     const user = await this.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -27,7 +27,7 @@ export class UserRepository implements IUserRepository {
   public async findByIdAndUpdate(
     userId: string,
     data: Partial<User>,
-  ): Promise<User> {
+  ): Promise<UserDocument> {
     const user = await this.userModel.findByIdAndUpdate(userId, data);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -35,19 +35,19 @@ export class UserRepository implements IUserRepository {
     return user;
   }
 
-  protected async findOne(query: Partial<User>): Promise<User> {
+  protected async findOne(query: Partial<User>): Promise<UserDocument | null> {
     return this.userModel.findOne(query);
   }
 
-  public findByUsername(username: string): Promise<User> {
+  public findByUsername(username: string): Promise<UserDocument | null> {
     return this.findOne({ username });
   }
 
-  public findByEmail(email: string): Promise<User> {
+  public findByEmail(email: string): Promise<UserDocument | null> {
     return this.findOne({ email });
   }
 
-  public async deleteUser(userId: string): Promise<User> {
+  public async deleteUser(userId: string): Promise<UserDocument> {
     const user = await this.userModel.findByIdAndRemove(userId);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -55,8 +55,8 @@ export class UserRepository implements IUserRepository {
     return user;
   }
 
-  public async createUser(data: UserDto): Promise<User> {
-    const user = new this.userModel({ _id: new Types.ObjectId(), ...data });
+  public async createUser(data: UserDto): Promise<UserDocument> {
+    const user = new this.userModel({ ...data, _id: new Types.ObjectId() });
     await user.save();
     return user;
   }

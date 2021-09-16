@@ -1,12 +1,11 @@
-import { CreateUserDto } from '@lets-choose/common/dto';
-import { User } from '@modules/user/user.entity';
+import { CreateUserDto, UserDto } from '@lets-choose/common/dto';
 
-export interface IUserRepository {
-  findById(userId: string): Promise<User>;
-  findByIdOrFail(userId: string): Promise<User>;
-  findByIdAndUpdate(userId: string, data: Partial<User>): Promise<User>;
-  findByUsername(username: string): Promise<User>;
-  findByEmail(email: string): Promise<User>;
-  deleteUser(userId: string): Promise<User>;
-  createUser(data: CreateUserDto): Promise<User>;
+export interface IUserRepository<T extends UserDto> {
+  findById(userId: string): Promise<T | null>;
+  findByIdOrFail(userId: string): Promise<T>;
+  findByIdAndUpdate(userId: string, data: Partial<T>): Promise<T>;
+  findByUsername(username: string): Promise<T | null>;
+  findByEmail(email: string): Promise<T | null>;
+  deleteUser(userId: string): Promise<T>;
+  createUser(data: CreateUserDto): Promise<T>;
 }

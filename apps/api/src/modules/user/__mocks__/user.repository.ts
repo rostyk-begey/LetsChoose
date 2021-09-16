@@ -1,6 +1,6 @@
 import { IUserRepository } from '@abstract/user.repository.interface';
 import { build, fake, oneOf, sequence } from '@jackfranklin/test-data-bot';
-import { User } from '../user.entity';
+import { User } from '../../../../../../libs/api/user/data-access/src/lib/user.entity';
 import { Types } from 'mongoose';
 
 export const userBuilder = build<User>({

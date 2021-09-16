@@ -1,5 +1,5 @@
 import { IGameService } from '@abstract/game.service.interface';
-import { Contest } from '@lets-choose/common/dto';
+import { ContestDto } from '@lets-choose/common/dto';
 import contestRepository, {
   contestBuilder,
 } from '@modules/contest/__mocks__/contest.repository';
@@ -173,7 +173,7 @@ describe('GameService', () => {
     });
 
     describe('last round', () => {
-      let contest: Contest;
+      let contest: ContestDto;
       let contestItem: ContestItem;
       let contestGames: number;
 

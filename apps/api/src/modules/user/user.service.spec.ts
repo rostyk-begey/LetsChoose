@@ -1,12 +1,12 @@
 import { IContestService } from '@abstract/contest.service.interface';
 import {
-  Contest,
+  ContestDto,
   UpdateUserPasswordDto,
   UpdateUserProfileDto,
 } from '@lets-choose/common/dto';
 import { ContestRepository } from '@modules/contest/contest.repository';
-import { UserRepository } from '@modules/user/user.repository';
-import { User } from './user.entity';
+import { UserRepository } from '../../../../../libs/api/user/data-access/src/lib/user.repository';
+import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IUserService } from '@abstract/user.service.interface';
@@ -29,7 +29,7 @@ describe('UserService', () => {
   let contestService: IContestService;
   let userId, username;
   let user: User;
-  let contest: Contest;
+  let contest: ContestDto;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

@@ -25,10 +25,12 @@ import { IEmailService } from '@abstract/email.service.interface';
 import { IJwtService } from '@abstract/jwt.service.interface';
 import { IPasswordHashService } from '@abstract/password.service.interface';
 import { IUserRepository } from '@abstract/user.repository.interface';
-import { User } from '../user/user.entity';
+import {
+  User,
+  UserDocument,
+  UserRepository,
+} from '@lets-choose/api/user/data-access';
 import { GoogleOAuth } from '@src/config';
-import { TYPES } from '@src/injectable.types';
-import { UserRepository } from '../user/user.repository';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -41,7 +43,7 @@ export class AuthService implements IAuthService {
 
   constructor(
     @Inject(UserRepository)
-    protected readonly userRepository: IUserRepository,
+    protected readonly userRepository: IUserRepository<UserDocument>,
 
     @Inject(JwtService)
     protected readonly jwtService: IJwtService,
@@ -76,7 +78,7 @@ export class AuthService implements IAuthService {
     username,
     password,
     avatar,
-  }: { avatar?: string } & AuthRegisterDto): Promise<User> {
+  }: { avatar?: string } & AuthRegisterDto): Promise<UserDocument> {
     const hashedPassword: string = await this.passwordHashService.hash(
       password,
       12,

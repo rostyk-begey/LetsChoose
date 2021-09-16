@@ -1,5 +1,5 @@
 import {
-  Contest,
+  ContestDto,
   CreateContestDTO,
   GetContestsQuery,
   GetContestsResponse,
@@ -10,7 +10,7 @@ import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
 import { ContestItemRepository } from '@modules/contest/contest-item.repository';
 import { ContestRepository } from '@modules/contest/contest.repository';
 import { GameRepository } from '@modules/game/game.repository';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 
 import { ICloudinaryService } from '@abstract/cloudinary.service.interface';
@@ -19,9 +19,11 @@ import { IContestRepository } from '@abstract/contest.repository.interface';
 import { IContestService } from '@abstract/contest.service.interface';
 import { IGameRepository } from '@abstract/game.repository.interface';
 import { IUserRepository } from '@abstract/user.repository.interface';
-import { TYPES } from '@src/injectable.types';
 import { fieldNameFilter } from '@src/usecases/utils';
-import { UserRepository } from '../user/user.repository';
+import {
+  UserDocument,
+  UserRepository,
+} from '@lets-choose/api/user/data-access';
 
 export interface CreateContestsData extends CreateContestDTO {
   files: Express.Multer.File[];
@@ -43,7 +45,7 @@ export class ContestService implements IContestService {
     protected readonly cloudinaryService: ICloudinaryService,
 
     @Inject(UserRepository)
-    protected readonly userRepository: IUserRepository,
+    protected readonly userRepository: IUserRepository<UserDocument>,
   ) {}
 
   protected static getContestThumbnailPublicId(contestId: string): string {
@@ -75,11 +77,11 @@ export class ContestService implements IContestService {
     });
   }
 
-  public findContestById(id: string): Promise<Contest> {
+  public findContestById(id: string): Promise<ContestDto> {
     return this.contestRepository.findById(id);
   }
 
-  public findContestsByAuthor(author: string): Promise<Contest[]> {
+  public findContestsByAuthor(author: string): Promise<ContestDto[]> {
     return this.contestRepository.findByAuthor(author);
   }
 
@@ -99,7 +101,7 @@ export class ContestService implements IContestService {
   public async createContest(
     userId: string,
     { files, title, excerpt = '', items }: CreateContestsData,
-  ): Promise<Contest> {
+  ): Promise<ContestDto> {
     const thumbnail = files.find(fieldNameFilter('thumbnail'));
 
     const contestId = new mongoose.Types.ObjectId();
@@ -143,8 +145,8 @@ export class ContestService implements IContestService {
   public async updateContest(
     contestId: string,
     { files, title, excerpt }: Omit<CreateContestsData, 'items'>,
-  ): Promise<Contest> {
-    const data: Partial<Contest> = {};
+  ): Promise<ContestDto> {
+    const data: Partial<ContestDto> = {};
 
     if (title) {
       data.title = title;
@@ -168,7 +170,7 @@ export class ContestService implements IContestService {
     return this.contestRepository.findByIdAndUpdate(contestId, data);
   }
 
-  public async resetContest(contestId: string): Promise<Contest> {
+  public async resetContest(contestId: string): Promise<ContestDto> {
     const contest = await this.contestRepository.findByIdAndUpdate(contestId, {
       games: 0,
     });

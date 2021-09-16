@@ -1,4 +1,4 @@
-import { Contest, ContestItem } from './contest.dto';
+import { ContestDto, ContestItem } from './contest.dto';
 
 export abstract class GameItem {
   contestItem!: ContestItem | string;
@@ -9,7 +9,7 @@ export abstract class GameItem {
 export abstract class Game {
   _id!: string;
   readonly id!: string;
-  contestId!: Contest | string;
+  contestId!: ContestDto | string;
   winnerId?: ContestItem | string;
   items?: GameItem[];
   pair!: (ContestItem | string)[];

@@ -33,7 +33,13 @@
     "api": {
       "tags": []
     },
-    "api--health": {
+    "api-auth-feature": {
+      "tags": []
+    },
+    "api-health": {
+      "tags": []
+    },
+    "api-user-data-access": {
       "tags": []
     },
     "client": {

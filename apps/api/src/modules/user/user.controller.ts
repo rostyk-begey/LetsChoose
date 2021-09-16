@@ -2,7 +2,8 @@ import {
   HttpResponseMessageDto,
   UpdateUserProfileDto,
 } from '@lets-choose/common/dto';
-import { UserService } from '@modules/user/user.service';
+import { API_ROUTES } from '@lets-choose/common/utils';
+import { UserService } from './user.service';
 import { updateUserProfileSchema } from '@modules/user/user.validation';
 import {
   Body,
@@ -19,13 +20,13 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { User } from './user.entity';
+import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';
 import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
 import { TYPES } from '@src/injectable.types';
 import { IUserService } from '@abstract/user.service.interface';
 
 @ApiTags('User')
-@Controller('/api/users')
+@Controller(API_ROUTES.USERS)
 export class UserController {
   constructor(
     @Inject(UserService)

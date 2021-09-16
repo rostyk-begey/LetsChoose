@@ -1,5 +1,5 @@
 import {
-  Contest,
+  ContestDto,
   ContestItem,
   GetContestsQuery,
   GetContestsResponse,
@@ -11,7 +11,7 @@ import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
 import { ContestItemRepository } from '@modules/contest/contest-item.repository';
 import { ContestRepository } from '@modules/contest/contest.repository';
 import { GameRepository } from '@modules/game/game.repository';
-import { UserRepository } from '@modules/user/user.repository';
+import { UserRepository } from '../../../../../libs/api/user/data-access/src/lib/user.repository';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { IContestService } from '@abstract/contest.service.interface';
@@ -46,7 +46,7 @@ const files = [
 describe('ContestController', () => {
   let controller: ContestController;
   let contestService: IContestService;
-  let contest: Contest;
+  let contest: ContestDto;
   let contestItems: ContestItem[];
   let files;
 

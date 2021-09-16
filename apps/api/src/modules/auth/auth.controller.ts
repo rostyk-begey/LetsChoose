@@ -1,3 +1,4 @@
+import { API_ROUTES } from '@lets-choose/common/utils';
 import { AuthService } from '@modules/auth/auth.service';
 import {
   BadRequestException,
@@ -27,7 +28,7 @@ import {
   AuthGoogleLoginDto,
   UpdateUserPasswordDto,
 } from '@lets-choose/common/dto';
-
+import { Response as ExpressResponse } from 'express';
 import { JwtConfig } from '@src/config';
 import { TYPES } from '@src/injectable.types';
 import { IAuthService } from '@abstract/auth.service.interface';
@@ -40,7 +41,7 @@ import {
 } from '@modules/auth/auth.validation';
 
 @ApiTags('auth')
-@Controller('/api/auth')
+@Controller()
 export class AuthController {
   private readonly config: JwtConfig;
   private readonly useSecureCookie: boolean;
@@ -71,7 +72,7 @@ export class AuthController {
     };
   }
 
-  @Post('/login')
+  @Post(API_ROUTES.AUTH.LOGIN)
   @ApiOperation({ summary: 'Login' })
   @ApiResponse({ status: 200, type: AuthTokenDto })
   @UsePipes(new JoiValidationPipe(loginSchema))
@@ -95,11 +96,11 @@ export class AuthController {
     return result;
   }
 
-  @Post('/login/google')
+  @Post(API_ROUTES.AUTH.LOGIN_GOOGLE)
   @ApiOperation({ summary: 'Login using google' })
   @ApiResponse({ status: 200, type: AuthTokenDto })
   async loginGoogle(
-    @Response({ passthrough: true }) res: any,
+    @Response({ passthrough: true }) res: ExpressResponse,
     @Body() dto: AuthGoogleLoginDto,
   ): Promise<AuthTokenDto> {
     const result = await this.authService.loginUserOAuth(dto);
@@ -118,12 +119,12 @@ export class AuthController {
     return result;
   }
 
-  @Post('/logout')
+  @Post(API_ROUTES.AUTH.LOGOUT)
   @ApiOperation({ summary: 'Logout' })
   @ApiResponse({ status: 200, type: HttpResponseMessageDto })
   @UseGuards(AuthGuard('jwt'))
   async logout(
-    @Response({ passthrough: true }) res: any,
+    @Response({ passthrough: true }) res: ExpressResponse,
   ): Promise<HttpResponseMessageDto> {
     res.clearCookie(this.config.accessTokenKey);
     res.clearCookie(this.config.refreshTokenKey);
@@ -131,12 +132,12 @@ export class AuthController {
     return { message: 'You have been logged out' };
   }
 
-  @Post('/register')
+  @Post(API_ROUTES.AUTH.REGISTER)
   @ApiOperation({ summary: 'Register' })
   @ApiResponse({ status: 200, type: HttpResponseMessageDto })
   @UsePipes(new JoiValidationPipe(registerSchema))
   public async register(
-    @Response({ passthrough: true }) res: any,
+    @Response({ passthrough: true }) res: ExpressResponse,
     @Body() dto: AuthRegisterDto,
   ): Promise<AuthTokenDto> {
     await this.authService.registerUser(dto);
@@ -147,7 +148,7 @@ export class AuthController {
     });
   }
 
-  @Post('/password/forgot')
+  @Post(API_ROUTES.AUTH.FORGOT_PASSWORD)
   @ApiOperation({ summary: 'Request password reset' })
   @ApiResponse({ status: 200, type: HttpResponseMessageDto })
   public async forgotPassword(
@@ -158,14 +159,14 @@ export class AuthController {
     return { message: `Reset password link has been sent to ${dto.email}!` };
   }
 
-  @Post('/password/update')
+  @Post(API_ROUTES.AUTH.UPDATE_PASSWORD)
   @ApiOperation({ summary: 'Update password' })
   @ApiResponse({ status: 200, type: HttpResponseMessageDto })
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(new JoiValidationPipe(updatePasswordSchema))
   public async updatePassword(
     @Request() req: any,
-    @Response({ passthrough: true }) res: any,
+    @Response({ passthrough: true }) res: ExpressResponse,
     @Body() dto: UpdateUserPasswordDto,
   ): Promise<AuthTokenDto> {
     const result = await this.authService.updateUsersPassword(req.user.id, dto);
@@ -184,7 +185,7 @@ export class AuthController {
     return result;
   }
 
-  @Post('/password/reset/:token')
+  @Post(`${API_ROUTES.AUTH.RESET_PASSWORD}/:token`)
   public async resetPassword(
     @Param('token') token: string,
     @Body() { password }: AuthResetPasswordDto,
@@ -194,11 +195,11 @@ export class AuthController {
     return { message: 'Password was successfully changed!' };
   }
 
-  @Post('/token')
+  @Post(API_ROUTES.AUTH.REFRESH_TOKEN)
   // @UsePipes(new JoiValidationPipe(refreshTokenLocation, 'query'))
   public async refreshToken(
     @Request() req: any,
-    @Response({ passthrough: true }) res: any,
+    @Response({ passthrough: true }) res: ExpressResponse,
     @Query('refreshTokenLocation') refreshTokenLocation: RefreshTokenLocation,
   ): Promise<AuthTokenDto> {
     let token;
@@ -234,7 +235,7 @@ export class AuthController {
     };
   }
 
-  @Post('/email/confirm/:token')
+  @Post(`${API_ROUTES.AUTH.CONFIRM_EMAIL}/:token`)
   public async confirmEmail(
     @Param('token') token: string,
   ): Promise<HttpResponseMessageDto> {

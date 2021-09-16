@@ -1,8 +1,8 @@
 import { build, fake, sequence } from '@jackfranklin/test-data-bot';
-import { Contest } from '@lets-choose/common/dto';
+import { ContestDto } from '@lets-choose/common/dto';
 import { IContestRepository } from '@abstract/contest.repository.interface';
 
-export const contest: Contest = {
+export const contest: ContestDto = {
   _id: 'contestId',
   games: 0,
   thumbnail: 'thumbnail',
@@ -14,7 +14,7 @@ export const contest: Contest = {
   items: [],
 };
 
-export const contestBuilder = build<Contest>({
+export const contestBuilder = build<ContestDto>({
   fields: {
     _id: sequence((i) => `contest-${i}`),
     id: sequence((i) => `contest-${i}`),

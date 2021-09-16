@@ -4,12 +4,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { JwtConfig } from '@src/config';
-import { TYPES } from '@src/injectable.types';
-import { User } from '../user/user.entity';
+import {
+  User,
+  UserDocument,
+  UserRepository,
+} from '@lets-choose/api/user/data-access';
 import { IUserRepository } from '@abstract/user.repository.interface';
 import { AuthTokenPayload, IJwtService } from '@abstract/jwt.service.interface';
-import { UserRepository } from '../user/user.repository';
 
 const cookieExtractor = (req) => {
   if (req?.cookies) {
@@ -24,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly configService: ConfigService,
 
     @Inject(UserRepository)
-    private readonly userRepository: IUserRepository,
+    private readonly userRepository: IUserRepository<UserDocument>,
 
     @Inject(JwtService)
     private readonly jwtService: IJwtService,

@@ -1,8 +1,8 @@
 import { IUserService } from '@abstract/user.service.interface';
 import { UpdateUserProfileDto } from '@lets-choose/common/dto';
 import { ContestRepository } from '@modules/contest/contest.repository';
-import { UserRepository } from '@modules/user/user.repository';
-import { User } from './user.entity';
+import { UserRepository } from '../../../../../libs/api/user/data-access/src/lib/user.repository';
+import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import contestItemRepository from '@modules/contest/__mocks__/contest-item.repository';

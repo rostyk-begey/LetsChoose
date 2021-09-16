@@ -1,5 +1,5 @@
 import { UpdateUserProfileDto } from '@lets-choose/common/dto';
-import { User } from '@modules/user/user.entity';
+import { User } from '../../../../libs/api/user/data-access/src/lib/user.entity';
 
 export interface IUserService {
   findById(userId: string): Promise<User>;
