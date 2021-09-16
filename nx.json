@@ -33,6 +33,9 @@
     "api": {
       "tags": []
     },
+    "api-abstract": {
+      "tags": []
+    },
     "api-auth-feature": {
       "tags": []
     },

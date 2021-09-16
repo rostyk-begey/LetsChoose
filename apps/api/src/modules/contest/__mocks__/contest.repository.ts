@@ -1,6 +1,6 @@
 import { build, fake, sequence } from '@jackfranklin/test-data-bot';
 import { ContestDto } from '@lets-choose/common/dto';
-import { IContestRepository } from '@abstract/contest.repository.interface';
+import { IContestRepository } from '@lets-choose/api/abstract';
 
 export const contest: ContestDto = {
   _id: 'contestId',

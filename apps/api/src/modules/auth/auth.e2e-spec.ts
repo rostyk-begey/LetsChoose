@@ -1,4 +1,4 @@
-import { IDatabaseService } from '@abstract/database.service.interface';
+import { IDatabaseService } from '@lets-choose/api/abstract';
 import { AuthLoginDto, AuthRegisterDto } from '@lets-choose/common/dto';
 import { AuthGoogleLoginDto } from '@lets-choose/common/dto';
 import { AuthModule } from '@modules/auth/auth.module';

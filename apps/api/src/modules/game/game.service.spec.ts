@@ -1,4 +1,4 @@
-import { IGameService } from '@abstract/game.service.interface';
+import { IGameService } from '@lets-choose/api/abstract';
 import { ContestDto } from '@lets-choose/common/dto';
 import contestRepository, {
   contestBuilder,

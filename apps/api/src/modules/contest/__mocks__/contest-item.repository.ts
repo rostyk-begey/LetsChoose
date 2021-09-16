@@ -1,4 +1,4 @@
-import { IContestItemRepository } from '@abstract/contest-item.repository.interface';
+import { IContestItemRepository } from '@lets-choose/api/abstract';
 import { build, fake, sequence } from '@jackfranklin/test-data-bot';
 import { ContestItem } from '@lets-choose/api/contest/data-access';
 

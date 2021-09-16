@@ -11,7 +11,7 @@ import {
   UsePipes,
 } from '@nestjs/common';
 
-import { IGameService } from '@abstract/game.service.interface';
+import { IGameService } from '@lets-choose/api/abstract';
 import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
 import { ContestItem } from '@lets-choose/api/contest/data-access';
 import {

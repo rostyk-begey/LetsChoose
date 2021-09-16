@@ -23,7 +23,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { User } from '@lets-choose/api/user/data-access';
 import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
-import { IUserService } from '@abstract/user.service.interface';
+import { IUserService } from '@lets-choose/api/abstract';
 
 @ApiTags('User')
 @Controller(API_ROUTES.USERS)

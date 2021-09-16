@@ -16,7 +16,7 @@ import faker from 'faker';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
 
-import { IAuthService } from '@abstract/auth.service.interface';
+import { IAuthService } from '@lets-choose/api/abstract';
 import jwtService from '../../../../../libs/api/common/services/src/lib/__mocks__/jwt.service';
 import emailService from '../../../../../libs/api/common/services/src/lib/__mocks__/email.service';
 import passwordHashService from '../../../../../libs/api/common/services/src/lib/__mocks__/password.service';

@@ -8,7 +8,7 @@ import {
   BaseTokenPayload,
   IJwtService,
   TokenPair,
-} from '@abstract/jwt.service.interface';
+} from '../../../../abstract/src/lib/jwt.service.interface';
 
 @Injectable()
 export class JwtService implements IJwtService {

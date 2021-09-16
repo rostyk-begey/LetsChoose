@@ -1,4 +1,4 @@
-import { ICloudinaryService } from '@abstract/cloudinary.service.interface';
+import { ICloudinaryService } from '@lets-choose/api/abstract';
 
 const cloudinaryService: jest.Mocked<ICloudinaryService> = {
   upload: jest.fn((filePath: string, publicId: string) =>

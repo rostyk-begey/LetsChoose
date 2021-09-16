@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import { IDatabaseService } from '@abstract/database.service.interface';
+import { IDatabaseService } from '@lets-choose/api/abstract';
 import { Connection } from 'mongoose';
 
 @Injectable()

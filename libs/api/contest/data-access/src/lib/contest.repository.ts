@@ -1,7 +1,7 @@
 import {
   CreateContestData,
   IContestRepository,
-} from '@abstract/contest.repository.interface';
+} from '../../../../abstract/src/lib/contest.repository.interface';
 import { getPaginationPipelines, getSearchPipelines } from '@usecases/utils';
 import { Contest, ContestDocument } from './contest.entity';
 import {

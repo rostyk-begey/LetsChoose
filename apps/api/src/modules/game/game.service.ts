@@ -12,10 +12,12 @@ import {
 import mongoose from 'mongoose';
 import { shuffle } from 'lodash';
 
-import { IContestItemRepository } from '@abstract/contest-item.repository.interface';
-import { IGameService } from '@abstract/game.service.interface';
-import { IContestRepository } from '@abstract/contest.repository.interface';
-import { IGameRepository } from '@abstract/game.repository.interface';
+import {
+  IContestItemRepository,
+  IGameService,
+  IContestRepository,
+  IGameRepository,
+} from '@lets-choose/api/abstract';
 import {
   Game,
   GameItem,

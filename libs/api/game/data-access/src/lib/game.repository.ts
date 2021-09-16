@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { CreateGameDto } from '@lets-choose/common/dto';
-import { IGameRepository } from '@abstract/game.repository.interface';
+import { IGameRepository } from '@lets-choose/api/abstract';
 import { Game, GameDocument } from './game.entity';
 
 @Injectable()

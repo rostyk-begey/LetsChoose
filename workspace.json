@@ -62,6 +62,20 @@
         }
       }
     },
+    "api-abstract": {
+      "root": "libs/api/abstract",
+      "sourceRoot": "libs/api/abstract/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/api/abstract/**/*.ts"]
+          }
+        }
+      }
+    },
     "api-auth-feature": {
       "root": "libs/api/auth/feature",
       "sourceRoot": "libs/api/auth/feature/src",

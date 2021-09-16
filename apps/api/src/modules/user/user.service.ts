@@ -1,9 +1,11 @@
 import { UpdateUserProfileDto, UserDto } from '@lets-choose/common/dto';
 import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 
-import { IUserRepository } from '@abstract/user.repository.interface';
-import { IUserService } from '@abstract/user.service.interface';
-import { IContestService } from '@abstract/contest.service.interface';
+import {
+  IUserRepository,
+  IUserService,
+  IContestService,
+} from '@lets-choose/api/abstract';
 import { UserRepository } from '@lets-choose/api/user/data-access';
 import { ContestService } from '@modules/contest/contest.service';
 

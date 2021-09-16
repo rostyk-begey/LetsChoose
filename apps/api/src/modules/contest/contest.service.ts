@@ -15,12 +15,14 @@ import { GameRepository } from '@lets-choose/api/game/data-access';
 import { Inject, Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 
-import { ICloudinaryService } from '@abstract/cloudinary.service.interface';
-import { IContestItemRepository } from '@abstract/contest-item.repository.interface';
-import { IContestRepository } from '@abstract/contest.repository.interface';
-import { IContestService } from '@abstract/contest.service.interface';
-import { IGameRepository } from '@abstract/game.repository.interface';
-import { IUserRepository } from '@abstract/user.repository.interface';
+import {
+  ICloudinaryService,
+  IContestItemRepository,
+  IContestRepository,
+  IContestService,
+  IGameRepository,
+  IUserRepository,
+} from '@lets-choose/api/abstract';
 import { fieldNameFilter } from '@src/usecases/utils';
 import { UserRepository } from '@lets-choose/api/user/data-access';
 

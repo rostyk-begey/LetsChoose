@@ -16,7 +16,7 @@ import { GameRepository } from '@lets-choose/api/game/data-access';
 import { UserRepository } from '@lets-choose/api/user/data-access';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { IContestService } from '@abstract/contest.service.interface';
+import { IContestService } from '@lets-choose/api/abstract';
 import contestItemRepository, {
   contestItemBuilder,
 } from '@modules/contest/__mocks__/contest-item.repository';
@@ -25,7 +25,7 @@ import contestRepository, {
 } from '@modules/contest/__mocks__/contest.repository';
 import gameRepository from '@modules/game/__mocks__/game.repository';
 import userRepository from '@modules/user/__mocks__/user.repository';
-import cloudinaryService from '@modules/../../../../../libs/api/cloudinary/src/lib/__mocks__/cloudinary.service';
+import cloudinaryService from '../../../../../libs/api/cloudinary/src/lib/__mocks__/cloudinary.service';
 import { ContestController } from '@modules/contest/contest.controller';
 import {
   ContestService,

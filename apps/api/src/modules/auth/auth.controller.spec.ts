@@ -14,7 +14,7 @@ import {
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { IAuthService } from '@abstract/auth.service.interface';
+import { IAuthService } from '@lets-choose/api/abstract';
 import userRepository, {
   userBuilder,
 } from '@modules/user/__mocks__/user.repository';

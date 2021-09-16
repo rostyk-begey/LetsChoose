@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
 
-import { ICloudinaryService } from '@abstract/cloudinary.service.interface';
+import { ICloudinaryService } from '@lets-choose/api/abstract';
 import { CloudinaryConfig } from '@src/config';
 
 @Injectable()

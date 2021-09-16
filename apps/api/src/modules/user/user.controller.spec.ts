@@ -1,4 +1,4 @@
-import { IUserService } from '@abstract/user.service.interface';
+import { IUserService } from '@lets-choose/api/abstract';
 import { UpdateUserProfileDto } from '@lets-choose/common/dto';
 import { ContestRepository } from '@lets-choose/api/contest/data-access';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';

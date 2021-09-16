@@ -1,4 +1,4 @@
-import { IGameRepository } from '@abstract/game.repository.interface';
+import { IGameRepository } from '@lets-choose/api/abstract';
 import { build, fake, oneOf, sequence } from '@jackfranklin/test-data-bot';
 import { Game } from '@lets-choose/api/game/data-access';
 

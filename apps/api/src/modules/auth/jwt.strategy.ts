@@ -6,8 +6,11 @@ import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { UserRepository } from '@lets-choose/api/user/data-access';
-import { IUserRepository } from '@abstract/user.repository.interface';
-import { AuthTokenPayload, IJwtService } from '@abstract/jwt.service.interface';
+import {
+  IUserRepository,
+  AuthTokenPayload,
+  IJwtService,
+} from '@lets-choose/api/abstract';
 
 const cookieExtractor = (req) => {
   if (req?.cookies) {

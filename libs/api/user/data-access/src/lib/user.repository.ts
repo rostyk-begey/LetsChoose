@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 
 import { UserDto } from '@lets-choose/common/dto';
 import { User, UserDocument } from './user.entity';
-import { IUserRepository } from '@abstract/user.repository.interface';
+import { IUserRepository } from '../../../../abstract/src/lib/user.repository.interface';
 
 @Injectable()
 export class UserRepository implements IUserRepository {

@@ -20,6 +20,7 @@
       "@lets-choose/api-health-feature": [
         "libs/api/health/feature/src/index.ts"
       ],
+      "@lets-choose/api/abstract": ["libs/api/abstract/src/index.ts"],
       "@lets-choose/api/auth/feature": ["libs/api/auth/feature/src/index.ts"],
       "@lets-choose/api/cloudinary": ["libs/api/cloudinary/src/index.ts"],
       "@lets-choose/api/common/services": [

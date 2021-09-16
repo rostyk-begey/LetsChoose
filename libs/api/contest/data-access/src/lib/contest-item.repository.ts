@@ -8,7 +8,7 @@ import {
   ISortOptions,
 } from '@lets-choose/common/dto';
 
-import { IContestItemRepository } from '@abstract/contest-item.repository.interface';
+import { IContestItemRepository } from '@lets-choose/api/abstract';
 import { getPaginationPipelines, getSearchPipelines } from '@usecases/utils';
 import { ContestItem, ContestItemDocument } from './contest-item.entity';
 
