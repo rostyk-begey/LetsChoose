@@ -31,7 +31,10 @@ import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IContestService } from '@lets-choose/api/abstract';
 import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
-import { fieldNameFilter, unlinkAsync } from '@usecases/utils';
+import {
+  fieldNameFilter,
+  unlinkAsync,
+} from '../../../../../libs/api/common/utils/src/lib/utils';
 import {
   getContestItemsSchema,
   getContestSchema,

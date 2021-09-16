@@ -9,7 +9,10 @@ import {
 } from '@lets-choose/common/dto';
 
 import { IContestItemRepository } from '@lets-choose/api/abstract';
-import { getPaginationPipelines, getSearchPipelines } from '@usecases/utils';
+import {
+  getPaginationPipelines,
+  getSearchPipelines,
+} from '@lets-choose/api/common/utils';
 import { ContestItem, ContestItemDocument } from './contest-item.entity';
 
 interface SortOptions {

@@ -23,7 +23,7 @@ import {
   IGameRepository,
   IUserRepository,
 } from '@lets-choose/api/abstract';
-import { fieldNameFilter } from '@src/usecases/utils';
+import { fieldNameFilter } from '@lets-choose/api/common/utils';
 import { UserRepository } from '@lets-choose/api/user/data-access';
 
 export interface CreateContestsData extends CreateContestDTO {

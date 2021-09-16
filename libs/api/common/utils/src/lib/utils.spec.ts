@@ -4,7 +4,7 @@ import {
   getPaginationPipelines,
   getSearchPipelines,
   unlinkAsync,
-} from '@usecases/utils';
+} from './utils';
 
 describe.each`
   key        | fieldname   | expected

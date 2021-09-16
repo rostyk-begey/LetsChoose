@@ -27,6 +27,7 @@
       "@lets-choose/api/common/services": [
         "libs/api/common/services/src/index.ts"
       ],
+      "@lets-choose/api/common/utils": ["libs/api/common/utils/src/index.ts"],
       "@lets-choose/api/contest/data-access": [
         "libs/api/contest/data-access/src/index.ts"
       ],

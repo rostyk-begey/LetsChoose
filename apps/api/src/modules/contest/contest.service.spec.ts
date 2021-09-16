@@ -33,7 +33,6 @@ import {
   ContestService,
   CreateContestsData,
 } from '@modules/contest/contest.service';
-import { TYPES } from '@src/injectable.types';
 
 const paginatedResultBuilder = build({
   fields: {

@@ -1,6 +1,5 @@
-/* eslint-disable import/namespace */
 import Joi from 'joi';
-import { joiObjectIdSchema } from '@src/usecases/object-id.schema';
+import { joiObjectIdSchema } from '@lets-choose/api/common/utils';
 
 const basePaginationSchema = {
   nextCursor: Joi.string().empty('').messages({

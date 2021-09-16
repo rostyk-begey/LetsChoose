@@ -2,7 +2,10 @@ import {
   CreateContestData,
   IContestRepository,
 } from '../../../../abstract/src/lib/contest.repository.interface';
-import { getPaginationPipelines, getSearchPipelines } from '@usecases/utils';
+import {
+  getPaginationPipelines,
+  getSearchPipelines,
+} from '../../../../common/utils/src/lib/utils';
 import { Contest, ContestDocument } from './contest.entity';
 import {
   ContestDto,

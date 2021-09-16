@@ -1,7 +1,6 @@
-/* eslint-disable import/namespace */
 import Joi from 'joi';
 
-import { joiObjectIdSchema } from '@src/usecases/object-id.schema';
+import { joiObjectIdSchema } from '@lets-choose/api/common/utils';
 
 export const gamePlaySchema = Joi.object({
   winnerId: Joi.string().required(),

@@ -48,6 +48,9 @@
     "api-common-services": {
       "tags": []
     },
+    "api-common-utils": {
+      "tags": []
+    },
     "api-contest-data-access": {
       "tags": []
     },
