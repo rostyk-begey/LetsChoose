@@ -5,8 +5,7 @@ import {
 } from '@lets-choose/common/dto';
 import { EmailService } from '@modules/common/email/email.service';
 import { JwtService } from '@modules/common/jwt/jwt.service';
-import { UserRepository } from '../../../../../libs/api/user/data-access/src/lib/user.repository';
-import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';
+import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { UnauthorizedException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -22,7 +21,6 @@ import userRepository, {
   userBuilder,
 } from '@modules/user/__mocks__/user.repository';
 import config from '@src/config';
-import { TYPES } from '@src/injectable.types';
 import { AuthService } from '@modules/auth/auth.service';
 import md5 from 'md5';
 import { PasswordHashService } from '@modules/common/password/password.service';

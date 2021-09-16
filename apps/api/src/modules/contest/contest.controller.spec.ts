@@ -8,10 +8,12 @@ import {
   UpdateContestData,
 } from '@lets-choose/common/dto';
 import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
-import { ContestItemRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.repository';
-import { ContestRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest.repository';
-import { GameRepository } from '@modules/game/game.repository';
-import { UserRepository } from '../../../../../libs/api/user/data-access/src/lib/user.repository';
+import {
+  ContestRepository,
+  ContestItemRepository,
+} from '@lets-choose/api/contest/data-access';
+import { GameRepository } from '@lets-choose/api/game/data-access';
+import { UserRepository } from '@lets-choose/api/user/data-access';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { IContestService } from '@abstract/contest.service.interface';
@@ -24,7 +26,6 @@ import contestRepository, {
 import gameRepository from '@modules/game/__mocks__/game.repository';
 import userRepository from '@modules/user/__mocks__/user.repository';
 import cloudinaryService from '@modules/cloudinary/__mocks__/cloudinary.service';
-import { TYPES } from '@src/injectable.types';
 import { ContestController } from '@modules/contest/contest.controller';
 import {
   ContestService,

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
 
 import { ICloudinaryService } from '@abstract/cloudinary.service.interface';
-import { CloudinaryConfig, GoogleOAuth } from '@src/config';
+import { CloudinaryConfig } from '@src/config';
 
 @Injectable()
 export class CloudinaryService implements ICloudinaryService {

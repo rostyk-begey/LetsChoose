@@ -30,7 +30,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IContestService } from '@abstract/contest.service.interface';
-import { TYPES } from '@src/injectable.types';
 import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
 import { fieldNameFilter, unlinkAsync } from '@usecases/utils';
 import {

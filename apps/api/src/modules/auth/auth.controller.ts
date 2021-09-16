@@ -30,7 +30,6 @@ import {
 } from '@lets-choose/common/dto';
 import { Response as ExpressResponse } from 'express';
 import { JwtConfig } from '@src/config';
-import { TYPES } from '@src/injectable.types';
 import { IAuthService } from '@abstract/auth.service.interface';
 import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
 import {

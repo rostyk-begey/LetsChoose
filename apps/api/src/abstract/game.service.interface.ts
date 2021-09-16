@@ -1,4 +1,4 @@
-import { Game } from '@modules/game/game.entity';
+import { Game } from '@lets-choose/api/game/data-access';
 
 export interface IGameService {
   start(contestId: string): Promise<Game>;

@@ -11,7 +11,7 @@ import {
   ContestRepository,
   ContestItemRepository,
 } from '@lets-choose/api/contest/data-access';
-import { GameRepository } from '@modules/game/game.repository';
+import { GameRepository } from '@lets-choose/api/game/data-access';
 import { Inject, Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 

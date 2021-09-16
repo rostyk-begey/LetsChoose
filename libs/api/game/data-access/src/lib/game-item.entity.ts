@@ -2,7 +2,7 @@ import { Prop, Schema } from '@nestjs/mongoose';
 import { GameItem as GameItemModel } from '@lets-choose/common/dto';
 import mongoose from 'mongoose';
 
-import { ContestItem } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.entity';
+import { ContestItem } from '@lets-choose/api/contest/data-access';
 
 @Schema()
 export class GameItem implements GameItemModel {

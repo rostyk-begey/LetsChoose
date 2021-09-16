@@ -11,10 +11,9 @@ import {
   UsePipes,
 } from '@nestjs/common';
 
-import { TYPES } from '@src/injectable.types';
 import { IGameService } from '@abstract/game.service.interface';
 import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
-import { ContestItem } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.entity';
+import { ContestItem } from '@lets-choose/api/contest/data-access';
 import {
   contestIdSchema,
   gameIdSchema,

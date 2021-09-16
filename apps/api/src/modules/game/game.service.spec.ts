@@ -3,17 +3,18 @@ import { ContestDto } from '@lets-choose/common/dto';
 import contestRepository, {
   contestBuilder,
 } from '@modules/contest/__mocks__/contest.repository';
-import { ContestItem } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.entity';
+import {
+  ContestItem,
+  ContestRepository,
+  ContestItemRepository,
+} from '@lets-choose/api/contest/data-access';
 import contestItemRepository, {
   contestItemBuilder,
 } from '@modules/contest/__mocks__/contest-item.repository';
-import { ContestItemRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.repository';
-import { ContestRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest.repository';
 import gameRepository, {
   gameBuilder,
 } from '@modules/game/__mocks__/game.repository';
-import { GameItem } from '@modules/game/game-item.entity';
-import { GameRepository } from '@modules/game/game.repository';
+import { GameItem, GameRepository } from '@lets-choose/api/game/data-access';
 import { GameService } from '@modules/game/game.service';
 import { oneOf } from '@jackfranklin/test-data-bot';
 import { BadRequestException } from '@nestjs/common';
@@ -254,7 +255,7 @@ describe('GameService', () => {
 
   test('findById', async () => {
     const game = gameBuilder();
-    gameRepository.findById.mockResolvedValueOnce(game);
+    gameRepository.findById.mockResolvedValueOnce(game as any);
     await gameService.findGameById(game.id);
     expect(gameRepository.findById).toHaveBeenCalledWith(game.id);
   });

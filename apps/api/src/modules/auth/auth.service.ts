@@ -26,7 +26,6 @@ import { IJwtService } from '@abstract/jwt.service.interface';
 import { IPasswordHashService } from '@abstract/password.service.interface';
 import { IUserRepository } from '@abstract/user.repository.interface';
 import {
-  User,
   UserDocument,
   UserRepository,
 } from '@lets-choose/api/user/data-access';

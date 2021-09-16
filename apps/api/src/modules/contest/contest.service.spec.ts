@@ -8,11 +8,12 @@ import {
   SearchQuery,
 } from '@lets-choose/common/dto';
 import { CloudinaryService } from '@modules/cloudinary/cloudinary.service';
-import { ContestItemRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.repository';
-import { ContestRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest.repository';
-import { GameRepository } from '@modules/game/game.repository';
-import { UserRepository } from '../../../../../libs/api/user/data-access/src/lib/user.repository';
-import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';
+import {
+  ContestRepository,
+  ContestItemRepository,
+} from '@lets-choose/api/contest/data-access';
+import { GameRepository } from '@lets-choose/api/game/data-access';
+import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { Test, TestingModule } from '@nestjs/testing';
 import mongoose from 'mongoose';
 import faker from 'faker';

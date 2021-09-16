@@ -39,6 +39,9 @@
     "api-contest-data-access": {
       "tags": []
     },
+    "api-game-data-access": {
+      "tags": []
+    },
     "api-health": {
       "tags": []
     },

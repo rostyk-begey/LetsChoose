@@ -1,6 +1,8 @@
-import { ContestItemRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.repository';
-import { ContestRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest.repository';
-import { GameRepository } from '@modules/game/game.repository';
+import {
+  ContestItem,
+  ContestRepository,
+  ContestItemRepository,
+} from '@lets-choose/api/contest/data-access';
 import {
   BadRequestException,
   Inject,
@@ -14,10 +16,12 @@ import { IContestItemRepository } from '@abstract/contest-item.repository.interf
 import { IGameService } from '@abstract/game.service.interface';
 import { IContestRepository } from '@abstract/contest.repository.interface';
 import { IGameRepository } from '@abstract/game.repository.interface';
-import { TYPES } from '@src/injectable.types';
-import { ContestItem } from '../../../../../libs/api/contest/data-access/src/lib/contest-item.entity';
-import { GameItem } from '@modules/game/game-item.entity';
-import { Game, GameDocument } from '@modules/game/game.entity';
+import {
+  Game,
+  GameItem,
+  GameDocument,
+  GameRepository,
+} from '@lets-choose/api/game/data-access';
 
 @Injectable()
 export class GameService implements IGameService {

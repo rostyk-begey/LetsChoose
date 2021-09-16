@@ -1,45 +1,41 @@
-import { UpdateUserProfileDto } from '@lets-choose/common/dto';
+import { UpdateUserProfileDto, UserDto } from '@lets-choose/common/dto';
 import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 
 import { IUserRepository } from '@abstract/user.repository.interface';
 import { IUserService } from '@abstract/user.service.interface';
 import { IContestService } from '@abstract/contest.service.interface';
-import {
-  User,
-  UserDocument,
-  UserRepository,
-} from '@lets-choose/api/user/data-access';
+import { UserRepository } from '@lets-choose/api/user/data-access';
 import { ContestService } from '@modules/contest/contest.service';
 
 @Injectable()
 export class UserService implements IUserService {
   constructor(
     @Inject(UserRepository)
-    protected readonly userRepository: IUserRepository<UserDocument>,
+    protected readonly userRepository: IUserRepository,
 
     @Inject(ContestService)
     protected readonly contestService: IContestService,
   ) {}
 
-  public findById(userId: string): Promise<User> {
+  public findById(userId: string): Promise<UserDto> {
     return this.userRepository.findByIdOrFail(userId);
   }
 
-  public findByUsername(username: string): Promise<User> {
+  public findByUsername(username: string): Promise<UserDto> {
     return this.userRepository.findByUsername(username);
   }
 
   public async updateUserProfile(
     userId: string,
     { username, email }: UpdateUserProfileDto,
-  ): Promise<User> {
+  ): Promise<UserDto> {
     const userByUsername = await this.userRepository.findByUsername(username);
-    if (userByUsername && userByUsername.id.toString() !== userId.toString()) {
+    if (userByUsername && userByUsername._id.toString() !== userId.toString()) {
       throw new BadRequestException('Username already taken');
     }
 
     const userByEmail = await this.userRepository.findByEmail(email);
-    if (userByEmail && userByEmail.id.toString() !== userId.toString()) {
+    if (userByEmail && userByEmail._id.toString() !== userId.toString()) {
       throw new BadRequestException(`User with email ${email} already exists`);
     }
 
@@ -48,12 +44,12 @@ export class UserService implements IUserService {
 
   public async removeUserById(id: string): Promise<void> {
     const user = await this.userRepository.findByIdOrFail(id);
-    await this.removeUserData(user.id);
+    await this.removeUserData(user._id);
   }
 
   public async removeUserByUsername(username: string): Promise<void> {
     const user = await this.userRepository.findByUsername(username);
-    await this.removeUserData(user.id);
+    await this.removeUserData(user._id);
   }
 
   protected async removeUserData(userId: string): Promise<void> {

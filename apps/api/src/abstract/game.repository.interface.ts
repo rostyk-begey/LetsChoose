@@ -1,5 +1,5 @@
 import { CreateGameDto } from '@lets-choose/common/dto';
-import { Game, GameDocument } from '@modules/game/game.entity';
+import { Game, GameDocument } from '@lets-choose/api/game/data-access';
 
 export interface IGameRepository {
   countDocuments(): Promise<number>;

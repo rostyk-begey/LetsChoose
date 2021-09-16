@@ -1,14 +1,11 @@
+import { UserDto } from '@lets-choose/common/dto';
 import { JwtService } from '@modules/common/jwt/jwt.service';
 import { PassportStrategy } from '@nestjs/passport';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import {
-  User,
-  UserDocument,
-  UserRepository,
-} from '@lets-choose/api/user/data-access';
+import { UserRepository } from '@lets-choose/api/user/data-access';
 import { IUserRepository } from '@abstract/user.repository.interface';
 import { AuthTokenPayload, IJwtService } from '@abstract/jwt.service.interface';
 
@@ -25,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly configService: ConfigService,
 
     @Inject(UserRepository)
-    private readonly userRepository: IUserRepository<UserDocument>,
+    private readonly userRepository: IUserRepository,
 
     @Inject(JwtService)
     private readonly jwtService: IJwtService,
@@ -40,7 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate({ userId }: AuthTokenPayload): Promise<User> {
+  async validate({ userId }: AuthTokenPayload): Promise<UserDto> {
     return await this.userRepository.findById(userId);
   }
 }

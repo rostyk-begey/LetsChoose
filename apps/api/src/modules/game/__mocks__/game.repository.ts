@@ -1,6 +1,6 @@
 import { IGameRepository } from '@abstract/game.repository.interface';
 import { build, fake, oneOf, sequence } from '@jackfranklin/test-data-bot';
-import { Game } from '@modules/game/game.entity';
+import { Game } from '@lets-choose/api/game/data-access';
 
 export const gameBuilder = build<Game>({
   fields: {

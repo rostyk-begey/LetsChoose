@@ -1,16 +1,10 @@
 import { IContestService } from '@abstract/contest.service.interface';
-import {
-  ContestDto,
-  UpdateUserPasswordDto,
-  UpdateUserProfileDto,
-} from '@lets-choose/common/dto';
-import { ContestRepository } from '../../../../../libs/api/contest/data-access/src/lib/contest.repository';
-import { UserRepository } from '../../../../../libs/api/user/data-access/src/lib/user.repository';
-import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';
+import { ContestDto, UpdateUserProfileDto } from '@lets-choose/common/dto';
+import { ContestRepository } from '@lets-choose/api/contest/data-access';
+import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IUserService } from '@abstract/user.service.interface';
-import { TYPES } from '@src/injectable.types';
 import contestRepository, {
   contestBuilder,
 } from '@modules/contest/__mocks__/contest.repository';

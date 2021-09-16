@@ -1,6 +1,6 @@
 import { IUserRepository } from '@abstract/user.repository.interface';
 import { build, fake, oneOf, sequence } from '@jackfranklin/test-data-bot';
-import { User } from '../../../../../../libs/api/user/data-access/src/lib/user.entity';
+import { User, UserDocument } from '@lets-choose/api/user/data-access';
 import { Types } from 'mongoose';
 
 export const userBuilder = build<User>({
@@ -28,7 +28,7 @@ export const userBuilder = build<User>({
   }),
 });
 
-const userRepository: jest.Mocked<IUserRepository> = {
+const userRepository: jest.Mocked<IUserRepository<UserDocument>> = {
   findById: jest.fn(),
   findByIdOrFail: jest.fn(),
   findByIdAndUpdate: jest.fn(),

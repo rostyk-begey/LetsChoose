@@ -1,6 +1,7 @@
 import {
   HttpResponseMessageDto,
   UpdateUserProfileDto,
+  UserDto,
 } from '@lets-choose/common/dto';
 import { API_ROUTES } from '@lets-choose/common/utils';
 import { UserService } from './user.service';
@@ -20,9 +21,8 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { User } from '../../../../../libs/api/user/data-access/src/lib/user.entity';
+import { User } from '@lets-choose/api/user/data-access';
 import { JoiValidationPipe } from '@pipes/joi-validation.pipe';
-import { TYPES } from '@src/injectable.types';
 import { IUserService } from '@abstract/user.service.interface';
 
 @ApiTags('User')
@@ -44,7 +44,7 @@ export class UserController {
   @ApiOperation({ summary: 'Get user by username' })
   @ApiResponse({ status: 200, type: User })
   @Get('/:username')
-  async findByUsername(@Param('username') username: string): Promise<User> {
+  async findByUsername(@Param('username') username: string): Promise<UserDto> {
     return await this.userService.findByUsername(username);
   }
 
@@ -56,7 +56,7 @@ export class UserController {
   async updateUserProfile(
     @Request() req: any,
     @Body() dto: UpdateUserProfileDto,
-  ): Promise<User> {
+  ): Promise<UserDto> {
     return await this.userService.updateUserProfile(req.user.id, dto);
   }
 
