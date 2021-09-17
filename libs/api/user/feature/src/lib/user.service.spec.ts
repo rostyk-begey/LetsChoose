@@ -13,7 +13,7 @@ import {
 } from '@lets-choose/api/testing/mocks';
 import { contestBuilder, userBuilder } from '@lets-choose/api/testing/builders';
 import { ContestService } from '@modules/contest/contest.service';
-import { UserService } from '@modules/user/user.service';
+import { UserService } from './user.service';
 import * as faker from 'faker';
 
 describe('UserService', () => {

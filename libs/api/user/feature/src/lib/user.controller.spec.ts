@@ -13,8 +13,8 @@ import {
 } from '@lets-choose/api/testing/mocks';
 import { userBuilder } from '@lets-choose/api/testing/builders';
 import { ContestService } from '@modules/contest/contest.service';
-import { UserController } from '@modules/user/user.controller';
-import { UserService } from '@modules/user/user.service';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 import faker from 'faker';
 
 describe('UserController', () => {

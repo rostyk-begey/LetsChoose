@@ -75,6 +75,9 @@
     "api-user-data-access": {
       "tags": []
     },
+    "api-user-feature": {
+      "tags": []
+    },
     "client": {
       "tags": []
     },

@@ -5,7 +5,7 @@ import {
 } from '@lets-choose/common/dto';
 import { API_ROUTES } from '@lets-choose/common/utils';
 import { UserService } from './user.service';
-import { updateUserProfileSchema } from '@modules/user/user.validation';
+import { updateUserProfileSchema } from './user.validation';
 import {
   Body,
   Controller,
@@ -40,22 +40,6 @@ export class UserController {
   public me(@Request() req: any): User {
     return req.user;
   }
-
-  // @Get('/testing')
-  // test1() {
-  //   console.log('test');
-  //   return new User({
-  //     _id: '_id',
-  //     id: 'id',
-  //     email: 'email',
-  //     avatar: 'avatar',
-  //     bio: 'bio',
-  //     confirmed: false,
-  //     username: 'username',
-  //     password: 'password',
-  //     passwordVersion: 1,
-  //   });
-  // }
 
   @ApiOperation({ summary: 'Get user by username' })
   @ApiResponse({ status: 200, type: User })

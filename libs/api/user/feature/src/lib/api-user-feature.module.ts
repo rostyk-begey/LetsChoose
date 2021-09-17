@@ -1,9 +1,8 @@
 import { ApiUserDataAccessModule } from '@lets-choose/api/user/data-access';
-import { Module } from '@nestjs/common';
-
-import { UserController } from '@modules/user/user.controller';
-import { UserService } from '@modules/user/user.service';
 import { ContestModule } from '@modules/contest/contest.module';
+import { Module } from '@nestjs/common';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
 @Module({
   imports: [ApiUserDataAccessModule, ContestModule],
@@ -11,4 +10,4 @@ import { ContestModule } from '@modules/contest/contest.module';
   providers: [UserService],
   exports: [UserService],
 })
-export class UserModule {}
+export class ApiUserFeatureModule {}

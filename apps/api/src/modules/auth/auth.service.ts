@@ -32,13 +32,13 @@ import {
   IUserRepository,
 } from '@lets-choose/api/abstract';
 import { UserRepository } from '@lets-choose/api/user/data-access';
-import { GoogleOAuth } from '@lets-choose/api/config';
+import { GoogleOAuthConfig } from '@lets-choose/api/config';
 
 @Injectable()
 export class AuthService implements IAuthService {
   private readonly config: {
     appUrl: string;
-    googleOAuth: GoogleOAuth;
+    googleOAuth: GoogleOAuthConfig;
   };
 
   private readonly OAuth2Client: OAuth2Client;
