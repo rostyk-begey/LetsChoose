@@ -1,53 +1,52 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import Tooltip from '@material-ui/core/Tooltip';
-import { useSnackbar } from 'notistack';
-import EditIcon from '@material-ui/icons/Edit';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Button from '@material-ui/core/Button';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import { useRouter } from 'next/router';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import humanTime from 'human-time';
-import clip from 'text-clipper';
-import classNames from 'classnames';
-import RouterLink from 'next/link';
-import Skeleton from '@material-ui/lab/Skeleton';
-import Link from '@material-ui/core/Link';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import MobileStepper from '@material-ui/core/MobileStepper';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Image from 'next/image';
-// import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
-import { ContestDto, UserDto } from '@lets-choose/common/dto';
-import SwipeableViews from 'react-swipeable-views';
-
 import {
   useContestDelete,
   useContestItemsInfinite,
   useContestReset,
-  useGameStart,
   useCurrentUser,
+  useGameStart,
 } from '@lets-choose/client/hooks';
 import { cloudinaryUploadPath, ROUTES } from '@lets-choose/client/utils';
+import { ContestDto, UserDto } from '@lets-choose/common/dto';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import IconButton from '@material-ui/core/IconButton';
+import Link from '@material-ui/core/Link';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MobileStepper from '@material-ui/core/MobileStepper';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+// import FavoriteIcon from '@material-ui/icons/Favorite';
+import ShareIcon from '@material-ui/icons/Share';
+import Skeleton from '@material-ui/lab/Skeleton';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
+import classNames from 'classnames';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import humanTime from 'human-time';
+import Image from 'next/image';
+import RouterLink from 'next/link';
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
+import React, { useCallback, useEffect, useState } from 'react';
+import SwipeableViews from 'react-swipeable-views';
+import clip from 'text-clipper';
 
 export const useStyles = makeStyles((theme) =>
   createStyles({
@@ -229,7 +228,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
   } = useContestItemsSlider(contest.id);
   const { menuAnchor, handleMenuClick, handleMenuClose } = useMenu();
   const { mutateAsync: deleteContest } = useContestDelete(id);
-  const { mutateAsync: resetContest } = useContestReset(contest._id);
+  const { mutateAsync: resetContest } = useContestReset(contest.id);
   const handleDeleteClick = async () => {
     if (
       window.confirm(

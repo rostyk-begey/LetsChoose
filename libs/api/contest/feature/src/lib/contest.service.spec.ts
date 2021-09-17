@@ -1,5 +1,8 @@
 import { build, fake } from '@jackfranklin/test-data-bot';
-import { CloudinaryService } from '@lets-choose/api/cloudinary';
+import {
+  CloudinaryService,
+  cloudinaryServiceMock,
+} from '@lets-choose/api/cloudinary';
 import {
   ContestItemRepository,
   ContestRepository,
@@ -11,13 +14,6 @@ import {
   userBuilder,
 } from '@lets-choose/api/testing/builders';
 
-import {
-  cloudinaryServiceMock,
-  contestItemRepositoryMock,
-  contestRepositoryMock,
-  gameRepositoryMock,
-  userRepositoryMock,
-} from '@lets-choose/api/testing/mocks';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import {
   ContestDto,
@@ -30,6 +26,10 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import faker from 'faker';
 import mongoose from 'mongoose';
+import { gameRepositoryMock } from '../../../../game/data-access/src/lib/game.repository.mock';
+import { userRepositoryMock } from '../../../../user/data-access/src/lib/user.repository.mock';
+import { contestItemRepositoryMock } from '../../../data-access/src/lib/contest-item.repository.mock';
+import { contestRepositoryMock } from '../../../data-access/src/lib/contest.repository.mock';
 import { ContestService, CreateContestsData } from './contest.service';
 
 const paginatedResultBuilder = build({

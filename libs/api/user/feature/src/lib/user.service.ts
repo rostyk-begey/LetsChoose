@@ -4,7 +4,7 @@ import {
   IUserService,
 } from '@lets-choose/api/abstract';
 import { ContestService } from '@lets-choose/api/contest/feature';
-import { UserRepository } from '@lets-choose/api/user/data-access';
+import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { UpdateUserProfileDto, UserDto } from '@lets-choose/common/dto';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 
@@ -12,7 +12,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 export class UserService implements IUserService {
   constructor(
     @Inject(UserRepository)
-    protected readonly userRepository: IUserRepository,
+    protected readonly userRepository: IUserRepository<User>,
 
     @Inject(ContestService)
     protected readonly contestService: IContestService,
@@ -31,12 +31,12 @@ export class UserService implements IUserService {
     { username, email }: UpdateUserProfileDto,
   ): Promise<UserDto> {
     const userByUsername = await this.userRepository.findByUsername(username);
-    if (userByUsername && userByUsername._id.toString() !== userId.toString()) {
+    if (userByUsername && userByUsername.id.toString() !== userId.toString()) {
       throw new BadRequestException('Username already taken');
     }
 
     const userByEmail = await this.userRepository.findByEmail(email);
-    if (userByEmail && userByEmail._id.toString() !== userId.toString()) {
+    if (userByEmail && userByEmail.id.toString() !== userId.toString()) {
       throw new BadRequestException(`User with email ${email} already exists`);
     }
 
@@ -45,19 +45,19 @@ export class UserService implements IUserService {
 
   public async removeUserById(id: string): Promise<void> {
     const user = await this.userRepository.findByIdOrFail(id);
-    await this.removeUserData(user._id);
+    await this.removeUserData(user.id);
   }
 
   public async removeUserByUsername(username: string): Promise<void> {
     const user = await this.userRepository.findByUsername(username);
-    await this.removeUserData(user._id);
+    await this.removeUserData(user.id);
   }
 
   protected async removeUserData(userId: string): Promise<void> {
     const contests = await this.contestService.findContestsByAuthor(userId);
     await Promise.all(
-      contests.map(async ({ _id }) => {
-        await this.contestService.removeContest(_id);
+      contests.map(async ({ id }) => {
+        await this.contestService.removeContest(id);
       }),
     );
   }

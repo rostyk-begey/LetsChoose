@@ -1,9 +1,9 @@
-import React from 'react';
-import { Story, Meta } from '@storybook/react';
+import { queryClient } from '@lets-choose/client/utils';
+import { Meta, Story } from '@storybook/react';
 import faker from 'faker';
 import * as NextImage from 'next/image';
+import React from 'react';
 import { QueryClientProvider } from 'react-query';
-import { queryClient } from '@lets-choose/client/utils';
 import { ContestCard, ContestCardProps } from './ContestCard';
 
 const nextImageContainerStyle: any = {
@@ -56,20 +56,18 @@ const Template: Story<ContestCardProps> = (args) => <ContestCard {...args} />;
 export const Primary = Template.bind({});
 Primary.args = {
   contest: {
-    _id: 'contestId',
+    id: 'contestId',
     games: faker.random.number(0),
     thumbnail: faker.image.image(),
     title: faker.lorem.sentence(),
     excerpt: faker.lorem.sentences(),
     author: {
-      _id: faker.random.alphaNumeric(8),
+      id: faker.random.alphaNumeric(8),
       email: faker.internet.email(),
       avatar: faker.internet.avatar(),
       username: faker.internet.userName(),
-      password: faker.internet.password(),
     },
     createdAt: new Date().toString(),
-    id: 'contestId',
     items: [],
   },
 };

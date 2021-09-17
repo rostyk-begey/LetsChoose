@@ -1,5 +1,4 @@
 import { IDatabaseService } from '@lets-choose/api/abstract';
-import { ApiAuthFeatureModule } from '@lets-choose/api/auth/feature';
 import { DatabaseService } from '@lets-choose/api/common/services';
 import { userBuilder } from '@lets-choose/api/testing/builders';
 import { createTestingModule } from '@lets-choose/api/testing/utils';
@@ -20,6 +19,7 @@ import {
 } from 'google-auth-library/build/src/auth/loginticket';
 import { Connection } from 'mongoose';
 import request from 'supertest';
+import { ApiAuthFeatureModule } from './api-auth-feature.module';
 
 const ticket = { getPayload: jest.fn() } as unknown as jest.Mocked<LoginTicket>;
 const verifyIdToken = jest.fn(() => ({ ticket }));

@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "lint": "eslint . --quiet",
+    "lint": "yarn run nx run-many --target lint --all --parallel",
+    "test": "yarn run nx run-many --target test --all --parallel",
     "build": "yarn run nx run-many --target build --all --prod",
-    "ci": "yarn run lint && lerna run test",
+    "ci": "yarn run lint && yarn run lint",
     "prepare": "husky install"
   },
   "devDependencies": {

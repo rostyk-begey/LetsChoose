@@ -1,13 +1,23 @@
 import { Contest, ContestItem } from '@lets-choose/api/contest/data-access';
-import { Game as GameModel } from '@lets-choose/common/dto';
+import { GameDto } from '@lets-choose/common/dto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { GameItem } from './game-item.entity';
 
 export type GameDocument = Game & mongoose.Document;
 
-@Schema()
-export class Game implements GameModel {
+@Schema({
+  id: true,
+  toJSON: {
+    getters: true,
+    versionKey: false,
+    transform: (_, ret: Partial<Game>) => {
+      delete ret._id;
+      return ret;
+    },
+  },
+})
+export class Game implements GameDto {
   @Prop({ type: mongoose.Schema.Types.ObjectId, alias: 'id' })
   _id: string;
   readonly id: string;

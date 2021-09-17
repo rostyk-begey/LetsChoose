@@ -5,7 +5,7 @@ import {
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
-  UpdateContestDTO,
+  UpdateContestDto,
 } from '@lets-choose/common/dto';
 
 export interface IContestService {
@@ -17,7 +17,7 @@ export interface IContestService {
     query: GetItemsQuery,
   ): Promise<GetItemsResponse>;
   createContest(userId: string, data: CreateContestDto): Promise<ContestDto>;
-  updateContest(contestId: string, data: UpdateContestDTO): Promise<ContestDto>;
+  updateContest(contestId: string, data: UpdateContestDto): Promise<ContestDto>;
   resetContest(contestId: string): Promise<ContestDto>;
   removeContest(contestId: string): Promise<void>;
 }

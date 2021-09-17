@@ -1,4 +1,4 @@
-import { ContestItemDto as ContestItemModel } from '@lets-choose/common/dto';
+import { ContestItemDto } from '@lets-choose/common/dto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
@@ -6,8 +6,18 @@ import { Contest } from './contest.entity';
 
 export type ContestItemDocument = ContestItem & mongoose.Document;
 
-@Schema()
-export class ContestItem extends ContestItemModel {
+@Schema({
+  id: true,
+  toJSON: {
+    getters: true,
+    versionKey: false,
+    transform: (_, ret: Partial<ContestItem>) => {
+      delete ret._id;
+      return ret;
+    },
+  },
+})
+export class ContestItem extends ContestItemDto {
   @Prop({ type: mongoose.Schema.Types.ObjectId, alias: 'id' })
   _id: string;
   readonly id: string;

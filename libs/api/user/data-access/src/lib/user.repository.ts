@@ -7,14 +7,13 @@ import { Model, Types } from 'mongoose';
 import { User, UserDocument } from './user.entity';
 
 @Injectable()
-export class UserRepository implements IUserRepository {
+export class UserRepository implements IUserRepository<User> {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
   public async findById(userId: string): Promise<User | null> {
-    const user = await this.userModel.findById(userId);
-    return user ? new User(user.toObject()) : null;
+    return await this.userModel.findById(userId);
   }
 
   public async findByIdOrFail(userId: string): Promise<User> {
@@ -33,7 +32,7 @@ export class UserRepository implements IUserRepository {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return new User(user.toObject());
+    return user.toObject();
   }
 
   protected async findOne(query: Partial<User>): Promise<User | null> {

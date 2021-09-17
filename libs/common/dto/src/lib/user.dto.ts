@@ -1,5 +1,5 @@
 export abstract class UserDto {
-  _id: string;
+  // _id: string;
   id: string;
   email: string;
   avatar: string;

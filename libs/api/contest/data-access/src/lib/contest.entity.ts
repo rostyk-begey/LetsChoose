@@ -1,5 +1,5 @@
 import { User } from '@lets-choose/api/user/data-access';
-import { ContestDto as ContestModel } from '@lets-choose/common/dto';
+import { ContestDto } from '@lets-choose/common/dto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { ContestItem } from './contest-item.entity';
@@ -7,9 +7,18 @@ import { ContestItem } from './contest-item.entity';
 export type ContestDocument = Contest & mongoose.Document;
 
 @Schema({
+  id: true,
   timestamps: true,
+  toJSON: {
+    getters: true,
+    versionKey: false,
+    transform: (_, ret: Partial<ContestItem>) => {
+      delete ret._id;
+      return ret;
+    },
+  },
 })
-export class Contest extends ContestModel {
+export class Contest extends ContestDto {
   @Prop({ type: mongoose.Schema.Types.ObjectId, alias: 'id' })
   _id: string;
   readonly id: string;

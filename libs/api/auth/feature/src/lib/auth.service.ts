@@ -11,7 +11,7 @@ import {
   PasswordHashService,
 } from '@lets-choose/api/common/services';
 import { Config, GoogleOAuthConfig } from '@lets-choose/api/config';
-import { UserRepository } from '@lets-choose/api/user/data-access';
+import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import {
   AuthForgotPasswordDto,
   AuthGoogleLoginDto,
@@ -19,7 +19,6 @@ import {
   AuthRegisterDto,
   AuthTokenDto,
   UpdateUserPasswordDto,
-  UserDto,
 } from '@lets-choose/common/dto';
 import {
   BadRequestException,
@@ -43,7 +42,7 @@ export class AuthService implements IAuthService {
 
   constructor(
     @Inject(UserRepository)
-    protected readonly userRepository: IUserRepository,
+    protected readonly userRepository: IUserRepository<User>,
 
     @Inject(JwtService)
     protected readonly jwtService: IJwtService,
@@ -78,7 +77,7 @@ export class AuthService implements IAuthService {
     username,
     password,
     avatar,
-  }: { avatar?: string } & AuthRegisterDto): Promise<UserDto> {
+  }: { avatar?: string } & AuthRegisterDto): Promise<User> {
     const hashedPassword: string = await this.passwordHashService.hash(
       password,
       12,
@@ -112,7 +111,7 @@ export class AuthService implements IAuthService {
       password,
     });
 
-    const emailToken = this.jwtService.generateEmailToken(user._id);
+    const emailToken = this.jwtService.generateEmailToken(user.id);
 
     this.emailService.sendRegistrationEmail(
       user.email,
@@ -136,8 +135,6 @@ export class AuthService implements IAuthService {
 
     const isMatch = await this.passwordHashService.compare(
       password,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       user.password,
     );
 
@@ -151,14 +148,12 @@ export class AuthService implements IAuthService {
     // }
 
     const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
-      user._id,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+      user.id,
       user.passwordVersion,
     );
 
     return {
-      userId: user._id,
+      userId: user.id,
       accessToken,
       refreshToken,
     };
@@ -182,14 +177,14 @@ export class AuthService implements IAuthService {
     }
 
     const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
-      user._id,
+      user.id,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       user.passwordVersion,
     );
 
     return {
-      userId: user._id,
+      userId: user.id,
       accessToken,
       refreshToken,
     };
@@ -214,7 +209,7 @@ export class AuthService implements IAuthService {
     }
 
     const resetPasswordToken = this.jwtService.generateResetPasswordToken(
-      user._id,
+      user.id,
     );
 
     this.emailService.sendResetPasswordEmail(
@@ -239,7 +234,7 @@ export class AuthService implements IAuthService {
 
     const newPassword = await this.passwordHashService.hash(password, 12);
 
-    await this.userRepository.findByIdAndUpdate(user._id, {
+    await this.userRepository.findByIdAndUpdate(user.id, {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       password: newPassword,
@@ -271,7 +266,7 @@ export class AuthService implements IAuthService {
       12,
     );
 
-    await this.userRepository.findByIdAndUpdate(user._id, {
+    await this.userRepository.findByIdAndUpdate(user.id, {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       password: newPasswordHash,
@@ -281,14 +276,14 @@ export class AuthService implements IAuthService {
     });
 
     const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
-      user._id,
+      user.id,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       user.passwordVersion,
     );
 
     return {
-      userId: user._id,
+      userId: user.id,
       accessToken,
       refreshToken,
     };

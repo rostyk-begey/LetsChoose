@@ -1,12 +1,11 @@
-import { Game } from '@lets-choose/api/game/data-access';
-import { CreateGameDto } from '@lets-choose/common/dto';
+import { CreateGameDto, GameDto } from '@lets-choose/common/dto';
 
 export interface IGameRepository {
   countDocuments(): Promise<number>;
-  aggregate(aggregations?: any[]): Promise<Game[]>;
-  findById(gameId: string): Promise<Game>;
-  findByIdAndUpdate(gameId: string, data: Partial<Game>): Promise<Game>;
-  deleteGame(gameId: string): Promise<Game>;
+  aggregate(aggregations?: unknown[]): Promise<GameDto[]>;
+  findById(gameId: string): Promise<GameDto>;
+  findByIdAndUpdate(gameId: string, data: Partial<GameDto>): Promise<GameDto>;
+  deleteGame(gameId: string): Promise<GameDto>;
   deleteGames(contestId): Promise<void>;
-  createGame(data: CreateGameDto): Promise<Game>;
+  createGame(data: CreateGameDto & { _id: string }): Promise<GameDto>;
 }

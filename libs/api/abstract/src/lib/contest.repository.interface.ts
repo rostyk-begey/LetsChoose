@@ -7,7 +7,7 @@ import {
 export type CreateContestData = Omit<
   ContestDto,
   'id' | 'items' | 'games' | 'createdAt'
->;
+> & { _id: string };
 
 export interface IContestRepository {
   countDocuments(authorId?: string): Promise<number>;

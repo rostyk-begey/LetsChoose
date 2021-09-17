@@ -57,9 +57,11 @@ export class GameRepository implements IGameRepository {
     await this.gameModel.deleteMany({ contestId });
   }
 
-  public async createGame(data: CreateGameDto): Promise<Game> {
+  public async createGame(
+    data: CreateGameDto & { _id: string },
+  ): Promise<Game> {
     const game = new this.gameModel(data);
     await game.save();
-    return game;
+    return game.toObject();
   }
 }

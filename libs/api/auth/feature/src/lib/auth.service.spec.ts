@@ -6,12 +6,6 @@ import {
 } from '@lets-choose/api/common/services';
 import { loadConfig as config } from '@lets-choose/api/config';
 import { userBuilder } from '@lets-choose/api/testing/builders';
-import {
-  emailServiceMock,
-  jwtServiceMock,
-  passwordHashServiceMock,
-  userRepositoryMock,
-} from '@lets-choose/api/testing/mocks';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import {
   AuthLoginDto,
@@ -25,6 +19,10 @@ import faker from 'faker';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
 import md5 from 'md5';
+import { emailServiceMock } from '../../../../common/services/src/lib/email.service.mock';
+import { jwtServiceMock } from '../../../../common/services/src/lib/jwt.service.mock';
+import { passwordHashServiceMock } from '../../../../common/services/src/lib/password.service.mock';
+import { userRepositoryMock } from '../../../../user/data-access/src/lib/user.repository.mock';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {

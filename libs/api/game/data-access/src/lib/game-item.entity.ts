@@ -1,5 +1,5 @@
 import { ContestItem } from '@lets-choose/api/contest/data-access';
-import { GameItem as GameItemModel } from '@lets-choose/common/dto';
+import { GameItemDto as GameItemModel } from '@lets-choose/common/dto';
 import { Prop, Schema } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 

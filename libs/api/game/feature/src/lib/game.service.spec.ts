@@ -11,16 +11,14 @@ import {
   contestItemBuilder,
   gameBuilder,
 } from '@lets-choose/api/testing/builders';
-import {
-  contestItemRepositoryMock,
-  contestRepositoryMock,
-  gameRepositoryMock,
-} from '@lets-choose/api/testing/mocks';
 import { ContestDto } from '@lets-choose/common/dto';
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import lodash from 'lodash';
 import mongoose from 'mongoose';
+import { contestItemRepositoryMock } from '../../../../contest/data-access/src/lib/contest-item.repository.mock';
+import { contestRepositoryMock } from '../../../../contest/data-access/src/lib/contest.repository.mock';
+import { gameRepositoryMock } from '../../../data-access/src/lib/game.repository.mock';
 import { GameService } from './game.service';
 
 const getGameItemsPerRound = ({

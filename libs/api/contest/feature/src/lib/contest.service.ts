@@ -193,8 +193,8 @@ export class ContestService implements IContestService {
       ContestService.getContestThumbnailPublicId(contestId),
     );
     const items = await this.contestItemRepository.findByContestId(contestId);
-    const itemsToDelete = items.map(({ _id }) =>
-      ContestService.getContestItemImagePublicId(contestId, _id),
+    const itemsToDelete = items.map(({ id }) =>
+      ContestService.getContestItemImagePublicId(contestId, id),
     );
     await this.cloudinaryService.destroyMultiple(itemsToDelete);
     await this.cloudinaryService.deleteFolder(`contests/${contestId}`);

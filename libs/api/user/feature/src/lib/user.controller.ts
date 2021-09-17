@@ -22,8 +22,27 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Exclude, Expose } from 'class-transformer';
 import { UserService } from './user.service';
 import { updateUserProfileSchema } from './user.validation';
+
+class Test {
+  _id: string;
+
+  @Expose()
+  get id() {
+    return this._id;
+  }
+
+  publicField: string;
+
+  @Exclude()
+  privateField: string;
+
+  constructor(partial: Partial<Test>) {
+    Object.assign(this, partial);
+  }
+}
 
 @ApiTags('User')
 @Controller(API_ROUTES.USERS)

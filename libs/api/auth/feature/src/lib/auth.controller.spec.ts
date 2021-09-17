@@ -6,12 +6,6 @@ import {
 } from '@lets-choose/api/common/services';
 import { loadConfig as config } from '@lets-choose/api/config';
 import { userBuilder } from '@lets-choose/api/testing/builders';
-import {
-  emailServiceMock,
-  jwtServiceMock,
-  passwordHashServiceMock,
-  userRepositoryMock,
-} from '@lets-choose/api/testing/mocks';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import {
   AuthForgotPasswordDto,
@@ -24,6 +18,10 @@ import {
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
+import { emailServiceMock } from '../../../../common/services/src/lib/email.service.mock';
+import { jwtServiceMock } from '../../../../common/services/src/lib/jwt.service.mock';
+import { passwordHashServiceMock } from '../../../../common/services/src/lib/password.service.mock';
+import { userRepositoryMock } from '../../../../user/data-access/src/lib/user.repository.mock';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 

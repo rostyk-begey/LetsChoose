@@ -1,5 +1,8 @@
 import { IContestService } from '@lets-choose/api/abstract';
-import { CloudinaryService } from '@lets-choose/api/cloudinary';
+import {
+  CloudinaryService,
+  cloudinaryServiceMock,
+} from '@lets-choose/api/cloudinary';
 import {
   ContestItemRepository,
   ContestRepository,
@@ -9,13 +12,6 @@ import {
   contestBuilder,
   contestItemBuilder,
 } from '@lets-choose/api/testing/builders';
-import {
-  cloudinaryServiceMock,
-  contestItemRepositoryMock,
-  contestRepositoryMock,
-  gameRepositoryMock,
-  userRepositoryMock,
-} from '@lets-choose/api/testing/mocks';
 import { UserRepository } from '@lets-choose/api/user/data-access';
 import {
   ContestDto,
@@ -27,6 +23,10 @@ import {
   UpdateContestData,
 } from '@lets-choose/common/dto';
 import { Test, TestingModule } from '@nestjs/testing';
+import { gameRepositoryMock } from '../../../../game/data-access/src/lib/game.repository.mock';
+import { userRepositoryMock } from '../../../../user/data-access/src/lib/user.repository.mock';
+import { contestItemRepositoryMock } from '../../../data-access/src/lib/contest-item.repository.mock';
+import { contestRepositoryMock } from '../../../data-access/src/lib/contest.repository.mock';
 import { ContestController } from './contest.controller';
 import { ContestService, CreateContestsData } from './contest.service';
 

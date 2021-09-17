@@ -1,11 +1,11 @@
 import { CreateUserDto, UserDto } from '@lets-choose/common/dto';
 
-export interface IUserRepository {
-  findById(userId: string): Promise<UserDto | null>;
-  findByIdOrFail(userId: string): Promise<UserDto>;
-  findByIdAndUpdate(userId: string, data: Partial<UserDto>): Promise<UserDto>;
-  findByUsername(username: string): Promise<UserDto | null>;
-  findByEmail(email: string): Promise<UserDto | null>;
-  deleteUser(userId: string): Promise<UserDto>;
-  createUser(data: CreateUserDto): Promise<UserDto>;
+export interface IUserRepository<T extends UserDto = UserDto> {
+  findById(userId: string): Promise<T | null>;
+  findByIdOrFail(userId: string): Promise<T>;
+  findByIdAndUpdate(userId: string, data: Partial<T>): Promise<T>;
+  findByUsername(username: string): Promise<T | null>;
+  findByEmail(email: string): Promise<T | null>;
+  deleteUser(userId: string): Promise<T>;
+  createUser(data: CreateUserDto): Promise<T>;
 }

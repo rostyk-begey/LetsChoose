@@ -1,19 +1,16 @@
 import { IUserService } from '@lets-choose/api/abstract';
+import { cloudinaryServiceMock } from '@lets-choose/api/cloudinary';
 import { ContestRepository } from '@lets-choose/api/contest/data-access';
+import { ContestService } from '@lets-choose/api/contest/feature';
 import { userBuilder } from '@lets-choose/api/testing/builders';
-
-import {
-  cloudinaryServiceMock,
-  contestItemRepositoryMock,
-  contestRepositoryMock,
-  gameRepositoryMock,
-  userRepositoryMock,
-} from '@lets-choose/api/testing/mocks';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { UpdateUserProfileDto } from '@lets-choose/common/dto';
 import { Test, TestingModule } from '@nestjs/testing';
 import faker from 'faker';
-import { ContestService } from '../../../../contest/feature/src/lib/contest.service';
+import { contestItemRepositoryMock } from '../../../../contest/data-access/src/lib/contest-item.repository.mock';
+import { contestRepositoryMock } from '../../../../contest/data-access/src/lib/contest.repository.mock';
+import { gameRepositoryMock } from '../../../../game/data-access/src/lib/game.repository.mock';
+import { userRepositoryMock } from '../../../data-access/src/lib/user.repository.mock';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 

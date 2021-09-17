@@ -3,12 +3,10 @@ import {
   ContestRepository,
 } from '@lets-choose/api/contest/data-access';
 import { GameRepository } from '@lets-choose/api/game/data-access';
-import {
-  contestItemRepositoryMock,
-  contestRepositoryMock,
-  gameRepositoryMock,
-} from '@lets-choose/api/testing/mocks';
 import { Test, TestingModule } from '@nestjs/testing';
+import { contestItemRepositoryMock } from '../../../../contest/data-access/src/lib/contest-item.repository.mock';
+import { contestRepositoryMock } from '../../../../contest/data-access/src/lib/contest.repository.mock';
+import { gameRepositoryMock } from '../../../data-access/src/lib/game.repository.mock';
 import { GameController } from './game.controller';
 import { GameService } from './game.service';
 

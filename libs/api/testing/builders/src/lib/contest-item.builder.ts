@@ -1,5 +1,5 @@
 import { build, fake, sequence } from '@jackfranklin/test-data-bot';
-import { ExtendedContestItem } from '../../../mocks/src';
+import { ExtendedContestItem } from '../../../../contest/data-access/src/lib/contest-item.repository.mock';
 
 export const contestItemBuilder = build<ExtendedContestItem>({
   fields: {

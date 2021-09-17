@@ -1,45 +1,45 @@
-import React from 'react';
-import { NextSeo } from 'next-seo';
-import Fab from '@material-ui/core/Fab';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import { NextRouter, useRouter } from 'next/router';
-import { ContestDto, ContestItemDto } from '@lets-choose/common/dto';
-import Chip from '@material-ui/core/Chip';
-import { Theme } from '@material-ui/core/styles';
-import Skeleton from '@material-ui/lab/Skeleton';
-import Card from '@material-ui/core/Card';
-import Button from '@material-ui/core/Button';
-import CardContent from '@material-ui/core/CardContent';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
-import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
-import RecentActorsRoundedIcon from '@material-ui/icons/RecentActorsRounded';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import InfiniteScroll from 'react-infinite-scroller';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import Image from 'next/image';
+import {
+  DropdownButton,
+  Page,
+  Subheader,
+} from '@lets-choose/client/components';
 
 import {
   useContestDelete,
   useContestFind,
   useContestItemsInfinite,
   useContestReset,
-  useGameStart,
   useCurrentUser,
+  useGameStart,
 } from '@lets-choose/client/hooks';
 import { cloudinaryUploadPath, ROUTES } from '@lets-choose/client/utils';
-import {
-  DropdownButton,
-  Page,
-  Subheader,
-} from '@lets-choose/client/components';
-import { Table } from './Table';
+import { ContestDto, ContestItemDto } from '@lets-choose/common/dto';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Chip from '@material-ui/core/Chip';
+import Container from '@material-ui/core/Container';
+import Divider from '@material-ui/core/Divider';
+import Fab from '@material-ui/core/Fab';
+import Grid from '@material-ui/core/Grid';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import { Theme } from '@material-ui/core/styles';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import Typography from '@material-ui/core/Typography';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
+import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
+import RecentActorsRoundedIcon from '@material-ui/icons/RecentActorsRounded';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+import Skeleton from '@material-ui/lab/Skeleton';
 import { AxiosResponse } from 'axios';
+import { NextSeo } from 'next-seo';
+import Image from 'next/image';
+import { NextRouter, useRouter } from 'next/router';
+import React from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
+import { Table } from './Table';
 
 const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
   headerTitle: {
@@ -179,7 +179,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
   });
   const { data: { data: user } = {} } = useCurrentUser({});
   const contest = (contestResponse?.data as ContestDto) || initialContest;
-  const isCurrentUserAuthor = user?._id === contest.author;
+  const isCurrentUserAuthor = user?.id === contest.author;
   const classes = useStyles({ thumbnail: contest.thumbnail || '' });
   const { mutateAsync: startGame } = useGameStart();
   const onStartGame = async () => {
@@ -201,8 +201,8 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
   const isLoading = contestIsLoading || contestItemsIsLoading;
   const pages = contestItemsData?.pages || [];
   const { totalItems = 0 } = pages?.[0]?.data || {};
-  const { mutateAsync: resetContest } = useContestReset(contest._id);
-  const { mutateAsync: deleteContest } = useContestDelete(contest._id);
+  const { mutateAsync: resetContest } = useContestReset(contest.id);
+  const { mutateAsync: deleteContest } = useContestDelete(contest.id);
 
   const thumbnail = contest.thumbnail.replace(
     'image/upload',

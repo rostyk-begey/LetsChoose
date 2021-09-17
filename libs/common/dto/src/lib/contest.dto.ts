@@ -1,8 +1,8 @@
 import { UserDto } from './user.dto';
 
 export abstract class ContestItemDto {
-  _id: string;
-  readonly id: string;
+  // _id: string;
+  id: string;
   image: string;
   title: string;
   games: number;
@@ -13,7 +13,7 @@ export abstract class ContestItemDto {
 }
 
 export abstract class ContestDto {
-  _id: string;
+  // _id: string;
   id: string;
   thumbnail: string;
   title: string;
@@ -77,9 +77,9 @@ export abstract class CreateContestDto {
 
 export type CreateContestData = Omit<CreateContestDto, 'files'>;
 
-export type UpdateContestDTO = Omit<CreateContestDto, 'items'>;
+export type UpdateContestDto = Omit<CreateContestDto, 'items'>;
 
-export type UpdateContestData = Partial<Omit<UpdateContestDTO, 'files'>>;
+export type UpdateContestData = Partial<Omit<UpdateContestDto, 'files'>>;
 
 export interface ISortOptions
   extends Partial<Record<keyof typeof SORT_OPTIONS, number>> {

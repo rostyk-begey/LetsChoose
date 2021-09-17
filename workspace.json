@@ -338,20 +338,6 @@
         }
       }
     },
-    "api-test-mocks": {
-      "root": "libs/api/test/mocks",
-      "sourceRoot": "libs/api/test/mocks/src",
-      "projectType": "library",
-      "targets": {
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["libs/api/test/mocks/**/*.ts"]
-          }
-        }
-      }
-    },
     "api-testing-builders": {
       "root": "libs/api/testing/builders",
       "sourceRoot": "libs/api/testing/builders/src",

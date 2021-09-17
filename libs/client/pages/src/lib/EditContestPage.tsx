@@ -1,14 +1,13 @@
-import React, { useEffect } from 'react';
-import { ContestDto, UpdateContestData } from '@lets-choose/common/dto';
-import { NextSeo } from 'next-seo';
-import { NextRouter, useRouter } from 'next/router';
-
 import {
   useContestFind,
   useContestUpdate,
   useCurrentUser,
 } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
+import { ContestDto, UpdateContestData } from '@lets-choose/common/dto';
+import { NextSeo } from 'next-seo';
+import { NextRouter, useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 import { ContestPageProps } from './ContestPage';
 import { EditContestPageTemplate } from './EditContestPageTemplate';
 
@@ -25,7 +24,7 @@ export const EditContestPage: React.FC<ContestPageProps> = ({
     redirectTo: ROUTES.HOME,
   });
   const contest = (contestResponse?.data as ContestDto) || initialContest;
-  const isCurrentUserAuthor = user?._id === contest?.author;
+  const isCurrentUserAuthor = user?.id === contest?.author;
 
   const { isLoading, mutateAsync: updateContest } = useContestUpdate(
     contestId as string,

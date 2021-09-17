@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useSnackbar } from 'notistack';
-import { GetPairResponse } from '@lets-choose/common/dto';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Typography from '@material-ui/core/Typography';
-import { NextRouter, useRouter } from 'next/router';
-import classNames from 'classnames';
-
 import { Page, Subheader } from '@lets-choose/client/components';
 import {
   useGameChoose,
   useGameState,
   useWarnIfUnsavedChanges,
 } from '@lets-choose/client/hooks';
-import { sleep, ROUTES } from '@lets-choose/client/utils';
+import { ROUTES, sleep } from '@lets-choose/client/utils';
+import { GetPairResponse } from '@lets-choose/common/dto';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import Typography from '@material-ui/core/Typography';
+import classNames from 'classnames';
+import { NextRouter, useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
+import React, { useEffect, useState } from 'react';
 
 import { GameCard } from './GameCard';
 
@@ -145,12 +144,12 @@ export const GamePage: React.FC = () => {
         {!isLoading &&
           pair?.map((item, i) => (
             <div
-              key={item._id}
+              key={item.id}
               className={classNames(animations[i], classes.item)}
             >
               <GameCard
                 item={item}
-                onClick={!isChooseLoading ? onChoose(i, item._id) : undefined}
+                onClick={!isChooseLoading ? onChoose(i, item.id) : undefined}
               />
             </div>
           ))}

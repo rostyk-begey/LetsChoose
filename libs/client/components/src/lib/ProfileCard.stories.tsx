@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { Meta, Story } from '@storybook/react';
 import faker from 'faker';
 import { ProfileCard, ProfileCardProps } from './ProfileCard';
 
@@ -13,6 +13,7 @@ export const Primary = Template.bind({});
 Primary.args = {
   user: {
     _id: faker.random.alphaNumeric(8),
+    id: faker.random.alphaNumeric(8),
     email: faker.internet.email(),
     avatar: faker.internet.avatar(),
     username: faker.internet.userName(),

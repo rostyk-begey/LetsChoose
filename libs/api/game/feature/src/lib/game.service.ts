@@ -14,19 +14,13 @@ import {
   GameItem,
   GameRepository,
 } from '@lets-choose/api/game/data-access';
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { ContestItemDto, GameDto } from '@lets-choose/common/dto';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { shuffle } from 'lodash';
 import mongoose from 'mongoose';
 
 @Injectable()
 export class GameService implements IGameService {
-  private readonly logger = new Logger(GameService.name);
-
   constructor(
     @Inject(ContestRepository)
     private readonly contestRepository: IContestRepository,
@@ -49,13 +43,13 @@ export class GameService implements IGameService {
   }
 
   protected static produceGameItems(
-    items: ContestItem[],
+    items: ContestItemDto[],
     gameItemsLength: number,
   ): GameItem[] {
     return shuffle(items)
       .slice(0, gameItemsLength)
-      .map(({ _id }) => ({
-        contestItem: _id.toString(),
+      .map(({ id }) => ({
+        contestItem: id,
         wins: 0,
         compares: 0,
       }));
@@ -100,7 +94,7 @@ export class GameService implements IGameService {
     );
   }
 
-  public async start(contestId: string): Promise<Game> {
+  public async start(contestId: string): Promise<GameDto> {
     await this.contestRepository.findById(contestId);
 
     const contestItems = await this.contestItemRepository.findByContestId(
@@ -133,11 +127,11 @@ export class GameService implements IGameService {
     });
   }
 
-  public findGameById(gameId: string): Promise<Game> {
+  public findGameById(gameId: string): Promise<GameDto> {
     return this.gameRepository.findById(gameId);
   }
 
-  protected playRoundUpdateGame(game: Game, winnerId: string): Game {
+  protected playRoundUpdateGame(game: GameDto, winnerId: string): GameDto {
     if (game.finished) {
       throw new BadRequestException('Game has been finished');
     }
@@ -205,13 +199,13 @@ export class GameService implements IGameService {
           }
 
           await this.contestItemRepository.findByIdAndUpdate(
-            contestItem._id,
+            contestItem.id,
             contestItem,
           );
         }),
       );
     }
 
-    await this.gameRepository.findByIdAndUpdate(game._id, game);
+    await this.gameRepository.findByIdAndUpdate(game.id, game);
   }
 }
