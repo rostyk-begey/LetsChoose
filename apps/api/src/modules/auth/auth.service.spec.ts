@@ -24,7 +24,7 @@ import {
   userRepositoryMock,
 } from '@lets-choose/api/testing/mocks';
 import { userBuilder } from '@lets-choose/api/testing/builders';
-import config from '@src/config';
+import { loadConfig as config } from '@lets-choose/api/config';
 import { AuthService } from '@modules/auth/auth.service';
 import md5 from 'md5';
 

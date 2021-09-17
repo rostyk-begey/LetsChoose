@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Config } from '@lets-choose/api/config';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { GmailConfig } from '@src/config';
+import { GmailConfig } from '@lets-choose/api/config';
 import { IEmailService } from '../../../../abstract/src/lib/email.service.interface';
 
 @Injectable()
 export class EmailService implements IEmailService {
   private readonly config: GmailConfig;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly configService: ConfigService<Config>) {
     // TODO: update
     // @Inject() private readonly emailTransporter,
-    this.config = configService.get<GmailConfig>('gmail');
+    this.config = configService.get('gmail', { infer: true });
   }
 
   public async sendRegistrationEmail(

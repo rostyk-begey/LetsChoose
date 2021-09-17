@@ -1,3 +1,4 @@
+import { Config } from '@lets-choose/api/config';
 import { API_ROUTES } from '@lets-choose/common/utils';
 import { AuthService } from '@modules/auth/auth.service';
 import {
@@ -29,7 +30,7 @@ import {
   UpdateUserPasswordDto,
 } from '@lets-choose/common/dto';
 import { Response as ExpressResponse } from 'express';
-import { JwtConfig } from '@src/config';
+import { JwtConfig } from '@lets-choose/api/config';
 import { IAuthService } from '@lets-choose/api/abstract';
 import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
 import {
@@ -50,11 +51,11 @@ export class AuthController {
     @Inject(AuthService)
     private readonly authService: IAuthService,
 
-    protected readonly configService: ConfigService,
+    protected readonly configService: ConfigService<Config>,
   ) {
-    this.config = configService.get<JwtConfig>('jwt');
+    this.config = configService.get<JwtConfig>('jwt', { infer: true });
     this.useSecureCookie =
-      configService.get<boolean>('useSSL') &&
+      configService.get<boolean>('useSSL', { infer: true }) &&
       process.env.NODE_ENV === 'production';
   }
 

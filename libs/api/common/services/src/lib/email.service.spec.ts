@@ -1,6 +1,6 @@
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import config from '@src/config';
+import { loadConfig as config } from '@lets-choose/api/config';
 import { EmailService } from './email.service';
 
 describe('EmailService', () => {

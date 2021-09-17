@@ -1,3 +1,4 @@
+import { Config } from '@lets-choose/api/config';
 import {
   AuthForgotPasswordDto,
   AuthGoogleLoginDto,
@@ -31,7 +32,7 @@ import {
   IUserRepository,
 } from '@lets-choose/api/abstract';
 import { UserRepository } from '@lets-choose/api/user/data-access';
-import { GoogleOAuth } from '@src/config';
+import { GoogleOAuth } from '@lets-choose/api/config';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -55,11 +56,11 @@ export class AuthService implements IAuthService {
     @Inject(PasswordHashService)
     protected readonly passwordHashService: IPasswordHashService,
 
-    protected readonly configService: ConfigService,
+    protected readonly configService: ConfigService<Config>,
   ) {
     this.config = {
-      appUrl: configService.get('appUrl'),
-      googleOAuth: configService.get<GoogleOAuth>('googleOAuth'),
+      appUrl: configService.get('appUrl', { infer: true }),
+      googleOAuth: configService.get('googleOAuth', { infer: true }),
     };
 
     this.OAuth2Client = new OAuth2Client(

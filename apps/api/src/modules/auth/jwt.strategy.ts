@@ -1,3 +1,4 @@
+import { Config } from '@lets-choose/api/config';
 import { UserDto } from '@lets-choose/common/dto';
 import { JwtService } from '@lets-choose/api/common/services';
 import { PassportStrategy } from '@nestjs/passport';
@@ -22,7 +23,7 @@ const cookieExtractor = (req) => {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<Config>,
 
     @Inject(UserRepository)
     private readonly userRepository: IUserRepository,
@@ -36,7 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         cookieExtractor,
       ]),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
+      secretOrKey: configService.get('jwt.accessSecret', { infer: true }),
     });
   }
 

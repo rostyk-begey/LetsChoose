@@ -1,8 +1,9 @@
+import { Config } from '@lets-choose/api/config';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import jwt from 'jsonwebtoken';
 
-import { JwtConfig } from '@src/config';
+import { JwtConfig } from '@lets-choose/api/config';
 import {
   AuthTokenPayload,
   BaseTokenPayload,
@@ -14,8 +15,8 @@ import {
 export class JwtService implements IJwtService {
   private readonly config: JwtConfig;
 
-  constructor(private readonly configService: ConfigService) {
-    this.config = configService.get<JwtConfig>('jwt');
+  constructor(private readonly configService: ConfigService<Config>) {
+    this.config = configService.get('jwt', { infer: true });
   }
 
   public generateAuthTokenPair(userId: string, passwordVersion = 0): TokenPair {

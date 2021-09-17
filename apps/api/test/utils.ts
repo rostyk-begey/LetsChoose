@@ -1,10 +1,11 @@
 import { ApiCommonServicesModule } from '@lets-choose/api/common/services';
+import { Config } from '@lets-choose/api/config';
 import { ModuleMetadata } from '@nestjs/common/interfaces/modules/module-metadata.interface';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
 import { TestingModuleBuilder } from '@nestjs/testing/testing-module.builder';
-import config from '@src/config';
+import { loadConfig as config } from '@lets-choose/api/config';
 
 export const createTestingModule = (
   metadata: ModuleMetadata,
@@ -26,12 +27,12 @@ export const createTestingModule = (
         load: [config],
       }),
       MongooseModule.forRootAsync({
-        useFactory: (configService: ConfigService) => {
+        useFactory: (configService: ConfigService<Config>) => {
           const options: MongooseModuleOptions = {
-            uri: configService.get<string>('mongoUri'),
+            uri: configService.get('mongoUri', { infer: true }),
           };
 
-          if (configService.get<string>('NODE_ENV') === 'test') {
+          if (configService.get('environment', { infer: true }) === 'test') {
             options.retryAttempts = 0;
           }
 

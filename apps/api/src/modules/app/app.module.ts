@@ -1,29 +1,25 @@
 import { ApiHealthModule } from '@lets-choose/api-health-feature';
 import { ApiCommonServicesModule } from '@lets-choose/api/common/services';
+import { ApiConfigModule, Config } from '@lets-choose/api/config';
 import { Module } from '@nestjs/common';
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 
 import { ContestModule } from '@modules/contest/contest.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { UserModule } from '@modules/user/user.module';
 import { GameModule } from '@modules/game/game.module';
-import config from '@src/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      ignoreEnvFile: true,
-      load: [config],
-    }),
+    ApiConfigModule,
     MongooseModule.forRootAsync({
-      useFactory: (configService: ConfigService) => {
+      useFactory: (configService: ConfigService<Config>) => {
         const options: MongooseModuleOptions = {
-          uri: configService.get<string>('mongoUri'),
+          uri: configService.get('mongoUri', { infer: true }),
         };
 
-        if (configService.get<string>('NODE_ENV') === 'test') {
+        if (configService.get('environment', { infer: true }) === 'test') {
           options.retryAttempts = 0;
         }
 
@@ -40,6 +36,6 @@ import config from '@src/config';
   ],
   controllers: [],
   providers: [],
-  exports: [ConfigModule],
+  exports: [],
 })
 export class AppModule {}

@@ -1,15 +1,17 @@
+import { Config } from '@lets-choose/api/config';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
 
 import { ICloudinaryService } from '@lets-choose/api/abstract';
-import { CloudinaryConfig } from '@src/config';
+import { CloudinaryConfig } from '@lets-choose/api/config';
 
 @Injectable()
 export class CloudinaryService implements ICloudinaryService {
-  constructor(configService: ConfigService) {
-    const { cloudName, apiKey, apiSecret } =
-      configService.get<CloudinaryConfig>('cloudinary');
+  constructor(configService: ConfigService<Config>) {
+    const { cloudName, apiKey, apiSecret } = configService.get('cloudinary', {
+      infer: true,
+    });
     cloudinary.config({
       cloud_name: cloudName,
       api_key: apiKey,

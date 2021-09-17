@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
 import { TestingModuleBuilder } from '@nestjs/testing/testing-module.builder';
-import config from '@src/config';
+import { loadConfig as config } from '@lets-choose/api/config';
 
 export const createTestingModule = (
   metadata: ModuleMetadata,

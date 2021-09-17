@@ -1,3 +1,4 @@
+import { Config } from '@lets-choose/api/config';
 import { API_ROUTES } from '@lets-choose/common/utils';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -36,8 +37,8 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup(API_ROUTES.INDEX, app, document);
 
-    const configService = app.get(ConfigService);
-    const port = configService.get('port');
+    const configService: ConfigService<Config> = app.get(ConfigService);
+    const port = configService.get('port', { infer: true });
     await app.listen(port);
 
     logger.log(`Server listening on port ${port}`);

@@ -54,6 +54,9 @@
     "api-common-utils": {
       "tags": []
     },
+    "api-config": {
+      "tags": []
+    },
     "api-contest-data-access": {
       "tags": []
     },
