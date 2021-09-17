@@ -2,13 +2,13 @@ import { ApiHealthModule } from '@lets-choose/api-health-feature';
 import { ApiCommonServicesModule } from '@lets-choose/api/common/services';
 import { ApiConfigModule, Config } from '@lets-choose/api/config';
 import { ApiContestFeatureModule } from '@lets-choose/api/contest/feature';
+import { ApiGameFeatureModule } from '@lets-choose/api/game/feature';
 import { ApiUserFeatureModule } from '@lets-choose/api/user/feature';
 import { Module } from '@nestjs/common';
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 
 import { AuthModule } from '@modules/auth/auth.module';
-import { GameModule } from '@modules/game/game.module';
 
 @Module({
   imports: [
@@ -31,11 +31,8 @@ import { GameModule } from '@modules/game/game.module';
     AuthModule,
     ApiUserFeatureModule,
     ApiContestFeatureModule,
-    GameModule,
+    ApiGameFeatureModule,
     ApiHealthModule,
   ],
-  controllers: [],
-  providers: [],
-  exports: [],
 })
 export class AppModule {}

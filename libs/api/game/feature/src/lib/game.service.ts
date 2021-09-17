@@ -21,7 +21,6 @@ import {
 import {
   Game,
   GameItem,
-  GameDocument,
   GameRepository,
 } from '@lets-choose/api/game/data-access';
 

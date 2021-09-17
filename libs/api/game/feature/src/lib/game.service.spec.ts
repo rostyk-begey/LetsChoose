@@ -16,7 +16,7 @@ import {
   ContestItemRepository,
 } from '@lets-choose/api/contest/data-access';
 import { GameItem, GameRepository } from '@lets-choose/api/game/data-access';
-import { GameService } from '@modules/game/game.service';
+import { GameService } from './game.service';
 import { oneOf } from '@jackfranklin/test-data-bot';
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';

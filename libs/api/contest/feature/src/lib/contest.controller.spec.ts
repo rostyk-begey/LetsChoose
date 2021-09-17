@@ -31,7 +31,6 @@ import { cloudinaryServiceMock } from '@lets-choose/api/testing/mocks';
 import { ContestController } from './contest.controller';
 import { ContestService, CreateContestsData } from './contest.service';
 
-// import { fieldNameFilter } from '../../../../../libs/api/common/utils/src/lib/utils';
 jest.mock('../../../../../libs/api/common/utils/src/lib/utils', () => ({
   fieldNameFilter: jest.fn(() => () => true),
   unlinkAsync: jest.fn(() => Promise.resolve()),

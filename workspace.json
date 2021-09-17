@@ -280,6 +280,28 @@
         }
       }
     },
+    "api-game-feature": {
+      "root": "libs/api/game/feature",
+      "sourceRoot": "libs/api/game/feature/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/api/game/feature/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/api/game/feature"],
+          "options": {
+            "jestConfig": "libs/api/game/feature/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "api-health-feature": {
       "root": "libs/api/health/feature",
       "sourceRoot": "libs/api/health/feature/src",

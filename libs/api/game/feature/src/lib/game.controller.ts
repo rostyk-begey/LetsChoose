@@ -1,6 +1,6 @@
 import { GameStartResponse, GetPairResponse } from '@lets-choose/common/dto';
 import { API_ROUTES } from '@lets-choose/common/utils';
-import { GameService } from '@modules/game/game.service';
+import { GameService } from './game.service';
 import {
   Body,
   Controller,
@@ -18,7 +18,7 @@ import {
   contestIdSchema,
   gameIdSchema,
   gamePlaySchema,
-} from '@modules/game/game.validation';
+} from './game.validation';
 
 @Controller(API_ROUTES.GAMES)
 export class GameController {

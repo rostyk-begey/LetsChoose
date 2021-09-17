@@ -9,12 +9,8 @@ import {
   contestRepositoryMock,
   gameRepositoryMock,
 } from '@lets-choose/api/testing/mocks';
-import { GameController } from '@modules/game/game.controller';
-import { GameService } from '@modules/game/game.service';
-
-// jest.mock('../contest/__mocks__/contest-item.repository');
-// jest.mock('../contest/__mocks__/contest.repository');
-// jest.mock('../game/__mocks__/game.repository');
+import { GameController } from './game.controller';
+import { GameService } from './game.service';
 
 describe('GameController', () => {
   let controller: GameController;

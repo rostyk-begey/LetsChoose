@@ -41,6 +41,7 @@
       "@lets-choose/api/game/data-access": [
         "libs/api/game/data-access/src/index.ts"
       ],
+      "@lets-choose/api/game/feature": ["libs/api/game/feature/src/index.ts"],
       "@lets-choose/api/test/mocks": ["libs/api/test/mocks/src/index.ts"],
       "@lets-choose/api/testing/builders": [
         "libs/api/testing/builders/src/index.ts"

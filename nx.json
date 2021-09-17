@@ -66,6 +66,9 @@
     "api-game-data-access": {
       "tags": []
     },
+    "api-game-feature": {
+      "tags": []
+    },
     "api-health-feature": {
       "tags": []
     },
