@@ -23,8 +23,8 @@ import {
 } from '@lets-choose/api/testing/mocks';
 import { userBuilder } from '@lets-choose/api/testing/builders';
 import { loadConfig as config } from '@lets-choose/api/config';
-import { AuthController } from '@modules/auth/auth.controller';
-import { AuthService } from '@modules/auth/auth.service';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import * as faker from 'faker';
 
 describe('AuthController', () => {

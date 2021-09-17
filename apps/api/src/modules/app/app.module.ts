@@ -1,4 +1,5 @@
 import { ApiHealthModule } from '@lets-choose/api-health-feature';
+import { ApiAuthFeatureModule } from '@lets-choose/api/auth/feature';
 import { ApiCommonServicesModule } from '@lets-choose/api/common/services';
 import { ApiConfigModule, Config } from '@lets-choose/api/config';
 import { ApiContestFeatureModule } from '@lets-choose/api/contest/feature';
@@ -7,8 +8,6 @@ import { ApiUserFeatureModule } from '@lets-choose/api/user/feature';
 import { Module } from '@nestjs/common';
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
-
-import { AuthModule } from '@modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -28,7 +27,7 @@ import { AuthModule } from '@modules/auth/auth.module';
       inject: [ConfigService],
     }),
     ApiCommonServicesModule,
-    AuthModule,
+    ApiAuthFeatureModule,
     ApiUserFeatureModule,
     ApiContestFeatureModule,
     ApiGameFeatureModule,

@@ -25,7 +25,7 @@ import {
 } from '@lets-choose/api/testing/mocks';
 import { userBuilder } from '@lets-choose/api/testing/builders';
 import { loadConfig as config } from '@lets-choose/api/config';
-import { AuthService } from '@modules/auth/auth.service';
+import { AuthService } from './auth.service';
 import md5 from 'md5';
 
 describe('AuthService', () => {

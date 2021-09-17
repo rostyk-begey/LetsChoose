@@ -1,6 +1,6 @@
 import { Config } from '@lets-choose/api/config';
 import { API_ROUTES } from '@lets-choose/common/utils';
-import { AuthService } from '@modules/auth/auth.service';
+import { AuthService } from './auth.service';
 import {
   BadRequestException,
   Body,
@@ -38,7 +38,7 @@ import {
   registerSchema,
   refreshTokenLocation,
   updatePasswordSchema,
-} from '@modules/auth/auth.validation';
+} from './auth.validation';
 
 @ApiTags('auth')
 @Controller()
