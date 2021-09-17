@@ -1,4 +1,3 @@
-/* eslint-disable import/namespace */
 import Joi from 'joi';
 
 export const forgotPasswordSchema = Joi.object({

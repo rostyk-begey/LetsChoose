@@ -1,7 +1,6 @@
 import { ROUTES, queryClient } from '@lets-choose/client/utils';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Router from 'next/router';
-import getConfig from 'next/config';
 
 export abstract class Api {
   protected readonly api: AxiosInstance;

@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { GmailConfig } from '@lets-choose/api/config';
-import { IEmailService } from '../../../../abstract/src/lib/email.service.interface';
+import { IEmailService } from '@lets-choose/api/abstract';
 
 @Injectable()
 export class EmailService implements IEmailService {

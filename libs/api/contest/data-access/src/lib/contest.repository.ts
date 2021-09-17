@@ -1,11 +1,11 @@
 import {
   CreateContestData,
   IContestRepository,
-} from '../../../../abstract/src/lib/contest.repository.interface';
+} from '@lets-choose/api/abstract';
 import {
   getPaginationPipelines,
   getSearchPipelines,
-} from '../../../../common/utils/src/lib/utils';
+} from '@lets-choose/api/common/utils';
 import { Contest, ContestDocument } from './contest.entity';
 import {
   ContestDto,
