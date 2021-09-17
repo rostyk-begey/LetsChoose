@@ -6,11 +6,11 @@
     "types": ["jest", "node"]
   },
   "include": [
+    "**/*.mock.ts",
     "**/*.spec.ts",
     "**/*.spec.tsx",
     "**/*.spec.js",
     "**/*.spec.jsx",
     "**/*.d.ts",
-    "**/*.mock.ts"
   ]
 }

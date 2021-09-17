@@ -1,8 +1,5 @@
 import { build, fake } from '@jackfranklin/test-data-bot';
-import {
-  CloudinaryService,
-  cloudinaryServiceMock,
-} from '@lets-choose/api/cloudinary';
+import { CloudinaryService } from '@lets-choose/api/cloudinary';
 import {
   ContestItemRepository,
   ContestRepository,
@@ -26,6 +23,7 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import faker from 'faker';
 import mongoose from 'mongoose';
+import { cloudinaryServiceMock } from '../../../../cloudinary/src/lib/cloudinary.service.mock';
 import { gameRepositoryMock } from '../../../../game/data-access/src/lib/game.repository.mock';
 import { userRepositoryMock } from '../../../../user/data-access/src/lib/user.repository.mock';
 import { contestItemRepositoryMock } from '../../../data-access/src/lib/contest-item.repository.mock';
