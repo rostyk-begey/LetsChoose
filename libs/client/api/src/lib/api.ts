@@ -8,10 +8,7 @@ export abstract class Api {
   protected redirected = false;
 
   constructor(config: AxiosRequestConfig = {}) {
-    const baseURL =
-      typeof window !== 'undefined'
-        ? ROUTES.API.INDEX
-        : `http://api:5000${ROUTES.API.INDEX}`;
+    const baseURL = `${process.env.NEXT_PUBLIC_APP_URL}${ROUTES.API.INDEX}`;
 
     this.api = axios.create({
       baseURL,

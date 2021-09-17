@@ -5,7 +5,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { NextRouter, useRouter } from 'next/router';
-import { ContestDto, ContestItem } from '@lets-choose/common/dto';
+import { ContestDto, ContestItemDto } from '@lets-choose/common/dto';
 import Chip from '@material-ui/core/Chip';
 import { Theme } from '@material-ui/core/styles';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -454,7 +454,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                       ? Array.from({ length: 4 }).fill(0)
                       : pages.reduce(
                           (acc, { data: { items } }) => [...acc, ...items],
-                          [] as ContestItem[],
+                          [] as ContestItemDto[],
                         )
                   }
                   skeleton={isLoading}

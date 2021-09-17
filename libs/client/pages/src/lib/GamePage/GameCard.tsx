@@ -1,6 +1,6 @@
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { ContestItem } from '@lets-choose/common/dto';
+import { ContestItemDto } from '@lets-choose/common/dto';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -24,7 +24,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export interface GameCardProps {
-  item?: ContestItem;
+  item?: ContestItemDto;
   onClick?: () => any;
 }
 

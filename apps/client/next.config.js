@@ -10,25 +10,16 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
-  env: {
-    apiUrl: process.env.API_URL,
-  },
-  serverRuntimeConfig: {
-    apiUrl: process.env.API_URL,
-  },
-  publicRuntimeConfig: {
-    apiUrl: process.env.API_URL,
-  },
   images: {
     domains: ['res.cloudinary.com', 'localhost'],
     loader: 'cloudinary',
-    path: 'https://res.cloudinary.com/dcfzgnkj8/image/upload',
+    path: `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
   },
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: `http://api:5000/api/:path*`, // Matched parameters can be used in the destination
+        destination: `${process.env.API_URL}/api/:path*`, // Matched parameters can be used in the destination
       },
     ];
   },
