@@ -16,7 +16,6 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@abstract/*": ["apps/api/src/abstract/*"],
       "@lets-choose/api-health-feature": [
         "libs/api/health/feature/src/index.ts"
       ],
@@ -57,12 +56,7 @@
       "@lets-choose/client/pages": ["libs/client/pages/src/index.ts"],
       "@lets-choose/client/utils": ["libs/client/utils/src/index.ts"],
       "@lets-choose/common/dto": ["libs/common/dto/src/index.ts"],
-      "@lets-choose/common/utils": ["libs/common/utils/src/index.ts"],
-      "@modules/*": ["apps/api/src/modules/*"],
-      "@pipes/*": ["apps/api/src/pipes/*"],
-      "@src/*": ["apps/api/src/*"],
-      "@test/*": ["apps/api/test/*"],
-      "@usecases/*": ["apps/api/src/usecases/*"]
+      "@lets-choose/common/utils": ["libs/common/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

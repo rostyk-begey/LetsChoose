@@ -9,4 +9,4 @@ import { ApiHealthController } from './api-health.controller';
   providers: [],
   exports: [],
 })
-export class ApiHealthModule {}
+export class ApiHealthFeatureModule {}
