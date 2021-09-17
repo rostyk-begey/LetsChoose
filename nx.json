@@ -72,10 +72,16 @@
     "api-health-feature": {
       "tags": []
     },
+    "api-mongoose": {
+      "tags": []
+    },
     "api-test-mocks": {
       "tags": []
     },
     "api-testing-builders": {
+      "tags": []
+    },
+    "api-testing-utils": {
       "tags": []
     },
     "api-user-data-access": {
