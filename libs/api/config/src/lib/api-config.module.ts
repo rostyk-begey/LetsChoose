@@ -15,7 +15,6 @@ import { configValidationSchema } from './config.validation';
       },
     }),
   ],
-  providers: [],
   exports: [],
 })
 export class ApiConfigModule {}

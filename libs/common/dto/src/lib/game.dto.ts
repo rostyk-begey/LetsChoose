@@ -1,23 +1,23 @@
-import { ContestDto, ContestItem } from './contest.dto';
+import { ContestDto, ContestItemDto } from './contest.dto';
 
 export abstract class GameItem {
-  contestItem!: ContestItem | string;
-  wins!: number;
-  compares!: number;
+  contestItem: ContestItemDto | string;
+  wins: number;
+  compares: number;
 }
 
 export abstract class Game {
-  _id!: string;
-  readonly id!: string;
-  contestId!: ContestDto | string;
-  winnerId?: ContestItem | string;
+  _id: string;
+  readonly id: string;
+  contestId: ContestDto | string;
+  winnerId?: ContestItemDto | string;
   items?: GameItem[];
-  pair!: (ContestItem | string)[];
-  pairNumber!: number;
-  pairsInRound!: number;
-  round!: number;
-  finished!: boolean;
-  totalRounds!: number;
+  pair: (ContestItemDto | string)[];
+  pairNumber: number;
+  pairsInRound: number;
+  round: number;
+  finished: boolean;
+  totalRounds: number;
 }
 
 export type CreateGameDto = Omit<Game, 'id'>;
@@ -29,7 +29,7 @@ export interface GetPairResponse {
   pairsInRound: number;
   contestId: string;
   finished: boolean;
-  pair: ContestItem[];
+  pair: ContestItemDto[];
 }
 
 export interface GameStartResponse {

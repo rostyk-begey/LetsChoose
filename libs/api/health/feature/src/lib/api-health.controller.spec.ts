@@ -1,3 +1,5 @@
+import { HttpModule } from '@nestjs/axios';
+import { HealthCheckService, TerminusModule } from '@nestjs/terminus';
 import { Test } from '@nestjs/testing';
 import { ApiHealthController } from './api-health.controller';
 
@@ -6,7 +8,7 @@ describe('ApiHealthController', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      providers: [],
+      imports: [HttpModule, TerminusModule],
       controllers: [ApiHealthController],
     }).compile();
 

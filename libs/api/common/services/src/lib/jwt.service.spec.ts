@@ -22,8 +22,9 @@ describe('JwtService', () => {
     passwordVersion: 1,
   };
   const token = 'token';
+  const configServiceGet = jest.fn((a, b) => jwtConfig);
   const configService: Partial<ConfigService> = {
-    get: jest.fn(() => jwtConfig),
+    get: configServiceGet as any,
   };
 
   beforeEach(async () => {
@@ -45,7 +46,7 @@ describe('JwtService', () => {
   });
 
   it('should get jwt config', () => {
-    expect(configService.get).toHaveBeenCalledWith('jwt');
+    expect(configServiceGet.mock.calls[0][0]).toEqual('jwt');
   });
 
   test('generateAccessToken', () => {

@@ -1,3 +1,3 @@
 export class HttpResponseMessageDto {
-  message!: string;
+  message: string;
 }
