@@ -42,6 +42,9 @@
     "api-cloudinary": {
       "tags": []
     },
+    "api-common-decorators": {
+      "tags": []
+    },
     "api-common-pipes": {
       "tags": []
     },
@@ -58,6 +61,12 @@
       "tags": []
     },
     "api-health-feature": {
+      "tags": []
+    },
+    "api-test-mocks": {
+      "tags": []
+    },
+    "api-testing-builders": {
       "tags": []
     },
     "api-user-data-access": {

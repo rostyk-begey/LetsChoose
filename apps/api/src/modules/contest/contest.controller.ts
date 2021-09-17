@@ -1,6 +1,6 @@
 import {
   ContestDto,
-  CreateContestDTO,
+  CreateContestDto,
   GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
@@ -100,7 +100,7 @@ export class ContestController {
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
   public async create(
-    @Body() { title, excerpt, items }: CreateContestDTO,
+    @Body() { title, excerpt, items }: CreateContestDto,
     @UploadedFiles() files,
     @Req() { user }: any,
   ): Promise<ContestDto> {

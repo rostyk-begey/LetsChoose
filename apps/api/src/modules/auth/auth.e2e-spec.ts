@@ -2,7 +2,7 @@ import { IDatabaseService } from '@lets-choose/api/abstract';
 import { AuthLoginDto, AuthRegisterDto } from '@lets-choose/common/dto';
 import { AuthGoogleLoginDto } from '@lets-choose/common/dto';
 import { AuthModule } from '@modules/auth/auth.module';
-import { userBuilder } from '@modules/user/__mocks__/user.repository';
+import { userBuilder } from '@lets-choose/api/testing/builders';
 import { HttpServer, INestApplication } from '@nestjs/common';
 import { TestingModule } from '@nestjs/testing';
 import { TYPES } from '@src/injectable.types';
@@ -58,7 +58,7 @@ describe('AuthController (e2e)', () => {
     // @ts-ignore
     jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(true as any);
     const { id, ...user } = userBuilder({ traits: 'realId' });
-    await dbConnection.collection('users').insertOne(user);
+    await dbConnection.collection('users').insertOne(user as any);
     const data: AuthLoginDto = {
       login: user.username,
       password: user.password,
@@ -109,7 +109,7 @@ describe('AuthController (e2e)', () => {
     } as TokenPayload;
     ticket.getPayload.mockReturnValueOnce(ticketPayload);
     const { id, ...user } = userBuilder({ traits: 'realId' });
-    await dbConnection.collection('users').insertOne(user);
+    await dbConnection.collection('users').insertOne(user as any);
     const data: AuthGoogleLoginDto = {
       token: faker.random.alphaNumeric(20),
     };

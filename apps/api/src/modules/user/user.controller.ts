@@ -37,9 +37,25 @@ export class UserController {
   @ApiResponse({ status: 200, type: User })
   @UseGuards(AuthGuard('jwt'))
   @Get('/me')
-  public me(@Request() req: any): Promise<User> {
+  public me(@Request() req: any): User {
     return req.user;
   }
+
+  // @Get('/testing')
+  // test1() {
+  //   console.log('test');
+  //   return new User({
+  //     _id: '_id',
+  //     id: 'id',
+  //     email: 'email',
+  //     avatar: 'avatar',
+  //     bio: 'bio',
+  //     confirmed: false,
+  //     username: 'username',
+  //     password: 'password',
+  //     passwordVersion: 1,
+  //   });
+  // }
 
   @ApiOperation({ summary: 'Get user by username' })
   @ApiResponse({ status: 200, type: User })

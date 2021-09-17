@@ -19,5 +19,7 @@ export interface IContestItemRepository {
     data: Partial<ContestItem>,
   ): Promise<void>;
   deleteContestItems(contestId: string): Promise<void>;
-  createContestItem(data: CreateContestItemDto): Promise<ContestItem>;
+  createContestItem(
+    data: Omit<CreateContestItemDto, 'id'>,
+  ): Promise<ContestItem>;
 }

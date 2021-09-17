@@ -1,13 +1,13 @@
 import { build, fake } from '@jackfranklin/test-data-bot';
 import {
   ContestDto,
-  ContestItem,
+  ContestItemDto,
   GetContestsQuery,
   GetItemsQuery,
   PaginationQuery,
   SearchQuery,
 } from '@lets-choose/common/dto';
-import { CloudinaryService } from '../../../../../libs/api/cloudinary/src/lib/cloudinary.service';
+import { CloudinaryService } from '@lets-choose/api/cloudinary';
 import {
   ContestRepository,
   ContestItemRepository,
@@ -18,17 +18,18 @@ import { Test, TestingModule } from '@nestjs/testing';
 import mongoose from 'mongoose';
 import faker from 'faker';
 
-import gameRepository from '@modules/game/__mocks__/game.repository';
-import cloudinaryService from '@modules/../../../../../libs/api/cloudinary/src/lib/__mocks__/cloudinary.service';
-import userRepository, {
+import {
+  gameRepositoryMock,
+  cloudinaryServiceMock,
+  userRepositoryMock,
+  contestRepositoryMock,
+  contestItemRepositoryMock,
+} from '@lets-choose/api/testing/mocks';
+import {
   userBuilder,
-} from '@modules/user/__mocks__/user.repository';
-import contestRepository, {
   contestBuilder,
-} from '@modules/contest/__mocks__/contest.repository';
-import contestItemRepository, {
   contestItemBuilder,
-} from '@modules/contest/__mocks__/contest-item.repository';
+} from '@lets-choose/api/testing/builders';
 import {
   ContestService,
   CreateContestsData,
@@ -54,7 +55,7 @@ const searchPaginationQueryBuilder = build<SearchQuery & PaginationQuery>({
 describe('ContestService', () => {
   let contestService: ContestService;
   let contest: ContestDto;
-  let contestItems: ContestItem[];
+  let contestItems: ContestItemDto[];
   let contestId: string;
   let mockContestPaginateResult;
   let mockContestItemsPaginateResult;
@@ -67,23 +68,23 @@ describe('ContestService', () => {
         ContestService,
         {
           provide: ContestRepository,
-          useValue: contestRepository,
+          useValue: contestRepositoryMock,
         },
         {
           provide: ContestItemRepository,
-          useValue: contestItemRepository,
+          useValue: contestItemRepositoryMock,
         },
         {
           provide: CloudinaryService,
-          useValue: cloudinaryService,
+          useValue: cloudinaryServiceMock,
         },
         {
           provide: GameRepository,
-          useValue: gameRepository,
+          useValue: gameRepositoryMock,
         },
         {
           provide: UserRepository,
-          useValue: userRepository,
+          useValue: userRepositoryMock,
         },
       ],
     }).compile();
@@ -126,15 +127,15 @@ describe('ContestService', () => {
       .spyOn(mongoose.Types, 'ObjectId')
       .mockReturnValue({ toString: () => contestId } as any);
 
-    contestRepository.findById.mockResolvedValue(contest);
-    contestRepository.findByAuthor.mockResolvedValue([contest]);
-    contestRepository.paginate.mockResolvedValue(
+    contestRepositoryMock.findById.mockResolvedValue(contest);
+    contestRepositoryMock.findByAuthor.mockResolvedValue([contest]);
+    contestRepositoryMock.paginate.mockResolvedValue(
       mockContestPaginateResult as any,
     );
-    contestItemRepository.paginate.mockResolvedValue(
+    contestItemRepositoryMock.paginate.mockResolvedValue(
       mockContestItemsPaginateResult as any,
     );
-    contestRepository.findByIdAndUpdate.mockResolvedValue(contest);
+    contestRepositoryMock.findByIdAndUpdate.mockResolvedValue(contest);
   });
 
   afterEach(() => {
@@ -145,7 +146,7 @@ describe('ContestService', () => {
     const result = await contestService.findContestById(contestId);
 
     expect(result).toMatchObject(contest);
-    expect(contestRepository.findById).toBeCalledWith(contestId);
+    expect(contestRepositoryMock.findById).toBeCalledWith(contestId);
   });
 
   test('getContestsPaginate', async () => {
@@ -154,11 +155,11 @@ describe('ContestService', () => {
       author: user.username,
       sortBy: faker.random.arrayElement(['NEWEST', 'POPULAR']),
     };
-    userRepository.findByUsername.mockResolvedValue(user);
+    userRepositoryMock.findByUsername.mockResolvedValue(user);
     const response = await contestService.getContestsPaginate(options);
 
     expect(response).toMatchObject(mockContestPaginateResult);
-    expect(contestRepository.paginate).toBeCalledWith(options);
+    expect(contestRepositoryMock.paginate).toBeCalledWith(options);
   });
 
   test('getContestItemsPaginate', async () => {
@@ -169,22 +170,25 @@ describe('ContestService', () => {
     );
 
     expect(response).toMatchObject(mockContestItemsPaginateResult);
-    expect(contestItemRepository.paginate).toBeCalledWith(contestId, options);
+    expect(contestItemRepositoryMock.paginate).toBeCalledWith(
+      contestId,
+      options,
+    );
   });
 
   test('findContestsByAuthor', async () => {
     const result = await contestService.findContestsByAuthor(user.id);
 
     expect(result).toMatchObject([contest]);
-    expect(contestRepository.findByAuthor).toBeCalledWith(user.id);
+    expect(contestRepositoryMock.findByAuthor).toBeCalledWith(user.id);
   });
 
   test('createContest', async () => {
-    contestRepository.createContest.mockResolvedValueOnce(contest);
+    contestRepositoryMock.createContest.mockResolvedValueOnce(contest);
 
     const result = await contestService.createContest(user.id, contestData);
 
-    expect(contestRepository.createContest).toBeCalledWith({
+    expect(contestRepositoryMock.createContest).toBeCalledWith({
       _id: contestId,
       author: user.id,
       title: contestData.title,
@@ -193,7 +197,7 @@ describe('ContestService', () => {
     });
 
     expect(result).toEqual(contest);
-    expect(cloudinaryService.upload).toBeCalledWith(
+    expect(cloudinaryServiceMock.upload).toBeCalledWith(
       'path',
       `contests/${contestId}/thumbnail`,
     );
@@ -202,51 +206,51 @@ describe('ContestService', () => {
   test('updateContest', async () => {
     const result = await contestService.updateContest(contestId, contestData);
 
-    expect(contestRepository.findByIdAndUpdate).toBeCalledWith(contestId, {
+    expect(contestRepositoryMock.findByIdAndUpdate).toBeCalledWith(contestId, {
       title: contestData.title,
       excerpt: contestData.excerpt,
       thumbnail: `path:contests/${contestId}/thumbnail`,
     });
 
     expect(result).toEqual(contest);
-    expect(cloudinaryService.upload).toBeCalledWith(
+    expect(cloudinaryServiceMock.upload).toBeCalledWith(
       'path',
       `contests/${contestId}/thumbnail`,
     );
   });
 
   test('removeContest', async () => {
-    contestItemRepository.findByContestId.mockResolvedValueOnce(
+    contestItemRepositoryMock.findByContestId.mockResolvedValueOnce(
       contestItems as any,
     );
 
     await contestService.removeContest(contestId);
 
-    expect(contestRepository.deleteContest).toBeCalledWith(contestId);
-    expect(cloudinaryService.destroy).toBeCalledWith(
+    expect(contestRepositoryMock.deleteContest).toBeCalledWith(contestId);
+    expect(cloudinaryServiceMock.destroy).toBeCalledWith(
       `contests/${contestId}/thumbnail`,
     );
-    expect(cloudinaryService.destroyMultiple.mock.calls[0][0]).toHaveLength(
+    expect(cloudinaryServiceMock.destroyMultiple.mock.calls[0][0]).toHaveLength(
       contestItems.length,
     );
-    expect(cloudinaryService.deleteFolder).toHaveBeenCalledWith(
+    expect(cloudinaryServiceMock.deleteFolder).toHaveBeenCalledWith(
       `contests/${contestId}`,
     );
-    expect(contestItemRepository.deleteContestItems).toHaveBeenCalledWith(
+    expect(contestItemRepositoryMock.deleteContestItems).toHaveBeenCalledWith(
       contestId,
     );
   });
 
   test('resetContest', async () => {
-    contestRepository.findByIdAndUpdate.mockResolvedValueOnce(contest);
+    contestRepositoryMock.findByIdAndUpdate.mockResolvedValueOnce(contest);
 
     const result = await contestService.resetContest(contestId);
 
-    expect(contestRepository.findByIdAndUpdate).toHaveBeenCalledWith(
+    expect(contestRepositoryMock.findByIdAndUpdate).toHaveBeenCalledWith(
       contestId,
       { games: 0 },
     );
-    expect(contestItemRepository.updateContestItems).toHaveBeenCalledWith(
+    expect(contestItemRepositoryMock.updateContestItems).toHaveBeenCalledWith(
       contestId,
       {
         games: 0,
@@ -255,7 +259,7 @@ describe('ContestService', () => {
         finalWins: 0,
       },
     );
-    expect(gameRepository.deleteGames).toHaveBeenCalledWith(contestId);
+    expect(gameRepositoryMock.deleteGames).toHaveBeenCalledWith(contestId);
     expect(result).toMatchObject(contest);
   });
 });

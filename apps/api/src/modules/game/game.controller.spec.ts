@@ -4,15 +4,17 @@ import {
 } from '@lets-choose/api/contest/data-access';
 import { GameRepository } from '@lets-choose/api/game/data-access';
 import { Test, TestingModule } from '@nestjs/testing';
-import contestItemRepository from '@modules/contest/__mocks__/contest-item.repository';
-import contestRepository from '@modules/contest/__mocks__/contest.repository';
-import gameRepository from '@modules/game/__mocks__/game.repository';
+import {
+  contestItemRepositoryMock,
+  contestRepositoryMock,
+  gameRepositoryMock,
+} from '@lets-choose/api/testing/mocks';
 import { GameController } from '@modules/game/game.controller';
 import { GameService } from '@modules/game/game.service';
 
-jest.mock('../contest/__mocks__/contest-item.repository');
-jest.mock('../contest/__mocks__/contest.repository');
-jest.mock('../game/__mocks__/game.repository');
+// jest.mock('../contest/__mocks__/contest-item.repository');
+// jest.mock('../contest/__mocks__/contest.repository');
+// jest.mock('../game/__mocks__/game.repository');
 
 describe('GameController', () => {
   let controller: GameController;
@@ -24,15 +26,15 @@ describe('GameController', () => {
         GameService,
         {
           provide: ContestRepository,
-          useValue: contestRepository,
+          useValue: contestRepositoryMock,
         },
         {
           provide: ContestItemRepository,
-          useValue: contestItemRepository,
+          useValue: contestItemRepositoryMock,
         },
         {
           provide: GameRepository,
-          useValue: gameRepository,
+          useValue: gameRepositoryMock,
         },
       ],
     }).compile();

@@ -15,12 +15,13 @@ import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IAuthService } from '@lets-choose/api/abstract';
-import userRepository, {
-  userBuilder,
-} from '@modules/user/__mocks__/user.repository';
-import emailService from '../../../../../libs/api/common/services/src/lib/__mocks__/email.service';
-import jwtService from '../../../../../libs/api/common/services/src/lib/__mocks__/jwt.service';
-import passwordHashService from '../../../../../libs/api/common/services/src/lib/__mocks__/password.service';
+import {
+  emailServiceMock,
+  jwtServiceMock,
+  passwordHashServiceMock,
+  userRepositoryMock,
+} from '@lets-choose/api/testing/mocks';
+import { userBuilder } from '@lets-choose/api/testing/builders';
 import config from '@src/config';
 import { AuthController } from '@modules/auth/auth.controller';
 import { AuthService } from '@modules/auth/auth.service';
@@ -71,19 +72,19 @@ describe('AuthController', () => {
         AuthService,
         {
           provide: UserRepository,
-          useValue: userRepository,
+          useValue: userRepositoryMock,
         },
         {
           provide: JwtService,
-          useValue: jwtService,
+          useValue: jwtServiceMock,
         },
         {
           provide: EmailService,
-          useValue: emailService,
+          useValue: emailServiceMock,
         },
         {
           provide: PasswordHashService,
-          useValue: passwordHashService,
+          useValue: passwordHashServiceMock,
         },
       ],
     }).compile();

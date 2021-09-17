@@ -11,5 +11,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "exclude": ["**/*.spec.ts"],
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "**/__mocks__/*.ts"]
 }

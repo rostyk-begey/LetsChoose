@@ -1,12 +1,12 @@
 import {
   ContestDto,
-  CreateContestDTO,
+  CreateContestDto,
   GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
 } from '@lets-choose/common/dto';
-import { CloudinaryService } from '../../../../../libs/api/cloudinary/src/lib/cloudinary.service';
+import { CloudinaryService } from '@lets-choose/api/cloudinary';
 import {
   ContestRepository,
   ContestItemRepository,
@@ -26,7 +26,7 @@ import {
 import { fieldNameFilter } from '@lets-choose/api/common/utils';
 import { UserRepository } from '@lets-choose/api/user/data-access';
 
-export interface CreateContestsData extends CreateContestDTO {
+export interface CreateContestsData extends CreateContestDto {
   files: Express.Multer.File[];
 }
 

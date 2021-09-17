@@ -1,6 +1,6 @@
 import {
   ContestDto,
-  CreateContestDTO,
+  CreateContestDto,
   GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
@@ -16,7 +16,7 @@ export interface IContestService {
     contestId: string,
     query: GetItemsQuery,
   ): Promise<GetItemsResponse>;
-  createContest(userId: string, data: CreateContestDTO): Promise<ContestDto>;
+  createContest(userId: string, data: CreateContestDto): Promise<ContestDto>;
   updateContest(contestId: string, data: UpdateContestDTO): Promise<ContestDto>;
   resetContest(contestId: string): Promise<ContestDto>;
   removeContest(contestId: string): Promise<void>;

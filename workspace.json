@@ -120,6 +120,20 @@
         }
       }
     },
+    "api-common-decorators": {
+      "root": "libs/api/common/decorators",
+      "sourceRoot": "libs/api/common/decorators/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/api/common/decorators/**/*.ts"]
+          }
+        }
+      }
+    },
     "api-common-pipes": {
       "root": "libs/api/common/pipes",
       "sourceRoot": "libs/api/common/pipes/src",
@@ -248,6 +262,34 @@
           "options": {
             "jestConfig": "libs/api/health/feature/jest.config.js",
             "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "api-test-mocks": {
+      "root": "libs/api/test/mocks",
+      "sourceRoot": "libs/api/test/mocks/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/api/test/mocks/**/*.ts"]
+          }
+        }
+      }
+    },
+    "api-testing-builders": {
+      "root": "libs/api/testing/builders",
+      "sourceRoot": "libs/api/testing/builders/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/api/testing/builders/**/*.ts"]
           }
         }
       }

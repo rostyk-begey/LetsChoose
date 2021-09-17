@@ -20,9 +20,18 @@
       "@lets-choose/api-health-feature": [
         "libs/api/health/feature/src/index.ts"
       ],
+      "@lets-choose/api/testing/builders": [
+        "libs/api/testing/builders/src/index.ts"
+      ],
+      "@lets-choose/api/testing/mocks": [
+        "libs/api/testing/mocks/src/index.ts"
+      ],
       "@lets-choose/api/abstract": ["libs/api/abstract/src/index.ts"],
       "@lets-choose/api/auth/feature": ["libs/api/auth/feature/src/index.ts"],
       "@lets-choose/api/cloudinary": ["libs/api/cloudinary/src/index.ts"],
+      "@lets-choose/api/common/decorators": [
+        "libs/api/common/decorators/src/index.ts"
+      ],
       "@lets-choose/api/common/pipes": ["libs/api/common/pipes/src/index.ts"],
       "@lets-choose/api/common/services": [
         "libs/api/common/services/src/index.ts"
@@ -34,6 +43,7 @@
       "@lets-choose/api/game/data-access": [
         "libs/api/game/data-access/src/index.ts"
       ],
+      "@lets-choose/api/test/mocks": ["libs/api/test/mocks/src/index.ts"],
       "@lets-choose/api/user/data-access": [
         "libs/api/user/data-access/src/index.ts"
       ],

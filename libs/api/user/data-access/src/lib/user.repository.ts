@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
-import { UserDto } from '@lets-choose/common/dto';
+import { CreateUserDto } from '@lets-choose/common/dto';
+import { IUserRepository } from '@lets-choose/api/abstract';
 import { User, UserDocument } from './user.entity';
-import { IUserRepository } from '../../../../abstract/src/lib/user.repository.interface';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -13,7 +13,8 @@ export class UserRepository implements IUserRepository {
   ) {}
 
   public async findById(userId: string): Promise<User | null> {
-    return this.userModel.findById(userId);
+    const user = await this.userModel.findById(userId);
+    return user ? new User(user.toObject()) : null;
   }
 
   public async findByIdOrFail(userId: string): Promise<User> {
@@ -32,7 +33,7 @@ export class UserRepository implements IUserRepository {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return user;
+    return new User(user.toObject());
   }
 
   protected async findOne(query: Partial<User>): Promise<User | null> {
@@ -55,7 +56,7 @@ export class UserRepository implements IUserRepository {
     return user;
   }
 
-  public async createUser(data: UserDto): Promise<User> {
+  public async createUser(data: CreateUserDto): Promise<User> {
     const user = new this.userModel({ ...data, _id: new Types.ObjectId() });
     await user.save();
     return user;

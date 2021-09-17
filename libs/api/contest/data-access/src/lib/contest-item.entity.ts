@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ContestItem as ContestItemModel } from '@lets-choose/common/dto';
+import { ContestItemDto as ContestItemModel } from '@lets-choose/common/dto';
 import mongoose from 'mongoose';
 
 import { Contest } from './contest.entity';

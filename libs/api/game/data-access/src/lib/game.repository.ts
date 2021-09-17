@@ -22,17 +22,16 @@ export class GameRepository implements IGameRepository {
     return this.gameModel.aggregate(aggregations).exec();
   }
 
-  public async findById(gameId: string): Promise<GameDocument> {
+  public async findById(gameId: string): Promise<Game> {
     const game = await this.gameModel
       .findById(gameId)
       .populate('items')
       .populate('pair');
 
-    console.log('GameRepository.findById', game);
     if (!game) {
       throw new NotFoundException('Game not found');
     }
-    return game;
+    return game.toObject();
   }
 
   public async findByIdAndUpdate(

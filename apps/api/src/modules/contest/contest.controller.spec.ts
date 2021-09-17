@@ -1,13 +1,13 @@
 import {
   ContestDto,
-  ContestItem,
+  ContestItemDto,
   GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
   UpdateContestData,
 } from '@lets-choose/common/dto';
-import { CloudinaryService } from '../../../../../libs/api/cloudinary/src/lib/cloudinary.service';
+import { CloudinaryService } from '@lets-choose/api/cloudinary';
 import {
   ContestRepository,
   ContestItemRepository,
@@ -17,22 +17,25 @@ import { UserRepository } from '@lets-choose/api/user/data-access';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { IContestService } from '@lets-choose/api/abstract';
-import contestItemRepository, {
-  contestItemBuilder,
-} from '@modules/contest/__mocks__/contest-item.repository';
-import contestRepository, {
+import {
+  contestItemRepositoryMock,
+  contestRepositoryMock,
+  gameRepositoryMock,
+  userRepositoryMock,
+} from '@lets-choose/api/testing/mocks';
+import {
   contestBuilder,
-} from '@modules/contest/__mocks__/contest.repository';
-import gameRepository from '@modules/game/__mocks__/game.repository';
-import userRepository from '@modules/user/__mocks__/user.repository';
-import cloudinaryService from '../../../../../libs/api/cloudinary/src/lib/__mocks__/cloudinary.service';
+  contestItemBuilder,
+} from '@lets-choose/api/testing/builders';
+import { cloudinaryServiceMock } from '@lets-choose/api/testing/mocks';
 import { ContestController } from '@modules/contest/contest.controller';
 import {
   ContestService,
   CreateContestsData,
 } from '@modules/contest/contest.service';
 
-jest.mock('../../usecases/utils', () => ({
+// import { fieldNameFilter } from '../../../../../libs/api/common/utils/src/lib/utils';
+jest.mock('../../../../../libs/api/common/utils/src/lib/utils', () => ({
   fieldNameFilter: jest.fn(() => () => true),
   unlinkAsync: jest.fn(() => Promise.resolve()),
   joiObjectIdValidator: jest.fn((x) => x),
@@ -48,7 +51,7 @@ describe('ContestController', () => {
   let controller: ContestController;
   let contestService: IContestService;
   let contest: ContestDto;
-  let contestItems: ContestItem[];
+  let contestItems: ContestItemDto[];
   let files;
 
   beforeEach(async () => {
@@ -58,23 +61,23 @@ describe('ContestController', () => {
         ContestService,
         {
           provide: ContestRepository,
-          useValue: contestRepository,
+          useValue: contestRepositoryMock,
         },
         {
           provide: ContestItemRepository,
-          useValue: contestItemRepository,
+          useValue: contestItemRepositoryMock,
         },
         {
           provide: CloudinaryService,
-          useValue: cloudinaryService,
+          useValue: cloudinaryServiceMock,
         },
         {
           provide: GameRepository,
-          useValue: gameRepository,
+          useValue: gameRepositoryMock,
         },
         {
           provide: UserRepository,
-          useValue: userRepository,
+          useValue: userRepositoryMock,
         },
       ],
     }).compile();

@@ -137,6 +137,8 @@ export class AuthService implements IAuthService {
 
     const isMatch = await this.passwordHashService.compare(
       password,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       user.password,
     );
 
@@ -239,6 +241,8 @@ export class AuthService implements IAuthService {
     const newPassword = await this.passwordHashService.hash(password, 12);
 
     await this.userRepository.findByIdAndUpdate(user._id, {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       password: newPassword,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -254,6 +258,8 @@ export class AuthService implements IAuthService {
 
     const isMatch = await this.passwordHashService.compare(
       password,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       user.password,
     );
 
@@ -267,6 +273,8 @@ export class AuthService implements IAuthService {
     );
 
     await this.userRepository.findByIdAndUpdate(user._id, {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       password: newPasswordHash,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore

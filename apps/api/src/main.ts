@@ -28,13 +28,13 @@ async function bootstrap() {
     });
     app.setGlobalPrefix(API_ROUTES.INDEX);
 
-    // const config = new DocumentBuilder()
-    //   .setTitle("Let's choose api")
-    //   // .setDescription('The cats API description')
-    //   .setVersion('1.0')
-    //   .build();
-    // const document = SwaggerModule.createDocument(app, config);
-    // SwaggerModule.setup('api', app, document);
+    const config = new DocumentBuilder()
+      .setTitle("Let's choose api")
+      // .setDescription('The cats API description')
+      .setVersion('1.0')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup(API_ROUTES.INDEX, app, document);
 
     const configService = app.get(ConfigService);
     const port = configService.get('port');

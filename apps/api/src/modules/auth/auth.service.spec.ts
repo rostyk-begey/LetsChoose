@@ -17,12 +17,13 @@ import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
 
 import { IAuthService } from '@lets-choose/api/abstract';
-import jwtService from '../../../../../libs/api/common/services/src/lib/__mocks__/jwt.service';
-import emailService from '../../../../../libs/api/common/services/src/lib/__mocks__/email.service';
-import passwordHashService from '../../../../../libs/api/common/services/src/lib/__mocks__/password.service';
-import userRepository, {
-  userBuilder,
-} from '@modules/user/__mocks__/user.repository';
+import {
+  jwtServiceMock,
+  emailServiceMock,
+  passwordHashServiceMock,
+  userRepositoryMock,
+} from '@lets-choose/api/testing/mocks';
+import { userBuilder } from '@lets-choose/api/testing/builders';
 import config from '@src/config';
 import { AuthService } from '@modules/auth/auth.service';
 import md5 from 'md5';
@@ -45,19 +46,19 @@ describe('AuthService', () => {
         AuthService,
         {
           provide: UserRepository,
-          useValue: userRepository,
+          useValue: userRepositoryMock,
         },
         {
           provide: JwtService,
-          useValue: jwtService,
+          useValue: jwtServiceMock,
         },
         {
           provide: EmailService,
-          useValue: emailService,
+          useValue: emailServiceMock,
         },
         {
           provide: PasswordHashService,
-          useValue: passwordHashService,
+          useValue: passwordHashServiceMock,
         },
       ],
     }).compile();
@@ -72,7 +73,7 @@ describe('AuthService', () => {
     };
 
     jest
-      .spyOn(jwtService, 'generateAuthTokenPair')
+      .spyOn(jwtServiceMock, 'generateAuthTokenPair')
       .mockImplementation(() => tokenPair);
 
     jest.clearAllMocks();
@@ -83,11 +84,13 @@ describe('AuthService', () => {
   });
 
   test('registerUser', async () => {
-    jest.spyOn(userRepository, 'findByEmail').mockResolvedValueOnce(undefined);
     jest
-      .spyOn(userRepository, 'findByUsername')
+      .spyOn(userRepositoryMock, 'findByEmail')
       .mockResolvedValueOnce(undefined);
-    jest.spyOn(userRepository, 'createUser').mockResolvedValueOnce(user);
+    jest
+      .spyOn(userRepositoryMock, 'findByUsername')
+      .mockResolvedValueOnce(undefined);
+    jest.spyOn(userRepositoryMock, 'createUser').mockResolvedValueOnce(user);
 
     const email = faker.internet.email();
     const username = faker.internet.userName();
@@ -95,16 +98,16 @@ describe('AuthService', () => {
 
     await authService.registerUser({ email, username, password });
 
-    expect(userRepository.createUser).toHaveBeenCalledWith({
+    expect(userRepositoryMock.createUser).toHaveBeenCalledWith({
       email,
       username,
       password,
       avatar: `https://www.gravatar.com/avatar/${md5(email)}?s=200&d=identicon`,
       bio: '',
     });
-    expect(passwordHashService.hash).toHaveBeenCalledWith(password, 12);
-    expect(jwtService.generateEmailToken).toHaveBeenCalledWith(user.id);
-    expect(emailService.sendRegistrationEmail).toHaveBeenCalled();
+    expect(passwordHashServiceMock.hash).toHaveBeenCalledWith(password, 12);
+    expect(jwtServiceMock.generateEmailToken).toHaveBeenCalledWith(user.id);
+    expect(emailServiceMock.sendRegistrationEmail).toHaveBeenCalled();
   });
 
   describe('loginUser', () => {
@@ -113,25 +116,25 @@ describe('AuthService', () => {
         login: user.email,
         password: user.password,
       };
-      userRepository.findByEmail.mockResolvedValueOnce(user);
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(user);
       const result = await authService.loginUser(data);
 
       expect(result).toMatchObject(tokenPair);
-      expect(userRepository.findByEmail).toBeCalledWith(data.login);
-      expect(userRepository.findByUsername).not.toHaveBeenCalled();
-      expect(jwtService.generateAuthTokenPair).toBeCalledWith(
+      expect(userRepositoryMock.findByEmail).toBeCalledWith(data.login);
+      expect(userRepositoryMock.findByUsername).not.toHaveBeenCalled();
+      expect(jwtServiceMock.generateAuthTokenPair).toBeCalledWith(
         tokenPair.userId,
         user.passwordVersion,
       );
-      expect(passwordHashService.compare).toBeCalledWith(
+      expect(passwordHashServiceMock.compare).toBeCalledWith(
         user.password,
         user.password,
       );
     });
 
     it('should login user by username correctly', async () => {
-      userRepository.findByEmail.mockResolvedValueOnce(undefined);
-      userRepository.findByUsername.mockResolvedValueOnce(user);
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(undefined);
+      userRepositoryMock.findByUsername.mockResolvedValueOnce(user);
       const data: AuthLoginDto = {
         login: user.username,
         password: user.password,
@@ -139,13 +142,13 @@ describe('AuthService', () => {
       const result = await authService.loginUser(data);
 
       expect(result).toMatchObject(tokenPair);
-      expect(userRepository.findByEmail).toBeCalledWith(data.login);
-      expect(userRepository.findByUsername).toBeCalledWith(data.login);
-      expect(jwtService.generateAuthTokenPair).toBeCalledWith(
+      expect(userRepositoryMock.findByEmail).toBeCalledWith(data.login);
+      expect(userRepositoryMock.findByUsername).toBeCalledWith(data.login);
+      expect(jwtServiceMock.generateAuthTokenPair).toBeCalledWith(
         tokenPair.userId,
         user.passwordVersion,
       );
-      expect(passwordHashService.compare).toBeCalledWith(
+      expect(passwordHashServiceMock.compare).toBeCalledWith(
         user.password,
         user.password,
       );
@@ -156,7 +159,7 @@ describe('AuthService', () => {
         login: user.username,
         password: faker.internet.password(),
       };
-      userRepository.findByEmail.mockResolvedValueOnce(user);
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(user);
 
       expect.assertions(4);
 
@@ -166,17 +169,17 @@ describe('AuthService', () => {
         expect(e.message).toMatch('Incorrect login data');
       }
 
-      expect(userRepository.findByEmail).toBeCalledWith(data.login);
-      expect(userRepository.findByUsername).not.toBeCalledWith(data.login);
-      expect(passwordHashService.compare).toBeCalledWith(
+      expect(userRepositoryMock.findByEmail).toBeCalledWith(data.login);
+      expect(userRepositoryMock.findByUsername).not.toBeCalledWith(data.login);
+      expect(passwordHashServiceMock.compare).toBeCalledWith(
         data.password,
         user.password,
       );
     });
 
     it('should throw error if login is incorrect', async () => {
-      userRepository.findByEmail.mockResolvedValueOnce(undefined);
-      userRepository.findByUsername.mockResolvedValueOnce(undefined);
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(undefined);
+      userRepositoryMock.findByUsername.mockResolvedValueOnce(undefined);
       expect.assertions(1);
       try {
         await authService.loginUser({
@@ -216,7 +219,7 @@ describe('AuthService', () => {
       .mockResolvedValueOnce(ticket);
 
     it('should login user correctly from token', async () => {
-      userRepository.findByEmail.mockResolvedValueOnce(user);
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(user);
       const result = await authService.loginUserOAuth({ token: idToken });
 
       expect(result).toMatchObject({ ...tokenPair, userId: user.id });
@@ -226,8 +229,8 @@ describe('AuthService', () => {
         audience: config().googleOAuth.clientId,
       });
       expect(ticket.getPayload).toBeCalled();
-      expect(userRepository.findByEmail).toBeCalledWith(tokenPayload.email);
-      expect(jwtService.generateAuthTokenPair).toBeCalledWith(
+      expect(userRepositoryMock.findByEmail).toBeCalledWith(tokenPayload.email);
+      expect(jwtServiceMock.generateAuthTokenPair).toBeCalledWith(
         tokenPair.userId,
         user.passwordVersion,
       );
@@ -236,18 +239,18 @@ describe('AuthService', () => {
 
   describe('requestPasswordReset', () => {
     it('should reset password correctly', async () => {
-      userRepository.findByEmail.mockResolvedValueOnce(user);
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(user);
       const email = faker.internet.email();
 
       await authService.requestPasswordReset({ email });
 
-      expect(userRepository.findByEmail).toBeCalledWith(email);
-      expect(jwtService.generateResetPasswordToken).toBeCalledWith(user.id);
-      expect(emailService.sendResetPasswordEmail).toBeCalled();
+      expect(userRepositoryMock.findByEmail).toBeCalledWith(email);
+      expect(jwtServiceMock.generateResetPasswordToken).toBeCalledWith(user.id);
+      expect(emailServiceMock.sendResetPasswordEmail).toBeCalled();
     });
 
     it("should throw error if user doesn't exists", async () => {
-      userRepository.findByEmail.mockResolvedValueOnce(undefined);
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(undefined);
       expect.assertions(2);
 
       const email = faker.internet.email();
@@ -255,7 +258,7 @@ describe('AuthService', () => {
       try {
         await authService.requestPasswordReset({ email });
       } catch (e) {
-        expect(userRepository.findByEmail).toBeCalledWith(email);
+        expect(userRepositoryMock.findByEmail).toBeCalledWith(email);
         expect(e.message).toEqual('User not found');
       }
     });
@@ -266,23 +269,26 @@ describe('AuthService', () => {
     const mockToken = faker.lorem.word();
 
     it('should reset user password', async () => {
-      userRepository.findByIdOrFail.mockResolvedValueOnce(user);
-      jwtService.verifyPasswordResetToken.mockImplementationOnce(() => ({
+      userRepositoryMock.findByIdOrFail.mockResolvedValueOnce(user);
+      jwtServiceMock.verifyPasswordResetToken.mockImplementationOnce(() => ({
         userId: user.id,
       }));
 
       await authService.resetUsersPassword(mockToken, newPassword);
 
-      expect(jwtService.verifyPasswordResetToken).toBeCalledWith(mockToken);
-      expect(passwordHashService.hash).toBeCalledWith(newPassword, 12);
-      expect(userRepository.findByIdAndUpdate).toHaveBeenCalledWith(user.id, {
-        password: newPassword,
-        passwordVersion: user.passwordVersion + 1,
-      });
+      expect(jwtServiceMock.verifyPasswordResetToken).toBeCalledWith(mockToken);
+      expect(passwordHashServiceMock.hash).toBeCalledWith(newPassword, 12);
+      expect(userRepositoryMock.findByIdAndUpdate).toHaveBeenCalledWith(
+        user.id,
+        {
+          password: newPassword,
+          passwordVersion: user.passwordVersion + 1,
+        },
+      );
     });
 
     it('should throw error if token is invalid', async () => {
-      jwtService.verifyPasswordResetToken.mockImplementationOnce(() => {
+      jwtServiceMock.verifyPasswordResetToken.mockImplementationOnce(() => {
         throw new Error();
       });
 
@@ -300,18 +306,18 @@ describe('AuthService', () => {
     const mockToken = faker.lorem.word();
 
     it('should refresh token correctly', async () => {
-      userRepository.findByIdOrFail.mockResolvedValueOnce(user);
-      jwtService.verifyRefreshToken.mockImplementationOnce(() => ({
+      userRepositoryMock.findByIdOrFail.mockResolvedValueOnce(user);
+      jwtServiceMock.verifyRefreshToken.mockImplementationOnce(() => ({
         userId: user.id,
         passwordVersion: user.passwordVersion,
       }));
-      jwtService.generateAuthTokenPair.mockImplementation(() => tokenPair);
+      jwtServiceMock.generateAuthTokenPair.mockImplementation(() => tokenPair);
 
       const result = await authService.refreshToken(mockToken);
 
       expect(result).toMatchObject(tokenPair);
-      expect(userRepository.findByIdOrFail).toBeCalledWith(user.id);
-      expect(jwtService.generateAuthTokenPair).toBeCalledWith(
+      expect(userRepositoryMock.findByIdOrFail).toBeCalledWith(user.id);
+      expect(jwtServiceMock.generateAuthTokenPair).toBeCalledWith(
         user.id,
         user.passwordVersion,
       );
@@ -319,7 +325,7 @@ describe('AuthService', () => {
 
     it('should throw error if token is incorrect', async () => {
       jest
-        .spyOn(jwtService, 'verifyRefreshToken')
+        .spyOn(jwtServiceMock, 'verifyRefreshToken')
         .mockImplementationOnce(() => {
           throw new Error();
         });
@@ -344,8 +350,8 @@ describe('AuthService', () => {
     });
 
     it('should login user by username correctly', async () => {
-      userRepository.findByEmail.mockResolvedValueOnce(undefined);
-      userRepository.findByIdOrFail.mockResolvedValueOnce(user);
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(undefined);
+      userRepositoryMock.findByIdOrFail.mockResolvedValueOnce(user);
       const password = user.password;
       const data: UpdateUserPasswordDto = {
         password,
@@ -354,20 +360,20 @@ describe('AuthService', () => {
       const result = await authService.updateUsersPassword(user.id, data);
 
       expect(result).toMatchObject(tokenPair);
-      expect(userRepository.findByIdOrFail).toBeCalledWith(user.id);
-      expect(passwordHashService.compare).toBeCalledWith(
+      expect(userRepositoryMock.findByIdOrFail).toBeCalledWith(user.id);
+      expect(passwordHashServiceMock.compare).toBeCalledWith(
         password,
         user.password,
       );
-      expect(passwordHashService.hash).toBeCalledWith(newPassword, 12);
-      expect(userRepository.findByIdAndUpdate).toBeCalledWith(
+      expect(passwordHashServiceMock.hash).toBeCalledWith(newPassword, 12);
+      expect(userRepositoryMock.findByIdAndUpdate).toBeCalledWith(
         user.id,
         expect.objectContaining({
           password: newPassword,
           passwordVersion: newPasswordVersion,
         }),
       );
-      expect(jwtService.generateAuthTokenPair).toBeCalledWith(
+      expect(jwtServiceMock.generateAuthTokenPair).toBeCalledWith(
         tokenPair.userId,
         newPasswordVersion,
       );
@@ -379,7 +385,7 @@ describe('AuthService', () => {
         password,
         newPassword,
       };
-      userRepository.findByIdOrFail.mockResolvedValueOnce(user);
+      userRepositoryMock.findByIdOrFail.mockResolvedValueOnce(user);
 
       expect.assertions(7);
 
@@ -390,14 +396,14 @@ describe('AuthService', () => {
         expect(e.message).toMatch('Incorrect password');
       }
 
-      expect(userRepository.findByIdOrFail).toBeCalledWith(user.id);
-      expect(passwordHashService.compare).toBeCalledWith(
+      expect(userRepositoryMock.findByIdOrFail).toBeCalledWith(user.id);
+      expect(passwordHashServiceMock.compare).toBeCalledWith(
         password,
         user.password,
       );
-      expect(passwordHashService.hash).not.toBeCalled();
-      expect(userRepository.findByIdAndUpdate).not.toBeCalled();
-      expect(jwtService.generateAuthTokenPair).not.toBeCalled();
+      expect(passwordHashServiceMock.hash).not.toBeCalled();
+      expect(userRepositoryMock.findByIdAndUpdate).not.toBeCalled();
+      expect(jwtServiceMock.generateAuthTokenPair).not.toBeCalled();
     });
   });
 
@@ -406,21 +412,23 @@ describe('AuthService', () => {
 
     it('should confirm email correctly', async () => {
       jest
-        .spyOn(jwtService, 'verifyEmailToken')
+        .spyOn(jwtServiceMock, 'verifyEmailToken')
         .mockImplementationOnce(() => ({ userId: user.id }));
 
       await authService.confirmEmail(mockToken);
 
-      expect(jwtService.verifyEmailToken).toBeCalledWith(mockToken);
-      expect(userRepository.findByIdAndUpdate).toBeCalledWith(user.id, {
+      expect(jwtServiceMock.verifyEmailToken).toBeCalledWith(mockToken);
+      expect(userRepositoryMock.findByIdAndUpdate).toBeCalledWith(user.id, {
         confirmed: true,
       });
     });
 
     it('should throw error if token is incorrect', async () => {
-      jest.spyOn(jwtService, 'verifyEmailToken').mockImplementationOnce(() => {
-        throw new Error();
-      });
+      jest
+        .spyOn(jwtServiceMock, 'verifyEmailToken')
+        .mockImplementationOnce(() => {
+          throw new Error();
+        });
 
       expect.assertions(1);
 

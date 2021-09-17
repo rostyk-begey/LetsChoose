@@ -1,6 +1,6 @@
 import { ICloudinaryService } from '@lets-choose/api/abstract';
 
-const cloudinaryService: jest.Mocked<ICloudinaryService> = {
+export const cloudinaryServiceMock: jest.Mocked<ICloudinaryService> = {
   upload: jest.fn((filePath: string, publicId: string) =>
     Promise.resolve(`${filePath}:${publicId}`),
   ),
@@ -8,5 +8,3 @@ const cloudinaryService: jest.Mocked<ICloudinaryService> = {
   destroyMultiple: jest.fn((_) => Promise.resolve()),
   deleteFolder: jest.fn((_) => Promise.resolve()),
 };
-
-export default cloudinaryService;

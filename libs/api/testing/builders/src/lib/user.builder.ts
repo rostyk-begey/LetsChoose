@@ -1,6 +1,5 @@
-import { IUserRepository } from '@lets-choose/api/abstract';
 import { build, fake, oneOf, sequence } from '@jackfranklin/test-data-bot';
-import { User, UserDocument } from '@lets-choose/api/user/data-access';
+import { User } from '@lets-choose/api/user/data-access';
 import { Types } from 'mongoose';
 
 export const userBuilder = build<User>({
@@ -27,15 +26,3 @@ export const userBuilder = build<User>({
     id: res._id,
   }),
 });
-
-const userRepository: jest.Mocked<IUserRepository> = {
-  findById: jest.fn(),
-  findByIdOrFail: jest.fn(),
-  findByIdAndUpdate: jest.fn(),
-  findByUsername: jest.fn(),
-  findByEmail: jest.fn(),
-  deleteUser: jest.fn(),
-  createUser: jest.fn(),
-};
-
-export default userRepository;

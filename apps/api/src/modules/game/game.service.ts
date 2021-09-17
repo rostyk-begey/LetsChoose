@@ -144,7 +144,7 @@ export class GameService implements IGameService {
     });
   }
 
-  public findGameById(gameId: string): Promise<GameDocument> {
+  public findGameById(gameId: string): Promise<Game> {
     return this.gameRepository.findById(gameId);
   }
 
@@ -216,13 +216,9 @@ export class GameService implements IGameService {
   }
 
   public async playRound(gameId: string, winnerId: string): Promise<void> {
-    const gameDocument = await this.findGameById(gameId);
+    let game = await this.findGameById(gameId);
 
-    // const game = this.playRoundUpdateGame(gameDocument, winnerId) as Game;
-    const game = this.playRoundUpdateGame(
-      gameDocument.toObject(),
-      winnerId,
-    ) as Game;
+    game = this.playRoundUpdateGame(game, winnerId) as Game;
 
     if (game.finished) {
       const contest = await this.contestRepository.findById(

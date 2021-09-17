@@ -1,12 +1,5 @@
-import { IContestItemRepository } from '@lets-choose/api/abstract';
 import { build, fake, sequence } from '@jackfranklin/test-data-bot';
-import { ContestItem } from '@lets-choose/api/contest/data-access';
-
-export interface ExtendedContestItem extends ContestItem {
-  winRate?: number;
-  finalWinRate?: number;
-  rankScore?: number;
-}
+import { ExtendedContestItem } from '../../../mocks/src';
 
 export const contestItemBuilder = build<ExtendedContestItem>({
   fields: {
@@ -28,16 +21,3 @@ export const contestItemBuilder = build<ExtendedContestItem>({
     id: res._id,
   }),
 });
-
-const contestItemRepository: jest.Mocked<IContestItemRepository> = {
-  countDocuments: jest.fn(),
-  paginate: jest.fn(),
-  findById: jest.fn(),
-  findByContestId: jest.fn(),
-  findByIdAndUpdate: jest.fn(),
-  updateContestItems: jest.fn(),
-  deleteContestItems: jest.fn(),
-  createContestItem: jest.fn(),
-};
-
-export default contestItemRepository;

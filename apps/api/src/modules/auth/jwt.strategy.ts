@@ -40,7 +40,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate({ userId }: AuthTokenPayload): Promise<UserDto> {
+  public async validate({ userId }: AuthTokenPayload): Promise<UserDto> {
     return await this.userRepository.findById(userId);
   }
 }

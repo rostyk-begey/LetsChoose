@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 
-import { IPasswordHashService } from '../../../../abstract/src/lib/password.service.interface';
+import { IPasswordHashService } from '@lets-choose/api/abstract';
 
 @Injectable()
 export class PasswordHashService implements IPasswordHashService {

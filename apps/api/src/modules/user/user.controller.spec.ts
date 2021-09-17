@@ -4,13 +4,14 @@ import { ContestRepository } from '@lets-choose/api/contest/data-access';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import contestItemRepository from '@modules/contest/__mocks__/contest-item.repository';
-import contestRepository from '@modules/contest/__mocks__/contest.repository';
-import gameRepository from '@modules/game/__mocks__/game.repository';
-import userRepository, {
-  userBuilder,
-} from '@modules/user/__mocks__/user.repository';
-import cloudinaryService from '../../../../../libs/api/cloudinary/src/lib/__mocks__/cloudinary.service';
+import {
+  contestItemRepositoryMock,
+  contestRepositoryMock,
+  gameRepositoryMock,
+  userRepositoryMock,
+  cloudinaryServiceMock,
+} from '@lets-choose/api/testing/mocks';
+import { userBuilder } from '@lets-choose/api/testing/builders';
 import { ContestService } from '@modules/contest/contest.service';
 import { UserController } from '@modules/user/user.controller';
 import { UserService } from '@modules/user/user.service';
@@ -29,20 +30,20 @@ describe('UserController', () => {
         UserService,
         {
           provide: UserRepository,
-          useValue: userRepository,
+          useValue: userRepositoryMock,
         },
         {
           provide: ContestRepository,
-          useValue: contestRepository,
+          useValue: contestRepositoryMock,
         },
         {
           provide: ContestService,
           useValue: new ContestService(
-            contestRepository,
-            contestItemRepository,
-            gameRepository,
-            cloudinaryService,
-            userRepository,
+            contestRepositoryMock,
+            contestItemRepositoryMock,
+            gameRepositoryMock,
+            cloudinaryServiceMock,
+            userRepositoryMock,
           ),
         },
       ],

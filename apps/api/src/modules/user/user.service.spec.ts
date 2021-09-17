@@ -4,17 +4,16 @@ import { ContestRepository } from '@lets-choose/api/contest/data-access';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import contestRepository, {
-  contestBuilder,
-} from '@modules/contest/__mocks__/contest.repository';
-import contestItemRepository from '@modules/contest/__mocks__/contest-item.repository';
-import cloudinaryService from '../../../../../libs/api/cloudinary/src/lib/__mocks__/cloudinary.service';
-import gameRepository from '@modules/game/__mocks__/game.repository';
+import {
+  contestItemRepositoryMock,
+  contestRepositoryMock,
+  cloudinaryServiceMock,
+  gameRepositoryMock,
+  userRepositoryMock,
+} from '@lets-choose/api/testing/mocks';
+import { contestBuilder, userBuilder } from '@lets-choose/api/testing/builders';
 import { ContestService } from '@modules/contest/contest.service';
 import { UserService } from '@modules/user/user.service';
-import userRepository, {
-  userBuilder,
-} from '@modules/user/__mocks__/user.repository';
 import * as faker from 'faker';
 
 describe('UserService', () => {
@@ -30,20 +29,20 @@ describe('UserService', () => {
         UserService,
         {
           provide: UserRepository,
-          useValue: userRepository,
+          useValue: userRepositoryMock,
         },
         {
           provide: ContestRepository,
-          useValue: contestRepository,
+          useValue: contestRepositoryMock,
         },
         {
           provide: ContestService,
           useValue: new ContestService(
-            contestRepository,
-            contestItemRepository,
-            gameRepository,
-            cloudinaryService,
-            userRepository,
+            contestRepositoryMock,
+            contestItemRepositoryMock,
+            gameRepositoryMock,
+            cloudinaryServiceMock,
+            userRepositoryMock,
           ),
         },
       ],
@@ -57,37 +56,37 @@ describe('UserService', () => {
   });
 
   test('findById', async () => {
-    userRepository.findByUsername.mockResolvedValueOnce(user);
+    userRepositoryMock.findByUsername.mockResolvedValueOnce(user);
     await userService.findById(userId);
-    expect(userRepository.findByIdOrFail).toHaveBeenCalledWith(userId);
+    expect(userRepositoryMock.findByIdOrFail).toHaveBeenCalledWith(userId);
   });
 
   test('findByUsername', async () => {
-    userRepository.findByUsername.mockResolvedValueOnce(user);
+    userRepositoryMock.findByUsername.mockResolvedValueOnce(user);
     await userService.findByUsername(username);
-    expect(userRepository.findByUsername).toHaveBeenCalledWith(username);
+    expect(userRepositoryMock.findByUsername).toHaveBeenCalledWith(username);
   });
 
   test('removeUserById', async () => {
-    userRepository.findByIdOrFail.mockResolvedValueOnce(user);
+    userRepositoryMock.findByIdOrFail.mockResolvedValueOnce(user);
     jest
       .spyOn(contestService, 'findContestsByAuthor')
       .mockResolvedValueOnce([contest]);
     jest.spyOn(contestService, 'removeContest').mockImplementation(() => null);
 
     await userService.removeUserById(userId);
-    expect(userRepository.findByIdOrFail).toHaveBeenCalledWith(userId);
+    expect(userRepositoryMock.findByIdOrFail).toHaveBeenCalledWith(userId);
   });
 
   test('removeUserByUsername', async () => {
-    userRepository.findByUsername.mockResolvedValueOnce(user);
+    userRepositoryMock.findByUsername.mockResolvedValueOnce(user);
     jest
       .spyOn(contestService, 'findContestsByAuthor')
       .mockResolvedValueOnce([contest]);
     jest.spyOn(contestService, 'removeContest').mockImplementation(() => null);
 
     await userService.removeUserByUsername(username);
-    expect(userRepository.findByUsername).toHaveBeenCalledWith(username);
+    expect(userRepositoryMock.findByUsername).toHaveBeenCalledWith(username);
   });
 
   describe('updateUserProfile', () => {
@@ -101,21 +100,23 @@ describe('UserService', () => {
       };
       otherUser = userBuilder();
 
-      userRepository.findByUsername.mockRestore();
-      userRepository.findByEmail.mockRestore();
-      userRepository.findByIdAndUpdate.mockRestore();
+      userRepositoryMock.findByUsername.mockRestore();
+      userRepositoryMock.findByEmail.mockRestore();
+      userRepositoryMock.findByIdAndUpdate.mockRestore();
     });
 
     it("should update user's account correctly", async () => {
-      userRepository.findByUsername.mockResolvedValueOnce(null);
-      userRepository.findByEmail.mockResolvedValueOnce(null);
-      userRepository.findByIdAndUpdate.mockResolvedValueOnce(otherUser);
+      userRepositoryMock.findByUsername.mockResolvedValueOnce(null);
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(null);
+      userRepositoryMock.findByIdAndUpdate.mockResolvedValueOnce(otherUser);
 
       const result = await userService.updateUserProfile(user.id, data);
 
-      expect(userRepository.findByUsername).toHaveBeenCalledWith(data.username);
-      expect(userRepository.findByEmail).toHaveBeenCalledWith(data.email);
-      expect(userRepository.findByIdAndUpdate).toHaveBeenCalledWith(
+      expect(userRepositoryMock.findByUsername).toHaveBeenCalledWith(
+        data.username,
+      );
+      expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(data.email);
+      expect(userRepositoryMock.findByIdAndUpdate).toHaveBeenCalledWith(
         user.id,
         data,
       );
@@ -123,35 +124,35 @@ describe('UserService', () => {
     });
 
     it('should throw error if username is in use', async () => {
-      userRepository.findByUsername.mockResolvedValueOnce(otherUser);
+      userRepositoryMock.findByUsername.mockResolvedValueOnce(otherUser);
 
       try {
         await userService.updateUserProfile(user.id, data);
       } catch (e) {
         expect(e).toBeInstanceOf(BadRequestException);
-        expect(userRepository.findByUsername).toHaveBeenCalledWith(
+        expect(userRepositoryMock.findByUsername).toHaveBeenCalledWith(
           data.username,
         );
-        expect(userRepository.findByEmail).not.toHaveBeenCalled();
-        expect(userRepository.findByIdAndUpdate).not.toHaveBeenCalled();
+        expect(userRepositoryMock.findByEmail).not.toHaveBeenCalled();
+        expect(userRepositoryMock.findByIdAndUpdate).not.toHaveBeenCalled();
       }
 
       expect.assertions(4);
     });
 
     it('should throw error if email is in use', async () => {
-      userRepository.findByUsername.mockResolvedValueOnce(null);
-      userRepository.findByEmail.mockResolvedValueOnce(otherUser);
+      userRepositoryMock.findByUsername.mockResolvedValueOnce(null);
+      userRepositoryMock.findByEmail.mockResolvedValueOnce(otherUser);
 
       try {
         await userService.updateUserProfile(user.id, data);
       } catch (e) {
         expect(e).toBeInstanceOf(BadRequestException);
-        expect(userRepository.findByUsername).toHaveBeenCalledWith(
+        expect(userRepositoryMock.findByUsername).toHaveBeenCalledWith(
           data.username,
         );
-        expect(userRepository.findByEmail).toHaveBeenCalledWith(data.email);
-        expect(userRepository.findByIdAndUpdate).not.toHaveBeenCalled();
+        expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(data.email);
+        expect(userRepositoryMock.findByIdAndUpdate).not.toHaveBeenCalled();
       }
 
       expect.assertions(4);

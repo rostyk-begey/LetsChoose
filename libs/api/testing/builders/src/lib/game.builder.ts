@@ -1,4 +1,3 @@
-import { IGameRepository } from '@lets-choose/api/abstract';
 import { build, fake, oneOf, sequence } from '@jackfranklin/test-data-bot';
 import { Game } from '@lets-choose/api/game/data-access';
 
@@ -29,15 +28,3 @@ export const gameBuilder = build<Game>({
     },
   },
 });
-
-const gameRepository: jest.Mocked<IGameRepository> = {
-  countDocuments: jest.fn(),
-  aggregate: jest.fn(),
-  findById: jest.fn(),
-  findByIdAndUpdate: jest.fn(),
-  deleteGame: jest.fn(),
-  deleteGames: jest.fn(),
-  createGame: jest.fn(),
-};
-
-export default gameRepository;

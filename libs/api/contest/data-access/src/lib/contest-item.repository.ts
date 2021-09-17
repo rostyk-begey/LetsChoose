@@ -134,7 +134,7 @@ export class ContestItemRepository implements IContestItemRepository {
   }
 
   public async createContestItem(
-    data: CreateContestItemDto,
+    data: Omit<CreateContestItemDto, 'id'>,
   ): Promise<ContestItem> {
     const contestItem = new this.contestItemModel(data);
     await contestItem.save();

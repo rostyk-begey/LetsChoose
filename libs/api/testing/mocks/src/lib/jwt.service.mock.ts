@@ -3,7 +3,7 @@ import {
   IJwtService,
   AuthTokenPayload,
   BaseTokenPayload,
-} from '../../../../../abstract/src/lib/jwt.service.interface';
+} from '@lets-choose/api/abstract';
 
 const jwtService: IJwtService = {
   generateAuthTokenPair(userId: string, passwordVersion = 0): TokenPair {
@@ -60,4 +60,4 @@ jwtService.verifyPasswordResetToken = jest.fn(
   jwtService.verifyPasswordResetToken,
 );
 
-export default jwtService as jest.Mocked<IJwtService>;
+export const jwtServiceMock = jwtService as jest.Mocked<IJwtService>;

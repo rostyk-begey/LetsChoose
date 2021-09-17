@@ -1,19 +1,20 @@
 import { IGameService } from '@lets-choose/api/abstract';
 import { ContestDto } from '@lets-choose/common/dto';
-import contestRepository, {
+import {
+  contestRepositoryMock,
+  contestItemRepositoryMock,
+  gameRepositoryMock,
+} from '@lets-choose/api/testing/mocks';
+import {
   contestBuilder,
-} from '@modules/contest/__mocks__/contest.repository';
+  contestItemBuilder,
+  gameBuilder,
+} from '@lets-choose/api/testing/builders';
 import {
   ContestItem,
   ContestRepository,
   ContestItemRepository,
 } from '@lets-choose/api/contest/data-access';
-import contestItemRepository, {
-  contestItemBuilder,
-} from '@modules/contest/__mocks__/contest-item.repository';
-import gameRepository, {
-  gameBuilder,
-} from '@modules/game/__mocks__/game.repository';
 import { GameItem, GameRepository } from '@lets-choose/api/game/data-access';
 import { GameService } from '@modules/game/game.service';
 import { oneOf } from '@jackfranklin/test-data-bot';
@@ -71,15 +72,15 @@ describe('GameService', () => {
         GameService,
         {
           provide: ContestRepository,
-          useValue: contestRepository,
+          useValue: contestRepositoryMock,
         },
         {
           provide: ContestItemRepository,
-          useValue: contestItemRepository,
+          useValue: contestItemRepositoryMock,
         },
         {
           provide: GameRepository,
-          useValue: gameRepository,
+          useValue: gameRepositoryMock,
         },
       ],
     }).compile();
@@ -113,7 +114,7 @@ describe('GameService', () => {
         },
       });
 
-      jest.spyOn(gameRepository, 'findById').mockResolvedValue(game);
+      jest.spyOn(gameRepositoryMock, 'findById').mockResolvedValue(game);
 
       await gameService.playRound(game.id, winnerId);
     };
@@ -123,16 +124,16 @@ describe('GameService', () => {
       beforeEach(() => setUp({ pairNumber }));
 
       afterEach(() => {
-        gameRepository.findByIdAndUpdate.mockClear();
+        gameRepositoryMock.findByIdAndUpdate.mockClear();
       });
 
       it('should get game from DB', () => {
-        expect(gameRepository.findById).toHaveBeenCalledWith(game.id);
+        expect(gameRepositoryMock.findById).toHaveBeenCalledWith(game.id);
       });
 
       it('should update game', () => {
         const [gameId, updatedGame] =
-          gameRepository.findByIdAndUpdate.mock.calls[0];
+          gameRepositoryMock.findByIdAndUpdate.mock.calls[0];
 
         expect(gameId).toEqual(game.id);
         expect(updatedGame).toEqual(
@@ -150,16 +151,16 @@ describe('GameService', () => {
       beforeEach(() => setUp({ pairNumber }));
 
       afterEach(() => {
-        gameRepository.findByIdAndUpdate.mockClear();
+        gameRepositoryMock.findByIdAndUpdate.mockClear();
       });
 
       it('should get game from DB', () => {
-        expect(gameRepository.findById).toHaveBeenCalledWith(game.id);
+        expect(gameRepositoryMock.findById).toHaveBeenCalledWith(game.id);
       });
 
       it('should update game', () => {
         const [gameId, updatedGame] =
-          gameRepository.findByIdAndUpdate.mock.calls[0];
+          gameRepositoryMock.findByIdAndUpdate.mock.calls[0];
 
         expect(gameId).toEqual(game.id);
         expect(updatedGame).toEqual(
@@ -182,24 +183,24 @@ describe('GameService', () => {
         contest = contestBuilder();
         ({ games: contestGames } = contest);
         contestItem = contestItemBuilder();
-        contestRepository.findById.mockResolvedValue(contest);
-        contestItemRepository.findById.mockResolvedValue(contestItem);
+        contestRepositoryMock.findById.mockResolvedValue(contest);
+        contestItemRepositoryMock.findById.mockResolvedValue(contestItem);
 
         await setUp({ round: 1 });
       });
 
       afterEach(() => {
-        contestRepository.findById.mockClear();
-        gameRepository.findByIdAndUpdate.mockClear();
+        contestRepositoryMock.findById.mockClear();
+        gameRepositoryMock.findByIdAndUpdate.mockClear();
       });
 
       it('should get game from DB', () => {
-        expect(gameRepository.findById).toHaveBeenCalledWith(game.id);
+        expect(gameRepositoryMock.findById).toHaveBeenCalledWith(game.id);
       });
 
       it('should update game', () => {
         const [gameId, updatedGame] =
-          gameRepository.findByIdAndUpdate.mock.calls[0];
+          gameRepositoryMock.findByIdAndUpdate.mock.calls[0];
 
         expect(gameId).toEqual(game.id);
         expect(updatedGame).toEqual(
@@ -214,11 +215,13 @@ describe('GameService', () => {
       });
 
       it('should get contest from DB', () => {
-        expect(contestRepository.findById).toHaveBeenCalledWith(game.contestId);
+        expect(contestRepositoryMock.findById).toHaveBeenCalledWith(
+          game.contestId,
+        );
       });
 
       it('should update contest', () => {
-        expect(contestRepository.findByIdAndUpdate).toHaveBeenCalledWith(
+        expect(contestRepositoryMock.findByIdAndUpdate).toHaveBeenCalledWith(
           contest.id,
           {
             ...contest,
@@ -255,9 +258,9 @@ describe('GameService', () => {
 
   test('findById', async () => {
     const game = gameBuilder();
-    gameRepository.findById.mockResolvedValueOnce(game as any);
+    gameRepositoryMock.findById.mockResolvedValueOnce(game as any);
     await gameService.findGameById(game.id);
-    expect(gameRepository.findById).toHaveBeenCalledWith(game.id);
+    expect(gameRepositoryMock.findById).toHaveBeenCalledWith(game.id);
   });
 
   test('start', async () => {
@@ -279,9 +282,11 @@ describe('GameService', () => {
     ];
     const contest = contestBuilder();
 
-    contestRepository.findById.mockResolvedValueOnce(contest);
-    gameRepository.createGame.mockResolvedValueOnce(game);
-    contestItemRepository.findByContestId.mockResolvedValueOnce(contestItems);
+    contestRepositoryMock.findById.mockResolvedValueOnce(contest);
+    gameRepositoryMock.createGame.mockResolvedValueOnce(game);
+    contestItemRepositoryMock.findByContestId.mockResolvedValueOnce(
+      contestItems,
+    );
 
     const result = await gameService.start(contest.id);
 
@@ -292,9 +297,9 @@ describe('GameService', () => {
     }));
 
     expect(result).toEqual(game);
-    expect(contestRepository.findById).toBeCalledWith(contest.id);
-    expect(gameRepository.createGame).toHaveBeenCalledTimes(1);
-    expect(gameRepository.createGame.mock.calls[0][0]).toEqual(
+    expect(contestRepositoryMock.findById).toBeCalledWith(contest.id);
+    expect(gameRepositoryMock.createGame).toHaveBeenCalledTimes(1);
+    expect(gameRepositoryMock.createGame.mock.calls[0][0]).toEqual(
       expect.objectContaining({
         _id: gameId,
         contestId: contest.id,
