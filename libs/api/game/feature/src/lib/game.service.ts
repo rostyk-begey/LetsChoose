@@ -82,20 +82,11 @@ export class GameService implements IGameService {
         resultItems.compares += 1;
       }
 
-      this.logger.debug(
-        '[playRoundUpdateGame][updateGameItems][map]',
-        `${winnerId}`,
-        `${contestItemId}`,
-      );
       if (winnerId === `${contestItemId}`) {
         resultItems.wins += 1;
       }
 
       return resultItems;
-    });
-
-    this.logger.debug('[playRoundUpdateGame][updateGameItems]', {
-      updatedGameItems,
     });
 
     return updatedGameItems;
@@ -148,10 +139,6 @@ export class GameService implements IGameService {
   }
 
   protected playRoundUpdateGame(game: Game, winnerId: string): Game {
-    this.logger.debug('[playRoundUpdateGame]', {
-      winnerId,
-      game: { ...game },
-    });
     if (game.finished) {
       throw new BadRequestException('Game has been finished');
     }
@@ -166,50 +153,28 @@ export class GameService implements IGameService {
       winnerId,
     );
 
-    this.logger.debug('[playRoundUpdateGame][updateGameItems]', {
-      updatedItems: game.items,
-    });
-
     let roundItems = this.getNextRoundItems(
       game.items as GameItem[],
       game.round,
     );
 
-    this.logger.debug('[playRoundUpdateGame][getNextRoundItems]', {
-      roundItems,
-    });
     // no items left on this round, go to next round
     if (roundItems.length === 0) {
       game.round += 1;
       game.pairNumber = -1;
       roundItems = this.getNextRoundItems(game.items as GameItem[], game.round);
       game.pairsInRound = roundItems.length > 1 ? roundItems.length / 2 : 0;
-
-      this.logger.debug('[playRoundUpdateGame][roundItems.length === 0]', {
-        roundItems,
-        game,
-      });
     }
 
     if (roundItems.length > 1) {
       game.pair = GameService.generatePair(roundItems);
       game.pairNumber += 1;
-
-      this.logger.debug('[playRoundUpdateGame][roundItems.length > 1]', {
-        game,
-      });
     }
     // games has finished
     else {
       game.finished = true;
       game.winnerId = winnerId;
-
-      this.logger.debug('[playRoundUpdateGame][roundItems.length <= 1]', {
-        game,
-      });
     }
-
-    this.logger.debug('[playRoundUpdateGame][return]', { game });
 
     return game;
   }
