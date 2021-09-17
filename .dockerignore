@@ -1,14 +1,12 @@
 node_modules
-dist
-packages/server/.env
-packages/server/.env.example
+#dist
+.env.example
 .git
 .github
 .gitignore
 .idea
 
-packages/client/.env.example
-packages/client/.next
+apps/client-old/.next
 *.spec.ts
 **/__mocks__/
 uploads
@@ -17,3 +15,10 @@ uploads
 .eslintrc.json
 .eslintignore
 .prettierrc
+docker-compose.yml
+lets-choose-key-pair.pem
+README.md
+Dockerfile
+apps/client-old
+apps/client-components-e2e
+apps/server

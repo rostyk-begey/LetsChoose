@@ -1,0 +1,129 @@
+{
+  "npmScope": "lets-choose",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "cacheableOperations": ["build", "test", "lint", "package", "prepare"],
+        "accessToken": "Y2U2MTU0NWMtMTcxNC00ZTVjLTkxZjUtYzdlZGNlMjQzYzMyfHJlYWQtd3JpdGU="
+      }
+    }
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ],
+    "prepare": [
+      {
+        "target": "prepare",
+        "projects": "dependencies"
+      }
+    ],
+    "package": [
+      {
+        "target": "package",
+        "projects": "dependencies"
+      }
+    ]
+  },
+  "projects": {
+    "api": {
+      "tags": []
+    },
+    "api-abstract": {
+      "tags": []
+    },
+    "api-auth-feature": {
+      "tags": []
+    },
+    "api-cloudinary": {
+      "tags": []
+    },
+    "api-common-decorators": {
+      "tags": []
+    },
+    "api-common-pipes": {
+      "tags": []
+    },
+    "api-common-services": {
+      "tags": []
+    },
+    "api-common-utils": {
+      "tags": []
+    },
+    "api-config": {
+      "tags": []
+    },
+    "api-contest-data-access": {
+      "tags": []
+    },
+    "api-contest-feature": {
+      "tags": []
+    },
+    "api-game-data-access": {
+      "tags": []
+    },
+    "api-game-feature": {
+      "tags": []
+    },
+    "api-health-feature": {
+      "tags": []
+    },
+    "api-mongoose": {
+      "tags": []
+    },
+    "api-test-mocks": {
+      "tags": []
+    },
+    "api-testing-builders": {
+      "tags": []
+    },
+    "api-testing-utils": {
+      "tags": []
+    },
+    "api-user-data-access": {
+      "tags": []
+    },
+    "api-user-feature": {
+      "tags": []
+    },
+    "client": {
+      "tags": []
+    },
+    "client-api": {
+      "tags": []
+    },
+    "client-components": {
+      "tags": []
+    },
+    "client-components-e2e": {
+      "tags": [],
+      "implicitDependencies": ["client-components"]
+    },
+    "client-e2e": {
+      "tags": [],
+      "implicitDependencies": ["client"]
+    },
+    "client-hooks": {
+      "tags": []
+    },
+    "client-pages": {
+      "tags": []
+    },
+    "client-utils": {
+      "tags": []
+    },
+    "common-dto": {
+      "tags": []
+    },
+    "common-utils": {
+      "tags": []
+    }
+  },
+  "affected": {
+    "defaultBase": "master"
+  }
+}

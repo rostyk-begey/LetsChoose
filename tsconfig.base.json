@@ -1,0 +1,65 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom", "esnext"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@lets-choose/api-health-feature": [
+        "libs/api/health/feature/src/index.ts"
+      ],
+      "@lets-choose/api/abstract": ["libs/api/abstract/src/index.ts"],
+      "@lets-choose/api/auth/feature": ["libs/api/auth/feature/src/index.ts"],
+      "@lets-choose/api/cloudinary": ["libs/api/cloudinary/src/index.ts"],
+      "@lets-choose/api/common/decorators": [
+        "libs/api/common/decorators/src/index.ts"
+      ],
+      "@lets-choose/api/common/pipes": ["libs/api/common/pipes/src/index.ts"],
+      "@lets-choose/api/common/services": [
+        "libs/api/common/services/src/index.ts"
+      ],
+      "@lets-choose/api/common/utils": ["libs/api/common/utils/src/index.ts"],
+      "@lets-choose/api/config": ["libs/api/config/src/index.ts"],
+      "@lets-choose/api/contest/data-access": [
+        "libs/api/contest/data-access/src/index.ts"
+      ],
+      "@lets-choose/api/contest/feature": [
+        "libs/api/contest/feature/src/index.ts"
+      ],
+      "@lets-choose/api/game/data-access": [
+        "libs/api/game/data-access/src/index.ts"
+      ],
+      "@lets-choose/api/game/feature": ["libs/api/game/feature/src/index.ts"],
+      "@lets-choose/api/mongoose": ["libs/api/mongoose/src/index.ts"],
+      "@lets-choose/api/test/mocks": ["libs/api/test/mocks/src/index.ts"],
+      "@lets-choose/api/testing/builders": [
+        "libs/api/testing/builders/src/index.ts"
+      ],
+      "@lets-choose/api/testing/mocks": ["libs/api/testing/mocks/src/index.ts"],
+      "@lets-choose/api/testing/utils": ["libs/api/testing/utils/src/index.ts"],
+      "@lets-choose/api/user/data-access": [
+        "libs/api/user/data-access/src/index.ts"
+      ],
+      "@lets-choose/api/user/feature": ["libs/api/user/feature/src/index.ts"],
+      "@lets-choose/client/api": ["libs/client/api/src/index.ts"],
+      "@lets-choose/client/components": ["libs/client/components/src/index.ts"],
+      "@lets-choose/client/hooks": ["libs/client/hooks/src/index.ts"],
+      "@lets-choose/client/pages": ["libs/client/pages/src/index.ts"],
+      "@lets-choose/client/utils": ["libs/client/utils/src/index.ts"],
+      "@lets-choose/common/dto": ["libs/common/dto/src/index.ts"],
+      "@lets-choose/common/utils": ["libs/common/utils/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

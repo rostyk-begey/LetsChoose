@@ -2,6 +2,5 @@
 <project version="4">
   <component name="TypeScriptCompiler">
     <option name="scopeName" value="Module 'LetsChoose'" />
-    <option name="useDeprecatedSettings" value="true" />
   </component>
 </project>
