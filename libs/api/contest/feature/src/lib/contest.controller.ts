@@ -9,7 +9,7 @@ import {
   UpdateContestData,
 } from '@lets-choose/common/dto';
 import { API_ROUTES } from '@lets-choose/common/utils';
-import { ContestService } from '@modules/contest/contest.service';
+import { ContestService } from './contest.service';
 import {
   Body,
   Controller,
@@ -31,15 +31,12 @@ import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { IContestService } from '@lets-choose/api/abstract';
 import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
-import {
-  fieldNameFilter,
-  unlinkAsync,
-} from '../../../../../libs/api/common/utils/src/lib/utils';
+import { fieldNameFilter, unlinkAsync } from '@lets-choose/api/common/utils';
 import {
   getContestItemsSchema,
   getContestSchema,
   contestIdSchema,
-} from '@modules/contest/contest.validation';
+} from './contest.validation';
 
 @ApiTags('Contest')
 @Controller(API_ROUTES.CONTESTS)

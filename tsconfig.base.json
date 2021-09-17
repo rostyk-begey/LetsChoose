@@ -35,6 +35,9 @@
       "@lets-choose/api/contest/data-access": [
         "libs/api/contest/data-access/src/index.ts"
       ],
+      "@lets-choose/api/contest/feature": [
+        "libs/api/contest/feature/src/index.ts"
+      ],
       "@lets-choose/api/game/data-access": [
         "libs/api/game/data-access/src/index.ts"
       ],

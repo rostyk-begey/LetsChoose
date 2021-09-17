@@ -28,11 +28,8 @@ import {
   contestItemBuilder,
 } from '@lets-choose/api/testing/builders';
 import { cloudinaryServiceMock } from '@lets-choose/api/testing/mocks';
-import { ContestController } from '@modules/contest/contest.controller';
-import {
-  ContestService,
-  CreateContestsData,
-} from '@modules/contest/contest.service';
+import { ContestController } from './contest.controller';
+import { ContestService, CreateContestsData } from './contest.service';
 
 // import { fieldNameFilter } from '../../../../../libs/api/common/utils/src/lib/utils';
 jest.mock('../../../../../libs/api/common/utils/src/lib/utils', () => ({

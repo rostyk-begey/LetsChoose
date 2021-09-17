@@ -12,7 +12,7 @@ import {
   userRepositoryMock,
 } from '@lets-choose/api/testing/mocks';
 import { contestBuilder, userBuilder } from '@lets-choose/api/testing/builders';
-import { ContestService } from '@modules/contest/contest.service';
+import { ContestService } from '../../../../contest/feature/src/lib/contest.service';
 import { UserService } from './user.service';
 import * as faker from 'faker';
 

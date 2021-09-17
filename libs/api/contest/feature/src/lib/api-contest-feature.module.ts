@@ -4,9 +4,8 @@ import { ApiGameDataAccessModule } from '@lets-choose/api/game/data-access';
 import { ApiUserDataAccessModule } from '@lets-choose/api/user/data-access';
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
-
-import { ContestService } from '@modules/contest/contest.service';
-import { ContestController } from '@modules/contest/contest.controller';
+import { ContestController } from './contest.controller';
+import { ContestService } from './contest.service';
 
 @Module({
   imports: [
@@ -22,4 +21,4 @@ import { ContestController } from '@modules/contest/contest.controller';
   exports: [ContestService],
   controllers: [ContestController],
 })
-export class ContestModule {}
+export class ApiContestFeatureModule {}

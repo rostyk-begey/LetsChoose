@@ -12,7 +12,7 @@ import {
   cloudinaryServiceMock,
 } from '@lets-choose/api/testing/mocks';
 import { userBuilder } from '@lets-choose/api/testing/builders';
-import { ContestService } from '@modules/contest/contest.service';
+import { ContestService } from '../../../../contest/feature/src/lib/contest.service';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import faker from 'faker';

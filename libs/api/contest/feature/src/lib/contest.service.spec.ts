@@ -30,10 +30,7 @@ import {
   contestBuilder,
   contestItemBuilder,
 } from '@lets-choose/api/testing/builders';
-import {
-  ContestService,
-  CreateContestsData,
-} from '@modules/contest/contest.service';
+import { ContestService, CreateContestsData } from './contest.service';
 
 const paginatedResultBuilder = build({
   fields: {

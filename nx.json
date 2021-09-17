@@ -60,6 +60,9 @@
     "api-contest-data-access": {
       "tags": []
     },
+    "api-contest-feature": {
+      "tags": []
+    },
     "api-game-data-access": {
       "tags": []
     },

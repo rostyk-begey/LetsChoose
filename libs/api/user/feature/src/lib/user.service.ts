@@ -7,7 +7,7 @@ import {
   IContestService,
 } from '@lets-choose/api/abstract';
 import { UserRepository } from '@lets-choose/api/user/data-access';
-import { ContestService } from '@modules/contest/contest.service';
+import { ContestService } from '@lets-choose/api/contest/feature';
 
 @Injectable()
 export class UserService implements IUserService {
