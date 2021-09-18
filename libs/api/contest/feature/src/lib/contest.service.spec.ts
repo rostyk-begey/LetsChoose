@@ -23,6 +23,7 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import faker from 'faker';
 import mongoose from 'mongoose';
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { cloudinaryServiceMock } from '../../../../cloudinary/src/lib/cloudinary.service.mock';
 import { gameRepositoryMock } from '../../../../game/data-access/src/lib/game.repository.mock';
 import { userRepositoryMock } from '../../../../user/data-access/src/lib/user.repository.mock';

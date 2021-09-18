@@ -18,6 +18,7 @@ import {
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { emailServiceMock } from '../../../../common/services/src/lib/email.service.mock';
 import { jwtServiceMock } from '../../../../common/services/src/lib/jwt.service.mock';
 import { passwordHashServiceMock } from '../../../../common/services/src/lib/password.service.mock';

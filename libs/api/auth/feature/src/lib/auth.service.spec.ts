@@ -19,6 +19,7 @@ import faker from 'faker';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
 import { GetTokenResponse } from 'google-auth-library/build/src/auth/oauth2client';
 import md5 from 'md5';
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { emailServiceMock } from '../../../../common/services/src/lib/email.service.mock';
 import { jwtServiceMock } from '../../../../common/services/src/lib/jwt.service.mock';
 import { passwordHashServiceMock } from '../../../../common/services/src/lib/password.service.mock';

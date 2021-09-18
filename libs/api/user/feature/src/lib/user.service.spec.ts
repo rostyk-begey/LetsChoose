@@ -7,6 +7,7 @@ import { ContestDto, UpdateUserProfileDto } from '@lets-choose/common/dto';
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { cloudinaryServiceMock } from '../../../../cloudinary/src/lib/cloudinary.service.mock';
 import { contestItemRepositoryMock } from '../../../../contest/data-access/src/lib/contest-item.repository.mock';
 import { contestRepositoryMock } from '../../../../contest/data-access/src/lib/contest.repository.mock';

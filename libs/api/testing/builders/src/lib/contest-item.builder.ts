@@ -1,4 +1,5 @@
 import { build, fake, sequence } from '@jackfranklin/test-data-bot';
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { ExtendedContestItem } from '../../../../contest/data-access/src/lib/contest-item.repository.mock';
 
 export const contestItemBuilder = build<ExtendedContestItem>({

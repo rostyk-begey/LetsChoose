@@ -151,6 +151,6 @@
     }
   },
   "lint-staged": {
-    "**/*.{ts,tsx}": "eslint --quiet"
+    "**/*.{ts,tsx}": "yarn nx affected:lint --parallel"
   }
 }

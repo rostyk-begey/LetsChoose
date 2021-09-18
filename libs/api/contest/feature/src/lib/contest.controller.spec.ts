@@ -1,8 +1,5 @@
 import { IContestService } from '@lets-choose/api/abstract';
-import {
-  CloudinaryService,
-  cloudinaryServiceMock,
-} from '@lets-choose/api/cloudinary';
+import { CloudinaryService } from '@lets-choose/api/cloudinary';
 import {
   ContestItemRepository,
   ContestRepository,
@@ -23,6 +20,8 @@ import {
   UpdateContestData,
 } from '@lets-choose/common/dto';
 import { Test, TestingModule } from '@nestjs/testing';
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
+import { cloudinaryServiceMock } from '../../../../cloudinary/src/lib/cloudinary.service.mock';
 import { gameRepositoryMock } from '../../../../game/data-access/src/lib/game.repository.mock';
 import { userRepositoryMock } from '../../../../user/data-access/src/lib/user.repository.mock';
 import { contestItemRepositoryMock } from '../../../data-access/src/lib/contest-item.repository.mock';

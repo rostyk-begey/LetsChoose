@@ -16,6 +16,7 @@ import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import lodash from 'lodash';
 import mongoose from 'mongoose';
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { contestItemRepositoryMock } from '../../../../contest/data-access/src/lib/contest-item.repository.mock';
 import { contestRepositoryMock } from '../../../../contest/data-access/src/lib/contest.repository.mock';
 import { gameRepositoryMock } from '../../../data-access/src/lib/game.repository.mock';

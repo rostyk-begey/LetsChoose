@@ -6,6 +6,7 @@ import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import { UpdateUserProfileDto } from '@lets-choose/common/dto';
 import { Test, TestingModule } from '@nestjs/testing';
 import faker from 'faker';
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { cloudinaryServiceMock } from '../../../../cloudinary/src/lib/cloudinary.service.mock';
 import { contestItemRepositoryMock } from '../../../../contest/data-access/src/lib/contest-item.repository.mock';
 import { contestRepositoryMock } from '../../../../contest/data-access/src/lib/contest.repository.mock';

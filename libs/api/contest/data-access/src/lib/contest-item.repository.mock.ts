@@ -1,5 +1,5 @@
 import { IContestItemRepository } from '@lets-choose/api/abstract';
-import { ContestItem } from '@lets-choose/api/contest/data-access';
+import { ContestItem } from './contest-item.entity';
 
 export interface ExtendedContestItem extends ContestItem {
   winRate?: number;
