@@ -18,7 +18,6 @@ import {
   Body,
   Controller,
   Inject,
-  Logger,
   Param,
   Post,
   Query,
@@ -44,7 +43,6 @@ import {
 export class AuthController {
   private readonly config: JwtConfig;
   private readonly useSecureCookie: boolean;
-  private readonly logger = new Logger(AuthController.name);
 
   constructor(
     @Inject(AuthService)

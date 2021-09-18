@@ -32,7 +32,7 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ApiConfigModule],
+      imports: [ApiConfigModule.register({ validateConfig: false })],
       providers: [
         AuthService,
         {

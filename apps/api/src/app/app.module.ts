@@ -10,7 +10,7 @@ import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
-    ApiConfigModule,
+    ApiConfigModule.register({}),
     ApiMongooseModule,
     ApiCommonServicesModule,
     ApiAuthFeatureModule,

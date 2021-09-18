@@ -19,7 +19,7 @@ export const createTestingModule = (
   return Test.createTestingModule({
     ...meta,
     imports: [
-      ApiConfigModule,
+      ApiConfigModule.register({ validateConfig: false }),
       ApiMongooseModule,
       ApiCommonServicesModule,
       ...meta.imports,

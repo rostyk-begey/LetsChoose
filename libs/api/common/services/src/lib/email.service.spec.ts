@@ -8,7 +8,7 @@ describe('EmailService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [EmailService],
-      imports: [ApiConfigModule],
+      imports: [ApiConfigModule.register({ validateConfig: false })],
     }).compile();
 
     service = module.get<EmailService>(EmailService);
