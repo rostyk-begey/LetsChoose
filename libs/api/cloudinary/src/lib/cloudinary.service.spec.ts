@@ -1,5 +1,4 @@
-import { loadConfig as config } from '@lets-choose/api/config';
-import { ConfigModule } from '@nestjs/config';
+import { ApiConfigModule } from '@lets-choose/api/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -14,13 +13,7 @@ describe('CloudinaryService', () => {
     jest.spyOn(cloudinary, 'config');
     const module: TestingModule = await Test.createTestingModule({
       providers: [CloudinaryService],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          ignoreEnvFile: true,
-          load: [config],
-        }),
-      ],
+      imports: [ApiConfigModule],
     }).compile();
 
     service = module.get<CloudinaryService>(CloudinaryService);

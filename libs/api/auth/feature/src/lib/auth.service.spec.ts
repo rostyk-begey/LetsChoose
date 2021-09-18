@@ -4,7 +4,7 @@ import {
   JwtService,
   PasswordHashService,
 } from '@lets-choose/api/common/services';
-import { loadConfig as config } from '@lets-choose/api/config';
+import { ApiConfigModule, loadConfig as config } from '@lets-choose/api/config';
 import { userBuilder } from '@lets-choose/api/testing/builders';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import {
@@ -13,7 +13,6 @@ import {
   UpdateUserPasswordDto,
 } from '@lets-choose/common/dto';
 import { UnauthorizedException } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import faker from 'faker';
 import { OAuth2Client, TokenPayload } from 'google-auth-library';
@@ -33,13 +32,7 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          ignoreEnvFile: true,
-          load: [config],
-        }),
-      ],
+      imports: [ApiConfigModule],
       providers: [
         AuthService,
         {

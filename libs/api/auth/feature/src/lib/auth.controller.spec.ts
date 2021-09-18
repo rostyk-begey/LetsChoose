@@ -6,6 +6,7 @@ import {
 } from '@lets-choose/api/common/services';
 import { loadConfig as config } from '@lets-choose/api/config';
 import { userBuilder } from '@lets-choose/api/testing/builders';
+import { createTestingModule } from '@lets-choose/api/testing/utils';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import {
   AuthForgotPasswordDto,
@@ -58,15 +59,8 @@ describe('AuthController', () => {
   };
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const module: TestingModule = await createTestingModule({
       controllers: [AuthController],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          ignoreEnvFile: true,
-          load: [config],
-        }),
-      ],
       providers: [
         AuthService,
         {

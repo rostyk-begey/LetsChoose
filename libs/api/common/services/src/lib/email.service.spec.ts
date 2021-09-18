@@ -1,5 +1,4 @@
-import { loadConfig as config } from '@lets-choose/api/config';
-import { ConfigModule } from '@nestjs/config';
+import { ApiConfigModule } from '@lets-choose/api/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { EmailService } from './email.service';
 
@@ -9,13 +8,7 @@ describe('EmailService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [EmailService],
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          ignoreEnvFile: true,
-          load: [config],
-        }),
-      ],
+      imports: [ApiConfigModule],
     }).compile();
 
     service = module.get<EmailService>(EmailService);
