@@ -4,9 +4,8 @@ import {
   JwtService,
   PasswordHashService,
 } from '@lets-choose/api/common/services';
-import { loadConfig as config } from '@lets-choose/api/config';
+import { ApiConfigModule, loadConfig as config } from '@lets-choose/api/config';
 import { userBuilder } from '@lets-choose/api/testing/builders';
-import { createTestingModule } from '@lets-choose/api/testing/utils';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
 import {
   AuthForgotPasswordDto,
@@ -16,7 +15,6 @@ import {
   AuthTokenDto,
   UpdateUserPasswordDto,
 } from '@lets-choose/common/dto';
-import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as faker from 'faker';
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
@@ -59,8 +57,9 @@ describe('AuthController', () => {
   };
 
   beforeEach(async () => {
-    const module: TestingModule = await createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
+      imports: [ApiConfigModule.register({ validateConfig: false })],
       providers: [
         AuthService,
         {

@@ -53,7 +53,8 @@ export class AuthController {
     this.config = configService.get<JwtConfig>('jwt', { infer: true });
     this.useSecureCookie =
       configService.get<boolean>('useSSL', { infer: true }) &&
-      process.env.NODE_ENV === 'production';
+      configService.get<boolean>('environment', { infer: true }) ===
+        'production';
   }
 
   private getCookieOptions(): any {
