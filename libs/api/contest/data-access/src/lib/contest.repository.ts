@@ -26,17 +26,16 @@ export class ContestRepository implements IContestRepository {
   ) {}
 
   public async countDocuments(authorId?: string): Promise<number> {
-    const res = authorId
-      ? await this.contestModel.countDocuments({ author: authorId })
-      : await this.contestModel.countDocuments();
-    return res as number;
+    return authorId
+      ? await this.contestModel.countDocuments({ author: authorId }).exec()
+      : await this.contestModel.countDocuments().exec();
   }
 
   protected static getSortPipeline(
     search: string,
     sortBy: SORT_OPTIONS = SORT_OPTIONS.POPULAR,
   ): { $sort: ISortOptions } {
-    const sortOptions: any[] = [];
+    const sortOptions: unknown[][] = [];
 
     if (search) {
       sortOptions.push(['score', -1]);
@@ -99,52 +98,54 @@ export class ContestRepository implements IContestRepository {
       ...getPaginationPipelines(page, perPage),
     ];
 
-    const result = await this.contestModel.aggregate(query).exec();
+    const result = await this.contestModel
+      .aggregate<GetContestsResponse>(query)
+      .exec();
     return result[0];
   }
 
-  public async findById(contestId: string): Promise<ContestDocument> {
-    const contest = await this.contestModel.findById(contestId);
+  public async findById(contestId: string): Promise<ContestDto> {
+    const contest = await this.contestModel.findById(contestId).exec();
     if (!contest) {
       throw new NotFoundException('Contest not found');
     }
-    return contest;
+    return contest.toObject();
   }
 
-  public async findByAuthor(author: string): Promise<ContestDocument[]> {
-    const contests = await this.contestModel.find({ author });
+  public async findByAuthor(author: string): Promise<ContestDto[]> {
+    const contests = await this.contestModel.find({ author }).exec();
     if (!contests) {
       throw new NotFoundException('Contest not found');
     }
-    return contests;
+    return contests.map((doc) => doc.toObject());
   }
 
   public async findByIdAndUpdate(
     contestId: string,
     data: Partial<ContestDto>,
-  ): Promise<ContestDocument> {
-    const contest = await this.contestModel.findByIdAndUpdate(contestId, {
-      $set: data,
-    });
+  ): Promise<ContestDto> {
+    const contest = await this.contestModel
+      .findByIdAndUpdate(contestId, {
+        $set: data,
+      })
+      .exec();
     if (!contest) {
       throw new NotFoundException('Contest not found');
     }
-    return contest;
+    return contest.toObject();
   }
 
-  public async deleteContest(contestId: string): Promise<ContestDocument> {
-    const contest = await this.contestModel.findByIdAndRemove(contestId);
+  public async deleteContest(contestId: string): Promise<ContestDto> {
+    const contest = await this.contestModel.findByIdAndRemove(contestId).exec();
     if (!contest) {
       throw new NotFoundException('Contest not found');
     }
-    return contest;
+    return contest.toObject();
   }
 
-  public async createContest(
-    data: CreateContestData,
-  ): Promise<ContestDocument> {
+  public async createContest(data: CreateContestData): Promise<ContestDto> {
     const contest = new this.contestModel(data);
     await contest.save();
-    return contest;
+    return contest.toObject();
   }
 }

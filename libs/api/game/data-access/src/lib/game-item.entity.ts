@@ -1,10 +1,10 @@
 import { ContestItem } from '@lets-choose/api/contest/data-access';
-import { GameItemDto as GameItemModel } from '@lets-choose/common/dto';
+import { GameItemDto } from '@lets-choose/common/dto';
 import { Prop, Schema } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
 @Schema()
-export class GameItem implements GameItemModel {
+export class GameItem implements GameItemDto {
   @Prop({
     type: mongoose.Types.ObjectId,
     ref: () => ContestItem,

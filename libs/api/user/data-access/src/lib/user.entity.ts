@@ -1,14 +1,13 @@
 import { UserDto } from '@lets-choose/common/dto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { getMongooseTransformOptions } from '@lets-choose/api/common/utils';
 
 export type UserDocument = User & mongoose.Document<mongoose.Types.ObjectId>;
 
 @Schema({
   id: true,
-  toJSON: {
-    getters: true,
-    versionKey: false,
+  toJSON: getMongooseTransformOptions({
     transform: (_, ret: Partial<User>) => {
       delete ret._id;
       delete ret.confirmed;
@@ -16,7 +15,7 @@ export type UserDocument = User & mongoose.Document<mongoose.Types.ObjectId>;
       delete ret.passwordVersion;
       return ret;
     },
-  },
+  }),
 })
 export class User extends UserDto {
   @Prop({ type: mongoose.Schema.Types.ObjectId })

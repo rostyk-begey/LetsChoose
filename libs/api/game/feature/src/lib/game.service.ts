@@ -59,16 +59,19 @@ export class GameService implements IGameService {
     return Math.log2(gameItemsLength);
   }
 
-  protected inGamePair(gamePair: ContestItem[], id: string): boolean {
-    return gamePair.some(({ _id }) => _id.toString() === id.toString());
+  protected inGamePair(
+    gamePair: [ContestItemDto, ContestItemDto],
+    contestItemId: string,
+  ): boolean {
+    return gamePair.some(({ id }) => contestItemId === id);
   }
 
   protected updateGameItems(
-    gameItems: GameItem[],
-    currentPair: ContestItem[],
+    gameItems: Array<mongoose.Document & GameItem>,
+    currentPair: [ContestItemDto, ContestItemDto],
     winnerId: string,
   ): GameItem[] {
-    const updatedGameItems = gameItems.map((item) => {
+    return gameItems.map((item) => {
       const { contestItem: contestItemId } = item;
       const resultItems = { ...item };
       if (this.inGamePair(currentPair, contestItemId as string)) {
@@ -81,8 +84,6 @@ export class GameService implements IGameService {
 
       return resultItems;
     });
-
-    return updatedGameItems;
   }
 
   protected getNextRoundItems(
@@ -114,8 +115,7 @@ export class GameService implements IGameService {
 
     const totalRounds = GameService.calculateTotalRounds(gameItems.length);
 
-    return this.gameRepository.createGame({
-      _id: new mongoose.Types.ObjectId().toString(),
+    const game = await this.gameRepository.createGame({
       contestId,
       items: gameItems,
       finished: false,
@@ -125,6 +125,7 @@ export class GameService implements IGameService {
       totalRounds,
       pair,
     });
+    return await this.gameRepository.findById(game.id);
   }
 
   public findGameById(gameId: string): Promise<GameDto> {
@@ -136,13 +137,13 @@ export class GameService implements IGameService {
       throw new BadRequestException('Game has been finished');
     }
 
-    if (!this.inGamePair(game.pair as ContestItem[], winnerId)) {
+    if (!this.inGamePair(game.pair as [ContestItem, ContestItem], winnerId)) {
       throw new BadRequestException('Invalid winner id');
     }
 
     game.items = this.updateGameItems(
-      game.items as GameItem[],
-      game.pair as ContestItem[],
+      game.items as Array<mongoose.Document & GameItem>,
+      game.pair as [ContestItem, ContestItem],
       winnerId,
     );
 
@@ -172,38 +173,52 @@ export class GameService implements IGameService {
     return game;
   }
 
+  private async updateContestItemsOnGameFinish(
+    game: GameDto,
+    winnerId: string,
+  ): Promise<void> {
+    await Promise.all(
+      game.items.map(async (gameItem) => {
+        const { contestItem: itemId, compares, wins } = gameItem;
+        const contestItem = await this.contestItemRepository.findById(
+          itemId as string,
+        );
+
+        contestItem.compares += compares;
+        contestItem.wins += wins;
+        contestItem.games += 1;
+
+        if (winnerId === itemId) {
+          contestItem.finalWins += 1;
+        }
+
+        await this.contestItemRepository.findByIdAndUpdate(
+          contestItem.id,
+          contestItem,
+        );
+      }),
+    );
+  }
+
+  private async updateContestOnGameFinish(game: GameDto): Promise<void> {
+    const contest = await this.contestRepository.findById(
+      game.contestId as string,
+    );
+
+    contest.games += 1;
+
+    await this.contestRepository.findByIdAndUpdate(contest.id, contest);
+  }
+
   public async playRound(gameId: string, winnerId: string): Promise<void> {
     let game = await this.findGameById(gameId);
 
-    game = this.playRoundUpdateGame(game, winnerId) as Game;
+    game = this.playRoundUpdateGame(game, winnerId);
 
     if (game.finished) {
-      const contest = await this.contestRepository.findById(
-        game.contestId as string,
-      );
-      contest.games += 1;
-      await this.contestRepository.findByIdAndUpdate(contest.id, contest);
-
-      await Promise.all(
-        game.items.map(async (gameItem) => {
-          const { contestItem: itemId, compares, wins } = gameItem as GameItem;
-          const contestItem = await this.contestItemRepository.findById(
-            itemId as string,
-          );
-          contestItem.compares += compares;
-          contestItem.wins += wins;
-          contestItem.games += 1;
-
-          if (winnerId === `${itemId}`) {
-            contestItem.finalWins += 1;
-          }
-
-          await this.contestItemRepository.findByIdAndUpdate(
-            contestItem.id,
-            contestItem,
-          );
-        }),
-      );
+      game.pair = [];
+      await this.updateContestOnGameFinish(game);
+      await this.updateContestItemsOnGameFinish(game, winnerId);
     }
 
     await this.gameRepository.findByIdAndUpdate(game.id, game);

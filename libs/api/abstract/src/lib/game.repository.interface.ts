@@ -7,5 +7,5 @@ export interface IGameRepository {
   findByIdAndUpdate(gameId: string, data: Partial<GameDto>): Promise<GameDto>;
   deleteGame(gameId: string): Promise<GameDto>;
   deleteGames(contestId): Promise<void>;
-  createGame(data: CreateGameDto & { _id: string }): Promise<GameDto>;
+  createGame(data: CreateGameDto): Promise<GameDto>;
 }

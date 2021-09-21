@@ -2,6 +2,7 @@ import { User } from '@lets-choose/api/user/data-access';
 import { ContestDto } from '@lets-choose/common/dto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { getMongooseTransformOptions } from '@lets-choose/api/common/utils';
 import { ContestItem } from './contest-item.entity';
 
 export type ContestDocument = Contest & mongoose.Document;
@@ -9,14 +10,8 @@ export type ContestDocument = Contest & mongoose.Document;
 @Schema({
   id: true,
   timestamps: true,
-  toJSON: {
-    getters: true,
-    versionKey: false,
-    transform: (_, ret: Partial<ContestItem>) => {
-      delete ret._id;
-      return ret;
-    },
-  },
+  toObject: getMongooseTransformOptions(),
+  toJSON: getMongooseTransformOptions(),
 })
 export class Contest extends ContestDto {
   @Prop({ type: mongoose.Schema.Types.ObjectId, alias: 'id' })

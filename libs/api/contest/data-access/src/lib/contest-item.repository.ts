@@ -4,6 +4,7 @@ import {
   getSearchPipelines,
 } from '@lets-choose/api/common/utils';
 import {
+  ContestItemDto,
   CreateContestItemDto,
   GetItemsQuery,
   GetItemsResponse,
@@ -90,35 +91,37 @@ export class ContestItemRepository implements IContestItemRepository {
       ContestItemRepository.getSortPipeline(search),
       ...getPaginationPipelines(page, perPage),
     ];
-    const result = await this.contestItemModel.aggregate(pipeline).exec();
+    const result = await this.contestItemModel
+      .aggregate<GetItemsResponse>(pipeline)
+      .exec();
     return result[0];
   }
 
-  public async findById(itemId: string): Promise<ContestItem> {
-    const contestItem = await this.contestItemModel.findById(itemId);
+  public async findById(itemId: string): Promise<ContestItemDto> {
+    const contestItem = await this.contestItemModel.findById(itemId).exec();
     if (!contestItem) {
       throw new NotFoundException('Contest not found');
     }
-    return contestItem;
+    return contestItem.toObject();
   }
 
-  public async findByContestId(contestId: string): Promise<ContestItem[]> {
-    const res = await this.contestItemModel.find({ contestId });
-    return res as ContestItem[];
+  public async findByContestId(contestId: string): Promise<ContestItemDto[]> {
+    const res = await this.contestItemModel.find({ contestId }).exec();
+    return res.map((doc) => doc.toObject());
   }
 
   public async findByIdAndUpdate(
     itemId: string,
     data: Partial<ContestItem>,
-  ): Promise<ContestItem> {
-    const contestItem = await this.contestItemModel.findByIdAndUpdate(
-      itemId,
-      data,
-    );
+  ): Promise<ContestItemDto> {
+    const contestItem = await this.contestItemModel
+      .findByIdAndUpdate(itemId, data)
+      .exec();
+    console.log(contestItem);
     if (!contestItem) {
       throw new NotFoundException('Contest not found');
     }
-    return contestItem;
+    return contestItem.toObject();
   }
 
   public async updateContestItems(
@@ -134,9 +137,9 @@ export class ContestItemRepository implements IContestItemRepository {
 
   public async createContestItem(
     data: Omit<CreateContestItemDto, 'id'>,
-  ): Promise<ContestItem> {
+  ): Promise<ContestItemDto> {
     const contestItem = new this.contestItemModel(data);
     await contestItem.save();
-    return contestItem;
+    return contestItem.toObject();
   }
 }
