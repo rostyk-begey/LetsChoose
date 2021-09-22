@@ -1,7 +1,10 @@
 import { IGameService } from '@lets-choose/api/abstract';
 import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
-import { ContestItem } from '@lets-choose/api/contest/data-access';
-import { GameStartResponse, GetPairResponse } from '@lets-choose/common/dto';
+import {
+  GameDto,
+  GameStartResponse,
+  GetPairResponse,
+} from '@lets-choose/common/dto';
 import { API_ROUTES } from '@lets-choose/common/utils';
 import {
   Body,
@@ -42,18 +45,8 @@ export class GameController {
 
   @Get('/:gameId')
   @UsePipes(new JoiValidationPipe(gameIdSchema, 'param'))
-  public async get(@Param('gameId') gameId: string): Promise<GetPairResponse> {
-    const game = await this.gameService.findGameById(gameId);
-
-    return {
-      round: game.round,
-      totalRounds: game.totalRounds,
-      pairNumber: game.pairNumber,
-      pairsInRound: game.pairsInRound,
-      contestId: game.contestId as string,
-      finished: game.finished,
-      pair: game.pair as ContestItem[],
-    };
+  public async get(@Param('gameId') gameId: string): Promise<GameDto> {
+    return await this.gameService.findGameById(gameId);
   }
 
   @Post('/:gameId')
@@ -62,18 +55,9 @@ export class GameController {
   public async play(
     @Param('gameId') gameId: string,
     @Body() { winnerId }: { winnerId: string },
-  ): Promise<GetPairResponse> {
+  ): Promise<GameDto> {
     await this.gameService.playRound(gameId, winnerId);
-    const game = await this.gameService.findGameById(gameId);
 
-    return {
-      round: game.round,
-      totalRounds: game.totalRounds,
-      pairNumber: game.pairNumber,
-      pairsInRound: game.pairsInRound,
-      contestId: game.contestId as string,
-      finished: game.finished,
-      pair: game.pair as ContestItem[],
-    };
+    return this.get(gameId);
   }
 }

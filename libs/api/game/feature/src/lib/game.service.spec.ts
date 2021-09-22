@@ -87,6 +87,10 @@ describe('GameService', () => {
     gameService = module.get<IGameService>(GameService);
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   describe('playRound', () => {
     let game;
     let updatedItems;
@@ -120,6 +124,7 @@ describe('GameService', () => {
 
     describe('first round first pair', () => {
       const pairNumber = 0;
+
       beforeEach(() => setUp({ pairNumber }));
 
       afterEach(() => {
@@ -262,54 +267,68 @@ describe('GameService', () => {
     expect(gameRepositoryMock.findById).toHaveBeenCalledWith(game.id);
   });
 
-  test('start', async () => {
-    jest.spyOn(lodash, 'shuffle').mockImplementation((x) => x);
+  describe('start', () => {
+    let game;
+    let gameId;
+    let result;
+    let contest;
+    let contestItems;
 
-    const game = gameBuilder();
-    const { id: gameId } = game;
+    beforeAll(async () => {
+      jest.spyOn(lodash, 'shuffle').mockImplementation((x) => x);
 
-    jest
-      .spyOn(mongoose.Types, 'ObjectId')
-      .mockReturnValue({ toString: () => gameId } as any);
+      game = gameBuilder();
+      ({ id: gameId } = game);
 
-    const contestItems = [
-      contestItemBuilder(),
-      contestItemBuilder(),
-      contestItemBuilder(),
-      contestItemBuilder(),
-      contestItemBuilder(),
-    ];
-    const contest = contestBuilder();
+      jest
+        .spyOn(mongoose.Types, 'ObjectId')
+        .mockReturnValue({ toString: () => gameId } as any);
 
-    contestRepositoryMock.findById.mockResolvedValueOnce(contest);
-    gameRepositoryMock.createGame.mockResolvedValueOnce(game);
-    contestItemRepositoryMock.findByContestId.mockResolvedValueOnce(
-      contestItems,
-    );
+      contestItems = [
+        contestItemBuilder(),
+        contestItemBuilder(),
+        contestItemBuilder(),
+        contestItemBuilder(),
+        contestItemBuilder(),
+      ];
+      contest = contestBuilder();
 
-    const result = await gameService.start(contest.id);
+      contestRepositoryMock.findById.mockResolvedValue(contest);
+      gameRepositoryMock.createGame.mockResolvedValue(game);
+      gameRepositoryMock.findById.mockResolvedValue(game);
+      contestItemRepositoryMock.findByContestId.mockResolvedValue(contestItems);
 
-    const gameItems: GameItem[] = contestItems.slice(0, 4).map(({ id }) => ({
-      contestItem: id,
-      wins: 0,
-      compares: 0,
-    }));
+      result = await gameService.start(contest.id);
+    });
 
-    expect(result).toEqual(game);
-    expect(contestRepositoryMock.findById).toBeCalledWith(contest.id);
-    expect(gameRepositoryMock.createGame).toHaveBeenCalledTimes(1);
-    expect(gameRepositoryMock.createGame.mock.calls[0][0]).toEqual(
-      expect.objectContaining({
-        _id: gameId,
-        contestId: contest.id,
-        items: gameItems,
-        finished: false,
-        round: 0,
-        pairNumber: 0,
-        pairsInRound: gameItems.length / 2,
-        totalRounds: Math.log2(gameItems.length),
-        pair: gameItems.slice(0, 2).map(({ contestItem }) => contestItem),
-      }),
-    );
+    it('should return correct game', () => {
+      expect(result).toEqual(game);
+    });
+
+    it('should call "ContestRepository.findById"', () => {
+      expect(contestRepositoryMock.findById).toBeCalledWith(contest.id);
+    });
+
+    it('should call "GameRepository.createGame"', () => {
+      const gameItems: GameItem[] = contestItems.slice(0, 4).map(({ id }) => ({
+        contestItem: id,
+        wins: 0,
+        compares: 0,
+      }));
+
+      expect(gameRepositoryMock.createGame).toHaveBeenCalledTimes(1);
+      expect(gameRepositoryMock.createGame.mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          contestId: contest.id,
+          items: gameItems,
+          finished: false,
+          round: 0,
+          pairNumber: 0,
+          pairsInRound: gameItems.length / 2,
+          totalRounds: Math.log2(gameItems.length),
+          pair: gameItems.slice(0, 2).map(({ contestItem }) => contestItem),
+        }),
+      );
+    });
   });
 });

@@ -9,11 +9,7 @@ import {
   ContestItemRepository,
   ContestRepository,
 } from '@lets-choose/api/contest/data-access';
-import {
-  Game,
-  GameItem,
-  GameRepository,
-} from '@lets-choose/api/game/data-access';
+import { GameItem, GameRepository } from '@lets-choose/api/game/data-access';
 import { ContestItemDto, GameDto } from '@lets-choose/common/dto';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { shuffle } from 'lodash';
