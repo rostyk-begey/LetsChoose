@@ -167,8 +167,8 @@ export interface ContestPageProps {
 }
 
 export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
-  const { query: { contestId = initialContest.id } = {}, ...router } =
-    useRouter() || {};
+  const { id: contestId } = initialContest;
+  const router = useRouter();
 
   const {
     data: contestResponse,
@@ -185,7 +185,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
   const onStartGame = async () => {
     const { data: { gameId = null } = {} } =
       (await startGame(contestId as string)) || {};
-    await (router as NextRouter).push(`${ROUTES.GAMES.INDEX}/${gameId}`);
+    await router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
   };
   const {
     data: contestItemsData,
@@ -270,9 +270,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                       </>
                     ),
                     onClick: () => {
-                      (router as NextRouter).push(
-                        `${ROUTES.CONTESTS.INDEX}/${contestId}/edit`,
-                      );
+                      router.push(`${ROUTES.CONTESTS.INDEX}/${contestId}/edit`);
                     },
                   },
                   {
@@ -308,7 +306,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                     onClick: async () => {
                       if (window.confirm('Are you sure you want to delete?')) {
                         await deleteContest();
-                        await (router as NextRouter).push(ROUTES.HOME);
+                        await router.push(ROUTES.HOME);
                       }
                     },
                   },

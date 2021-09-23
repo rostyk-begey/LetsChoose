@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserDto } from '@lets-choose/common/dto';
+import { UserPublicDto } from '@lets-choose/common/dto';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -15,7 +15,7 @@ import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
 import { useGutterBorderedGridStyles } from '@mui-treasury/styles/grid/gutterBordered';
 
 export interface ProfileCardProps {
-  user: UserDto;
+  user: UserPublicDto;
 }
 
 const useStyles = makeStyles(({ palette }) => ({

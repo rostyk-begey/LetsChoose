@@ -5,13 +5,13 @@ import {
   useWarnIfUnsavedChanges,
 } from '@lets-choose/client/hooks';
 import { ROUTES, sleep } from '@lets-choose/client/utils';
-import { GetPairResponse } from '@lets-choose/common/dto';
+import { ContestItemDto, GameDto } from '@lets-choose/common/dto';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 import { NextRouter, useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { GameCard } from './GameCard';
 
@@ -48,6 +48,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const delayTime = 400;
+
 const getAnimationClassNames = ({
   direction = 'In',
 }: {
@@ -58,49 +60,57 @@ const getAnimationClassNames = ({
 ];
 const winnerAnimation = 'animate__animated animate__faster animate__flash';
 
-export const GamePage: React.FC = () => {
+export interface GamePageProps {
+  initialGame: GameDto;
+}
+
+export const GamePage: React.FC<GamePageProps> = ({ initialGame }) => {
   const classes = useStyles();
-  const { query: { gameId = '' } = {}, ...router } = useRouter() || {};
+  const { id: gameId } = initialGame;
+  const router = useRouter();
   const inAnimations = getAnimationClassNames();
-  const { mutateAsync: choose } = useGameChoose(gameId as string);
-  const { mutateAsync: getGameState } = useGameState(gameId as string);
+  const { mutateAsync: choose } = useGameChoose(gameId);
+  const { mutateAsync: getGameState } = useGameState(gameId);
   const [animations, setAnimations] = useState<string[]>(inAnimations);
-  const [game, setGame] = useState<GetPairResponse>();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [game, setGame] = useState<GameDto>(initialGame);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isChooseLoading, setIsChooseLoading] = useState<boolean>(false);
   const { pair, round = 0, totalRounds, pairNumber, pairsInRound } = game || {};
   const { enqueueSnackbar } = useSnackbar();
 
-  const fetchGameState = async (initial?: boolean) => {
-    try {
-      if (gameId) {
-        setIsLoading(true);
-        const { data: game } = (await getGameState()) || {};
+  const fetchGameState = useCallback(
+    async (initial?: boolean) => {
+      try {
+        if (gameId) {
+          setIsLoading(true);
+          const { data: game } = (await getGameState()) || {};
 
-        if (game?.finished && !initial) {
-          await (router as NextRouter).push(
-            `${ROUTES.CONTESTS.INDEX}/${game.contestId}`,
-          );
+          if (game?.finished && !initial) {
+            await (router as NextRouter).push(
+              `${ROUTES.CONTESTS.INDEX}/${game.contestId}`,
+            );
+          }
+
+          setGame(game);
+          setAnimations(inAnimations);
+          setIsLoading(false);
         }
-
-        setGame(game);
-        setAnimations(inAnimations);
-        setIsLoading(false);
+      } catch (e: any) {
+        // TODO: ts any
+        enqueueSnackbar(e.response.data.message, { variant: 'error' });
       }
-    } catch (e: any) {
-      // TODO: ts any
-      enqueueSnackbar(e.response.data.message, { variant: 'error' });
-    }
-  };
+    },
+    [enqueueSnackbar, gameId, getGameState, inAnimations, router],
+  );
 
   const onChoose = (idx: number, winnerId: string) => async () => {
     try {
       setIsChooseLoading(true);
       setAnimations(Array.from({ length: 2, [idx]: winnerAnimation }));
       await choose(winnerId);
-      await sleep(700);
+      await sleep(delayTime);
       setAnimations(getAnimationClassNames({ direction: 'Out' }));
-      await sleep(700);
+      await sleep(delayTime);
       await fetchGameState();
       setIsChooseLoading(false);
     } catch (e: any) {
@@ -109,17 +119,13 @@ export const GamePage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    fetchGameState(true);
-  }, []);
-
   useWarnIfUnsavedChanges(!isLoading && !!game && !game.finished);
 
   if (!isLoading && !!game && game.finished) {
     return (
       <Page className={classes.root}>
         <Typography variant="h1" className={classes.content}>
-          Game not found...
+          Game is finished
         </Typography>
       </Page>
     );
@@ -129,7 +135,7 @@ export const GamePage: React.FC = () => {
     <Page
       className={classes.root}
       subHeader={
-        !isLoading ? (
+        !isLoading && (
           <Subheader className={classes.subheader}>
             <Typography variant="h5" className={classes.title}>
               {round + 1 === totalRounds
@@ -137,12 +143,12 @@ export const GamePage: React.FC = () => {
                 : `Round ${round + 1} | (${pairNumber} / ${pairsInRound})`}
             </Typography>
           </Subheader>
-        ) : undefined
+        )
       }
     >
       <div className={classes.content}>
         {!isLoading &&
-          pair?.map((item, i) => (
+          (pair as ContestItemDto[])?.map((item, i) => (
             <div
               key={item.id}
               className={classNames(animations[i], classes.item)}

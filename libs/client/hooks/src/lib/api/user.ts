@@ -3,7 +3,7 @@ import Router from 'next/router';
 import { useEffect } from 'react';
 import { useMutation, useQuery, UseQueryOptions } from 'react-query';
 import { AxiosResponse } from 'axios';
-import { UserDto } from '@lets-choose/common/dto';
+import { UserPublicDto } from '@lets-choose/common/dto';
 
 const userApi = new UsersApi();
 
@@ -15,7 +15,7 @@ type Config = {
 export const useUserFindRedirect = (
   username: string,
   { redirectTo, redirectIfFound }: Config = {},
-  queryConfig: UseQueryOptions<AxiosResponse<UserDto>> = {},
+  queryConfig: UseQueryOptions<AxiosResponse<UserPublicDto>> = {},
 ) => {
   const query = useQuery(['user', username], () => userApi.find(username), {
     retry: 0,
@@ -43,14 +43,14 @@ export const useUserFindRedirect = (
 
 export const useCurrentUser = (
   config: Config = {},
-  queryConfig: UseQueryOptions<AxiosResponse<UserDto>> = {},
+  queryConfig: UseQueryOptions<AxiosResponse<UserPublicDto>> = {},
 ) => {
   return useUserFindRedirect('me', config, queryConfig);
 };
 
 export const useUserFind = (
   id: string,
-  config: UseQueryOptions<AxiosResponse<UserDto>> = {},
+  config: UseQueryOptions<AxiosResponse<UserPublicDto>> = {},
 ) => {
   return useQuery(['user', id], () => userApi.find(id), {
     retry: 0,

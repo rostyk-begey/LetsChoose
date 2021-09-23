@@ -7,7 +7,7 @@ import {
   AuthTokenDto,
   HttpResponseMessageDto,
   UpdateUserPasswordDto,
-  UserDto,
+  UserPublicDto,
 } from '@lets-choose/common/dto';
 
 import { Api } from './api';
@@ -64,6 +64,6 @@ export class AuthApi extends Api {
   };
 
   updatePassword = (data: UpdateUserPasswordDto) => {
-    return this.api.post<UserDto>(UPDATE_PASSWORD, data);
+    return this.api.post<UserPublicDto>(UPDATE_PASSWORD, data);
   };
 }

@@ -1,5 +1,5 @@
 import { ROUTES } from '@lets-choose/client/utils';
-import { UpdateUserProfileDto, UserDto } from '@lets-choose/common/dto';
+import { UpdateUserProfileDto, UserPublicDto } from '@lets-choose/common/dto';
 
 import { Api } from './api';
 
@@ -7,11 +7,11 @@ export class UsersApi extends Api {
   private readonly baseURL = ROUTES.API.USERS;
 
   find = (idOrUsername: string) => {
-    return this.api.get<UserDto>(`${this.baseURL}/${idOrUsername}`);
+    return this.api.get<UserPublicDto>(`${this.baseURL}/${idOrUsername}`);
   };
 
   updateProfile = (data: UpdateUserProfileDto) => {
-    return this.api.post<UserDto>(`${this.baseURL}/profile`, data);
+    return this.api.post<UserPublicDto>(`${this.baseURL}/profile`, data);
   };
 
   deleteProfile = () => {

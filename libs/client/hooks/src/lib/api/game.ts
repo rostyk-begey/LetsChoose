@@ -1,7 +1,7 @@
 import { GameApi } from '@lets-choose/client/api';
 import { AxiosResponse } from 'axios';
 import { useMutation } from 'react-query';
-import { GetPairResponse } from '@lets-choose/common/dto';
+import { GameDto } from '@lets-choose/common/dto';
 
 export const useGameApi = new GameApi();
 
@@ -10,9 +10,7 @@ export const useGameStart = () => {
 };
 
 export const useGameState = (id: string) => {
-  return useMutation<AxiosResponse<GetPairResponse>>(() =>
-    useGameApi.getState(id),
-  );
+  return useMutation<AxiosResponse<GameDto>>(() => useGameApi.find(id));
 };
 
 export const useGameChoose = (gameId: string) => {

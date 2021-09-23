@@ -1,5 +1,5 @@
 import React from 'react';
-import { SORT_OPTIONS, UserDto } from '@lets-choose/common/dto';
+import { SORT_OPTIONS, UserPublicDto } from '@lets-choose/common/dto';
 import { NextSeo } from 'next-seo';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Divider from '@material-ui/core/Divider';
@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export interface UserPageProps {
-  initialUser: UserDto;
+  initialUser: UserPublicDto;
 }
 
 export const UserPage: React.FC<UserPageProps> = ({ initialUser }) => {
@@ -99,7 +99,7 @@ export const UserPage: React.FC<UserPageProps> = ({ initialUser }) => {
   const { data: userResponse, isLoading } = useUserFind(username as string, {
     initialData: { data: initialUser } as any,
   });
-  const user = (userResponse?.data as UserDto) || initialUser;
+  const user = (userResponse?.data as UserPublicDto) || initialUser;
   const matchesMaxWidth1024 = useMediaQuery(
     json2mq({
       maxWidth: 1024,

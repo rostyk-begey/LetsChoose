@@ -6,7 +6,7 @@ import {
   useGameStart,
 } from '@lets-choose/client/hooks';
 import { cloudinaryUploadPath, ROUTES } from '@lets-choose/client/utils';
-import { ContestDto, UserDto } from '@lets-choose/common/dto';
+import { ContestDto, UserPublicDto } from '@lets-choose/common/dto';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -208,7 +208,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
   const [isLinkCopied, setIsLinkCopied] = useState(false);
 
   const { id, thumbnail, title, excerpt, author, games, createdAt } = contest;
-  const username = (author as UserDto).username;
+  const username = (author as UserPublicDto).username;
   const { data: { data: user } = {} } = useCurrentUser({});
   const { mutateAsync: startGame } = useGameStart();
   const handleStartGameClick = async () => {
@@ -287,7 +287,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
             <Avatar
               aria-label="recipe"
               className={classes.cursorPointer}
-              src={(author as UserDto).avatar}
+              src={(author as UserPublicDto).avatar}
             />
           </RouterLink>
         }
