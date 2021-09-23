@@ -80,7 +80,6 @@ export const LoginPage: React.FC = () => {
     try {
       await googleLogin({ token });
     } catch (e: any) {
-      // TODO: ts any
       enqueueSnackbar(e.response.data.message, { variant: 'error' });
     }
   };
@@ -88,7 +87,6 @@ export const LoginPage: React.FC = () => {
     try {
       await httpLogin(data);
     } catch (e: any) {
-      // TODO: ts any
       enqueueSnackbar(e.response.data.message, { variant: 'error' });
     }
   });

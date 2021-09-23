@@ -129,11 +129,11 @@ export class ContestItemRepository
       },
     });
 
-    builder.Sort(this.getSortStageOptions(search));
-
     builder.AddFields({
       rankScore: Add('$winRate', '$finalWinRate'),
     });
+
+    builder.Sort(this.getSortStageOptions(search));
 
     return [
       ...builder.getPipeline(),
@@ -170,11 +170,5 @@ export class ContestItemRepository
 
   public async deleteContestItems(contestId: string): Promise<void> {
     await this.contestItemModel.deleteMany({ contestId });
-  }
-
-  public create(
-    data: Omit<CreateContestItemDto, 'id'>,
-  ): Promise<ContestItemDto> {
-    return this.create(data);
   }
 }

@@ -14,6 +14,7 @@ tsconfig.build.tsbuildinfo
 tsconfig.tsbuildinfo
 
 *.env
+/uploads
 
 # OS
 .DS_Store

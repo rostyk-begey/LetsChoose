@@ -1,10 +1,6 @@
 import { IGameService } from '@lets-choose/api/abstract';
 import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
-import {
-  GameDto,
-  GameStartResponse,
-  GetPairResponse,
-} from '@lets-choose/common/dto';
+import { GameDto, GameStartResponse } from '@lets-choose/common/dto';
 import { API_ROUTES } from '@lets-choose/common/utils';
 import {
   Body,

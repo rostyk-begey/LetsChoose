@@ -35,7 +35,6 @@ export const useGoogleSignInPrompt = ({
             await refetchCurrentUser();
             enqueueSnackbar('Successfully logged in', { variant: 'success' });
           } catch (e: any) {
-            // TODO ts any
             enqueueSnackbar(e.response.data.message, { variant: 'error' });
           }
         },

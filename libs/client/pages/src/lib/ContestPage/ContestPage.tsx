@@ -37,6 +37,7 @@ import { AxiosResponse } from 'axios';
 import { NextSeo } from 'next-seo';
 import Image from 'next/image';
 import { NextRouter, useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Table } from './Table';
@@ -169,7 +170,7 @@ export interface ContestPageProps {
 export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
   const { id: contestId } = initialContest;
   const router = useRouter();
-
+  const { enqueueSnackbar } = useSnackbar();
   const {
     data: contestResponse,
     isLoading: contestIsLoading,
@@ -291,6 +292,9 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                         await resetContest();
                         await removeContest();
                         await removeContestItems();
+                        enqueueSnackbar('Contest successfully reset', {
+                          variant: 'success',
+                        });
                       }
                     },
                   },
@@ -307,6 +311,10 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                       if (window.confirm('Are you sure you want to delete?')) {
                         await deleteContest();
                         await router.push(ROUTES.HOME);
+
+                        enqueueSnackbar('Contest successfully deleted', {
+                          variant: 'success',
+                        });
                       }
                     },
                   },

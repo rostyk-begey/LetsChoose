@@ -1,4 +1,5 @@
-import { IAuthService } from '@lets-choose/api/abstract';
+import { IAuthService, UserDto } from '@lets-choose/api/abstract';
+import { AuthUser } from '@lets-choose/api/common/decorators';
 import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
 import { Config, JwtConfig } from '@lets-choose/api/config';
 import {
@@ -29,7 +30,10 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Response as ExpressResponse } from 'express';
+import {
+  Request as ExpressRequest,
+  Response as ExpressResponse,
+} from 'express';
 import { AuthService } from './auth.service';
 import {
   loginSchema,
@@ -163,11 +167,11 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @UsePipes(new JoiValidationPipe(updatePasswordSchema))
   public async updatePassword(
-    @Request() req: any,
+    @AuthUser() user: UserDto,
     @Response({ passthrough: true }) res: ExpressResponse,
     @Body() dto: UpdateUserPasswordDto,
   ): Promise<AuthTokenDto> {
-    const result = await this.authService.updateUsersPassword(req.user.id, dto);
+    const result = await this.authService.updateUsersPassword(user.id, dto);
 
     res.cookie(
       this.config.accessTokenKey,
@@ -196,7 +200,7 @@ export class AuthController {
   @Post(API_ROUTES.AUTH.REFRESH_TOKEN)
   // @UsePipes(new JoiValidationPipe(refreshTokenLocation, 'query'))
   public async refreshToken(
-    @Request() req: any,
+    @Request() req: ExpressRequest,
     @Response({ passthrough: true }) res: ExpressResponse,
     @Query('refreshTokenLocation') refreshTokenLocation: RefreshTokenLocation,
   ): Promise<AuthTokenDto> {

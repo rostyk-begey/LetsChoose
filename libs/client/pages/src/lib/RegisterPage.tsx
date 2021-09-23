@@ -98,7 +98,6 @@ export const RegisterPage: React.FC = () => {
     try {
       await googleLogin({ token });
     } catch (e: any) {
-      // TODO: ts any
       enqueueSnackbar(e.response.data.message, { variant: 'error' });
     }
   };
@@ -106,7 +105,6 @@ export const RegisterPage: React.FC = () => {
     try {
       await register(data);
     } catch (e: any) {
-      // TODO: ts any
       enqueueSnackbar(e.response.data.message, { variant: 'error' });
     }
   });

@@ -1,4 +1,5 @@
-import { IContestService } from '@lets-choose/api/abstract';
+import { IContestService, UserDto } from '@lets-choose/api/abstract';
+import { AuthUser } from '@lets-choose/api/common/decorators';
 import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
 import { fieldNameFilter, unlinkAsync } from '@lets-choose/api/common/utils';
 import {
@@ -34,8 +35,10 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ContestService } from './contest.service';
 import {
   contestIdSchema,
+  createContestSchema,
   getContestItemsSchema,
   getContestSchema,
+  updateContestSchema,
 } from './contest.validation';
 
 @ApiTags('Contest')
@@ -87,19 +90,19 @@ export class ContestController {
     return await this.contestService.getContestItemsPaginate(contestId, query);
   }
 
-  // TODO: add schema validation
   @Post('/')
   @ApiOperation({ summary: 'Create new contest' })
   @ApiResponse({
     status: 200,
     type: ContestDto,
   })
+  @UsePipes(new JoiValidationPipe(createContestSchema, 'body'))
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
   public async create(
     @Body() { title, excerpt, items }: CreateContestDto,
     @UploadedFiles() files,
-    @Req() { user }: any,
+    @AuthUser() user: UserDto,
   ): Promise<ContestDto> {
     const contest = await this.contestService.createContest(user.id, {
       title,
@@ -120,7 +123,6 @@ export class ContestController {
     return contest;
   }
 
-  // TODO: add schema validation
   @UseGuards(AuthGuard('jwt'))
   @Post('/:contestId')
   @ApiOperation({ summary: 'Update contest' })
@@ -129,6 +131,7 @@ export class ContestController {
     type: HttpResponseMessageDto,
   })
   @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
+  @UsePipes(new JoiValidationPipe(updateContestSchema, 'body'))
   @UseInterceptors(FileInterceptor('files'))
   public async update(
     @Param('contestId') contestId: string,
@@ -154,7 +157,7 @@ export class ContestController {
   @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
   public async reset(
     @Param('contestId') contestId: string,
-    @Req() { user }: any,
+    @AuthUser() user: UserDto,
   ): Promise<ContestDto> {
     const { author } = await this.contestService.findContestById(contestId);
     if (author.toString() !== user.id.toString()) {
@@ -173,7 +176,7 @@ export class ContestController {
   @UsePipes(new JoiValidationPipe(contestIdSchema, 'param'))
   public async remove(
     @Param('contestId') contestId: string,
-    @Req() { user }: any,
+    @AuthUser() user: UserDto,
   ): Promise<HttpResponseMessageDto> {
     const { author } = await this.contestService.findContestById(contestId);
     if (author.toString() !== user.id.toString()) {

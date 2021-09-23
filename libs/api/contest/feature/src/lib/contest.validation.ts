@@ -12,6 +12,8 @@ export const validationSchema = {
     .items(
       Joi.object({
         title: Joi.string().exist(),
+        image: Joi.any(),
+        id: Joi.any(),
       }),
     )
     .min(2)

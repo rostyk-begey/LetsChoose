@@ -1,4 +1,5 @@
-import React from 'react';
+import { useSnackbar } from 'notistack';
+import React, { useCallback, useState } from 'react';
 import { ROUTES } from '@lets-choose/client/utils';
 import { CreateContestData } from '@lets-choose/common/dto';
 import { NextSeo } from 'next-seo';
@@ -8,12 +9,25 @@ import { useContestCreate, useCurrentUser } from '@lets-choose/client/hooks';
 import { EditContestPageTemplate } from './EditContestPageTemplate';
 
 export const CreateContestPage: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
-  const { isLoading, mutateAsync: createContest } = useContestCreate();
-  const onSubmit = async (data: CreateContestData) => {
-    const { data: contest } = await createContest(data);
-    await router.push(`${ROUTES.CONTESTS.INDEX}/${contest.id}`);
-  };
+  const { mutateAsync: createContest } = useContestCreate();
+  const onSubmit = useCallback(
+    async (data: CreateContestData) => {
+      try {
+        setIsLoading(true);
+        const { data: contest } = await createContest(data);
+        await router.push(`${ROUTES.CONTESTS.INDEX}/${contest.id}`);
+        enqueueSnackbar('Contest successfully created', { variant: 'success' });
+      } catch (e: any) {
+        enqueueSnackbar(e.message, { variant: 'error' });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [createContest, router, enqueueSnackbar],
+  );
   useCurrentUser({ redirectTo: ROUTES.HOME });
 
   return (

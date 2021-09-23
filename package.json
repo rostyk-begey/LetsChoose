@@ -138,7 +138,7 @@
     "react-table": "^7.7.0",
     "reflect-metadata": "^0.1.13",
     "regenerator-runtime": "0.13.7",
-    "rxjs": "~6.6.3",
+    "rxjs": "^7.3.0",
     "styled-components": "^5.3.1",
     "swagger-ui-express": "^4.1.6",
     "text-clipper": "^2.1.0",

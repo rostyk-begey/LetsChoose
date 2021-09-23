@@ -96,7 +96,6 @@ export const GamePage: React.FC<GamePageProps> = ({ initialGame }) => {
           setIsLoading(false);
         }
       } catch (e: any) {
-        // TODO: ts any
         enqueueSnackbar(e.response.data.message, { variant: 'error' });
       }
     },
@@ -114,7 +113,6 @@ export const GamePage: React.FC<GamePageProps> = ({ initialGame }) => {
       await fetchGameState();
       setIsChooseLoading(false);
     } catch (e: any) {
-      // TODO: ts any
       enqueueSnackbar(e.message);
     }
   };

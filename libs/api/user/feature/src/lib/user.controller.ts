@@ -1,4 +1,5 @@
-import { IUserService } from '@lets-choose/api/abstract';
+import { IUserService, UserDto } from '@lets-choose/api/abstract';
+import { AuthUser } from '@lets-choose/api/common/decorators';
 import { JoiValidationPipe } from '@lets-choose/api/common/pipes';
 
 import { User } from '@lets-choose/api/user/data-access';
@@ -16,33 +17,13 @@ import {
   Inject,
   Param,
   Post,
-  Request,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
 import { UserService } from './user.service';
 import { updateUserProfileSchema } from './user.validation';
-
-class Test {
-  _id: string;
-
-  @Expose()
-  get id() {
-    return this._id;
-  }
-
-  publicField: string;
-
-  @Exclude()
-  privateField: string;
-
-  constructor(partial: Partial<Test>) {
-    Object.assign(this, partial);
-  }
-}
 
 @ApiTags('User')
 @Controller(API_ROUTES.USERS)
@@ -56,8 +37,8 @@ export class UserController {
   @ApiResponse({ status: 200, type: User })
   @UseGuards(AuthGuard('jwt'))
   @Get('/me')
-  public me(@Request() req: any): User {
-    return req.user;
+  public me(@AuthUser() user: UserDto): UserDto {
+    return user;
   }
 
   @ApiOperation({ summary: 'Get user by username' })
@@ -75,18 +56,20 @@ export class UserController {
   @UsePipes(new JoiValidationPipe(updateUserProfileSchema))
   @Post('/profile')
   async updateUserProfile(
-    @Request() req: any,
+    @AuthUser() user: UserDto,
     @Body() dto: UpdateUserProfileDto,
   ): Promise<UserPublicDto> {
-    return await this.userService.updateUserProfile(req.user.id, dto);
+    return await this.userService.updateUserProfile(user.id, dto);
   }
 
   @ApiOperation({ summary: 'Delete current user' })
   @ApiResponse({ status: 200, type: HttpResponseMessageDto })
   @UseGuards(AuthGuard('jwt'))
   @Delete('/me')
-  public async removeMe(@Request() req: any): Promise<HttpResponseMessageDto> {
-    await this.userService.removeUserById(req.user.id as string);
+  public async removeMe(
+    @AuthUser() user: UserDto,
+  ): Promise<HttpResponseMessageDto> {
+    await this.userService.removeUserById(user.id);
     return { message: 'User successfully deleted!' };
   }
 }

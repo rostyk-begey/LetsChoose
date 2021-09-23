@@ -59,7 +59,8 @@ export abstract class AbstractMongooseRepository<
   }
 
   public async create(data: CreateDto): Promise<DtoType> {
-    const document = new this.model(data);
+    const id = new Types.ObjectId();
+    const document = new this.model({ _id: id, ...data });
 
     await document.save();
 

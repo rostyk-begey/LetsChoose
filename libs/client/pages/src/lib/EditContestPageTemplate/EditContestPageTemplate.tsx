@@ -225,8 +225,8 @@ const inputs: Record<string, FormTextInputProps> = {
     validation: {},
     fieldProps: {
       multiline: true,
-      rowsMax: 5,
-      rows: 3,
+      maxRows: 5,
+      minRows: 3,
       type: 'text',
       label: 'Contest excerpt',
       variant: 'outlined',
@@ -316,35 +316,37 @@ export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
       updateItem,
       toggleSelectAll,
     } = useItemsUpload();
-    const { enqueueSnackbar } = useSnackbar();
 
     const handleSubmit = useCallback(
       (contestData) => {
         if (isLoading) return;
 
-        try {
-          if (!thumbnail && !defaultThumbnail) {
-            setError('thumbnail', { message: 'Please add thumbnail' });
-            return;
-          }
-          if (withItemsUpload && items.length < 2) {
-            setError('items', { message: 'Please add at least 2 items' });
-            return;
-          }
-
-          onSubmit(
-            jsonToFormData({
-              ...contestData,
-              thumbnail,
-              items,
-            } as any),
-          );
-        } catch (e: any) {
-          // TODO: ts any
-          enqueueSnackbar(e.message, { variant: 'error' });
+        if (!thumbnail && !defaultThumbnail) {
+          setError('thumbnail', { message: 'Please add thumbnail' });
+          return;
         }
+        if (withItemsUpload && items.length < 2) {
+          setError('items', { message: 'Please add at least 2 items' });
+          return;
+        }
+
+        onSubmit(
+          jsonToFormData({
+            ...contestData,
+            thumbnail,
+            items,
+          } as any),
+        );
       },
-      [isLoading, form, thumbnail, defaultThumbnail, withItemsUpload, items],
+      [
+        isLoading,
+        thumbnail,
+        defaultThumbnail,
+        withItemsUpload,
+        items,
+        onSubmit,
+        setError,
+      ],
     );
 
     return (
