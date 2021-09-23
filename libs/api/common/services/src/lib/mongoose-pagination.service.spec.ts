@@ -19,23 +19,18 @@ describe('MongoosePaginationService', () => {
 
   describe('getPaginationStages', () => {
     describe.each`
-      page | perPage
-      ${1} | ${10}
-      ${2} | ${10}
-      ${3} | ${10}
-      ${4} | ${10}
-      ${5} | ${11}
-      ${5} | ${12}
-      ${5} | ${13}
-      ${5} | ${14}
+      page | perPage | skip
+      ${1} | ${1}    | ${0}
+      ${1} | ${10}   | ${0}
+      ${2} | ${10}   | ${10}
+      ${3} | ${10}   | ${20}
+      ${4} | ${10}   | ${30}
     `(
       'getPaginationStages({ page: $page, perPage: $perPage })',
-      ({ page, perPage }) => {
+      ({ page, perPage, skip }) => {
         let facet, project, addFields;
-        let expectedSkip: number;
 
         beforeAll(() => {
-          expectedSkip = (page - 1) * perPage;
           [facet, project, addFields] = service.getPaginationPipeline({
             page,
             perPage,
@@ -52,7 +47,7 @@ describe('MongoosePaginationService', () => {
               ],
               items: [
                 {
-                  $skip: expectedSkip,
+                  $skip: skip,
                 },
                 {
                   $limit: perPage,

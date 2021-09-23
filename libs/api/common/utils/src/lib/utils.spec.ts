@@ -1,10 +1,5 @@
 import fs from 'fs/promises';
-import {
-  fieldNameFilter,
-  getPaginationPipelines,
-  getSearchPipelines,
-  unlinkAsync,
-} from './utils';
+import { fieldNameFilter, getSearchPipelines, unlinkAsync } from './utils';
 
 describe.each`
   key        | fieldname   | expected
@@ -62,52 +57,4 @@ describe('getSearchPipelines', () => {
       ]);
     },
   );
-});
-
-describe.each`
-  page | perPage | skip
-  ${0} | ${1}    | ${0}
-  ${0} | ${10}   | ${0}
-  ${1} | ${1}    | ${0}
-  ${1} | ${10}   | ${0}
-  ${2} | ${10}   | ${10}
-  ${3} | ${10}   | ${20}
-`('getPaginationPipelines($page, $perPage)', ({ page, perPage, skip }) => {
-  it('should return proper search pipelines', () => {
-    expect(getPaginationPipelines(page, perPage)).toMatchObject([
-      {
-        $facet: {
-          metadata: [
-            {
-              $count: 'total',
-            },
-          ],
-          items: [
-            {
-              $skip: skip,
-            },
-            {
-              $limit: perPage,
-            },
-          ],
-        },
-      },
-      {
-        $project: {
-          items: 1,
-          totalItems: { $arrayElemAt: ['$metadata.total', 0] },
-          totalPages: {
-            $ceil: {
-              $divide: [{ $arrayElemAt: ['$metadata.total', 0] }, perPage],
-            },
-          },
-        },
-      },
-      {
-        $addFields: {
-          currentPage: page,
-        },
-      },
-    ]);
-  });
 });
