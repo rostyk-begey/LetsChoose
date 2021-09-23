@@ -4,3 +4,5 @@ export * from './lib/renderConfirmationEmail';
 export * from './lib/renderResetPasswordEmail';
 export * from './lib/getMongooseTransformOptions';
 export * from './lib/utils';
+export * from './lib/pagination.schema';
+export * from './lib/search.schema';

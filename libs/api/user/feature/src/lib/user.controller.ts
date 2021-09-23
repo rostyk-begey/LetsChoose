@@ -5,7 +5,7 @@ import { User } from '@lets-choose/api/user/data-access';
 import {
   HttpResponseMessageDto,
   UpdateUserProfileDto,
-  UserDto,
+  UserPublicDto,
 } from '@lets-choose/common/dto';
 import { API_ROUTES } from '@lets-choose/common/utils';
 import {
@@ -63,7 +63,9 @@ export class UserController {
   @ApiOperation({ summary: 'Get user by username' })
   @ApiResponse({ status: 200, type: User })
   @Get('/:username')
-  async findByUsername(@Param('username') username: string): Promise<UserDto> {
+  async findByUsername(
+    @Param('username') username: string,
+  ): Promise<UserPublicDto> {
     return await this.userService.findByUsername(username);
   }
 
@@ -75,7 +77,7 @@ export class UserController {
   async updateUserProfile(
     @Request() req: any,
     @Body() dto: UpdateUserProfileDto,
-  ): Promise<UserDto> {
+  ): Promise<UserPublicDto> {
     return await this.userService.updateUserProfile(req.user.id, dto);
   }
 

@@ -1,3 +1,4 @@
+import { ApiCommonServicesModule } from '@lets-choose/api/common/services';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ContestItem, ContestItemSchema } from './contest-item.entity';
@@ -7,6 +8,7 @@ import { ContestRepository } from './contest.repository';
 
 @Module({
   imports: [
+    ApiCommonServicesModule,
     MongooseModule.forFeature([{ name: Contest.name, schema: ContestSchema }]),
     MongooseModule.forFeature([
       { name: ContestItem.name, schema: ContestItemSchema },

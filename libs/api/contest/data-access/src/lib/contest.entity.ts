@@ -5,7 +5,8 @@ import mongoose from 'mongoose';
 import { getMongooseTransformOptions } from '@lets-choose/api/common/utils';
 import { ContestItem } from './contest-item.entity';
 
-export type ContestDocument = Contest & mongoose.Document;
+export type ContestDocument = Contest &
+  mongoose.Document<mongoose.Types.ObjectId>;
 
 @Schema({
   id: true,

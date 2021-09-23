@@ -57,7 +57,7 @@ describe('UserService', () => {
   test('findById', async () => {
     userRepositoryMock.findByUsername.mockResolvedValueOnce(user);
     await userService.findById(userId);
-    expect(userRepositoryMock.findByIdOrFail).toHaveBeenCalledWith(userId);
+    expect(userRepositoryMock.findById).toHaveBeenCalledWith(userId);
   });
 
   test('findByUsername', async () => {
@@ -67,14 +67,14 @@ describe('UserService', () => {
   });
 
   test('removeUserById', async () => {
-    userRepositoryMock.findByIdOrFail.mockResolvedValueOnce(user);
+    userRepositoryMock.findById.mockResolvedValueOnce(user);
     jest
       .spyOn(contestService, 'findContestsByAuthor')
       .mockResolvedValueOnce([contest]);
     jest.spyOn(contestService, 'removeContest').mockImplementation(() => null);
 
     await userService.removeUserById(userId);
-    expect(userRepositoryMock.findByIdOrFail).toHaveBeenCalledWith(userId);
+    expect(userRepositoryMock.findById).toHaveBeenCalledWith(userId);
   });
 
   test('removeUserByUsername', async () => {

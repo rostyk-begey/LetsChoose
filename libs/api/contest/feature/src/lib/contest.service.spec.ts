@@ -166,10 +166,10 @@ describe('ContestService', () => {
     );
 
     expect(response).toMatchObject(mockContestItemsPaginateResult);
-    expect(contestItemRepositoryMock.paginate).toBeCalledWith(
+    expect(contestItemRepositoryMock.paginate).toBeCalledWith({
       contestId,
-      options,
-    );
+      ...options,
+    });
   });
 
   test('findContestsByAuthor', async () => {
@@ -180,11 +180,11 @@ describe('ContestService', () => {
   });
 
   test('createContest', async () => {
-    contestRepositoryMock.createContest.mockResolvedValueOnce(contest);
+    contestRepositoryMock.create.mockResolvedValueOnce(contest);
 
     const result = await contestService.createContest(user.id, contestData);
 
-    expect(contestRepositoryMock.createContest).toBeCalledWith({
+    expect(contestRepositoryMock.create).toBeCalledWith({
       _id: contestId,
       author: user.id,
       title: contestData.title,
@@ -222,7 +222,7 @@ describe('ContestService', () => {
 
     await contestService.removeContest(contestId);
 
-    expect(contestRepositoryMock.deleteContest).toBeCalledWith(contestId);
+    expect(contestRepositoryMock.findByIdAndRemove).toBeCalledWith(contestId);
     expect(cloudinaryServiceMock.destroy).toBeCalledWith(
       `contests/${contestId}/thumbnail`,
     );

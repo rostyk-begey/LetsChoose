@@ -91,7 +91,8 @@ export class ContestService implements IContestService {
   ): Promise<GetItemsResponse> {
     await this.findContestById(contestId);
 
-    return await this.contestItemRepository.paginate(contestId, {
+    return await this.contestItemRepository.paginate({
+      contestId,
       page,
       perPage,
       search,
@@ -111,7 +112,7 @@ export class ContestService implements IContestService {
       ContestService.getContestThumbnailPublicId(contestId.toString()),
     );
 
-    const contest = await this.contestRepository.createContest({
+    const contest = await this.contestRepository.create({
       _id: `${contestId}`,
       thumbnail: thumbnailUrl,
       title,
@@ -129,7 +130,7 @@ export class ContestService implements IContestService {
           contestItemId.toString(),
         ),
       );
-      await this.contestItemRepository.createContestItem({
+      await this.contestItemRepository.create({
         title,
         image: imageUrl,
         _id: `${contestItemId}`,
@@ -188,7 +189,7 @@ export class ContestService implements IContestService {
   }
 
   public async removeContest(contestId: string): Promise<void> {
-    await this.contestRepository.deleteContest(contestId);
+    await this.contestRepository.findByIdAndRemove(contestId);
     await this.cloudinaryService.destroy(
       ContestService.getContestThumbnailPublicId(contestId),
     );

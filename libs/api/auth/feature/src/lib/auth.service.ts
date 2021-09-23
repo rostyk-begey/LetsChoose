@@ -4,6 +4,7 @@ import {
   IJwtService,
   IPasswordHashService,
   IUserRepository,
+  UserDto,
 } from '@lets-choose/api/abstract';
 import {
   EmailService,
@@ -11,7 +12,7 @@ import {
   PasswordHashService,
 } from '@lets-choose/api/common/services';
 import { Config, GoogleOAuthConfig } from '@lets-choose/api/config';
-import { User, UserRepository } from '@lets-choose/api/user/data-access';
+import { UserRepository } from '@lets-choose/api/user/data-access';
 import {
   AuthForgotPasswordDto,
   AuthGoogleLoginDto,
@@ -42,7 +43,7 @@ export class AuthService implements IAuthService {
 
   constructor(
     @Inject(UserRepository)
-    protected readonly userRepository: IUserRepository<User>,
+    protected readonly userRepository: IUserRepository,
 
     @Inject(JwtService)
     protected readonly jwtService: IJwtService,
@@ -77,13 +78,13 @@ export class AuthService implements IAuthService {
     username,
     password,
     avatar,
-  }: { avatar?: string } & AuthRegisterDto): Promise<User> {
+  }: { avatar?: string } & AuthRegisterDto): Promise<UserDto> {
     const hashedPassword: string = await this.passwordHashService.hash(
       password,
       12,
     );
 
-    return await this.userRepository.createUser({
+    return await this.userRepository.create({
       email,
       username,
       password: hashedPassword,
@@ -178,8 +179,6 @@ export class AuthService implements IAuthService {
 
     const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
       user.id,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       user.passwordVersion,
     );
 
@@ -230,16 +229,12 @@ export class AuthService implements IAuthService {
       throw new UnauthorizedException('Reset password link expired');
     }
 
-    const user = await this.userRepository.findByIdOrFail(userId);
+    const user = await this.userRepository.findById(userId);
 
     const newPassword = await this.passwordHashService.hash(password, 12);
 
     await this.userRepository.findByIdAndUpdate(user.id, {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       password: newPassword,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       passwordVersion: user.passwordVersion + 1,
     });
   }
@@ -248,12 +243,10 @@ export class AuthService implements IAuthService {
     userId: string,
     { password, newPassword }: UpdateUserPasswordDto,
   ): Promise<AuthTokenDto> {
-    const user = await this.userRepository.findByIdOrFail(userId);
+    const user = await this.userRepository.findById(userId);
 
     const isMatch = await this.passwordHashService.compare(
       password,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       user.password,
     );
 
@@ -267,18 +260,12 @@ export class AuthService implements IAuthService {
     );
 
     await this.userRepository.findByIdAndUpdate(user.id, {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       password: newPasswordHash,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       passwordVersion: ++user.passwordVersion,
     });
 
     const { accessToken, refreshToken } = this.jwtService.generateAuthTokenPair(
       user.id,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       user.passwordVersion,
     );
 
@@ -295,17 +282,13 @@ export class AuthService implements IAuthService {
     try {
       ({ userId, passwordVersion } = this.jwtService.verifyRefreshToken(token));
 
-      const user = await this.userRepository.findByIdOrFail(userId);
+      const user = await this.userRepository.findById(userId);
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       if (passwordVersion !== user.passwordVersion) {
         throw new Error();
       }
 
       const { accessToken, refreshToken } =
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         this.jwtService.generateAuthTokenPair(user.id, user.passwordVersion);
 
       return {
@@ -321,8 +304,6 @@ export class AuthService implements IAuthService {
   public async confirmEmail(confirmEmailToken: string): Promise<void> {
     try {
       const { userId } = this.jwtService.verifyEmailToken(confirmEmailToken);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       await this.userRepository.findByIdAndUpdate(userId, { confirmed: true });
     } catch (e) {
       throw new BadRequestException('Invalid url');

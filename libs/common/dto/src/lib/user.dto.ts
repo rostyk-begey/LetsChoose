@@ -1,5 +1,4 @@
-export abstract class UserDto {
-  // _id: string;
+export abstract class UserPublicDto {
   id: string;
   email: string;
   avatar: string;

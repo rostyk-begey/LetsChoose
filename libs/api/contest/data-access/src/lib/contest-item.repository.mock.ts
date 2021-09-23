@@ -8,12 +8,15 @@ export interface ExtendedContestItem extends ContestItem {
 }
 
 export const contestItemRepositoryMock: jest.Mocked<IContestItemRepository> = {
+  all: jest.fn(),
+  count: jest.fn(),
   countDocuments: jest.fn(),
   paginate: jest.fn(),
   findById: jest.fn(),
   findByContestId: jest.fn(),
   findByIdAndUpdate: jest.fn(),
+  findByIdAndRemove: jest.fn(),
   updateContestItems: jest.fn(),
   deleteContestItems: jest.fn(),
-  createContestItem: jest.fn(),
+  create: jest.fn(),
 };

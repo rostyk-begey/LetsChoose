@@ -5,31 +5,31 @@ import {
 } from '@lets-choose/api/abstract';
 import { ContestService } from '@lets-choose/api/contest/feature';
 import { User, UserRepository } from '@lets-choose/api/user/data-access';
-import { UpdateUserProfileDto, UserDto } from '@lets-choose/common/dto';
+import { UpdateUserProfileDto, UserPublicDto } from '@lets-choose/common/dto';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserService implements IUserService {
   constructor(
     @Inject(UserRepository)
-    protected readonly userRepository: IUserRepository<User>,
+    protected readonly userRepository: IUserRepository,
 
     @Inject(ContestService)
     protected readonly contestService: IContestService,
   ) {}
 
-  public findById(userId: string): Promise<UserDto> {
-    return this.userRepository.findByIdOrFail(userId);
+  public findById(userId: string): Promise<UserPublicDto> {
+    return this.userRepository.findById(userId);
   }
 
-  public findByUsername(username: string): Promise<UserDto> {
+  public findByUsername(username: string): Promise<UserPublicDto> {
     return this.userRepository.findByUsername(username);
   }
 
   public async updateUserProfile(
     userId: string,
     { username, email }: UpdateUserProfileDto,
-  ): Promise<UserDto> {
+  ): Promise<UserPublicDto> {
     const userByUsername = await this.userRepository.findByUsername(username);
     if (userByUsername && userByUsername.id.toString() !== userId.toString()) {
       throw new BadRequestException('Username already taken');
@@ -44,7 +44,7 @@ export class UserService implements IUserService {
   }
 
   public async removeUserById(id: string): Promise<void> {
-    const user = await this.userRepository.findByIdOrFail(id);
+    const user = await this.userRepository.findById(id);
     await this.removeUserData(user.id);
   }
 

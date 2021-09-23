@@ -1,7 +1,6 @@
-import { UserDto } from './user.dto';
+import { UserPublicDto } from './user.dto';
 
 export abstract class ContestItemDto {
-  // _id: string;
   id: string;
   image: string;
   title: string;
@@ -9,16 +8,15 @@ export abstract class ContestItemDto {
   compares: number;
   wins: number;
   finalWins: number;
-  contestId: string | ContestDto;
+  contestId: string;
 }
 
 export abstract class ContestDto {
-  // _id: string;
   id: string;
   thumbnail: string;
   title: string;
   excerpt: string;
-  author: UserDto | string;
+  author: UserPublicDto | string;
   games: number;
   items: ContestItemDto[];
   createdAt: string;
@@ -51,7 +49,7 @@ export abstract class GetContestsQuery implements SearchQuery, PaginationQuery {
   nextCursor?: string;
 }
 
-abstract class PaginatedResponse<T extends unknown> {
+export abstract class PaginatedResponse<T extends unknown> {
   items: T[];
   totalPages: number;
   totalItems: number;

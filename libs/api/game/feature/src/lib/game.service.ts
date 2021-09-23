@@ -111,7 +111,7 @@ export class GameService implements IGameService {
 
     const totalRounds = GameService.calculateTotalRounds(gameItems.length);
 
-    const game = await this.gameRepository.createGame({
+    const game = await this.gameRepository.create({
       contestId,
       items: gameItems,
       finished: false,

@@ -3,3 +3,4 @@ export * from './lib/database.service';
 export * from './lib/email.service';
 export * from './lib/jwt.service';
 export * from './lib/password.service';
+export * from './lib/mongoose-pagination.service';

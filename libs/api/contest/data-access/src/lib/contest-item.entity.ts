@@ -2,7 +2,6 @@ import { ContestItemDto } from '@lets-choose/common/dto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { getMongooseTransformOptions } from '@lets-choose/api/common/utils';
-
 import { Contest } from './contest.entity';
 
 export type ContestItemDocument = ContestItem & mongoose.Document;
@@ -35,11 +34,11 @@ export class ContestItem extends ContestItemDto {
   finalWins: number;
 
   @Prop({
-    ref: 'Contest',
+    ref: Contest.name,
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   })
-  contestId: Contest | string;
+  contestId: string;
 }
 
 export const ContestItemSchema = SchemaFactory.createForClass(ContestItem);

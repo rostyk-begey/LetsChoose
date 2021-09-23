@@ -294,7 +294,7 @@ describe('GameService', () => {
       contest = contestBuilder();
 
       contestRepositoryMock.findById.mockResolvedValue(contest);
-      gameRepositoryMock.createGame.mockResolvedValue(game);
+      gameRepositoryMock.create.mockResolvedValue(game);
       gameRepositoryMock.findById.mockResolvedValue(game);
       contestItemRepositoryMock.findByContestId.mockResolvedValue(contestItems);
 
@@ -316,8 +316,8 @@ describe('GameService', () => {
         compares: 0,
       }));
 
-      expect(gameRepositoryMock.createGame).toHaveBeenCalledTimes(1);
-      expect(gameRepositoryMock.createGame.mock.calls[0][0]).toEqual(
+      expect(gameRepositoryMock.create).toHaveBeenCalledTimes(1);
+      expect(gameRepositoryMock.create.mock.calls[0][0]).toEqual(
         expect.objectContaining({
           contestId: contest.id,
           items: gameItems,

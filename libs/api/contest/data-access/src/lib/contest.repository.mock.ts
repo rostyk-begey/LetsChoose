@@ -1,11 +1,13 @@
 import { IContestRepository } from '@lets-choose/api/abstract';
 
 export const contestRepositoryMock: jest.Mocked<IContestRepository> = {
-  countDocuments: jest.fn(),
+  all: jest.fn(),
+  count: jest.fn(),
+  countByAuthor: jest.fn(),
   paginate: jest.fn(),
   findById: jest.fn(),
   findByAuthor: jest.fn(),
   findByIdAndUpdate: jest.fn(),
-  deleteContest: jest.fn(),
-  createContest: jest.fn(),
+  findByIdAndRemove: jest.fn(),
+  create: jest.fn(),
 };

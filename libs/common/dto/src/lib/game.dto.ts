@@ -7,7 +7,6 @@ export abstract class GameItemDto {
 }
 
 export abstract class GameDto {
-  // _id: string;
   id: string;
   contestId: ContestDto | string;
   winnerId?: ContestItemDto | string;

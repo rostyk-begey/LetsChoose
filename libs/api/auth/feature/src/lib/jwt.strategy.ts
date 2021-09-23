@@ -7,7 +7,7 @@ import { JwtService } from '@lets-choose/api/common/services';
 import { Config } from '@lets-choose/api/config';
 
 import { UserRepository } from '@lets-choose/api/user/data-access';
-import { UserDto } from '@lets-choose/common/dto';
+import { UserPublicDto } from '@lets-choose/common/dto';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -39,7 +39,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return req?.cookies ? req.cookies['accessToken'] : null;
   }
 
-  public async validate({ userId }: AuthTokenPayload): Promise<UserDto> {
+  public async validate({ userId }: AuthTokenPayload): Promise<UserPublicDto> {
     return await this.userRepository.findById(userId);
   }
 }

@@ -1,63 +1,41 @@
-import { IUserRepository } from '@lets-choose/api/abstract';
+import {
+  AbstractMongooseRepository,
+  IUserRepository,
+  UserDto,
+} from '@lets-choose/api/abstract';
 
 import { CreateUserDto } from '@lets-choose/common/dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { User, UserDocument } from './user.entity';
 
 @Injectable()
-export class UserRepository implements IUserRepository<User> {
+export class UserRepository
+  extends AbstractMongooseRepository<UserDto, CreateUserDto>
+  implements IUserRepository
+{
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  ) {}
-
-  public async findById(userId: string): Promise<User | null> {
-    return await this.userModel.findById(userId);
+  ) {
+    super(userModel);
   }
 
-  public async findByIdOrFail(userId: string): Promise<User> {
-    const user = await this.findById(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
+  protected async findOne(query: Partial<UserDto>): Promise<UserDto | null> {
+    const user = await this.userModel.findOne(query).exec();
+    return user ? this.toObject(user) : null;
   }
 
-  public async findByIdAndUpdate(
-    userId: string,
-    data: Partial<User>,
-  ): Promise<User> {
-    const user = await this.userModel.findByIdAndUpdate(userId, data);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user.toObject();
-  }
-
-  protected async findOne(query: Partial<User>): Promise<User | null> {
-    return this.userModel.findOne(query);
-  }
-
-  public findByUsername(username: string): Promise<User | null> {
+  public findByUsername(username: string): Promise<UserDto | null> {
     return this.findOne({ username });
   }
 
-  public findByEmail(email: string): Promise<User | null> {
+  public async findByEmail(email: string): Promise<UserDto | null> {
     return this.findOne({ email });
   }
 
-  public async deleteUser(userId: string): Promise<User> {
-    const user = await this.userModel.findByIdAndRemove(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
-  }
-
-  public async createUser(data: CreateUserDto): Promise<User> {
-    const user = new this.userModel({ ...data, _id: new Types.ObjectId() });
-    await user.save();
-    return user;
+  public async findByIdAndRemove(userId: string): Promise<UserDto> {
+    const user = await this.userModel.findByIdAndRemove(userId).exec();
+    return this.checkIfExistsAndTransformToDocument(user);
   }
 }
