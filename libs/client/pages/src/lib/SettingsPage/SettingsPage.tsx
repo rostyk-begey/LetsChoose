@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  createTheme as createMuiTheme,
+  createTheme,
   Divider,
   Button,
   makeStyles,
@@ -151,7 +151,7 @@ const inputs: Record<string, FormTextInputProps> = {
   },
 };
 
-const redTheme = createMuiTheme({ palette: { primary: red } });
+const redTheme = createTheme({ palette: { primary: red } });
 
 export const SettingsPage: React.FC = () => {
   const classes = useStyles();

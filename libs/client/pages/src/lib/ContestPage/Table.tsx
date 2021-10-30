@@ -106,9 +106,11 @@ export const Table: React.FC<TableProps> = ({ data, skeleton }) => {
       <MuiTable size="small" stickyHeader {...getTableProps()}>
         <TableHead>
           {headerGroups.map((headerGroup) => (
+            // eslint-disable-next-line react/jsx-key
             <MuiTableRow {...headerGroup.getHeaderGroupProps()}>
               <TableCell />
               {headerGroup.headers.map((column) => (
+                // eslint-disable-next-line react/jsx-key
                 <TableCell {...column.getHeaderProps()}>
                   {column.render('Header')}
                 </TableCell>

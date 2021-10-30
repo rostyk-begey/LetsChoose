@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import classNames from 'classnames';
 import { DropzoneDialog } from 'material-ui-dropzone';
@@ -13,15 +13,15 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import json2mq from 'json2mq';
 
-import { Item } from './useItemsUpload';
+import { ItemsStateContext } from './ContestItemsStateProvider';
 
 export interface ContestItemsNavProps {
   className?: string;
-  items: Item[];
+  // items: Item[];
   onAddItems: (files: File[]) => void;
-  selectedItems: number[];
-  onSelectAllToggle: () => void;
-  onDeleteSelectedItems: () => void;
+  // selectedItems: number[];
+  // onSelectAllToggle: () => void;
+  // onDeleteSelectedItems: () => void;
 }
 
 const useStyles = makeStyles((theme) =>
@@ -66,12 +66,11 @@ const useStyles = makeStyles((theme) =>
 );
 
 export const ContestItemsNav: React.FC<ContestItemsNavProps> = ({
-  items,
   className,
   onAddItems,
-  selectedItems,
-  onSelectAllToggle,
-  onDeleteSelectedItems,
+  // selectedItems,
+  // onSelectAllToggle,
+  // onDeleteSelectedItems,
 }) => {
   const classes = useStyles();
   const [itemsDialogOpen, setItemsDialogOpen] = useState(false);
@@ -80,6 +79,13 @@ export const ContestItemsNav: React.FC<ContestItemsNavProps> = ({
       minWidth: 600,
     }),
   );
+  const {
+    items,
+    selectedItems,
+    addFiles,
+    toggleSelectAll,
+    deleteSelectedItems,
+  } = useContext(ItemsStateContext);
 
   return (
     <>
@@ -87,6 +93,7 @@ export const ContestItemsNav: React.FC<ContestItemsNavProps> = ({
         filesLimit={100}
         open={itemsDialogOpen}
         onSave={(files) => {
+          addFiles(files);
           onAddItems(files);
           setItemsDialogOpen(false);
         }}
@@ -111,7 +118,7 @@ export const ContestItemsNav: React.FC<ContestItemsNavProps> = ({
             control={
               <Checkbox
                 checked={selectedItems.length > 0}
-                onChange={onSelectAllToggle}
+                onChange={toggleSelectAll}
                 color="primary"
                 indeterminate={
                   !!selectedItems.length && selectedItems.length < items.length
@@ -126,7 +133,7 @@ export const ContestItemsNav: React.FC<ContestItemsNavProps> = ({
             size="small"
             className={classes.actionButton}
             disabled={selectedItems.length === 0}
-            onClick={onDeleteSelectedItems}
+            onClick={deleteSelectedItems}
           >
             <DeleteForeverIcon fontSize="small" />
           </Fab>

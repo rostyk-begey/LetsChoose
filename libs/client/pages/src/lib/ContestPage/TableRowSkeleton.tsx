@@ -37,6 +37,7 @@ export const TableRowSkeleton: React.FC<TableRowProps> = ({
         <Skeleton animation="wave" className={classes.image} />
       </TableCell>
       {cells.map((cell, i) => (
+        // eslint-disable-next-line react/jsx-key
         <TableCell {...cell.getCellProps()}>
           {matchesMaxWidth960 ? (
             <Skeleton animation="wave" width={32} height={32} />

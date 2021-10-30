@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { Backdrop, CircularProgress } from '@material-ui/core';
-import { useSnackbar } from 'notistack';
 import Button from '@material-ui/core/Button';
 import { Theme } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
@@ -24,7 +23,7 @@ import {
 } from '@lets-choose/client/components';
 import { ContestItemsList } from './ContestItemsList';
 import { ContestItemsNav } from './ContestItemsNav';
-import useItemsUpload from './useItemsUpload';
+import { ItemsStateContext, useItemsState } from './ContestItemsStateProvider';
 
 const useStyles = makeStyles<Theme>((theme) => ({
   root: {
@@ -304,18 +303,8 @@ export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
       'thumbnail' | 'items'
     >();
 
-    const {
-      items,
-      editedItem,
-      selectedItems,
-      addFiles,
-      deleteItem,
-      deleteSelectedItems,
-      toggleSelectItem,
-      toggleEditItem,
-      updateItem,
-      toggleSelectAll,
-    } = useItemsUpload();
+    const itemsState = useItemsState();
+    const { items } = itemsState;
 
     const handleSubmit = useCallback(
       (contestData) => {
@@ -480,32 +469,22 @@ export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
                   }}
                 />
               </Card>
-              {withItemsUpload && (
-                <>
-                  <ContestItemsNav
-                    className={classes.contestItemsCard}
-                    onSelectAllToggle={toggleSelectAll}
-                    items={items}
-                    onAddItems={(files) => {
-                      addFiles(files);
-                      clearError('items');
-                    }}
-                    selectedItems={selectedItems}
-                    onDeleteSelectedItems={deleteSelectedItems}
-                  />
-                  <ContestItemsList
-                    className={classes.contestItemsCardActions}
-                    error={errors?.items}
-                    items={items}
-                    editedItem={editedItem}
-                    selectedItems={selectedItems}
-                    onItemChange={updateItem}
-                    onToggleItemEdit={toggleEditItem}
-                    onToggleSelectItem={toggleSelectItem}
-                    onDeleteItem={deleteItem}
-                  />
-                </>
-              )}
+              <ItemsStateContext.Provider value={itemsState}>
+                {withItemsUpload && (
+                  <>
+                    <ContestItemsNav
+                      className={classes.contestItemsCard}
+                      onAddItems={(files) => {
+                        clearError('items');
+                      }}
+                    />
+                    <ContestItemsList
+                      className={classes.contestItemsCardActions}
+                      error={errors?.items}
+                    />
+                  </>
+                )}
+              </ItemsStateContext.Provider>
             </div>
           </Container>
         </FormProvider>

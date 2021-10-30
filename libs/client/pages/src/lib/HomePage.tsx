@@ -8,7 +8,6 @@ import {
   Page,
   Subheader,
 } from '@lets-choose/client/components';
-import getConfig from 'next/config';
 
 const useStyles = makeStyles({
   subheader: {
