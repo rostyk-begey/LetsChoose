@@ -1,9 +1,10 @@
+import { useSnackbar } from 'notistack';
 import {
   DropdownButton,
   Page,
   Subheader,
 } from '@lets-choose/client/components';
-
+import { styled } from '@mui/material/styles';
 import {
   useContestDelete,
   useContestFind,
@@ -14,36 +15,95 @@ import {
 } from '@lets-choose/client/hooks';
 import { cloudinaryUploadPath, ROUTES } from '@lets-choose/client/utils';
 import { ContestDto, ContestItemDto } from '@lets-choose/common/dto';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Chip from '@material-ui/core/Chip';
-import Container from '@material-ui/core/Container';
-import Divider from '@material-ui/core/Divider';
-import Fab from '@material-ui/core/Fab';
-import Grid from '@material-ui/core/Grid';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import { Theme } from '@material-ui/core/styles';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Typography from '@material-ui/core/Typography';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
-import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
-import RecentActorsRoundedIcon from '@material-ui/icons/RecentActorsRounded';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import Skeleton from '@material-ui/lab/Skeleton';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Chip from '@mui/material/Chip';
+import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
+import Fab from '@mui/material/Fab';
+import Grid from '@mui/material/Grid';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Typography from '@mui/material/Typography';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import RecentActorsRoundedIcon from '@mui/icons-material/RecentActorsRounded';
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
+import Skeleton from '@mui/material/Skeleton';
 import { AxiosResponse } from 'axios';
 import { NextSeo } from 'next-seo';
 import Image from 'next/image';
-import { NextRouter, useRouter } from 'next/router';
-import { useSnackbar } from 'notistack';
+import { useRouter } from 'next/router';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Table } from './Table';
 
-const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
-  headerTitle: {
+const PREFIX = 'ContestPage';
+
+const classes = {
+  headerTitle: `${PREFIX}-headerTitle`,
+  subheader: `${PREFIX}-subheader`,
+  container: `${PREFIX}-container`,
+  playBtn: `${PREFIX}-playBtn`,
+  actionButtonIcon: `${PREFIX}-actionButtonIcon`,
+  thumbnailContainer: `${PREFIX}-thumbnailContainer`,
+  thumbnail: `${PREFIX}-thumbnail`,
+  divider: `${PREFIX}-divider`,
+  subheaderText: `${PREFIX}-subheaderText`,
+  subheaderStats: `${PREFIX}-subheaderStats`,
+  contestContentCard: `${PREFIX}-contestContentCard`,
+  contestContent: `${PREFIX}-contestContent`,
+  contestContentText: `${PREFIX}-contestContentText`,
+  contestContentTitle: `${PREFIX}-contestContentTitle`,
+  contestContentExcerpt: `${PREFIX}-contestContentExcerpt`,
+  contestActionsBar: `${PREFIX}-contestActionsBar`,
+  chip: `${PREFIX}-chip`,
+};
+
+const StyledSubheader = styled(Subheader)(
+  ({ theme: { breakpoints, ...theme } }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    color: theme.palette.text.primary,
+    [breakpoints.down('sm')]: {
+      padding: theme.spacing(1, 1.5),
+    },
+
+    [`& .${classes.subheaderText}`]: {},
+
+    [`& .${classes.subheaderStats}`]: {
+      display: 'flex',
+      alignItems: 'center',
+      fontSize: '0.8rem',
+      color: theme.palette.text.secondary,
+      '& > span': {
+        display: 'inline-flex',
+        alignItems: 'center',
+        marginRight: theme.spacing(0.5),
+        '& > svg': {
+          fontSize: '1.2rem',
+          marginRight: 2,
+        },
+      },
+    },
+
+    [`& .${classes.playBtn}`]: {
+      color: theme.palette.common.white,
+      marginLeft: 'auto',
+    },
+
+    [`& .${classes.divider}`]: {
+      width: 2,
+      height: 32,
+      margin: theme.spacing(0, 3),
+    },
+  }),
+);
+
+const StyledPage = styled(Page)(({ theme: { breakpoints, ...theme } }) => ({
+  [`& .${classes.headerTitle}`]: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -54,7 +114,8 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
       fontSize: '1.1rem',
     },
   },
-  subheader: {
+
+  [`& .${classes.subheader}`]: {
     display: 'flex',
     alignItems: 'center',
     color: theme.palette.text.primary,
@@ -62,28 +123,32 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
       padding: theme.spacing(1, 1.5),
     },
   },
-  container: {
+
+  [`& .${classes.playBtn}`]: {
+    color: theme.palette.common.white,
+    marginLeft: 'auto',
+  },
+
+  [`& .${classes.container}`]: {
     [breakpoints.down('sm')]: {
       padding: theme.spacing(0, 1.5),
     },
   },
-  playBtn: {
-    color: theme.palette.common.white,
-    marginLeft: 'auto',
-  },
-  actionButtonIcon: {
+
+  [`& .${classes.actionButtonIcon}`]: {
     marginRight: theme.spacing(0.5),
   },
-  thumbnailContainer: {
+
+  [`& .${classes.thumbnailContainer}`]: {
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     paddingBottom: '75%',
     position: 'relative',
     overflow: 'hidden',
-    padding: 0,
     margin: 0,
   },
-  thumbnail: {
+
+  [`& .${classes.thumbnail}`]: {
     position: 'absolute',
     top: 0,
     left: 0,
@@ -91,35 +156,16 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
     height: '100%',
     objectFit: 'cover',
   },
-  divider: {
-    width: 2,
-    height: 32,
-    margin: theme.spacing(0, 3),
-  },
-  subheaderText: {},
-  subheaderStats: {
-    display: 'flex',
-    alignItems: 'center',
-    fontSize: '0.8rem',
-    color: theme.palette.text.secondary,
-    '& > span': {
-      display: 'inline-flex',
-      alignItems: 'center',
-      marginRight: theme.spacing(0.5),
-      '& > svg': {
-        fontSize: '1.2rem',
-        marginRight: 2,
-      },
-    },
-  },
-  contestContentCard: {
+
+  [`& .${classes.contestContentCard}`]: {
     display: 'grid',
     gridTemplateColumns: '40% auto',
     '@media (max-width: 768px)': {
       display: 'block',
     },
   },
-  contestContent: {
+
+  [`& .${classes.contestContent}`]: {
     display: 'flex',
     flexDirection: 'column',
     padding: theme.spacing(2),
@@ -130,10 +176,12 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
       padding: theme.spacing(2, 1, 1),
     },
   },
-  contestContentText: {
+
+  [`& .${classes.contestContentText}`]: {
     padding: 0,
   },
-  contestContentTitle: {
+
+  [`& .${classes.contestContentTitle}`]: {
     [breakpoints.down('md')]: {
       fontSize: '1.3rem',
       fontWeight: theme.typography.fontWeightMedium,
@@ -142,7 +190,8 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
       fontSize: '1.1rem',
     },
   },
-  contestContentExcerpt: {
+
+  [`& .${classes.contestContentExcerpt}`]: {
     [breakpoints.down('md')]: {
       fontSize: '1rem',
     },
@@ -150,13 +199,15 @@ const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
       fontSize: '0.9rem',
     },
   },
-  contestActionsBar: {
+
+  [`& .${classes.contestActionsBar}`]: {
     paddingTop: theme.spacing(2),
     marginTop: 'auto',
     display: 'flex',
     alignItems: 'center',
   },
-  chip: {
+
+  [`& .${classes.chip}`]: {
     marginRight: theme.spacing(0.5),
   },
 }));
@@ -181,7 +232,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
   const { data: { data: user } = {} } = useCurrentUser({});
   const contest = (contestResponse?.data as ContestDto) || initialContest;
   const isCurrentUserAuthor = user?.id === contest.author;
-  const classes = useStyles({ thumbnail: contest.thumbnail || '' });
+
   const { mutateAsync: startGame } = useGameStart();
   const onStartGame = async () => {
     const { data: { gameId = null } = {} } =
@@ -233,10 +284,10 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
   );
 
   return (
-    <Page
+    <StyledPage
       subHeader={
         contest ? (
-          <Subheader className={classes.subheader}>
+          <StyledSubheader>
             <div className={classes.subheaderText}>
               <Typography variant="h5" className={classes.headerTitle}>
                 {contest.title}
@@ -331,9 +382,9 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                 Play
               </Button>
             )}
-          </Subheader>
+          </StyledSubheader>
         ) : (
-          <Subheader className={classes.subheader}>
+          <StyledSubheader>
             <Skeleton animation="wave" width={200} height={32} />
             <div className={classes.subheaderStats}>
               <Divider orientation="vertical" className={classes.divider} />
@@ -346,7 +397,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
               height={60}
               className={classes.playBtn}
             />
-          </Subheader>
+          </StyledSubheader>
         )
       }
     >
@@ -384,7 +435,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                       animation="wave"
                       width="100%"
                       height="100%"
-                      variant="rect"
+                      variant="rectangular"
                       className={classes.thumbnail}
                     />
                   )}
@@ -457,7 +508,7 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                 <Table
                   data={
                     isLoading
-                      ? Array.from({ length: 4 }).fill(0)
+                      ? (Array.from({ length: 4 }).fill(0) as ContestItemDto[])
                       : pages.reduce(
                           (acc, { data: { items } }) => [...acc, ...items],
                           [] as ContestItemDto[],
@@ -470,6 +521,6 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
           </Grid>
         </Grid>
       </Container>
-    </Page>
+    </StyledPage>
   );
 };

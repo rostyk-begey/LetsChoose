@@ -1,8 +1,6 @@
+import React from 'react';
 import { Story, Meta } from '@storybook/react';
-import {
-  ContestGrid,
-  ContestGridProps as ContestGridProps,
-} from './ContestGrid';
+import { ContestGrid, ContestGridProps } from './ContestGrid';
 
 export default {
   component: ContestGrid,

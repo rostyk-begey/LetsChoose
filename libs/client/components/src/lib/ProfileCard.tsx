@@ -1,12 +1,12 @@
 import React from 'react';
+import { alpha, useTheme } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { UserPublicDto } from '@lets-choose/common/dto';
-import classNames from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Avatar from '@material-ui/core/Avatar';
-import Divider from '@material-ui/core/Divider';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Avatar from '@mui/material/Avatar';
+import Divider from '@mui/material/Divider';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
@@ -14,34 +14,42 @@ import { useFadedShadowStyles } from '@mui-treasury/styles/shadow/faded';
 // @ts-ignore
 import { useGutterBorderedGridStyles } from '@mui-treasury/styles/grid/gutterBordered';
 
-export interface ProfileCardProps {
-  user: UserPublicDto;
-}
+const PREFIX = 'ProfileCard';
 
-const useStyles = makeStyles(({ palette }) => ({
-  card: {
-    borderRadius: 8,
-    minWidth: 256,
-    textAlign: 'center',
-  },
-  avatar: {
+const classes = {
+  avatar: `${PREFIX}-avatar`,
+  heading: `${PREFIX}-heading`,
+  subheader: `${PREFIX}-subheader`,
+  statLabel: `${PREFIX}-statLabel`,
+  statValue: `${PREFIX}-statValue`,
+};
+
+const StyledCard = styled(Card)(({ theme: { palette, ...theme } }) => ({
+  borderRadius: 8,
+  minWidth: 256,
+  textAlign: 'center',
+
+  [`& .${classes.avatar}`]: {
     width: 60,
     height: 60,
     margin: 'auto',
   },
-  heading: {
+
+  [`& .${classes.heading}`]: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: theme.typography.fontWeightBold,
     letterSpacing: '0.5px',
     marginTop: 8,
     marginBottom: 0,
   },
-  subheader: {
+
+  [`& .${classes.subheader}`]: {
     fontSize: 14,
     color: palette.grey[500],
     marginBottom: '0.875em',
   },
-  statLabel: {
+
+  [`& .${classes.statLabel}`]: {
     fontSize: 12,
     color: palette.grey[500],
     fontWeight: 500,
@@ -49,25 +57,31 @@ const useStyles = makeStyles(({ palette }) => ({
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
     margin: 0,
   },
-  statValue: {
+
+  [`& .${classes.statValue}`]: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: theme.typography.fontWeightBold,
     marginBottom: 4,
     letterSpacing: '1px',
   },
 }));
 
+export interface ProfileCardProps {
+  user: UserPublicDto;
+}
+
 export const ProfileCard: React.FC<ProfileCardProps> = ({
   user: { username, avatar },
 }) => {
-  const classes = useStyles();
   const shadowStyles = useFadedShadowStyles();
+  const theme = useTheme();
   const borderedGridStyles = useGutterBorderedGridStyles({
-    borderColor: 'rgba(0, 0, 0, 0.08)',
+    borderColor: alpha(theme.palette.common.black, 0.08),
     height: '50%',
   });
+
   return (
-    <Card className={classNames(classes.card, shadowStyles.root)}>
+    <StyledCard className={shadowStyles.root}>
       <CardContent>
         <Avatar className={classes.avatar} src={avatar} />
         <h3 className={classes.heading}>@{username}</h3>
@@ -76,15 +90,15 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
       </CardContent>
       <Divider light />
       <Box display={'flex'}>
-        <Box p={2} flex={'auto'} className={borderedGridStyles.item}>
+        <Box p={2} flex="auto" className={borderedGridStyles.item}>
           <p className={classes.statLabel}>Followers</p>
           <p className={classes.statValue}>6941</p>
         </Box>
-        <Box p={2} flex={'auto'} className={borderedGridStyles.item}>
+        <Box p={2} flex="auto" className={borderedGridStyles.item}>
           <p className={classes.statLabel}>Following</p>
           <p className={classes.statValue}>12</p>
         </Box>
       </Box>
-    </Card>
+    </StyledCard>
   );
 };

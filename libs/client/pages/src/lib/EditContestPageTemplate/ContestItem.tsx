@@ -1,17 +1,107 @@
 import React, { memo } from 'react';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import Box from '@material-ui/core/Box';
-import IconButton from '@material-ui/core/IconButton';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import TextField from '@material-ui/core/TextField';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { alpha } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import ImageListItemBar from '@mui/material/ImageListItemBar';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import classNames from 'classnames';
 
 import { FormTextInputProps } from '@lets-choose/client/components';
+
+const PREFIX = 'ContestItem';
+
+const classes = {
+  icon: `${PREFIX}-icon`,
+  tile: `${PREFIX}-tile`,
+  hidden: `${PREFIX}-hidden`,
+  transition: `${PREFIX}-transition`,
+  titleBar: `${PREFIX}-titleBar`,
+  checkboxLabel: `${PREFIX}-checkboxLabel`,
+  checkbox: `${PREFIX}-checkbox`,
+  titleBarTitle: `${PREFIX}-titleBarTitle`,
+  titleBarTop: `${PREFIX}-titleBarTop`,
+  titleBarBottom: `${PREFIX}-titleBarBottom`,
+  inputContainer: `${PREFIX}-inputContainer`,
+};
+
+const Root = styled('div')<StyleProps>(
+  ({ theme, image, isEditing, isSelected }) => ({
+    paddingTop: '75%',
+    position: 'relative',
+    '&:hover $titleBar': tileBarActive,
+    transition: 'all 0.3s ease',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    ...(!isEditing && { backgroundImage: `url(${image})` }),
+
+    [`& .${classes.icon}`]: {
+      color: alpha(theme.palette.common.white, 0.54),
+    },
+
+    [`& .${classes.hidden}`]: {
+      opacity: 0,
+    },
+
+    [`& .${classes.transition}`]: {
+      transition: 'opacity 0.3s ease',
+    },
+
+    [`& .${classes.titleBar}`]: {
+      color: 'white',
+      opacity: 0,
+      visibility: 'hidden',
+      transition: 'all 0.5s ease',
+      ...(isSelected && tileBarActive),
+    },
+
+    [`& .${classes.checkboxLabel}`]: {
+      color: 'white',
+    },
+
+    [`& .${classes.checkbox}`]: {
+      borderColor: 'white',
+    },
+
+    [`& .${classes.titleBarTitle}`]: {
+      overflow: 'visible',
+      color: 'white',
+    },
+
+    [`& .${classes.titleBarTop}`]: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      background: `
+        linear-gradient(
+          to bottom,
+          ${alpha(theme.palette.common.black, 0.7)} 0%, 
+          ${alpha(theme.palette.common.black, 0.3)} 80%,
+          ${theme.palette.common.black} 100%)`,
+    },
+
+    [`& .${classes.titleBarBottom}`]: {
+      background: `
+        linear-gradient(
+          to top,
+          ${alpha(theme.palette.common.black, 0.7)} 0%,
+          ${alpha(theme.palette.common.black, 0.3)} 70%,
+          ${theme.palette.common.black} 100%)`,
+    },
+
+    [`& .${classes.inputContainer}`]: {
+      position: 'absolute',
+      width: '100%',
+      top: 0,
+      opacity: isEditing ? 1 : 0,
+    },
+  }),
+);
 
 export interface ContestItemProps {
   isEditing: boolean;
@@ -49,64 +139,6 @@ interface StyleProps {
   image: string;
 }
 
-const useStyles = makeStyles(() => ({
-  icon: {
-    color: 'rgba(255, 255, 255, 0.54)',
-  },
-  tile: {
-    paddingTop: '75%',
-    position: 'relative',
-    '&:hover $titleBar': tileBarActive,
-    transition: 'all 0.3s ease',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-  },
-  tileImage: ({ image, isEditing }: StyleProps) => ({
-    ...(!isEditing && { backgroundImage: `url(${image})` }),
-  }),
-  hidden: {
-    opacity: 0,
-  },
-  transition: {
-    transition: 'opacity 0.3s ease',
-  },
-  titleBar: ({ isSelected }: StyleProps) => ({
-    color: 'white',
-    opacity: 0,
-    visibility: 'hidden',
-    transition: 'all 0.5s ease',
-    ...(isSelected && tileBarActive),
-  }),
-  checkboxLabel: {
-    color: 'white',
-  },
-  checkbox: {
-    borderColor: 'white',
-  },
-  titleBarTitle: {
-    overflow: 'visible',
-    color: 'white',
-  },
-  titleBarTop: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    background:
-      'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
-      'rgba(0,0,0,0.3) 80%, rgba(0,0,0,0) 100%)',
-  },
-  titleBarBottom: {
-    background:
-      'linear-gradient(to top, rgba(0,0,0,0.7) 0%, ' +
-      'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-  },
-  inputContainer: {
-    position: 'absolute',
-    width: '100%',
-    top: 0,
-  },
-}));
-
 export const ContestItem: React.FC<ContestItemProps> = memo(
   ({
     isEditing,
@@ -119,82 +151,80 @@ export const ContestItem: React.FC<ContestItemProps> = memo(
     title,
     idx,
     ...props
-  }) => {
-    const classes = useStyles({ isSelected, isEditing, image });
-    const hidden = (isHidden = false) => {
-      return classNames(classes.transition, {
-        [classes.hidden]: isHidden,
-      });
-    };
-
-    return (
-      <div className={classNames(classes.tile, classes.tileImage)} {...props}>
-        <Box
-          mt={8}
-          display="flex"
-          justifyContent="center"
-          className={classNames(classes.inputContainer, hidden(!isEditing))}
-        >
-          <TextField
-            size="small"
-            defaultValue={title}
-            onChange={({ target: { value } }) => onChange(value)}
-            {...titleInput.fieldProps}
-          />
-        </Box>
-        <GridListTileBar
-          titlePosition="top"
-          title={
-            !isEditing && (
-              <FormControlLabel
-                className={classes.checkboxLabel}
-                control={
-                  <Checkbox
-                    color="primary"
-                    className={classes.checkbox}
-                    checked={isSelected}
-                    onChange={onSelect}
-                  />
-                }
-                label={!isSelected ? 'Select' : 'Unselect'}
-              />
-            )
-          }
-          className={classNames(classes.titleBar, classes.titleBarTop)}
-          classes={{
-            title: classes.titleBarTitle,
-            titleWrap: classes.titleBarTitle,
-          }}
-          actionIcon={
-            !isSelected && (
-              <IconButton
-                aria-label={`delete ${title}`}
-                className={classes.icon}
-                onClick={onDeleteClick}
-              >
-                <DeleteIcon />
-              </IconButton>
-            )
-          }
+  }) => (
+    <Root
+      isEditing={isEditing}
+      isSelected={isSelected}
+      image={image}
+      {...props}
+    >
+      <Box
+        mt={8}
+        display="flex"
+        justifyContent="center"
+        className={classes.inputContainer}
+      >
+        <TextField
+          size="small"
+          defaultValue={title}
+          onChange={({ target: { value } }) => onChange(value)}
+          {...titleInput.fieldProps}
         />
-        <GridListTileBar
-          title={title}
-          className={classNames(classes.titleBar, classes.titleBarBottom)}
-          actionIcon={
-            !isSelected && (
-              <IconButton
-                aria-label={`edit ${title}`}
-                className={classes.icon}
-                onClick={onToggleEdit}
-              >
-                {!isEditing ? <EditIcon /> : <HighlightOffIcon />}
-              </IconButton>
-            )
-          }
-        />
-      </div>
-    );
-  },
+      </Box>
+      <ImageListItemBar
+        position="top"
+        title={
+          !isEditing && (
+            <FormControlLabel
+              className={classes.checkboxLabel}
+              control={
+                <Checkbox
+                  color="primary"
+                  className={classes.checkbox}
+                  checked={isSelected}
+                  onChange={onSelect}
+                />
+              }
+              label={!isSelected ? 'Select' : 'Unselect'}
+            />
+          )
+        }
+        className={classNames(classes.titleBar, classes.titleBarTop)}
+        classes={{
+          title: classes.titleBarTitle,
+          titleWrap: classes.titleBarTitle,
+        }}
+        actionIcon={
+          !isSelected && (
+            <IconButton
+              aria-label={`delete ${title}`}
+              className={classes.icon}
+              onClick={onDeleteClick}
+              size="large"
+            >
+              <DeleteIcon />
+            </IconButton>
+          )
+        }
+      />
+      <ImageListItemBar
+        title={title}
+        className={classNames(classes.titleBar, classes.titleBarBottom)}
+        actionIcon={
+          !isSelected && (
+            <IconButton
+              aria-label={`edit ${title}`}
+              className={classes.icon}
+              onClick={onToggleEdit}
+              size="large"
+            >
+              {!isEditing ? <EditIcon /> : <HighlightOffIcon />}
+            </IconButton>
+          )
+        }
+      />
+    </Root>
+  ),
   (prevProps, nextProps) => {
     return (
       prevProps.title === nextProps.title &&

@@ -1,8 +1,6 @@
+import React from 'react';
 import { Story, Meta } from '@storybook/react';
-import {
-  InputWithIcon,
-  InputWithIconProps as InputWithIconProps,
-} from './InputWithIcon';
+import { InputWithIcon, InputWithIconProps } from './InputWithIcon';
 
 export default {
   component: InputWithIcon,

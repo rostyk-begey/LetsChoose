@@ -1,5 +1,6 @@
+import React from 'react';
 import { Story, Meta } from '@storybook/react';
-import { Page, PageProps as PageProps } from './Page';
+import { Page, PageProps } from './Page';
 
 export default {
   component: Page,

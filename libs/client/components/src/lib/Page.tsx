@@ -1,14 +1,13 @@
 import React, { ReactNode } from 'react';
+import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 import RouterLink from 'next/link';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Brightness4Icon from '@material-ui/icons/Brightness4';
-import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
-import IconButton from '@material-ui/core/IconButton';
-import classNames from 'classnames';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh';
+import IconButton from '@mui/material/IconButton';
 import Image from 'next/image';
 
 import {
@@ -21,6 +20,24 @@ import { useDarkMode } from './ThemeProvider';
 import { ContestNavigation } from './ContestNavigation';
 import { Layout } from './Layout';
 
+const PREFIX = 'Page';
+
+const classes = {
+  logo: `${PREFIX}-logo`,
+};
+
+const StyledLayout = styled(Layout)(({ theme }) => ({
+  padding: theme.spacing(3, 0),
+  backgroundColor: theme.palette.background.default,
+
+  [`& .${classes.logo}`]: {
+    width: 182,
+    [theme.breakpoints.down('lg')]: {
+      width: 150,
+    },
+  },
+}));
+
 const logo = '/images/logo.png';
 const logoWhite = '/images/logo-white.png';
 
@@ -30,31 +47,6 @@ export interface PageProps {
   subHeader?: ReactNode;
 }
 
-const useStyles = makeStyles((theme) => ({
-  content: {
-    padding: theme.spacing(3, 0),
-    backgroundColor: theme.palette.background.default,
-  },
-  signupBtn: ({
-    withContestNavigation,
-  }: {
-    withContestNavigation: boolean;
-  }) => ({
-    marginRight: theme.spacing(1),
-    marginLeft: withContestNavigation ? theme.spacing(4) : 0,
-    flexShrink: 0,
-  }),
-  loginBtn: {
-    flexShrink: 0,
-  },
-  logo: {
-    width: 182,
-    [theme.breakpoints.down('md')]: {
-      width: 150,
-    },
-  },
-}));
-
 const disableOneTapPages = [ROUTES.FORGOT_PASSWORD, ROUTES.GAMES.INDEX];
 
 export const Page: React.FC<PageProps> = ({
@@ -63,7 +55,6 @@ export const Page: React.FC<PageProps> = ({
   className,
   subHeader,
 }) => {
-  const classes = useStyles({ withContestNavigation });
   const {
     data: { data: user } = {},
     remove,
@@ -80,12 +71,22 @@ export const Page: React.FC<PageProps> = ({
       <Button
         color="primary"
         variant="outlined"
-        className={classes.signupBtn}
         href={ROUTES.REGISTER}
+        sx={{
+          mr: 1,
+          ml: withContestNavigation ? 4 : 0,
+          flexShrink: 0,
+        }}
       >
         Sign up
       </Button>
-      <Button className={classes.loginBtn} color="primary" href={ROUTES.LOGIN}>
+      <Button
+        sx={{
+          flexShrink: 0,
+        }}
+        color="primary"
+        href={ROUTES.LOGIN}
+      >
         Log in
       </Button>
     </>
@@ -106,7 +107,7 @@ export const Page: React.FC<PageProps> = ({
         placement="bottom"
         PopperProps={{ disablePortal: true }}
       >
-        <IconButton onClick={() => setDarkMode(!darkMode)}>
+        <IconButton onClick={() => setDarkMode(!darkMode)} size="large">
           {darkMode ? <BrightnessHighIcon /> : <Brightness4Icon />}
         </IconButton>
       </Tooltip>
@@ -114,7 +115,7 @@ export const Page: React.FC<PageProps> = ({
   );
 
   return (
-    <Layout
+    <StyledLayout
       title={
         <RouterLink href={ROUTES.HOME}>
           <Image
@@ -129,7 +130,7 @@ export const Page: React.FC<PageProps> = ({
         </RouterLink>
       }
       subHeader={subHeader}
-      className={classNames(classes.content, className)}
+      className={className}
       toolbarContent={
         <Box ml="auto" display="flex" alignItems="center">
           {darkModeSwitch}
@@ -139,7 +140,7 @@ export const Page: React.FC<PageProps> = ({
       }
       primarySidebar={
         user
-          ? ({ open, collapsed }) => (
+          ? ({ open, collapsed } = {}) => (
               <Sidebar
                 isLoading={!isSuccess}
                 username={username}
@@ -156,6 +157,6 @@ export const Page: React.FC<PageProps> = ({
       }
     >
       {children}
-    </Layout>
+    </StyledLayout>
   );
 };

@@ -1,7 +1,10 @@
 import React, { useMemo, createContext, useState, useContext } from 'react';
 import { themeOptions } from '@lets-choose/client/utils';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
+import {
+  ThemeProvider as MuiThemeProvider,
+  createTheme,
+} from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 type DarkMode = boolean;
 type SetDarkMode = (enabled: boolean) => void;
@@ -36,7 +39,7 @@ export const ThemeProvider: React.FC = ({ children }) => {
         ...themeOptions,
         palette: {
           ...themeOptions.palette,
-          type: darkModeEnabled ?? prefersDarkMode ? 'dark' : 'light',
+          mode: darkModeEnabled ?? prefersDarkMode ? 'dark' : 'light',
         },
       }),
     [darkModeEnabled, prefersDarkMode],

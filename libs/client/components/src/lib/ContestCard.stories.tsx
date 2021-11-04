@@ -1,8 +1,8 @@
+import React from 'react';
 import { queryClient } from '@lets-choose/client/utils';
 import { Meta, Story } from '@storybook/react';
 import faker from 'faker';
 import * as NextImage from 'next/image';
-import React from 'react';
 import { QueryClientProvider } from 'react-query';
 import { ContestCard, ContestCardProps } from './ContestCard';
 

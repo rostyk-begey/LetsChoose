@@ -1,16 +1,20 @@
 import React, { ElementType } from 'react';
-import Grid from '@material-ui/core/Grid';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { styled } from '@mui/material';
+import Grid from '@mui/material/Grid';
 
 export interface InputWithIconProps {
   icon: ElementType;
 }
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    margin: theme.spacing(1, 0),
-  },
-  inputContainer: {
+const PREFIX = 'InputWithIcon';
+
+const classes = {
+  inputContainer: `${PREFIX}-inputContainer`,
+};
+
+const Root = styled('div')(({ theme }) => ({
+  margin: theme.spacing(1, 0),
+  [`& .${classes.inputContainer}`]: {
     flex: 1,
     '& > *': {
       width: '100%',
@@ -21,18 +25,15 @@ const useStyles = makeStyles((theme) => ({
 export const InputWithIcon: React.FC<InputWithIconProps> = ({
   icon: Icon,
   children,
-}) => {
-  const classes = useStyles();
-  return (
-    <div className={classes.container}>
-      <Grid container spacing={1} alignItems="center">
-        <Grid item>
-          <Icon />
-        </Grid>
-        <Grid item className={classes.inputContainer}>
-          {children}
-        </Grid>
+}) => (
+  <Root>
+    <Grid container spacing={1} alignItems="center">
+      <Grid item>
+        <Icon />
       </Grid>
-    </div>
-  );
-};
+      <Grid item className={classes.inputContainer}>
+        {children}
+      </Grid>
+    </Grid>
+  </Root>
+);

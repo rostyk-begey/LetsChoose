@@ -1,14 +1,42 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import {
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
   useGoogleLogin,
 } from 'react-google-login';
-import { Typography, Grid, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Typography, Grid } from '@mui/material';
+import Button from '@mui/material/Button';
 import Image from 'next/image';
 
 import { AuthFormCard, AuthFormCardProps } from './AuthFormCard';
+
+const googleButtonColor = '#4285F4';
+const googleButtonHoverColor = '#3367D6';
+
+const GoogleLoginButton = styled(Button)(({ theme }) => ({
+  width: '100%',
+  textTransform: 'none',
+  backgroundColor: googleButtonColor,
+  border: `1px solid ${googleButtonColor}`,
+  overflow: 'hidden',
+  position: 'relative',
+  display: 'flex',
+  alignItems: 'center',
+  color: theme.palette.common.white,
+  height: '36px',
+  margin: theme.spacing(2, 0),
+
+  '&:hover': {
+    backgroundColor: googleButtonHoverColor,
+  },
+
+  '& > div': {
+    position: 'absolute',
+    left: -4,
+    height: googleIconHeight,
+  },
+}));
 
 export interface AuthFormCardWithOAuthProps extends AuthFormCardProps {
   googleButtonLabel: string;
@@ -19,38 +47,12 @@ export interface AuthFormCardWithOAuthProps extends AuthFormCardProps {
 
 const googleIconHeight = 42;
 
-const useStyles = makeStyles((theme) => ({
-  loginBtnGoogle: {
-    width: '100%',
-    textTransform: 'none',
-    backgroundColor: '#4285F4',
-    border: '1px solid #4285F4',
-    overflow: 'hidden',
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    color: 'white',
-    height: '36px',
-    transition: 'all 0.25s ease-in-out',
-    margin: theme.spacing(2, 0),
-    '&:hover': {
-      backgroundColor: '#3367D6',
-    },
-  },
-  loginBtnGoogleIcon: {
-    position: 'absolute',
-    left: -4,
-    height: googleIconHeight,
-  },
-}));
-
 export const AuthFormCardWithOAuth: React.FC<AuthFormCardWithOAuthProps> = ({
   onOAuthSuccess,
   googleButtonLabel,
   cardAfter,
   ...props
 }) => {
-  const classes = useStyles();
   const { signIn } = useGoogleLogin({
     onSuccess: onOAuthSuccess,
     clientId: process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID as string,
@@ -70,12 +72,11 @@ export const AuthFormCardWithOAuth: React.FC<AuthFormCardWithOAuthProps> = ({
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Button
+              <GoogleLoginButton
                 onClick={signIn}
                 disabled={props.submitDisabled}
-                className={classes.loginBtnGoogle}
               >
-                <div className={classes.loginBtnGoogleIcon}>
+                <div>
                   <Image
                     alt=""
                     src="/images/google-button-dark-logo.svg"
@@ -85,7 +86,7 @@ export const AuthFormCardWithOAuth: React.FC<AuthFormCardWithOAuthProps> = ({
                   />
                 </div>
                 {googleButtonLabel}
-              </Button>
+              </GoogleLoginButton>
             </Grid>
           </Grid>
           {cardAfter}

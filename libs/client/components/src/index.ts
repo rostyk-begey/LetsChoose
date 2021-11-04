@@ -1,4 +1,3 @@
-export * from './lib/Header';
 export * from './lib/Layout';
 export * from './lib/Layout/constants';
 export * from './lib/AuthFormCard';

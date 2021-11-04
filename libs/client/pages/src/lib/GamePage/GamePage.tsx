@@ -1,4 +1,6 @@
+import React, { useCallback, useState } from 'react';
 import { Page, Subheader } from '@lets-choose/client/components';
+import { styled } from '@mui/material/styles';
 import {
   useGameChoose,
   useGameState,
@@ -6,44 +8,53 @@ import {
 } from '@lets-choose/client/hooks';
 import { ROUTES, sleep } from '@lets-choose/client/utils';
 import { ContestItemDto, GameDto } from '@lets-choose/common/dto';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import classNames from 'classnames';
 import { NextRouter, useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import React, { useCallback, useEffect, useState } from 'react';
 
 import { GameCard } from './GameCard';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flex: 1,
-    padding: theme.spacing(3),
-  },
-  content: {
+const PREFIX = 'GamePage';
+
+const classes = {
+  content: `${PREFIX}-content`,
+  item: `${PREFIX}-item`,
+  subheader: `${PREFIX}-subheader`,
+  title: `${PREFIX}-title`,
+};
+
+const StyledPage = styled(Page)(({ theme }) => ({
+  display: 'flex',
+  flex: 1,
+  padding: theme.spacing(3),
+
+  [`& .${classes.content}`]: {
     margin: 'auto',
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
     gridGap: theme.spacing(3),
     maxWidth: 1500,
     width: '100%',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       gridTemplateColumns: '1fr',
       maxWidth: 550,
     },
   },
-  item: {
+
+  [`& .${classes.item}`]: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  subheader: {
+
+  [`& .${classes.subheader}`]: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: {
+
+  [`& .${classes.title}`]: {
     color: theme.palette.text.primary,
   },
 }));
@@ -65,7 +76,6 @@ export interface GamePageProps {
 }
 
 export const GamePage: React.FC<GamePageProps> = ({ initialGame }) => {
-  const classes = useStyles();
   const { id: gameId } = initialGame;
   const router = useRouter();
   const inAnimations = getAnimationClassNames();
@@ -121,17 +131,16 @@ export const GamePage: React.FC<GamePageProps> = ({ initialGame }) => {
 
   if (!isLoading && !!game && game.finished) {
     return (
-      <Page className={classes.root}>
+      <StyledPage>
         <Typography variant="h1" className={classes.content}>
           Game is finished
         </Typography>
-      </Page>
+      </StyledPage>
     );
   }
 
   return (
     <Page
-      className={classes.root}
       subHeader={
         !isLoading && (
           <Subheader className={classes.subheader}>

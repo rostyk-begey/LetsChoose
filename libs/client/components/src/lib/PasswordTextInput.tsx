@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { FormTextInput, FormTextInputProps } from './FormTextInput';
 
@@ -35,6 +35,7 @@ export const PasswordTextInput: React.FC<FormTextInputProps> = ({
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
                   edge="end"
+                  size="large"
                 >
                   {showPassword ? <Visibility /> : <VisibilityOff />}
                 </IconButton>

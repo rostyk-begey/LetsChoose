@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   useContestFind,
   useContestUpdate,
@@ -9,7 +10,6 @@ import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios
 import { NextSeo } from 'next-seo';
 import { NextRouter, useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import React, { useCallback, useEffect, useState } from 'react';
 import { ContestPageProps } from './ContestPage';
 import { EditContestPageTemplate } from './EditContestPageTemplate';
 

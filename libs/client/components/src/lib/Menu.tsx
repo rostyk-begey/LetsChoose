@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import Link, { LinkProps } from 'next/link';
-import Box from '@material-ui/core/Box';
+import Box from '@mui/material/Box';
 import { useFloatNavigationMenuStyles } from '@mui-treasury/styles/navigationMenu/float';
 import { NavMenu, NavItem } from '@mui-treasury/components/menu/navigation';
 
@@ -19,15 +19,13 @@ export const NavLink: React.FC<{ active: boolean } & LinkProps> = ({
   active,
   children,
   ...props
-}) => {
-  return (
-    <Link {...props}>
-      <NavItem as="a" active={active}>
-        {children}
-      </NavItem>
-    </Link>
-  );
-};
+}) => (
+  <Link {...props}>
+    <NavItem as="a" active={active}>
+      {children}
+    </NavItem>
+  </Link>
+);
 
 export const Menu: React.FC<MenuProps> = ({ links }) => (
   <Box height={40} display="flex" marginRight="auto">

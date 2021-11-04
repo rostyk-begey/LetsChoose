@@ -1,19 +1,17 @@
 import React, { useCallback, useState } from 'react';
-import { Backdrop, CircularProgress } from '@material-ui/core';
-import { useSnackbar } from 'notistack';
-import Button from '@material-ui/core/Button';
-import { Theme } from '@material-ui/core/styles';
-import EditIcon from '@material-ui/icons/Edit';
-import ClearIcon from '@material-ui/icons/Clear';
+import { styled } from '@mui/material/styles';
+import { alpha, Backdrop, CircularProgress } from '@mui/material';
+import Button from '@mui/material/Button';
+import EditIcon from '@mui/icons-material/Edit';
+import ClearIcon from '@mui/icons-material/Clear';
 import jsonToFormData from 'json-form-data';
-import Fab from '@material-ui/core/Fab';
-import Card from '@material-ui/core/Card';
+import Fab from '@mui/material/Fab';
+import Card from '@mui/material/Card';
 import { DropzoneArea } from 'material-ui-dropzone';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 import { DefaultValues, useForm, FormProvider } from 'react-hook-form';
-import SaveIcon from '@material-ui/icons/Save';
+import SaveIcon from '@mui/icons-material/Save';
 import classNames from 'classnames';
 
 import {
@@ -26,46 +24,76 @@ import { ContestItemsList } from './ContestItemsList';
 import { ContestItemsNav } from './ContestItemsNav';
 import useItemsUpload from './useItemsUpload';
 
-const useStyles = makeStyles<Theme>((theme) => ({
-  root: {
-    display: 'flex',
+const PREFIX = 'EditContestPageTemplate';
+
+const classes = {
+  content: `${PREFIX}-content`,
+  subheader: `${PREFIX}-subheader`,
+  title: `${PREFIX}-title`,
+  submitButton: `${PREFIX}-submitButton`,
+  grid: `${PREFIX}-grid`,
+  equalPaddingCard: `${PREFIX}-equalPaddingCard`,
+  contestThumbnailCard: `${PREFIX}-contestThumbnailCard`,
+  contestThumbnailCardInner: `${PREFIX}-contestThumbnailCardInner`,
+  thumbnailError: `${PREFIX}-thumbnailError`,
+  contestTitleCard: `${PREFIX}-contestTitleCard`,
+  contestExcerptCard: `${PREFIX}-contestExcerptCard`,
+  contestItemsCardActions: `${PREFIX}-contestItemsCardActions`,
+  contestItemsCard: `${PREFIX}-contestItemsCard`,
+  thumbnailActionButton: `${PREFIX}-thumbnailActionButton`,
+  defaultThumbnailHolder: `${PREFIX}-defaultThumbnailHolder`,
+  defaultThumbnail: `${PREFIX}-defaultThumbnail`,
+  dropzoneHolder: `${PREFIX}-dropzoneHolder`,
+  dropzoneRoot: `${PREFIX}-dropzoneRoot`,
+  dropzoneTextContainer: `${PREFIX}-dropzoneTextContainer`,
+  dropzoneItemImage: `${PREFIX}-dropzoneItemImage`,
+  titleInput: `${PREFIX}-titleInput`,
+  backdrop: `${PREFIX}-backdrop`,
+};
+
+const StyledSubheader = styled(Subheader)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(1),
+    alignItems: 'flex-start',
   },
-  content: {
-    margin: '0 auto',
-  },
-  subheader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    [theme.breakpoints.down('sm')]: {
-      padding: theme.spacing(1),
-      alignItems: 'flex-start',
-    },
-  },
-  title: {
+
+  [`& .${classes.title}`]: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     marginRight: theme.spacing(2),
     marginLeft: 'auto',
     color: theme.palette.text.primary,
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       fontSize: '1.3rem',
       whiteSpace: 'normal',
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       fontSize: '1rem',
       padding: theme.spacing(0.5),
       marginLeft: 0,
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       fontSize: '0.9rem',
     },
   },
-  submitButton: {
+
+  [`& .${classes.submitButton}`]: {
     marginLeft: 'auto',
   },
-  grid: {
+}));
+
+const StyledPage = styled(Page)(({ theme }) => ({
+  display: 'flex',
+
+  [`& .${classes.content}`]: {
+    margin: '0 auto',
+  },
+
+  [`& .${classes.grid}`]: {
     display: 'grid',
     alignItems: 'start',
     gridGap: theme.spacing(3),
@@ -79,7 +107,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
       ".             itemsCardActions"
     `,
     gridAutoRows: 'auto',
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       gridGap: theme.spacing(2),
       gridTemplateColumns: '5fr 7fr',
       gridTemplateAreas: `
@@ -90,7 +118,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
         "itemsCardActions itemsCardActions"
       `,
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       gridTemplateColumns: '1fr',
       '& > *': {
         gridColumn: '1/-1!important',
@@ -99,69 +127,81 @@ const useStyles = makeStyles<Theme>((theme) => ({
       gridTemplateAreas: 'none!important',
     },
   },
-  equalPaddingCard: {
+
+  [`& .${classes.equalPaddingCard}`]: {
     padding: theme.spacing(1),
   },
-  contestThumbnailCard: {
+
+  [`& .${classes.contestThumbnailCard}`]: {
     gridArea: 'thumbnailCard',
   },
-  contestThumbnailCardInner: {
+
+  [`& .${classes.contestThumbnailCardInner}`]: {
     position: 'relative',
   },
-  thumbnailError: {
+
+  [`& .${classes.thumbnailError}`]: {
     display: 'inline-block',
-    margin: `${theme.spacing(0.5)}px 14px 0`,
+    margin: `${theme.spacing(0.5)} 14px 0`,
   },
-  contestTitleCard: {
+
+  [`& .${classes.contestTitleCard}`]: {
     gridArea: 'titleCard',
   },
-  contestExcerptCard: {
+
+  [`& .${classes.contestExcerptCard}`]: {
     gridArea: 'excerptCard',
   },
-  contestItemsCardActions: {
+
+  [`& .${classes.contestItemsCardActions}`]: {
     gridArea: 'itemsCardActions',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       order: 2,
     },
   },
-  contestItemsCard: {
+
+  [`& .${classes.contestItemsCard}`]: {
     gridArea: 'itemsCard',
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(1, 2),
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       order: 1,
     },
   },
-  thumbnailActionButton: {
+
+  [`& .${classes.thumbnailActionButton}`]: {
     position: 'absolute',
     right: theme.spacing(3),
     bottom: theme.spacing(3),
   },
-  defaultThumbnailHolder: {
+
+  [`& .${classes.defaultThumbnailHolder}`]: {
     overflow: 'hidden',
     borderRadius: 4,
     borderStyle: 'dashed',
     borderWidth: 1,
     borderColor:
-      theme.palette.type === 'light'
-        ? 'rgba(0, 0, 0, 0.23)'
-        : 'rgba(255, 255, 255, 0.23)',
+      theme.palette.mode === 'light'
+        ? alpha(theme.palette.common.black, 0.23)
+        : alpha(theme.palette.common.white, 0.23),
     '&:hover': {
       borderColor: theme.palette.text.primary,
     },
   },
-  defaultThumbnail: ({ defaultThumbnail }: { defaultThumbnail?: string }) => ({
+
+  [`& .${classes.defaultThumbnail}`]: {
     width: '100%',
     paddingTop: '75%',
-    backgroundImage: `url(${defaultThumbnail})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-  }),
-  dropzoneHolder: {
+  },
+
+  [`& .${classes.dropzoneHolder}`]: {
     position: 'relative',
   },
-  dropzoneRoot: {
+
+  [`& .${classes.dropzoneRoot}`]: {
     position: 'absolute',
     display: 'flex',
     top: 0,
@@ -172,18 +212,20 @@ const useStyles = makeStyles<Theme>((theme) => ({
     alignItems: 'center',
     borderWidth: 1,
     borderColor:
-      theme.palette.type === 'light'
-        ? 'rgba(0, 0, 0, 0.23)'
-        : 'rgba(255, 255, 255, 0.23)',
+      theme.palette.mode === 'light'
+        ? alpha(theme.palette.common.black, 0.23)
+        : alpha(theme.palette.common.white, 0.23),
     '&:hover': {
       borderColor: theme.palette.text.primary,
     },
   },
-  dropzoneTextContainer: {
+
+  [`& .${classes.dropzoneTextContainer}`]: {
     position: 'absolute',
     padding: theme.spacing(0, 1),
   },
-  dropzoneItemImage: {
+
+  [`& .${classes.dropzoneItemImage}`]: {
     paddingTop: '75%',
     display: 'flex',
     alignItems: 'center',
@@ -196,15 +238,17 @@ const useStyles = makeStyles<Theme>((theme) => ({
       height: 'auto',
     },
   },
-  titleInput: {
+
+  [`& .${classes.titleInput}`]: {
     width: '100%',
     '&:not(:last-child)': {
       marginBottom: theme.spacing(2),
     },
   },
-  backdrop: {
+
+  [`& .${classes.backdrop}`]: {
     zIndex: theme.zIndex.drawer + 100,
-    color: '#fff',
+    color: theme.palette.common.white,
   },
 }));
 
@@ -292,7 +336,7 @@ export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
   }) => {
     const [thumbnail, setThumbnail] = useState<File | null>(null);
     const [thumbnailSrc, setThumbnailSrc] = useState<string>(defaultThumbnail);
-    const classes = useStyles({ defaultThumbnail: thumbnailSrc });
+
     const [isThumbnailEditing, setIsThumbnailEditing] = useState<boolean>(
       !defaultThumbnail,
     );
@@ -350,10 +394,9 @@ export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
     );
 
     return (
-      <Page
-        className={classes.root}
+      <StyledPage
         subHeader={
-          <Subheader className={classes.subheader}>
+          <StyledSubheader>
             <Typography variant="h4" className={classes.title}>
               {title}
             </Typography>
@@ -367,7 +410,7 @@ export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
             >
               {submitButtonText}
             </Button>
-          </Subheader>
+          </StyledSubheader>
         }
       >
         <Backdrop open={isLoading} className={classes.backdrop}>
@@ -385,7 +428,10 @@ export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
               >
                 <div className={classes.contestThumbnailCardInner}>
                   <div className={classes.defaultThumbnailHolder}>
-                    <div className={classes.defaultThumbnail} />
+                    <div
+                      className={classes.defaultThumbnail}
+                      style={{ backgroundImage: `url(${defaultThumbnail})` }}
+                    />
                     <Fab
                       color="primary"
                       size="small"
@@ -509,6 +555,6 @@ export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
             </div>
           </Container>
         </FormProvider>
-      </Page>
+      </StyledPage>
     );
   };

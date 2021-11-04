@@ -1,50 +1,59 @@
 import React, { useState } from 'react';
-import { Theme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import IconButton from '@material-ui/core/IconButton';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Box from '@material-ui/core/Box';
-import Collapse from '@material-ui/core/Collapse';
-import Grid from '@material-ui/core/Grid';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import MuiTable from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import MuiTableRow from '@material-ui/core/TableRow';
-import Typography from '@material-ui/core/Typography';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import Chip from '@material-ui/core/Chip';
+import { alpha } from '@mui/material';
+import { ContestItemDto } from '@lets-choose/common/dto';
+import { styled } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import IconButton from '@mui/material/IconButton';
+import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
+import Grid from '@mui/material/Grid';
+import LinearProgress, {
+  linearProgressClasses,
+} from '@mui/material/LinearProgress';
+import MuiTable from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import MuiTableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Chip from '@mui/material/Chip';
 import json2mq from 'json2mq';
 import { Row } from 'react-table';
-import classNames from 'classnames';
 import Image from 'next/image';
 
 import { cloudinaryUploadPath, imageSize } from '@lets-choose/client/utils';
 import { CircularProgressWithLabel } from '@lets-choose/client/components';
 import { imageWidth, imageWidthMobile } from './constants';
 
-export interface TableRowProps {
-  row: Row;
-}
+export const PREFIX = 'TableRow';
 
-interface ClassesProps {
-  index: number;
-}
+export const classes = {
+  root: `${PREFIX}-root`,
+  image: `${PREFIX}-image`,
+  imageBig: `${PREFIX}-imageBig`,
+  figure: `${PREFIX}-figure`,
+  previewImage: `${PREFIX}-previewImage`,
+  chip: `${PREFIX}-chip`,
+  expandCell: `${PREFIX}-expandCell`,
+  rankingCell: `${PREFIX}-rankingCell`,
+};
 
-export const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
-  root: {
-    '& > *': {
-      borderBottom: 'unset',
-    },
-  },
-  image: {
+export const StyledFigure = styled('figure')(({ theme: { breakpoints } }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  position: 'relative',
+  overflow: 'hidden',
+  margin: 0,
+
+  [`&.${classes.image}`]: {
     ...imageSize(imageWidth),
     [breakpoints.down('md')]: {
       ...imageSize(imageWidthMobile),
     },
   },
-  imageBig: {
+
+  [`& .${classes.previewImage}`]: {
     top: 0,
     left: 0,
     position: 'absolute',
@@ -52,31 +61,49 @@ export const useStyles = makeStyles(({ breakpoints, ...theme }: Theme) => ({
     height: '100%',
     objectFit: 'cover',
   },
-  figure: {
-    display: 'flex',
-    alignItems: 'center',
-    position: 'relative',
-    overflow: 'hidden',
-    margin: 0,
-  },
-  previewImage: {
+
+  [`& .${classes.imageBig}`]: {
     top: 0,
     left: 0,
     position: 'absolute',
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-  },
-  chip: ({ index }: ClassesProps) => ({
-    backgroundColor: ['#ffd700', '#c0c0c0', '#cd7f32'][index] || 'transparent',
-  }),
-  expandCell: {
-    padding: `6px ${theme.spacing(1)}px`,
-  },
-  rankingCell: {
-    padding: `6px ${theme.spacing(2)}px`,
   },
 }));
+
+const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  height: 20,
+  border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+  borderRadius: 5,
+  [`&.${linearProgressClasses.colorPrimary}`]: {
+    backgroundColor:
+      theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+  },
+  [`& .${linearProgressClasses.bar}`]: {
+    borderRadius: 5,
+  },
+}));
+
+export const StyledRow = styled(MuiTableRow)(
+  ({ theme: { breakpoints, ...theme } }) => ({
+    '& > *': {
+      borderBottom: 'unset',
+    },
+
+    [`& .${classes.expandCell}`]: {
+      padding: `6px ${theme.spacing(1)}`,
+    },
+
+    [`& .${classes.rankingCell}`]: {
+      padding: `6px ${theme.spacing(2)}`,
+    },
+  }),
+);
+
+export interface TableRowProps {
+  row: Row<ContestItemDto>;
+}
 
 const StatisticRow: React.FC<{ title: string }> = ({ title, children }) => (
   <MuiTableRow>
@@ -94,7 +121,7 @@ export const TableRow: React.FC<TableRowProps> = ({ row }) => {
     allCells,
     values,
   } = row;
-  const classes = useStyles({ index: row.index });
+
   const matchesMaxWidth960 = useMediaQuery(
     json2mq({
       maxWidth: 960,
@@ -113,9 +140,12 @@ export const TableRow: React.FC<TableRowProps> = ({ row }) => {
   const handleRowClick = (e: React.MouseEvent) =>
     matchesMaxWidth960 && handleExpandClick(e);
 
+  const chipColor =
+    ['#ffd700', '#c0c0c0', '#cd7f32'][row.index] || 'transparent';
+
   return (
     <>
-      <MuiTableRow className={classes.root} onClick={handleRowClick}>
+      <StyledRow hover onClick={handleRowClick}>
         <TableCell align="center" width={50} className={classes.expandCell}>
           <IconButton
             aria-label="expand row"
@@ -132,24 +162,24 @@ export const TableRow: React.FC<TableRowProps> = ({ row }) => {
           {...rank.getCellProps()}
         >
           <Chip
-            className={classes.chip}
+            sx={{ backgroundColor: chipColor }}
             label={
               <Typography variant="h6" component="div">
                 #{row.index + 1}
               </Typography>
             }
-            variant={row.index < 3 ? 'default' : 'outlined'}
+            variant={row.index < 3 ? 'filled' : 'outlined'}
           />
         </TableCell>
         <TableCell width={250} {...image.getCellProps()}>
-          <figure className={classNames(classes.figure, classes.image)}>
+          <StyledFigure className={classes.image}>
             <Image
               src={cloudinaryUploadPath(imageSrc)}
               className={classes.previewImage}
               layout="fill"
               alt={values.title}
             />
-          </figure>
+          </StyledFigure>
         </TableCell>
         {cells.map((cell, i) =>
           i === 0 ? (
@@ -166,7 +196,7 @@ export const TableRow: React.FC<TableRowProps> = ({ row }) => {
               {matchesMaxWidth960 ? (
                 <CircularProgressWithLabel value={cell.value * 100} />
               ) : (
-                <LinearProgress
+                <BorderLinearProgress
                   variant="determinate"
                   value={cell.value * 100}
                 />
@@ -174,21 +204,21 @@ export const TableRow: React.FC<TableRowProps> = ({ row }) => {
             </TableCell>
           ),
         )}
-      </MuiTableRow>
+      </StyledRow>
       <MuiTableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell sx={{ py: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <Grid container spacing={2}>
                 <Grid item md={5} xs={8}>
-                  <figure className={classes.figure}>
+                  <StyledFigure>
                     <Image
                       src={cloudinaryUploadPath(imageSrc)}
                       className={classes.imageBig}
                       alt={values.title}
                       layout="fill"
                     />
-                  </figure>
+                  </StyledFigure>
                 </Grid>
                 <Grid item md={7} xs={12}>
                   <Typography variant="h6" gutterBottom component="div">
@@ -198,10 +228,10 @@ export const TableRow: React.FC<TableRowProps> = ({ row }) => {
                     <TableBody>
                       <StatisticRow title="Ranking">
                         <Chip
-                          className={classes.chip}
+                          sx={{ backgroundColor: chipColor }}
                           size="small"
                           label={`#${row.index + 1}`}
-                          variant={row.index < 3 ? 'default' : 'outlined'}
+                          variant={row.index < 3 ? 'filled' : 'outlined'}
                         />
                       </StatisticRow>
                       <StatisticRow title="Compares">

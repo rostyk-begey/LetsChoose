@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   useContestDelete,
   useContestItemsInfinite,
@@ -5,34 +6,34 @@ import {
   useCurrentUser,
   useGameStart,
 } from '@lets-choose/client/hooks';
+import { styled } from '@mui/material/styles';
 import { cloudinaryUploadPath, ROUTES } from '@lets-choose/client/utils';
 import { ContestDto, UserPublicDto } from '@lets-choose/common/dto';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import IconButton from '@material-ui/core/IconButton';
-import Link from '@material-ui/core/Link';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import MobileStepper from '@material-ui/core/MobileStepper';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-// import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import Skeleton from '@material-ui/lab/Skeleton';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import CardMedia from '@mui/material/CardMedia';
+import IconButton from '@mui/material/IconButton';
+import Link from '@mui/material/Link';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MobileStepper from '@mui/material/MobileStepper';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite';
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
+// import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
+import Skeleton from '@mui/material/Skeleton';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
@@ -44,65 +45,89 @@ import Image from 'next/image';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import React, { useCallback, useEffect, useState } from 'react';
 import SwipeableViews from 'react-swipeable-views';
 import clip from 'text-clipper';
 
-export const useStyles = makeStyles((theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-      maxWidth: 345,
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      borderRadius: 8,
-      overflow: 'visible',
-    },
-    media: {
-      position: 'relative',
-      height: 0,
-      paddingTop: '75%',
-    },
-    cursorPointer: {
-      cursor: 'pointer',
-    },
-    title: {
-      textTransform: 'none',
+const PREFIX = 'ContestCard';
+
+const classes = {
+  media: `${PREFIX}-media`,
+  cursorPointer: `${PREFIX}-cursorPointer`,
+  title: `${PREFIX}-title`,
+  actions: `${PREFIX}-actions`,
+  playBtn: `${PREFIX}-playBtn`,
+  cardHeader: `${PREFIX}-cardHeader`,
+  cardContent: `${PREFIX}-cardContent`,
+  sliderNavigation: `${PREFIX}-sliderNavigation`,
+  actionBtn: `${PREFIX}-actionBtn`,
+  settingsBtn: `${PREFIX}-settingsBtn`,
+  headerAction: `${PREFIX}-headerAction`,
+};
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  width: '100%',
+  maxWidth: 345,
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  borderRadius: 8,
+  overflow: 'visible',
+
+  [`& .${classes.media}`]: {
+    position: 'relative',
+    height: 0,
+    paddingTop: '75%',
+  },
+
+  [`& .${classes.cursorPointer}`]: {
+    cursor: 'pointer',
+  },
+
+  [`& .${classes.title}`]: {
+    textTransform: 'none',
+    color: theme.palette.text.primary,
+    fontWeight: theme.typography.fontWeightMedium,
+    '&:hover': {
+      textDecoration: 'underline',
       color: theme.palette.text.primary,
-      fontWeight: theme.typography.fontWeightMedium,
-      '&:hover': {
-        textDecoration: 'underline',
-        color: theme.palette.text.primary,
-      },
     },
-    actions: {
-      marginTop: 'auto',
-      padding: theme.spacing(0, 0.5, 0.5),
-    },
-    playBtn: {
-      marginLeft: 'auto',
-    },
-    cardHeader: {
-      padding: theme.spacing(1, 1.5),
-    },
-    cardContent: {
-      padding: theme.spacing(1, 1.5),
-    },
-    sliderNavigation: {
-      padding: theme.spacing(0.5, 0),
-    },
-    actionBtn: {
-      padding: theme.spacing(1),
-    },
-    settingsBtn: {
-      marginTop: theme.spacing(0.5),
-    },
-    headerAction: {
-      alignSelf: 'center',
-    },
-  }),
-);
+  },
+
+  [`& .${classes.actions}`]: {
+    marginTop: 'auto',
+    padding: theme.spacing(0, 0.5, 0.5),
+  },
+
+  [`& .${classes.playBtn}`]: {
+    marginLeft: 'auto',
+  },
+
+  [`& .${classes.cardHeader}`]: {
+    padding: theme.spacing(1, 1.5),
+  },
+
+  [`& .${classes.cardContent}`]: {
+    padding: theme.spacing(1, 1.5),
+  },
+
+  [`& .${classes.sliderNavigation}`]: {
+    padding: theme.spacing(0.5, 0),
+  },
+
+  [`& .${classes.actionBtn}`]: {
+    padding: theme.spacing(1),
+  },
+
+  [`& .${classes.settingsBtn}`]: {
+    marginTop: theme.spacing(0.5),
+  },
+
+  [`& .${classes.headerAction}`]: {
+    alignSelf: 'center',
+  },
+}));
+
+export {};
 
 export interface ContestCardProps {
   contest: ContestDto;
@@ -202,7 +227,6 @@ export const ContestCard: React.FC<ContestCardProps> = ({
   contest,
   onDelete,
 }) => {
-  const classes = useStyles();
   const shadowStyles = useOverShadowStyles();
   const router = useRouter();
   const [isLinkCopied, setIsLinkCopied] = useState(false);
@@ -276,7 +300,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
   };
 
   return (
-    <Card className={classNames(classes.root, shadowStyles.root)}>
+    <StyledCard className={shadowStyles.root}>
       <CardHeader
         classes={{
           root: classes.cardHeader,
@@ -298,6 +322,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
                 aria-label="settings"
                 className={classNames(classes.actionBtn, classes.settingsBtn)}
                 onClick={handleMenuClick}
+                size="large"
               >
                 <MoreVertIcon />
               </IconButton>
@@ -374,7 +399,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
               <Skeleton
                 key={i}
                 animation="wave"
-                variant="rect"
+                variant="rectangular"
                 className={classes.media}
               />
             ),
@@ -430,7 +455,11 @@ export const ContestCard: React.FC<ContestCardProps> = ({
           PopperProps={{ disablePortal: true }}
           arrow
         >
-          <IconButton aria-label="share" className={classes.actionBtn}>
+          <IconButton
+            aria-label="share"
+            className={classes.actionBtn}
+            size="large"
+          >
             <ShareIcon fontSize="small" onClick={handleShareClick} />
           </IconButton>
         </Tooltip>
@@ -446,13 +475,14 @@ export const ContestCard: React.FC<ContestCardProps> = ({
               aria-label="play"
               className={classes.actionBtn}
               onClick={handleStartGameClick}
+              size="large"
             >
               <PlayCircleFilledWhiteIcon color="secondary" />
             </IconButton>
           </Tooltip>
         </div>
       </CardActions>
-    </Card>
+    </StyledCard>
   );
 };
 

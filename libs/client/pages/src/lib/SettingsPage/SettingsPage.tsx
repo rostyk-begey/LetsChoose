@@ -1,13 +1,12 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import {
-  createTheme as createMuiTheme,
-  Divider,
-  Button,
-  makeStyles,
-  Typography,
+  createTheme,
   ThemeProvider as MuiThemeProvider,
-} from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
+  StyledEngineProvider,
+} from '@mui/material/styles';
+import { Divider, Button, Typography } from '@mui/material';
+import { red } from '@mui/material/colors';
 import { useSnackbar } from 'notistack';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useConfirm } from 'material-ui-confirm';
@@ -27,35 +26,52 @@ import {
 } from '@lets-choose/client/components';
 import { SettingsPageSection } from './SettingsPageSection';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flex: 1,
-    padding: theme.spacing(3),
-  },
-  content: {
+const PREFIX = 'SettingsPage';
+
+const classes = {
+  content: `${PREFIX}-content`,
+  form: `${PREFIX}-form`,
+  input: `${PREFIX}-input`,
+  divider: `${PREFIX}-divider`,
+  subheader: `${PREFIX}-subheader`,
+  title: `${PREFIX}-title`,
+  submitBtn: `${PREFIX}-submitBtn`,
+};
+
+const StyledPage = styled(Page)(({ theme }) => ({
+  display: 'flex',
+  flex: 1,
+  padding: theme.spacing(3),
+
+  [`& .${classes.content}`]: {
     margin: '0 auto',
     maxWidth: 1000,
     width: '100%',
   },
-  form: {
+
+  [`& .${classes.form}`]: {
     maxWidth: 400,
   },
-  input: {
+
+  [`& .${classes.input}`]: {
     display: 'flex',
     marginBottom: theme.spacing(3),
   },
-  divider: {
+
+  [`& .${classes.divider}`]: {
     margin: theme.spacing(0, 4, 3, 4),
   },
-  subheader: {
+
+  [`& .${classes.subheader}`]: {
     display: 'flex',
     alignItems: 'center',
   },
-  title: {
+
+  [`& .${classes.title}`]: {
     color: theme.palette.text.primary,
   },
-  submitBtn: {
+
+  [`& .${classes.submitBtn}`]: {
     width: '100%',
     maxWidth: 200,
   },
@@ -151,10 +167,9 @@ const inputs: Record<string, FormTextInputProps> = {
   },
 };
 
-const redTheme = createMuiTheme({ palette: { primary: red } });
+const redTheme = createTheme({ palette: { primary: red } });
 
 export const SettingsPage: React.FC = () => {
-  const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const confirm = useConfirm();
   const {
@@ -208,8 +223,7 @@ export const SettingsPage: React.FC = () => {
   const currentPassword = passwordForm.watch('password', '');
 
   return (
-    <Page
-      className={classes.root}
+    <StyledPage
       subHeader={
         <Subheader className={classes.subheader}>
           <Typography variant="h5" className={classes.title}>
@@ -316,19 +330,21 @@ export const SettingsPage: React.FC = () => {
             </>
           }
         >
-          <MuiThemeProvider theme={redTheme}>
-            <Button
-              color="primary"
-              variant="outlined"
-              type="button"
-              onClick={handleDeleteClick}
-              className={classes.submitBtn}
-            >
-              Delete this account
-            </Button>
-          </MuiThemeProvider>
+          <StyledEngineProvider injectFirst>
+            <MuiThemeProvider theme={redTheme}>
+              <Button
+                color="primary"
+                variant="outlined"
+                type="button"
+                onClick={handleDeleteClick}
+                className={classes.submitBtn}
+              >
+                Delete this account
+              </Button>
+            </MuiThemeProvider>
+          </StyledEngineProvider>
         </SettingsPageSection>
       </div>
-    </Page>
+    </StyledPage>
   );
 };

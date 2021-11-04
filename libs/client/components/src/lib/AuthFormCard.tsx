@@ -1,11 +1,10 @@
 import React, { ReactNode } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import CardHeader from '@material-ui/core/CardHeader';
-import Typography from '@material-ui/core/Typography';
-import CardContent from '@material-ui/core/CardContent';
-import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
+import CardHeader from '@mui/material/CardHeader';
+import Typography from '@mui/material/Typography';
+import CardContent from '@mui/material/CardContent';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
 
 export interface AuthFormCardProps {
   title: string;
@@ -15,21 +14,6 @@ export interface AuthFormCardProps {
   cardAfter: ReactNode;
 }
 
-const useStyles = makeStyles({
-  root: {
-    width: '100%',
-    maxWidth: 400,
-  },
-  cardContent: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  loginBtn: {
-    width: '100%',
-    textTransform: 'none',
-  },
-});
-
 export const AuthFormCard: React.FC<AuthFormCardProps> = ({
   title,
   submitButtonText,
@@ -37,32 +21,31 @@ export const AuthFormCard: React.FC<AuthFormCardProps> = ({
   submitDisabled,
   cardAfter,
   children,
-}) => {
-  const classes = useStyles();
-
-  return (
-    <Card
-      className={classes.root}
-      component="form"
-      onSubmit={onSubmit}
-      variant="outlined"
-    >
-      <CardHeader title={<Typography variant="h6">{title}</Typography>} />
-      <CardContent className={classes.cardContent}>
-        {children}
-        <Box my={2} display="flex" justifyContent="stretch">
-          <Button
-            color="primary"
-            variant="contained"
-            type="submit"
-            disabled={submitDisabled}
-            className={classes.loginBtn}
-          >
-            {submitButtonText}
-          </Button>
-        </Box>
-        {cardAfter}
-      </CardContent>
-    </Card>
-  );
-};
+}) => (
+  <Card
+    component="form"
+    onSubmit={onSubmit}
+    variant="outlined"
+    sx={{
+      width: '100%',
+      maxWidth: 400,
+    }}
+  >
+    <CardHeader title={<Typography variant="h6">{title}</Typography>} />
+    <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
+      {children}
+      <Box my={2} display="flex" justifyContent="stretch">
+        <Button
+          color="primary"
+          variant="contained"
+          type="submit"
+          disabled={submitDisabled}
+          sx={{ width: '100%', textTransform: 'none' }}
+        >
+          {submitButtonText}
+        </Button>
+      </Box>
+      {cardAfter}
+    </CardContent>
+  </Card>
+);

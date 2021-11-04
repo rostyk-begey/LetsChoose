@@ -1,28 +1,27 @@
 import React, { ReactNode } from 'react';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Button from '@material-ui/core/Button';
-import Toolbar from '@material-ui/core/Toolbar';
+import { ContextValue } from '@mui-treasury/layout/Root/Root';
+import { alpha, styled } from '@mui/material';
+import Button from '@mui/material/Button';
+import Toolbar from '@mui/material/Toolbar';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
   Root,
-  getHeader,
-  getContent,
-  getDrawerSidebar,
-  getSidebarContent,
-  getFooter,
-  getSidebarTrigger,
-  getCollapseBtn,
+  Header as MuiHeader,
+  Content as MuiContent,
+  Footer as MuiFooter,
+  EdgeSidebar as MuiEdgeSidebar,
+  SidebarContent as MuiSidebarContent,
+  EdgeTrigger as MuiEdgeTrigger,
   getCozyScheme,
 } from '@mui-treasury/layout';
-import { SidebarState } from '@mui-treasury/layout/types';
-import classNames from 'classnames';
-import styled from 'styled-components';
 import { OneTapContainer } from '../OneTapContainer';
 
 import {
-  PRIMARY_SIDEBAR_ID,
-  PRIMARY_SUBHEADER_ID,
-  SECONDARY_SUBHEADER_ID,
-  SUBHEADER_CONFIG,
+  HEADER_HEIGHT,
+  HEADER_HEIGHT_XS,
+  PRIMARY_SUBHEADER_HEIGHT,
+  SUBHEADER_LAYER,
 } from './constants';
 import { Footer } from '../Footer';
 
@@ -30,70 +29,20 @@ export interface LayoutProps {
   className?: string;
   title?: ReactNode;
   subHeader?: ReactNode;
-  primarySidebar?: (state: SidebarState) => ReactNode;
+  primarySidebar?: (
+    sidebarState: ContextValue['state']['leftEdgeSidebar'],
+  ) => ReactNode;
   toolbarContent?: ReactNode;
 }
 
-const MuiHeader = getHeader(styled);
-const MuiContent = getContent(styled);
-const MuiDrawerSidebar = getDrawerSidebar(styled);
-const MuiSidebarContent = getSidebarContent(styled);
-const MuiFooter = getFooter(styled);
-const MuiSidebarTrigger = getSidebarTrigger(styled);
-const MuiCollapseBtn = getCollapseBtn(styled);
-
 const cozyScheme = getCozyScheme();
 
-cozyScheme.configureEdgeSidebar((builder) => {
-  builder
-    .create(PRIMARY_SIDEBAR_ID, { anchor: 'left' })
-    .registerPermanentConfig('md', {
-      collapsedWidth: 65,
-      width: 256,
-      collapsible: true,
-    })
-    .registerTemporaryConfig('sm', {
-      width: 256,
-    });
-});
-
-cozyScheme.configureSubheader((builder) => {
-  builder
-    .create(PRIMARY_SUBHEADER_ID, {})
-    .registerConfig('sm', SUBHEADER_CONFIG[PRIMARY_SUBHEADER_ID].sm)
-    .registerConfig('xs', SUBHEADER_CONFIG[PRIMARY_SUBHEADER_ID].xs);
-});
-
-cozyScheme.configureSubheader((builder) => {
-  builder
-    .create(SECONDARY_SUBHEADER_ID, {})
-    .registerConfig('sm', SUBHEADER_CONFIG[SECONDARY_SUBHEADER_ID].sm)
-    .registerConfig('xs', SUBHEADER_CONFIG[SECONDARY_SUBHEADER_ID].xs);
-});
-
-const useStyles = makeStyles((theme) => ({
-  header: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    justifyContent: 'center',
-  },
-  logoBtn: {
-    padding: 0,
-  },
-  footer: {
-    position: 'sticky',
-    bottom: 0,
-    zIndex: theme.zIndex.appBar,
-    borderTop: '1px solid rgba(0, 0, 0, 0.12)',
-    backgroundColor: theme.palette.background.default,
-  },
-  content: {
-    flex: 1,
-    backgroundColor: theme.palette.background.default,
-    position: 'relative',
-  },
-  sidebarContent: {
-    display: 'flex',
-    flexDirection: 'column',
+const SubheaderContainer = styled('div')(({ theme }) => ({
+  position: 'sticky',
+  top: HEADER_HEIGHT,
+  zIndex: SUBHEADER_LAYER,
+  [theme.breakpoints.down('sm')]: {
+    top: HEADER_HEIGHT_XS,
   },
 }));
 
@@ -104,41 +53,103 @@ export const Layout: React.FC<LayoutProps> = ({
   children,
   primarySidebar,
   className,
-}) => {
-  const classes = useStyles();
-  cozyScheme.configureEdgeSidebar((builder) => {
-    builder.hide('primarySidebar', !primarySidebar);
-  });
-
-  return (
-    <Root themeProviderOmitted scheme={cozyScheme}>
-      {({ state: { sidebar } }) => (
-        <>
-          <MuiHeader className={classes.header}>
-            <Toolbar>
-              <MuiSidebarTrigger sidebarId={PRIMARY_SIDEBAR_ID} />
-              <Button className={classes.logoBtn}>{title}</Button>
-              {toolbarContent}
-            </Toolbar>
-          </MuiHeader>
-          {subHeader}
-          {primarySidebar && (
-            <MuiDrawerSidebar sidebarId="primarySidebar" open>
-              <MuiSidebarContent className={classes.sidebarContent}>
-                {primarySidebar(sidebar.primarySidebar)}
-              </MuiSidebarContent>
-              <MuiCollapseBtn />
-            </MuiDrawerSidebar>
-          )}
-          <MuiContent className={classNames(classes.content, className)}>
-            <OneTapContainer />
-            {children}
-          </MuiContent>
-          <MuiFooter className={classes.footer}>
-            <Footer />
-          </MuiFooter>
-        </>
-      )}
-    </Root>
-  );
-};
+}) => (
+  <Root
+    scheme={{
+      ...cozyScheme,
+      subheader: {
+        config: {
+          sm: {
+            position: 'relative',
+            height: PRIMARY_SUBHEADER_HEIGHT,
+          },
+          xs: {
+            position: 'relative',
+            height: PRIMARY_SUBHEADER_HEIGHT,
+          },
+        },
+      },
+      leftEdgeSidebar: {
+        hidden: !primarySidebar,
+        config: {
+          md: {
+            variant: 'permanent',
+            collapsedWidth: 65,
+            width: 256,
+            collapsible: true,
+          },
+          sm: {
+            variant: 'temporary',
+            width: 256,
+          },
+        },
+      },
+    }}
+  >
+    {({ state: { leftEdgeSidebar } }) => (
+      <>
+        <MuiHeader
+          sx={{
+            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+            justifyContent: 'center',
+          }}
+        >
+          <Toolbar>
+            <Button sx={{ padding: 0 }}>{title}</Button>
+            {toolbarContent}
+          </Toolbar>
+        </MuiHeader>
+        <SubheaderContainer>{subHeader}</SubheaderContainer>
+        {primarySidebar && (
+          <MuiEdgeSidebar anchor="left" open>
+            <MuiSidebarContent
+              sx={{ display: 'flex', flexDirection: 'column' }}
+            >
+              {primarySidebar(leftEdgeSidebar)}
+            </MuiSidebarContent>
+            <MuiEdgeTrigger target={{ anchor: 'left', field: 'collapsed' }}>
+              {(collapsed, setCollapsed) => (
+                <Button
+                  sx={{
+                    width: '100%',
+                    height: 52,
+                    borderRadius: 0,
+                    borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+                  }}
+                  onClick={() => setCollapsed(!collapsed)}
+                >
+                  {collapsed ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                </Button>
+              )}
+            </MuiEdgeTrigger>
+          </MuiEdgeSidebar>
+        )}
+        <MuiContent
+          sx={{
+            flex: 1,
+            backgroundColor: 'background.default',
+            position: 'relative',
+            py: 3,
+            px: 0,
+          }}
+          className={className}
+        >
+          <OneTapContainer />
+          {children}
+        </MuiContent>
+        <MuiFooter
+          sx={{
+            position: 'sticky',
+            bottom: 0,
+            zIndex: (theme) => theme.zIndex.appBar,
+            borderTop: (theme) =>
+              `1px solid ${alpha(theme.palette.common.black, 0.12)}`,
+            backgroundColor: 'background.default',
+          }}
+        >
+          <Footer />
+        </MuiFooter>
+      </>
+    )}
+  </Root>
+);

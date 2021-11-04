@@ -1,4 +1,4 @@
-import { ThemeOptions } from '@material-ui/core/styles';
+import { ThemeOptions } from '@mui/material/styles';
 import {
   dangerColor,
   infoColor,
@@ -9,13 +9,15 @@ import {
 } from './material-kit-react';
 
 export const themeOptions: ThemeOptions = {
-  overrides: {
+  components: {
     MuiCssBaseline: {
-      '@global': {
-        '#__next': {
-          display: 'flex',
-          height: '100vh',
-          flexDirection: 'column',
+      styleOverrides: {
+        '@global': {
+          '#__next': {
+            display: 'flex',
+            height: '100vh',
+            flexDirection: 'column',
+          },
         },
       },
     },

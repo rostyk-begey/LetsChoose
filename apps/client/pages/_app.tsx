@@ -1,19 +1,20 @@
+import React, { useEffect, useRef } from 'react';
+import { CacheProvider, EmotionCache } from '@emotion/react';
 import { ThemeProvider } from '@lets-choose/client/components';
 import { queryClient } from '@lets-choose/client/utils';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import IconButton from '@material-ui/core/IconButton';
-import { StylesProvider } from '@material-ui/core/styles';
-import CloseIcon from '@material-ui/icons/Close';
-
+import StyledEngineProvider from '@mui/material/StyledEngineProvider';
+import CssBaseline from '@mui/material/CssBaseline';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import 'animate.css';
 import { ConfirmProvider } from 'material-ui-confirm';
 import { DefaultSeo, DefaultSeoProps } from 'next-seo';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { SnackbarProvider } from 'notistack';
-import React, { useEffect, useRef } from 'react';
 import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import createEmotionCache from '../lib/createEmotionCache';
 
 export const url = 'https://lets-choose.herokuapp.com';
 export const defaultSeo: DefaultSeoProps = {
@@ -39,7 +40,19 @@ export const defaultSeo: DefaultSeoProps = {
   },
 };
 
-const MyApp = ({ Component, pageProps, router }: AppProps) => {
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
+
+export interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache;
+}
+
+const MyApp: React.FC<MyAppProps> = ({
+  Component,
+  pageProps,
+  router,
+  emotionCache = clientSideEmotionCache,
+}) => {
   useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles) {
@@ -55,7 +68,7 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
   };
 
   return (
-    <StylesProvider injectFirst>
+    <CacheProvider value={emotionCache}>
       <Head>
         <title>Let&apos;s Choose</title>
         <meta
@@ -73,28 +86,30 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
           },
         }}
       />
-      <ThemeProvider>
-        <CssBaseline />
-        <QueryClientProvider client={queryClient}>
-          <SnackbarProvider
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            ref={notistackRef}
-            autoHideDuration={3000}
-            action={(key) => (
-              <IconButton onClick={handleDismissClick(key)}>
-                <CloseIcon />
-              </IconButton>
-            )}
-          >
-            <ConfirmProvider>
-              <Component {...pageProps} />
-              <ReactQueryDevtools position="bottom-right" />
-            </ConfirmProvider>
-          </SnackbarProvider>
-        </QueryClientProvider>
-      </ThemeProvider>
-    </StylesProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider>
+          <CssBaseline />
+          <QueryClientProvider client={queryClient}>
+            <SnackbarProvider
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              ref={notistackRef}
+              autoHideDuration={3000}
+              action={(key) => (
+                <IconButton onClick={handleDismissClick(key)} size="large">
+                  <CloseIcon />
+                </IconButton>
+              )}
+            >
+              <ConfirmProvider>
+                <Component {...pageProps} />
+                <ReactQueryDevtools position="bottom-right" />
+              </ConfirmProvider>
+            </SnackbarProvider>
+          </QueryClientProvider>
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </CacheProvider>
   );
 };
 

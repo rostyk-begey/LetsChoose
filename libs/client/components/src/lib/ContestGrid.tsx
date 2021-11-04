@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { SORT_OPTIONS } from '@lets-choose/common/dto';
 import InfiniteScroll from 'react-infinite-scroller';
 import json2mq from 'json2mq';
@@ -15,6 +15,7 @@ import { ContestCardSkeleton } from './ContestCardSkeleton';
 
 const ContestCard = dynamic(() => import('./ContestCard'), {
   ssr: false,
+  // eslint-disable-next-line react/display-name
   loading: () => <ContestCardSkeleton />,
 });
 

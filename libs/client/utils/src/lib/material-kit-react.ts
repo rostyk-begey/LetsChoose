@@ -168,38 +168,7 @@ const defaultBoxShadow = {
   transition: 'all 150ms ease 0s',
 };
 
-const title = {
-  color: '#3C4858',
-  margin: '1.75rem 0 0.875rem',
-  textDecoration: 'none',
-  fontWeight: 700,
-  fontFamily: `"Roboto Slab", "Times New Roman", serif`,
-};
-
-const cardTitle = {
-  ...title,
-  marginTop: '.625rem',
-};
-
-const cardLink = {
-  '& + $cardLink': {
-    marginLeft: '1.25rem',
-  },
-};
-
-const cardSubtitle = {
-  marginBottom: '0',
-  marginTop: '-.375rem',
-};
-
 export {
-  drawerWidth,
-  transition,
-  container,
-  containerFluid,
-  boxShadow,
-  card,
-  defaultFont,
   primaryColor,
   secondaryColor,
   warningColor,
@@ -208,23 +177,4 @@ export {
   infoColor,
   roseColor,
   grayColor,
-  primaryBoxShadow,
-  infoBoxShadow,
-  successBoxShadow,
-  warningBoxShadow,
-  dangerBoxShadow,
-  roseBoxShadow,
-  warningCardHeader,
-  successCardHeader,
-  dangerCardHeader,
-  infoCardHeader,
-  primaryCardHeader,
-  roseCardHeader,
-  cardActions,
-  cardHeader,
-  defaultBoxShadow,
-  title,
-  cardTitle,
-  cardLink,
-  cardSubtitle,
 };

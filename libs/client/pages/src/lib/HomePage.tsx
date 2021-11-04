@@ -1,6 +1,6 @@
 import React from 'react';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { styled } from '@mui/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import json2mq from 'json2mq';
 import {
   ContestGrid,
@@ -8,13 +8,10 @@ import {
   Page,
   Subheader,
 } from '@lets-choose/client/components';
-import getConfig from 'next/config';
 
-const useStyles = makeStyles({
-  subheader: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
+const StyledSubheader = styled(Subheader)({
+  display: 'flex',
+  justifyContent: 'flex-end',
 });
 
 export const HomePage: React.FC = () => {
@@ -23,16 +20,15 @@ export const HomePage: React.FC = () => {
       maxWidth: 1024,
     }),
   );
-  const classes = useStyles();
 
   return (
     <Page
       withContestNavigation={!matchesMaxWidth1024}
       subHeader={
         matchesMaxWidth1024 && (
-          <Subheader className={classes.subheader} animated>
+          <StyledSubheader animated>
             <ContestNavigation />
-          </Subheader>
+          </StyledSubheader>
         )
       }
     >
