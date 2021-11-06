@@ -1,33 +1,78 @@
 import React from 'react';
-import {
-  Avatar,
-  Box,
-  Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  makeStyles,
-  Typography,
-} from '@material-ui/core';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-import SettingsIcon from '@material-ui/icons/SettingsRounded';
-import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-import AddIcon from '@material-ui/icons/AddCircleRounded';
-import AddOutlinedIcon from '@material-ui/icons/AddCircleOutlineRounded';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import HomeIcon from '@material-ui/icons/HomeRounded';
-import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
-import Skeleton from '@material-ui/lab/Skeleton';
+import { styled } from '@mui/material/styles';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import SettingsIcon from '@mui/icons-material/SettingsRounded';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import AddIcon from '@mui/icons-material/AddCircleRounded';
+import AddOutlinedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import HomeIcon from '@mui/icons-material/HomeRounded';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem, { ListItemProps } from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Skeleton from '@mui/material/Skeleton';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/router';
-import classNames from 'classnames';
 import { useMutation } from 'react-query';
 
 import { authApi } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
 import { MenuLink } from './Menu';
+
+const PREFIX = 'Sidebar';
+
+const classes = {
+  avatar: `${PREFIX}-avatar`,
+  avatarOpen: `${PREFIX}-avatarOpen`,
+  username: `${PREFIX}-username`,
+  usernameOpen: `${PREFIX}-usernameOpen`,
+  profileBox: `${PREFIX}-profileBox`,
+  profileBoxOpen: `${PREFIX}-profileBoxOpen`,
+  sidebarMenu: `${PREFIX}-sidebarMenu`,
+  transition: `${PREFIX}-transition`,
+};
+
+const Root = styled('div')<{ open?: boolean }>(({ theme, open }) => ({
+  [`& ${classes.transition}`]: {
+    transition: theme.transitions.create('all', {
+      duration: theme.transitions.duration.shorter,
+      easing: theme.transitions.easing.easeInOut,
+    }),
+  },
+
+  [`& .${classes.avatar}`]: {
+    width: 48,
+    height: 48,
+    marginBottom: 0,
+    ...(open && {
+      width: 60,
+      height: 60,
+      marginBottom: theme.spacing(2),
+    }),
+  },
+
+  [`& .${classes.username}`]: {
+    textTransform: 'none',
+    maxHeight: open ? 100 : 0,
+    opacity: open ? 1 : 0,
+  },
+
+  [`& .${classes.profileBox}`]: {
+    padding: open ? theme.spacing(2) : theme.spacing(2, 1),
+  },
+
+  [`& .${classes.sidebarMenu}`]: {
+    paddingTop: 0,
+  },
+}));
 
 export interface SidebarProps {
   open?: boolean;
@@ -35,68 +80,44 @@ export interface SidebarProps {
   isLoading?: boolean;
   username: string;
   avatar?: string;
-  onLogout: () => any;
+  onLogout: () => void;
 }
 
-const useStyles = makeStyles((theme) => ({
-  menuItem: {
-    transition: 'all 0s linear 0.2s',
-    justifyContent: 'center',
+const MENU_ITEM_PREFIX = 'MenuItem';
+const menuItemClasses = {
+  icon: `${MENU_ITEM_PREFIX}-icon`,
+  text: `${MENU_ITEM_PREFIX}-text`,
+  button: `${MENU_ITEM_PREFIX}-button`,
+};
+const MenuItem = styled(ListItem, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})<
+  ListItemProps & {
+    open?: boolean;
+  }
+>(({ theme, open }) => ({
+  padding: 0,
+  transition: 'all 0s linear 0.2s',
+
+  [`& .${menuItemClasses.icon}`]: {
+    transition: 'all 0.3s ease 0s',
+    minWidth: 'unset',
+    marginRight: open ? theme.spacing(4) : 0,
+    color: theme.palette.primary.main,
   },
-  menuItemOpen: {
-    justifyContent: 'flex-start',
-  },
-  menuItemText: {
+
+  [`& .${menuItemClasses.text}`]: {
     transition: 'all 0.3s ease 0s, max-width 0s linear 0.2s',
-    opacity: 0,
-    maxWidth: 0,
+    opacity: open ? 1 : 0,
+    maxWidth: open ? 500 : 0,
     overflow: 'hidden',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
   },
-  menuItemTextOpen: {
-    opacity: 1,
-    maxWidth: 500,
-  },
-  menuItemIcon: {
-    transition: 'all 0.3s ease 0s',
-    minWidth: 'unset',
-    marginRight: 0,
-    color: theme.palette.primary.main,
-  },
-  menuItemIconOpen: {
-    marginRight: theme.spacing(4),
-  },
-  avatar: {
-    transition: 'all 0.3s ease 0s',
-    width: 48,
-    height: 48,
-    marginBottom: 0,
-  },
-  avatarOpen: {
-    width: 60,
-    height: 60,
-    marginBottom: theme.spacing(2),
-  },
-  username: {
-    transition: 'all 0.3s ease 0s',
-    maxHeight: 0,
-    textTransform: 'none',
-    opacity: 0,
-  },
-  usernameOpen: {
-    maxHeight: 100,
-    opacity: 1,
-  },
-  profileBox: {
-    padding: theme.spacing(2, 1),
-    transition: 'all 0.3s ease 0s',
-  },
-  profileBoxOpen: {
-    padding: theme.spacing(2),
-  },
-  sidebarMenu: {
-    paddingTop: 0,
+
+  [`& .${menuItemClasses.button}`]: {
+    transition: 'all 0s ease 0.1s',
+    justifyContent: open ? 'flex-start' : 'center',
   },
 }));
 
@@ -108,7 +129,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isLoading,
   onLogout,
 }) => {
-  const classes = useStyles();
   const { mutateAsync: logout } = useMutation(authApi.logout);
   const router = useRouter();
   const links: MenuLink[] = [
@@ -154,37 +174,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <>
-      <Box
-        className={classNames(classes.profileBox, {
-          [classes.profileBoxOpen]: open || !collapsed,
-        })}
-      >
+    <Root>
+      <Box className={classes.profileBox}>
         {!isLoading ? (
           <RouterLink href={`${ROUTES.USERS}/${username}`} passHref>
-            <Avatar
-              component="a"
-              src={avatar}
-              className={classNames(classes.avatar, {
-                [classes.avatarOpen]: open || !collapsed,
-              })}
-            />
+            <Avatar component="a" src={avatar} className={classes.avatar} />
           </RouterLink>
         ) : (
           <Skeleton
             animation="wave"
-            variant="circle"
+            variant="circular"
             className={classes.avatar}
           />
         )}
         {!isLoading ? (
-          <Typography
-            variant="h6"
-            noWrap
-            className={classNames(classes.username, {
-              [classes.usernameOpen]: open || !collapsed,
-            })}
-          >
+          <Typography variant="h6" noWrap className={classes.username}>
             @{username}
           </Typography>
         ) : (
@@ -192,9 +196,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             animation="wave"
             height={20}
             width="85%"
-            className={classNames(classes.username, {
-              [classes.usernameOpen]: open || !collapsed,
-            })}
+            className={classes.username}
           />
         )}
       </Box>
@@ -202,56 +204,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <List className={classes.sidebarMenu}>
         {links.map(({ href, label, icon, active }) => (
           <RouterLink key={href} href={href} passHref>
-            <ListItem
-              component="a"
-              button
-              selected={active}
-              className={classNames(classes.menuItem, {
-                [classes.menuItemOpen]: open || !collapsed,
-              })}
-            >
-              <ListItemIcon
-                className={classNames(classes.menuItemIcon, {
-                  [classes.menuItemIconOpen]: open || !collapsed,
-                })}
-              >
-                {icon}
-              </ListItemIcon>
-              <ListItemText
-                primary={label}
-                className={classNames(classes.menuItemText, {
-                  [classes.menuItemTextOpen]: open || !collapsed,
-                })}
-              />
-            </ListItem>
+            <MenuItem selected={active} open={open || !collapsed}>
+              <ListItemButton component="a" className={menuItemClasses.button}>
+                <ListItemIcon className={menuItemClasses.icon}>
+                  {icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={label}
+                  className={menuItemClasses.text}
+                />
+              </ListItemButton>
+            </MenuItem>
           </RouterLink>
         ))}
         <Divider />
-        <ListItem
-          button
-          className={classNames(classes.menuItem, {
-            [classes.menuItemOpen]: open || !collapsed,
-          })}
-          onClick={async () => {
-            await logout();
-            onLogout();
-          }}
-        >
-          <ListItemIcon
-            className={classNames(classes.menuItemIcon, {
-              [classes.menuItemIconOpen]: open || !collapsed,
-            })}
+        <MenuItem open={open || !collapsed}>
+          <ListItemButton
+            onClick={async () => {
+              await logout();
+              onLogout();
+            }}
+            className={menuItemClasses.button}
           >
-            <ExitToAppIcon />
-          </ListItemIcon>
-          <ListItemText
-            primary="Logout"
-            className={classNames(classes.menuItemText, {
-              [classes.menuItemTextOpen]: open || !collapsed,
-            })}
-          />
-        </ListItem>
+            <ListItemIcon className={menuItemClasses.icon}>
+              <ExitToAppIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" className={menuItemClasses.text} />
+          </ListItemButton>
+        </MenuItem>
       </List>
-    </>
+    </Root>
   );
 };

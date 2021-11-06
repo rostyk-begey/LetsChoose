@@ -1,70 +1,96 @@
-import React, { useCallback, useState } from 'react';
-import { Backdrop, CircularProgress } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import { Theme } from '@material-ui/core/styles';
-import EditIcon from '@material-ui/icons/Edit';
-import ClearIcon from '@material-ui/icons/Clear';
+import React, { useCallback, useMemo, useState } from 'react';
+import { alpha, styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import ClearIcon from '@mui/icons-material/Clear';
 import jsonToFormData from 'json-form-data';
-import Fab from '@material-ui/core/Fab';
-import Card from '@material-ui/core/Card';
-import { DropzoneArea } from 'material-ui-dropzone';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
+import Fab from '@mui/material/Fab';
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import { useDropzone } from 'react-dropzone';
 import { DefaultValues, useForm, FormProvider } from 'react-hook-form';
-import SaveIcon from '@material-ui/icons/Save';
+import SaveIcon from '@mui/icons-material/Save';
+import { useCustomErrors } from '@lets-choose/client/hooks';
 import classNames from 'classnames';
-
 import {
   FormTextInput,
   FormTextInputProps,
   Page,
   Subheader,
+  Dropzone,
 } from '@lets-choose/client/components';
 import { ContestItemsList } from './ContestItemsList';
 import { ContestItemsNav } from './ContestItemsNav';
 import { ItemsStateContext, useItemsState } from './ContestItemsStateProvider';
 
-const useStyles = makeStyles<Theme>((theme) => ({
-  root: {
-    display: 'flex',
+const PREFIX = 'EditContestPageTemplate';
+
+const classes = {
+  content: `${PREFIX}-content`,
+  subheader: `${PREFIX}-subheader`,
+  title: `${PREFIX}-title`,
+  submitButton: `${PREFIX}-submitButton`,
+  grid: `${PREFIX}-grid`,
+  equalPaddingCard: `${PREFIX}-equalPaddingCard`,
+  contestThumbnailCard: `${PREFIX}-contestThumbnailCard`,
+  thumbnailError: `${PREFIX}-thumbnailError`,
+  contestTitleCard: `${PREFIX}-contestTitleCard`,
+  contestExcerptCard: `${PREFIX}-contestExcerptCard`,
+  contestItemsCardActions: `${PREFIX}-contestItemsCardActions`,
+  contestItemsCard: `${PREFIX}-contestItemsCard`,
+  thumbnailActionButton: `${PREFIX}-thumbnailActionButton`,
+  defaultThumbnail: `${PREFIX}-defaultThumbnail`,
+  dropzoneHolder: `${PREFIX}-dropzoneHolder`,
+  dropzoneRoot: `${PREFIX}-dropzoneRoot`,
+  dropzoneTextContainer: `${PREFIX}-dropzoneTextContainer`,
+  dropzoneItemImage: `${PREFIX}-dropzoneItemImage`,
+  titleInput: `${PREFIX}-titleInput`,
+  uploadText: `${PREFIX}-uploadText`,
+};
+
+const StyledSubheader = styled(Subheader)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingLeft: theme.spacing(2),
+  paddingRight: theme.spacing(2),
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(1),
+    alignItems: 'flex-start',
   },
-  content: {
-    margin: '0 auto',
-  },
-  subheader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    [theme.breakpoints.down('sm')]: {
-      padding: theme.spacing(1),
-      alignItems: 'flex-start',
-    },
-  },
-  title: {
+
+  [`& .${classes.title}`]: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     marginRight: theme.spacing(2),
     marginLeft: 'auto',
     color: theme.palette.text.primary,
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       fontSize: '1.3rem',
       whiteSpace: 'normal',
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       fontSize: '1rem',
       padding: theme.spacing(0.5),
       marginLeft: 0,
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       fontSize: '0.9rem',
     },
   },
-  submitButton: {
+
+  [`& .${classes.submitButton}`]: {
     marginLeft: 'auto',
   },
-  grid: {
+}));
+
+const StyledPage = styled(Page)(({ theme }) => ({
+  display: 'flex',
+  padding: theme.spacing(3),
+
+  [`& .${classes.grid}`]: {
+    maxWidth: 1200,
+    margin: '0 auto',
     display: 'grid',
     alignItems: 'start',
     gridGap: theme.spacing(3),
@@ -78,7 +104,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
       ".             itemsCardActions"
     `,
     gridAutoRows: 'auto',
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('lg')]: {
       gridGap: theme.spacing(2),
       gridTemplateColumns: '5fr 7fr',
       gridTemplateAreas: `
@@ -89,78 +115,78 @@ const useStyles = makeStyles<Theme>((theme) => ({
         "itemsCardActions itemsCardActions"
       `,
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('sm')]: {
       gridTemplateColumns: '1fr',
+      gridTemplateAreas: 'none!important',
+
       '& > *': {
         gridColumn: '1/-1!important',
         gridRow: 'auto!important',
       },
-      gridTemplateAreas: 'none!important',
     },
   },
-  equalPaddingCard: {
+
+  [`& .${classes.equalPaddingCard}`]: {
     padding: theme.spacing(1),
   },
-  contestThumbnailCard: {
+
+  [`& .${classes.contestThumbnailCard}`]: {
     gridArea: 'thumbnailCard',
-  },
-  contestThumbnailCardInner: {
     position: 'relative',
   },
-  thumbnailError: {
+
+  [`& .${classes.thumbnailError}`]: {
     display: 'inline-block',
-    margin: `${theme.spacing(0.5)}px 14px 0`,
+    margin: `${theme.spacing(0.5)} 14px 0`,
   },
-  contestTitleCard: {
+
+  [`& .${classes.contestTitleCard}`]: {
     gridArea: 'titleCard',
   },
-  contestExcerptCard: {
+
+  [`& .${classes.contestExcerptCard}`]: {
     gridArea: 'excerptCard',
   },
-  contestItemsCardActions: {
+
+  [`& .${classes.contestItemsCardActions}`]: {
     gridArea: 'itemsCardActions',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       order: 2,
     },
   },
-  contestItemsCard: {
+
+  [`& .${classes.contestItemsCard}`]: {
     gridArea: 'itemsCard',
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(1, 2),
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       order: 1,
     },
   },
-  thumbnailActionButton: {
-    position: 'absolute',
-    right: theme.spacing(3),
-    bottom: theme.spacing(3),
-  },
-  defaultThumbnailHolder: {
+
+  [`& .${classes.defaultThumbnail}`]: {
+    aspectRatio: '4/3',
+    cursor: 'pointer',
+    position: 'relative',
     overflow: 'hidden',
     borderRadius: 4,
     borderStyle: 'dashed',
     borderWidth: 1,
     borderColor:
-      theme.palette.type === 'light'
-        ? 'rgba(0, 0, 0, 0.23)'
-        : 'rgba(255, 255, 255, 0.23)',
+      theme.palette.mode === 'light'
+        ? alpha(theme.palette.common.black, 0.23)
+        : alpha(theme.palette.common.white, 0.23),
     '&:hover': {
       borderColor: theme.palette.text.primary,
     },
   },
-  defaultThumbnail: ({ defaultThumbnail }: { defaultThumbnail?: string }) => ({
-    width: '100%',
-    paddingTop: '75%',
-    backgroundImage: `url(${defaultThumbnail})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  }),
-  dropzoneHolder: {
+
+  [`& .${classes.dropzoneHolder}`]: {
     position: 'relative',
   },
-  dropzoneRoot: {
+
+  [`& .${classes.dropzoneRoot}`]: {
     position: 'absolute',
     display: 'flex',
     top: 0,
@@ -171,18 +197,20 @@ const useStyles = makeStyles<Theme>((theme) => ({
     alignItems: 'center',
     borderWidth: 1,
     borderColor:
-      theme.palette.type === 'light'
-        ? 'rgba(0, 0, 0, 0.23)'
-        : 'rgba(255, 255, 255, 0.23)',
+      theme.palette.mode === 'light'
+        ? alpha(theme.palette.common.black, 0.23)
+        : alpha(theme.palette.common.white, 0.23),
     '&:hover': {
       borderColor: theme.palette.text.primary,
     },
   },
-  dropzoneTextContainer: {
+
+  [`& .${classes.dropzoneTextContainer}`]: {
     position: 'absolute',
     padding: theme.spacing(0, 1),
   },
-  dropzoneItemImage: {
+
+  [`& .${classes.dropzoneItemImage}`]: {
     paddingTop: '75%',
     display: 'flex',
     alignItems: 'center',
@@ -195,15 +223,12 @@ const useStyles = makeStyles<Theme>((theme) => ({
       height: 'auto',
     },
   },
-  titleInput: {
+
+  [`& .${classes.titleInput}`]: {
     width: '100%',
     '&:not(:last-child)': {
       marginBottom: theme.spacing(2),
     },
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 100,
-    color: '#fff',
   },
 }));
 
@@ -248,37 +273,6 @@ export interface EditContestPageTemplateProps {
   withItemsUpload?: boolean;
 }
 
-const useCustomErrors = <T extends string>() => {
-  const [errors, setErrors] = useState<Partial<Record<T, { message: string }>>>(
-    {},
-  );
-
-  const setError = (name: T, error: { message: string }) => {
-    setErrors((errors) => ({
-      ...errors,
-      [name]: error,
-    }));
-  };
-
-  const clearError = (name: T) => {
-    setErrors((errors) => ({
-      ...errors,
-      [name]: null,
-    }));
-  };
-
-  const resetErrors = () => {
-    setErrors({});
-  };
-
-  return {
-    errors,
-    setError,
-    clearError,
-    resetErrors,
-  };
-};
-
 export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
   ({
     title,
@@ -289,22 +283,28 @@ export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
     inputsDefaultValues,
     withItemsUpload,
   }) => {
+    const itemsState = useItemsState();
+    const { items, addFiles } = itemsState;
+    const { errors, setError, clearError } = useCustomErrors<
+      'thumbnail' | 'items'
+    >();
     const [thumbnail, setThumbnail] = useState<File | null>(null);
-    const [thumbnailSrc, setThumbnailSrc] = useState<string>(defaultThumbnail);
-    const classes = useStyles({ defaultThumbnail: thumbnailSrc });
-    const [isThumbnailEditing, setIsThumbnailEditing] = useState<boolean>(
-      !defaultThumbnail,
-    );
+    const thumbnailDropzone = useDropzone({
+      onDropAccepted: ([file]) => {
+        setThumbnail(file);
+        clearError('items');
+      },
+    });
+    const itemsDropzone = useDropzone({
+      onDropAccepted: addFiles,
+    });
+    const thumbnailPreview = useMemo(() => {
+      return thumbnail ? URL.createObjectURL(thumbnail) : defaultThumbnail;
+    }, [thumbnail, defaultThumbnail]);
 
     const form = useForm<FieldValues>({
       defaultValues: inputsDefaultValues,
     });
-    const { errors, setError, clearError } = useCustomErrors<
-      'thumbnail' | 'items'
-    >();
-
-    const itemsState = useItemsState();
-    const { items } = itemsState;
 
     const handleSubmit = useCallback(
       (contestData) => {
@@ -338,11 +338,12 @@ export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
       ],
     );
 
+    const shouldRenderCancelThumbnailButton = defaultThumbnail && thumbnail;
+
     return (
-      <Page
-        className={classes.root}
+      <StyledPage
         subHeader={
-          <Subheader className={classes.subheader}>
+          <StyledSubheader>
             <Typography variant="h4" className={classes.title}>
               {title}
             </Typography>
@@ -356,138 +357,93 @@ export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
             >
               {submitButtonText}
             </Button>
-          </Subheader>
+          </StyledSubheader>
         }
       >
-        <Backdrop open={isLoading} className={classes.backdrop}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
         <FormProvider {...form}>
-          <Container className={classes.content}>
-            <div className={classes.grid}>
-              <Card
-                className={classNames(
-                  classes.contestThumbnailCard,
-                  classes.dropzoneHolder,
-                  classes.equalPaddingCard,
-                )}
-              >
-                <div className={classes.contestThumbnailCardInner}>
-                  <div className={classes.defaultThumbnailHolder}>
-                    <div className={classes.defaultThumbnail} />
-                    <Fab
-                      color="primary"
-                      size="small"
-                      aria-label="edit"
-                      className={classes.thumbnailActionButton}
-                      onClick={() => setIsThumbnailEditing(true)}
-                    >
-                      <EditIcon />
-                    </Fab>
-                  </div>
-                  {isThumbnailEditing && (
-                    <DropzoneArea
-                      classes={{
-                        root: classes.dropzoneRoot,
-                        textContainer: classes.dropzoneTextContainer,
-                      }}
-                      filesLimit={1}
-                      previewChipProps={{
-                        style: {
-                          display: 'none',
-                        },
-                      }}
-                      previewGridProps={{
-                        item: {
-                          xs: 12,
-                        },
-                      }}
-                      previewGridClasses={{
-                        item: classes.dropzoneItemImage,
-                      }}
-                      showPreviewsInDropzone
-                      showAlerts={['error', 'info']}
-                      useChipsForPreview={false}
-                      onChange={([thumbnail]) => {
-                        setThumbnail(thumbnail);
-                        thumbnail &&
-                          setThumbnailSrc(URL.createObjectURL(thumbnail));
-                        clearError('thumbnail');
-                      }}
-                    />
-                  )}
-                  {defaultThumbnail && isThumbnailEditing && (
-                    <Fab
-                      color="primary"
-                      size="small"
-                      aria-label="cancel-edit"
-                      className={classes.thumbnailActionButton}
-                      onClick={() => {
-                        setIsThumbnailEditing(false);
-                        setThumbnail(null);
-                      }}
-                    >
-                      <ClearIcon />
-                    </Fab>
-                  )}
-                  {errors?.thumbnail && (
-                    <Typography
-                      variant="caption"
-                      color="error"
-                      className={classes.thumbnailError}
-                    >
-                      {errors?.thumbnail?.message}
-                    </Typography>
-                  )}
-                </div>
-              </Card>
-              <Card
-                className={classNames(
-                  classes.contestTitleCard,
-                  classes.equalPaddingCard,
-                )}
-              >
-                <FormTextInput
-                  {...inputs.title}
-                  fieldProps={{
-                    ...inputs.title.fieldProps,
-                    className: classes.titleInput,
+          <div className={classes.grid}>
+            <Card
+              className={classNames(
+                classes.contestThumbnailCard,
+                classes.dropzoneHolder,
+                classes.equalPaddingCard,
+              )}
+            >
+              <Dropzone
+                dropzoneState={thumbnailDropzone}
+                previewImage={thumbnailPreview}
+              />
+              {shouldRenderCancelThumbnailButton && (
+                <Fab
+                  color="primary"
+                  size="small"
+                  aria-label="cancel-edit"
+                  sx={{
+                    position: 'absolute',
+                    right: (theme) => theme.spacing(3),
+                    bottom: (theme) => theme.spacing(3),
+                    zIndex: 1,
                   }}
-                />
-              </Card>
-              <Card
-                className={classNames(
-                  classes.contestExcerptCard,
-                  classes.equalPaddingCard,
-                )}
-              >
-                <FormTextInput
-                  {...inputs.excerpt}
-                  fieldProps={{
-                    ...inputs.excerpt.fieldProps,
-                    className: classes.titleInput,
+                  onClick={() => {
+                    setThumbnail(null);
                   }}
-                />
-              </Card>
+                >
+                  <ClearIcon />
+                </Fab>
+              )}
+              {errors?.thumbnail && (
+                <Typography
+                  variant="caption"
+                  color="error"
+                  className={classes.thumbnailError}
+                >
+                  {errors?.thumbnail?.message}
+                </Typography>
+              )}
+            </Card>
+            <Card
+              className={classNames(
+                classes.contestTitleCard,
+                classes.equalPaddingCard,
+              )}
+            >
+              <FormTextInput
+                {...inputs.title}
+                fieldProps={{
+                  ...inputs.title.fieldProps,
+                  className: classes.titleInput,
+                }}
+              />
+            </Card>
+            <Card
+              className={classNames(
+                classes.contestExcerptCard,
+                classes.equalPaddingCard,
+              )}
+            >
+              <FormTextInput
+                {...inputs.excerpt}
+                fieldProps={{
+                  ...inputs.excerpt.fieldProps,
+                  className: classes.titleInput,
+                }}
+              />
+            </Card>
+            {withItemsUpload && (
               <ItemsStateContext.Provider value={itemsState}>
-                {withItemsUpload && (
-                  <>
-                    <ContestItemsNav
-                      className={classes.contestItemsCard}
-                      onAddItems={(files) => {
-                        clearError('items');
-                      }}
-                    />
-                    <ContestItemsList
-                      className={classes.contestItemsCardActions}
-                      error={errors?.items}
-                    />
-                  </>
-                )}
+                <ContestItemsNav
+                  className={classes.contestItemsCard}
+                  onAddItemsClick={() => itemsDropzone.open()}
+                />
+                <ContestItemsList
+                  dropzoneState={itemsDropzone}
+                  className={classes.contestItemsCardActions}
+                  error={errors?.items}
+                />
               </ItemsStateContext.Provider>
-            </div>
-          </Container>
+            )}
+          </div>
         </FormProvider>
-      </Page>
+      </StyledPage>
     );
   };

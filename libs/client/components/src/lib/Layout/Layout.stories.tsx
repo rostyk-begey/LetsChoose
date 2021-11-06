@@ -1,5 +1,6 @@
+import React from 'react';
 import { Story, Meta } from '@storybook/react';
-import { Layout, LayoutProps as LayoutProps } from './Layout';
+import { Layout, LayoutProps } from './Layout';
 
 export default {
   component: Layout,

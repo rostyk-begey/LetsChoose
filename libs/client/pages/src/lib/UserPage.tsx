@@ -1,18 +1,16 @@
 import React from 'react';
 import { SORT_OPTIONS, UserPublicDto } from '@lets-choose/common/dto';
 import { NextSeo } from 'next-seo';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Divider from '@material-ui/core/Divider';
-import Skeleton from '@material-ui/lab/Skeleton';
-import Avatar from '@material-ui/core/Avatar';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Typography from '@material-ui/core/Typography';
+import { styled, Theme } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Divider from '@mui/material/Divider';
+import Skeleton from '@mui/material/Skeleton';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/router';
 import json2mq from 'json2mq';
 
 import {
-  PRIMARY_SUBHEADER_ID,
-  SECONDARY_SUBHEADER_ID,
   ContestGrid,
   ContestNavigation,
   Page,
@@ -27,53 +25,65 @@ import {
 const avatarSize = 45;
 const mobileAvatarSize = 40;
 
-const useStyles = makeStyles((theme) => ({
-  navigationSubheader: {
+const PREFIX = 'UserPage';
+const classes = {
+  navigationSubheader: `${PREFIX}-navigationSubheader`,
+  profileSubheader: `${PREFIX}-profileSubheader`,
+  profileSubheaderText: `${PREFIX}-profileSubheaderText`,
+  divider: `${PREFIX}-divider`,
+  username: `${PREFIX}-username`,
+  contestsCounter: `${PREFIX}-contestsCounter`,
+  avatar: `${PREFIX}-avatar`,
+};
+
+const StyledSubheader = styled(Subheader)(({ theme }) => ({
+  [`&.${classes.navigationSubheader}`]: {
     display: 'flex',
     justifyContent: 'flex-end',
     padding: theme.spacing(1),
   },
-  profileSubheader: {
+
+  [`&.${classes.profileSubheader}`]: {
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(1),
     color: theme.palette.text.primary,
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       padding: theme.spacing(0.5, 1),
     },
   },
-  profileSubheaderText: {
+
+  [`& .${classes.profileSubheaderText}`]: {
     display: 'inline-flex',
     alignItems: 'center',
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       alignItems: 'flex-start',
       flexDirection: 'column',
-      '& $divider': {
-        display: 'none',
-      },
     },
   },
-  divider: {
+
+  [`& .${classes.divider}`]: {
     width: 2,
     height: 32,
     margin: theme.spacing(0, 3),
+    [theme.breakpoints.down('md')]: { display: 'none' },
   },
-  username: {
-    [theme.breakpoints.down('sm')]: {
+  [`& .${classes.username}`]: {
+    [theme.breakpoints.down('md')]: {
       fontSize: '0.9rem',
       fontWeight: theme.typography.fontWeightMedium,
     },
   },
-  contestsCounter: {
-    [theme.breakpoints.down('sm')]: {
+  [`& .${classes.contestsCounter}`]: {
+    [theme.breakpoints.down('md')]: {
       fontSize: '0.8rem',
     },
   },
-  avatar: {
+  [`& .${classes.avatar}`]: {
     width: avatarSize,
     height: avatarSize,
     marginRight: theme.spacing(1),
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('md')]: {
       width: mobileAvatarSize,
       height: mobileAvatarSize,
     },
@@ -86,7 +96,6 @@ export interface UserPageProps {
 
 export const UserPage: React.FC<UserPageProps> = ({ initialUser }) => {
   const { query: { username = initialUser.username } = {} } = useRouter() || {};
-  const classes = useStyles();
   const [sortBy] = useQueryState('sortBy', 'POPULAR');
   const [search] = useQueryState('search', '');
   const { data } = useContestAllInfinite({
@@ -112,14 +121,10 @@ export const UserPage: React.FC<UserPageProps> = ({ initialUser }) => {
       subHeader={
         <>
           {isLoading ? (
-            <Subheader
-              id={PRIMARY_SUBHEADER_ID}
-              className={classes.profileSubheader}
-              style={{ zIndex: 1001 }}
-            >
+            <StyledSubheader className={classes.profileSubheader}>
               <Skeleton
                 animation="wave"
-                variant="circle"
+                variant="circular"
                 className={classes.avatar}
               />
               <Skeleton
@@ -130,13 +135,9 @@ export const UserPage: React.FC<UserPageProps> = ({ initialUser }) => {
               />
               <Divider orientation="vertical" className={classes.divider} />
               <Skeleton animation="wave" height={16} width={100} />
-            </Subheader>
+            </StyledSubheader>
           ) : (
-            <Subheader
-              id={PRIMARY_SUBHEADER_ID}
-              className={classes.profileSubheader}
-              style={{ zIndex: 1001 }}
-            >
+            <StyledSubheader className={classes.profileSubheader}>
               <Avatar src={user.avatar} className={classes.avatar} />
               <div className={classes.profileSubheaderText}>
                 <Typography variant="h5" className={classes.username}>
@@ -147,14 +148,10 @@ export const UserPage: React.FC<UserPageProps> = ({ initialUser }) => {
                   {pages?.[0]?.data?.totalItems || 0} contests
                 </Typography>
               </div>
-            </Subheader>
+            </StyledSubheader>
           )}
           {matchesMaxWidth1024 && (
-            <Subheader
-              id={SECONDARY_SUBHEADER_ID}
-              className={classes.navigationSubheader}
-              animated
-            >
+            <Subheader className={classes.navigationSubheader} animated>
               <ContestNavigation />
             </Subheader>
           )}

@@ -1,31 +1,83 @@
 import React from 'react';
-import { Paper } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
-import IconButton from '@material-ui/core/IconButton';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Skeleton from '@material-ui/lab/Skeleton';
+import { styled } from '@mui/material/styles';
+import { Paper } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import IconButton from '@mui/material/IconButton';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Skeleton from '@mui/material/Skeleton';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
-import classNames from 'classnames';
+// import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 
-import { useStyles } from './ContestCard';
+const PREFIX = 'ContestCardSkeleton';
+
+const classes = {
+  media: `${PREFIX}-media`,
+  title: `${PREFIX}-title`,
+  actions: `${PREFIX}-actions`,
+  cardHeader: `${PREFIX}-cardHeader`,
+  cardContent: `${PREFIX}-cardContent`,
+};
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  width: '100%',
+  maxWidth: 345,
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  borderRadius: 8,
+  overflow: 'visible',
+
+  [`& .${classes.media}`]: {
+    position: 'relative',
+    height: 0,
+    paddingTop: '75%',
+  },
+
+  [`& .${classes.title}`]: {
+    textTransform: 'none',
+    color: theme.palette.text.primary,
+    fontWeight: theme.typography.fontWeightMedium,
+    '&:hover': {
+      textDecoration: 'underline',
+      color: theme.palette.text.primary,
+    },
+  },
+
+  [`& .${classes.actions}`]: {
+    marginTop: 'auto',
+    padding: theme.spacing(0, 0.5, 0.5),
+  },
+
+  [`& .${classes.cardHeader}`]: {
+    padding: theme.spacing(1, 1.5),
+  },
+
+  [`& .${classes.cardContent}`]: {
+    padding: theme.spacing(1, 1.5),
+  },
+}));
 
 export const ContestCardSkeleton: React.FC = () => {
-  const classes = useStyles();
-  const shadowStyles = useOverShadowStyles();
+  // const shadowStyles = useOverShadowStyles();
+
   return (
-    <Card className={classNames(classes.root, shadowStyles.root)}>
+    <StyledCard>
       <CardHeader
         className={classes.cardHeader}
         avatar={
-          <Skeleton animation="wave" variant="circle" width={40} height={40} />
+          <Skeleton
+            animation="wave"
+            variant="circular"
+            width={40}
+            height={40}
+          />
         }
         action={
-          <IconButton aria-label="settings">
+          <IconButton aria-label="settings" size="large">
             <MoreVertIcon />
           </IconButton>
         }
@@ -34,42 +86,46 @@ export const ContestCardSkeleton: React.FC = () => {
             animation="wave"
             height={10}
             width="80%"
-            style={{ marginBottom: 6 }}
+            sx={{ mb: '6px' }}
           />
         }
         subheader={<Skeleton animation="wave" height={10} width="40%" />}
       />
-      <Skeleton animation="wave" variant="rect" className={classes.media} />
+      <Skeleton
+        animation="wave"
+        variant="rectangular"
+        className={classes.media}
+      />
       <Paper
-        style={{ height: 40, backgroundColor: '#fafafa' }}
+        sx={{ height: 40, backgroundColor: '#fafafa' }}
         elevation={0}
         square
       />
       <CardContent className={classes.cardContent}>
-        <Skeleton animation="wave" height={16} style={{ margin: '6px 0' }} />
+        <Skeleton animation="wave" height={16} sx={{ m: '6px 0' }} />
         <Skeleton
           animation="wave"
           height={14}
-          style={{ margin: '3px 0' }}
+          sx={{ m: '3px 0' }}
           width="80%"
         />
         <Skeleton
           animation="wave"
           height={14}
-          style={{ margin: '3px 0' }}
+          sx={{ m: '3px 0' }}
           width="90%"
         />
       </CardContent>
       <CardActions
         className={classes.actions}
-        style={{ height: 44 }}
+        sx={{ height: 44 }}
         disableSpacing
       >
         <Skeleton
           animation="wave"
           width={20}
           height={33.45}
-          style={{ marginLeft: 12 }}
+          sx={{ ml: '12px' }}
         />
         {/* TODO: add to favorites skeleton */}
         {/*<Skeleton*/}
@@ -82,9 +138,9 @@ export const ContestCardSkeleton: React.FC = () => {
           animation="wave"
           width={20}
           height={33.45}
-          style={{ margin: '12px 12px 12px auto' }}
+          sx={{ m: '12px', ml: 'auto' }}
         />
       </CardActions>
-    </Card>
+    </StyledCard>
   );
 };

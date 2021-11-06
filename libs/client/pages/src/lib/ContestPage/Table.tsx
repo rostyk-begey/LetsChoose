@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo } from 'react';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import MuiTable from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import MuiTableRow from '@material-ui/core/TableRow';
+import { ContestItemDto } from '@lets-choose/common/dto';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import MuiTable from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import MuiTableRow from '@mui/material/TableRow';
 import { useTable, Column } from 'react-table';
 import json2mq from 'json2mq';
 
@@ -13,7 +14,7 @@ import { TableRow } from './TableRow';
 import { TableRowSkeleton } from './TableRowSkeleton';
 
 export interface TableProps {
-  data: any;
+  data: ContestItemDto[];
   skeleton?: boolean;
 }
 
@@ -82,7 +83,7 @@ export const Table: React.FC<TableProps> = ({ data, skeleton }) => {
     prepareRow, // Prepare the row (this function needs to be called for each row before getting the row props)
     setHiddenColumns,
   } = useTable({
-    columns,
+    columns: columns as any, // TODO: fix
     data,
     initialState: {
       hiddenColumns: defaultHiddenColumns,

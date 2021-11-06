@@ -1,5 +1,6 @@
+import React from 'react';
 import { Story, Meta } from '@storybook/react';
-import { Subheader, SubheaderProps as SubheaderProps } from './Subheader';
+import { Subheader, SubheaderProps } from './Subheader';
 
 export default {
   component: Subheader,

@@ -1,30 +1,12 @@
 import React, { useRef, useState } from 'react';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import SearchOutlined from '@material-ui/icons/SearchOutlined';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import SearchOutlined from '@mui/icons-material/SearchOutlined';
 import throttle from 'lodash/throttle';
-import classNames from 'classnames';
 
 import { useQueryState } from '@lets-choose/client/hooks';
-
-const useStyles = makeStyles((theme) => ({
-  sortButton: {
-    width: 100,
-  },
-  marginLeft: {
-    margin: theme.spacing(0, 0, 0, 1),
-  },
-  search: {
-    maxWidth: 300,
-    width: '100%',
-  },
-  searchInput: {
-    height: 36,
-  },
-}));
 
 enum SORT_OPTIONS {
   POPULAR = 'POPULAR',
@@ -44,20 +26,19 @@ export const ContestNavigation: React.FC = () => {
     throttled(value);
     setSearch(value);
   };
-  const classes = useStyles();
 
   return (
     <>
       <ButtonGroup color="primary" disableElevation>
         <Button
-          className={classes.sortButton}
+          sx={{ width: 100 }}
           variant={sortBy === SORT_OPTIONS.POPULAR ? 'contained' : 'outlined'}
           onClick={() => setSortBy(SORT_OPTIONS.POPULAR)}
         >
           Popular
         </Button>
         <Button
-          className={classes.sortButton}
+          sx={{ width: 100 }}
           variant={sortBy === SORT_OPTIONS.NEWEST ? 'contained' : 'outlined'}
           onClick={() => setSortBy(SORT_OPTIONS.NEWEST)}
         >
@@ -69,10 +50,17 @@ export const ContestNavigation: React.FC = () => {
         placeholder="Search"
         variant="outlined"
         size="small"
-        className={classNames(classes.marginLeft, classes.search)}
+        sx={{
+          maxWidth: 300,
+          width: '100%',
+          m: 0,
+          ml: 1,
+        }}
         value={search ?? searchQuery}
         InputProps={{
-          className: classes.searchInput,
+          sx: {
+            height: 36,
+          },
           endAdornment: (
             <InputAdornment position="end">
               <SearchOutlined />

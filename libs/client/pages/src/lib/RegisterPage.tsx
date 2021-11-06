@@ -2,14 +2,14 @@ import React from 'react';
 import { NextSeo } from 'next-seo';
 import { useSnackbar } from 'notistack';
 import { AuthRegisterDto } from '@lets-choose/common/dto';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
 import RouterLink from 'next/link';
 import { GoogleLoginResponse } from 'react-google-login';
 import { useForm, FormProvider } from 'react-hook-form';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import AlternateEmailOutlinedIcon from '@material-ui/icons/AlternateEmailOutlined';
-import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import AlternateEmailOutlinedIcon from '@mui/icons-material/AlternateEmailOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 
 import {
   FormTextInput,

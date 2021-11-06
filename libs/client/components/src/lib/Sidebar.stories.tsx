@@ -1,5 +1,6 @@
+import React from 'react';
 import { Story, Meta } from '@storybook/react';
-import { Sidebar, SidebarProps as SidebarProps } from './Sidebar';
+import { Sidebar, SidebarProps } from './Sidebar';
 
 export default {
   component: Sidebar,

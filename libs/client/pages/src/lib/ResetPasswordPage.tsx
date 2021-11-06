@@ -3,9 +3,9 @@ import { useForm, FormProvider } from 'react-hook-form';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/router';
 import { AuthResetPasswordDto } from '@lets-choose/common/dto';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import {
   FormTextInputProps,

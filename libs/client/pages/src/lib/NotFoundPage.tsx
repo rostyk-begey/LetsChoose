@@ -1,28 +1,31 @@
 import React from 'react';
+import { styled } from '@mui/material/styles';
 import { NextSeo } from 'next-seo';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 
 import { Page } from '@lets-choose/client/components';
 
-const useStyles = makeStyles(() => ({
-  root: {
-    display: 'flex',
-  },
-  title: {
+const PREFIX = 'NotFoundPage';
+
+const classes = {
+  title: `${PREFIX}-title`,
+};
+
+const StyledPage = styled(Page)({
+  display: 'flex',
+
+  [`& .${classes.title}`]: {
     margin: 'auto',
   },
-}));
+});
 
 export const NotFoundPage: React.FC = () => {
-  const classes = useStyles();
-
   return (
-    <Page className={classes.root}>
+    <StyledPage>
       <NextSeo title="Not found" />
       <Typography variant="h1" className={classes.title}>
         Page not found...
       </Typography>
-    </Page>
+    </StyledPage>
   );
 };

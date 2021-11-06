@@ -1,5 +1,5 @@
-import { useSnackbar } from 'notistack';
 import React, { useCallback, useState } from 'react';
+import { useSnackbar } from 'notistack';
 import { ROUTES } from '@lets-choose/client/utils';
 import { CreateContestData } from '@lets-choose/common/dto';
 import { NextSeo } from 'next-seo';

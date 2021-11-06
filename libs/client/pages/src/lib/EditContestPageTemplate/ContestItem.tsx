@@ -1,26 +1,130 @@
 import React, {
-  ChangeEventHandler,
+  CSSProperties,
   memo,
-  useContext,
-  useMemo,
   useRef,
+  useMemo,
   useState,
+  useContext,
+  ChangeEventHandler,
 } from 'react';
-import Skeleton from '@material-ui/lab/Skeleton';
 import { FormTextInputProps } from '@lets-choose/client/components';
-import Box from '@material-ui/core/Box';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import IconButton from '@material-ui/core/IconButton';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import TextField from '@material-ui/core/TextField';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { alpha } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import ImageListItemBar from '@mui/material/ImageListItemBar';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Skeleton from '@mui/material/Skeleton';
+import TextField from '@mui/material/TextField';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import classNames from 'classnames';
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd';
 import { ItemsStateContext } from './ContestItemsStateProvider';
+
+const PREFIX = 'ContestItem';
+
+const classes = {
+  icon: `${PREFIX}-icon`,
+  tile: `${PREFIX}-tile`,
+  hidden: `${PREFIX}-hidden`,
+  transition: `${PREFIX}-transition`,
+  tileImage: `${PREFIX}-tileImage`,
+  titleBar: `${PREFIX}-titleBar`,
+  checkboxLabel: `${PREFIX}-checkboxLabel`,
+  checkbox: `${PREFIX}-checkbox`,
+  titleBarTitle: `${PREFIX}-titleBarTitle`,
+  titleBarTop: `${PREFIX}-titleBarTop`,
+  titleBarBottom: `${PREFIX}-titleBarBottom`,
+  inputContainer: `${PREFIX}-inputContainer`,
+};
+
+const tileBarActive: CSSProperties = {
+  opacity: 1,
+  visibility: 'visible',
+  transform: 'none',
+};
+
+const Root = styled('div')<StyleProps>(({ theme, isSelected }) => ({
+  paddingTop: '75%',
+  position: 'relative',
+  transition: 'all 0.3s ease',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  [`&:hover .${classes.titleBar}`]: tileBarActive,
+
+  [`& .${classes.icon}`]: {
+    color: alpha(theme.palette.common.white, 0.54),
+  },
+
+  [`& .${classes.hidden}`]: {
+    opacity: 0,
+  },
+
+  [`& .${classes.transition}`]: {
+    transition: 'opacity 0.3s ease',
+  },
+
+  [`& .${classes.tileImage}`]: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+
+  [`& .${classes.titleBar}`]: {
+    color: 'white',
+    opacity: 0,
+    visibility: 'hidden',
+    transition: 'all 0.5s ease',
+    ...(isSelected && tileBarActive),
+  },
+
+  [`& .${classes.checkboxLabel}`]: {
+    color: 'white',
+  },
+
+  [`& .${classes.checkbox}`]: {
+    borderColor: 'white',
+  },
+
+  [`& .${classes.titleBarTitle}`]: {
+    overflow: 'visible',
+    color: 'white',
+  },
+
+  [`& .${classes.titleBarTop}`]: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    background: `
+        linear-gradient(
+          to top,
+          ${alpha(theme.palette.common.black, 0.3)} 0%, 
+          ${alpha(theme.palette.common.black, 0.7)} 70%,
+          ${theme.palette.common.black} 100%)`,
+  },
+
+  [`& .${classes.titleBarBottom}`]: {
+    background: `
+        linear-gradient( 
+          to bottom,
+          ${alpha(theme.palette.common.black, 0.3)} 0%,
+          ${alpha(theme.palette.common.black, 0.7)} 70%,
+          ${theme.palette.common.black} 100%)`,
+  },
+
+  [`& .${classes.inputContainer}`]: {
+    position: 'absolute',
+    width: '100%',
+    top: 0,
+    // opacity: isEditing ? 1 : 0,
+  },
+}));
 
 export interface ContestItemProps {
   img: string;
@@ -41,76 +145,11 @@ const titleInput: FormTextInputProps = {
   },
 };
 
-const tileBarActive: any = {
-  opacity: 1,
-  visibility: 'visible',
-  transform: 'none',
-};
-
 interface StyleProps {
   isSelected: boolean;
+  isEditing: boolean;
+  image: string;
 }
-
-const useStyles = makeStyles((theme) => ({
-  icon: {
-    color: 'rgba(255, 255, 255, 0.54)',
-  },
-  tile: {
-    paddingTop: '75%',
-    position: 'relative',
-    '&:hover $titleBar': tileBarActive,
-    overflow: 'hidden',
-    cursor: 'move',
-  },
-  tileImage: () => ({
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  }),
-  hidden: {
-    opacity: 0,
-  },
-  transition: {
-    transition: 'opacity 0.3s ease',
-  },
-  titleBar: ({ isSelected }: StyleProps) => ({
-    color: 'white',
-    opacity: 0,
-    visibility: 'hidden',
-    transition: 'all 0.5s ease',
-    ...(isSelected && tileBarActive),
-  }),
-  checkboxLabel: {
-    color: 'white',
-  },
-  checkbox: {
-    borderColor: 'white',
-  },
-  titleBarTitle: {
-    overflow: 'visible',
-    color: 'white',
-  },
-  titleBarTop: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    background:
-      'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
-      'rgba(0,0,0,0.3) 80%, rgba(0,0,0,0) 100%)',
-  },
-  titleBarBottom: {
-    background:
-      'linear-gradient(to top, rgba(0,0,0,0.7) 0%, ' +
-      'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-  },
-  inputContainer: {
-    position: 'absolute',
-    width: '100%',
-    top: 0,
-  },
-}));
 
 enum DndTypes {
   ContestItem = 'ContestItem',
@@ -123,7 +162,8 @@ interface DragItem {
 }
 
 export const ContestItem: React.FC<ContestItemProps> = memo(
-  ({ id, img: image, title, index }) => {
+  ({ id, index, img: image, title }) => {
+    const inputRef = useRef<HTMLDivElement>(null);
     const {
       swapIds,
       selectedItems,
@@ -136,12 +176,6 @@ export const ContestItem: React.FC<ContestItemProps> = memo(
     const [imageLoaded, setImageLoaded] = useState(false);
     const isSelected = selectedItems.includes(id);
     const isEditing = editedItem === id;
-    const classes = useStyles({ isSelected });
-    const hidden = (isHidden = false) => {
-      return classNames(classes.transition, {
-        [classes.hidden]: isHidden,
-      });
-    };
     const ref = useRef<HTMLDivElement>(null);
     const [{ isDragging, handlerId }, connectDrag, preview] = useDrag(
       {
@@ -233,15 +267,21 @@ export const ContestItem: React.FC<ContestItemProps> = memo(
     };
 
     const handleToggleEdit = () => {
+      ref.current?.focus();
       toggleEditedItem(id);
     };
 
     return (
-      <div ref={ref} className={classes.tile} style={containerStyle}>
+      <Root
+        isEditing={isEditing}
+        isSelected={isSelected}
+        image={image}
+        onClick={(event) => event.stopPropagation()}
+        style={containerStyle}
+      >
         <Skeleton
           animation="wave"
           className={classes.tileImage}
-          variant="rect"
           style={{
             display: isDragging ? 'none' : 'block',
             visibility: isDragging || imageLoaded ? 'hidden' : 'visible',
@@ -262,21 +302,20 @@ export const ContestItem: React.FC<ContestItemProps> = memo(
             mt={8}
             display="flex"
             justifyContent="center"
-            className={classNames(
-              classes.inputContainer,
-              hidden(!isEditing || isDragging),
-            )}
+            className={classes.inputContainer}
           >
             <TextField
               size="small"
               defaultValue={title}
+              ref={inputRef}
+              onFocus={(event) => event.stopPropagation()}
               onChange={handleTitleChange}
               {...titleInput.fieldProps}
             />
           </Box>
         )}
-        <GridListTileBar
-          titlePosition="top"
+        <ImageListItemBar
+          position="top"
           title={
             !isEditing && (
               <FormControlLabel
@@ -293,11 +332,7 @@ export const ContestItem: React.FC<ContestItemProps> = memo(
               />
             )
           }
-          className={classNames(
-            classes.titleBar,
-            classes.titleBarTop,
-            hidden(isDragging),
-          )}
+          className={classNames(classes.titleBar, classes.titleBarTop)}
           classes={{
             title: classes.titleBarTitle,
             titleWrap: classes.titleBarTitle,
@@ -308,32 +343,30 @@ export const ContestItem: React.FC<ContestItemProps> = memo(
                 aria-label={`delete ${title}`}
                 className={classes.icon}
                 onClick={handleDelete}
+                size="large"
               >
                 <DeleteIcon />
               </IconButton>
             )
           }
         />
-        <GridListTileBar
+        <ImageListItemBar
           title={title}
-          className={classNames(
-            classes.titleBar,
-            classes.titleBarBottom,
-            hidden(isDragging),
-          )}
+          className={classNames(classes.titleBar, classes.titleBarBottom)}
           actionIcon={
             !isSelected && (
               <IconButton
                 aria-label={`edit ${title}`}
                 className={classes.icon}
                 onClick={handleToggleEdit}
+                size="large"
               >
                 {!isEditing ? <EditIcon /> : <HighlightOffIcon />}
               </IconButton>
             )
           }
         />
-      </div>
+      </Root>
     );
   },
   (prevProps, nextProps) => {
