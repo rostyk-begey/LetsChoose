@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { CSSProperties, memo, useRef } from 'react';
 import { alpha } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
@@ -30,16 +30,22 @@ const classes = {
   inputContainer: `${PREFIX}-inputContainer`,
 };
 
+const tileBarActive: CSSProperties = {
+  opacity: 1,
+  visibility: 'visible',
+  transform: 'none',
+};
+
 const Root = styled('div')<StyleProps>(
   ({ theme, image, isEditing, isSelected }) => ({
     paddingTop: '75%',
     position: 'relative',
-    '&:hover $titleBar': tileBarActive,
     transition: 'all 0.3s ease',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     ...(!isEditing && { backgroundImage: `url(${image})` }),
+    [`&:hover .${classes.titleBar}`]: tileBarActive,
 
     [`& .${classes.icon}`]: {
       color: alpha(theme.palette.common.white, 0.54),
@@ -79,18 +85,18 @@ const Root = styled('div')<StyleProps>(
       justifyContent: 'space-between',
       background: `
         linear-gradient(
-          to bottom,
-          ${alpha(theme.palette.common.black, 0.7)} 0%, 
-          ${alpha(theme.palette.common.black, 0.3)} 80%,
+          to top,
+          ${alpha(theme.palette.common.black, 0.3)} 0%, 
+          ${alpha(theme.palette.common.black, 0.7)} 70%,
           ${theme.palette.common.black} 100%)`,
     },
 
     [`& .${classes.titleBarBottom}`]: {
       background: `
         linear-gradient(
-          to top,
-          ${alpha(theme.palette.common.black, 0.7)} 0%,
-          ${alpha(theme.palette.common.black, 0.3)} 70%,
+          to bottom,
+          ${alpha(theme.palette.common.black, 0.3)} 0%,
+          ${alpha(theme.palette.common.black, 0.7)} 70%,
           ${theme.palette.common.black} 100%)`,
     },
 
@@ -127,12 +133,6 @@ const titleInput: FormTextInputProps = {
   },
 };
 
-const tileBarActive: any = {
-  opacity: 1,
-  visibility: 'visible',
-  transform: 'none',
-};
-
 interface StyleProps {
   isSelected: boolean;
   isEditing: boolean;
@@ -149,82 +149,91 @@ export const ContestItem: React.FC<ContestItemProps> = memo(
     onSelect,
     img: image,
     title,
-    idx,
-    ...props
-  }) => (
-    <Root
-      isEditing={isEditing}
-      isSelected={isSelected}
-      image={image}
-      {...props}
-    >
-      <Box
-        mt={8}
-        display="flex"
-        justifyContent="center"
-        className={classes.inputContainer}
+  }) => {
+    const inputRef = useRef<HTMLDivElement>(null);
+
+    return (
+      <Root
+        isEditing={isEditing}
+        isSelected={isSelected}
+        image={image}
+        onClick={(event) => event.stopPropagation()}
       >
-        <TextField
-          size="small"
-          defaultValue={title}
-          onChange={({ target: { value } }) => onChange(value)}
-          {...titleInput.fieldProps}
+        <Box
+          mt={8}
+          display="flex"
+          justifyContent="center"
+          className={classes.inputContainer}
+        >
+          <TextField
+            size="small"
+            defaultValue={title}
+            ref={inputRef}
+            onFocus={(event) => event.stopPropagation()}
+            onChange={({ target: { value } }) => onChange(value)}
+            {...titleInput.fieldProps}
+          />
+        </Box>
+        <ImageListItemBar
+          position="top"
+          title={
+            !isEditing && (
+              <FormControlLabel
+                className={classes.checkboxLabel}
+                control={
+                  <Checkbox
+                    color="primary"
+                    className={classes.checkbox}
+                    checked={isSelected}
+                    onChange={onSelect}
+                  />
+                }
+                label={!isSelected ? 'Select' : 'Unselect'}
+              />
+            )
+          }
+          className={classNames(classes.titleBar, classes.titleBarTop)}
+          classes={{
+            title: classes.titleBarTitle,
+            titleWrap: classes.titleBarTitle,
+          }}
+          actionIcon={
+            !isSelected && (
+              <IconButton
+                aria-label={`delete ${title}`}
+                className={classes.icon}
+                onClick={() => {
+                  onDeleteClick();
+                }}
+                size="large"
+              >
+                <DeleteIcon />
+              </IconButton>
+            )
+          }
         />
-      </Box>
-      <ImageListItemBar
-        position="top"
-        title={
-          !isEditing && (
-            <FormControlLabel
-              className={classes.checkboxLabel}
-              control={
-                <Checkbox
-                  color="primary"
-                  className={classes.checkbox}
-                  checked={isSelected}
-                  onChange={onSelect}
-                />
-              }
-              label={!isSelected ? 'Select' : 'Unselect'}
-            />
-          )
-        }
-        className={classNames(classes.titleBar, classes.titleBarTop)}
-        classes={{
-          title: classes.titleBarTitle,
-          titleWrap: classes.titleBarTitle,
-        }}
-        actionIcon={
-          !isSelected && (
-            <IconButton
-              aria-label={`delete ${title}`}
-              className={classes.icon}
-              onClick={onDeleteClick}
-              size="large"
-            >
-              <DeleteIcon />
-            </IconButton>
-          )
-        }
-      />
-      <ImageListItemBar
-        title={title}
-        className={classNames(classes.titleBar, classes.titleBarBottom)}
-        actionIcon={
-          !isSelected && (
-            <IconButton
-              aria-label={`edit ${title}`}
-              className={classes.icon}
-              onClick={onToggleEdit}
-              size="large"
-            >
-              {!isEditing ? <EditIcon /> : <HighlightOffIcon />}
-            </IconButton>
-          )
-        }
-      />
-    </Root>
-  ),
+        <ImageListItemBar
+          title={title}
+          className={classNames(classes.titleBar, classes.titleBarBottom)}
+          actionIcon={
+            !isSelected && (
+              <IconButton
+                aria-label={`edit ${title}`}
+                className={classes.icon}
+                onClick={() => {
+                  inputRef.current?.focus();
+                  onToggleEdit();
+                }}
+                size="large"
+              >
+                {!isEditing ? <EditIcon /> : <HighlightOffIcon />}
+              </IconButton>
+            )
+          }
+        />
+      </Root>
+    );
+  },
   (prevProps, nextProps) => {
     return (
       prevProps.title === nextProps.title &&

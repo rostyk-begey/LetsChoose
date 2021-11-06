@@ -43,6 +43,7 @@ const logoWhite = '/images/logo-white.png';
 
 export interface PageProps {
   withContestNavigation?: boolean;
+  isLoading?: boolean;
   className?: string;
   subHeader?: ReactNode;
 }
@@ -54,6 +55,7 @@ export const Page: React.FC<PageProps> = ({
   children,
   className,
   subHeader,
+  isLoading,
 }) => {
   const {
     data: { data: user } = {},
@@ -100,18 +102,18 @@ export const Page: React.FC<PageProps> = ({
   });
 
   const darkModeSwitch = (
-    <div>
-      <Tooltip
-        title="Toggle dark mode"
-        aria-label="toggle-dark-mode"
-        placement="bottom"
-        PopperProps={{ disablePortal: true }}
-      >
-        <IconButton onClick={() => setDarkMode(!darkMode)} size="large">
-          {darkMode ? <BrightnessHighIcon /> : <Brightness4Icon />}
-        </IconButton>
-      </Tooltip>
-    </div>
+    // <div>
+    <Tooltip
+      title="Toggle dark mode"
+      aria-label="toggle-dark-mode"
+      placement="bottom"
+      PopperProps={{ disablePortal: true }}
+    >
+      <IconButton onClick={() => setDarkMode(!darkMode)} size="large">
+        {darkMode ? <BrightnessHighIcon /> : <Brightness4Icon />}
+      </IconButton>
+    </Tooltip>
+    // </div>
   );
 
   return (
@@ -129,6 +131,7 @@ export const Page: React.FC<PageProps> = ({
           />
         </RouterLink>
       }
+      isLoading={isLoading}
       subHeader={subHeader}
       className={className}
       toolbarContent={

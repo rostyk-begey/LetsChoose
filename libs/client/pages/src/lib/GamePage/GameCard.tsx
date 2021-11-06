@@ -5,10 +5,10 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { useFourThreeCardMediaStyles } from '@mui-treasury/styles/cardMedia/fourThree';
+// import { useFourThreeCardMediaStyles } from '@mui-treasury/styles/cardMedia/fourThree';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
+// import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import Image from 'next/image';
 import { cloudinaryUploadPath } from '@lets-choose/client/utils';
 
@@ -36,16 +36,16 @@ export const GameCard: React.FC<GameCardProps> = ({
   item,
   onClick = () => null,
 }) => {
-  const cardMediaStyles = useFourThreeCardMediaStyles();
-  const shadowStyles = useOverShadowStyles();
+  // const cardMediaStyles = useFourThreeCardMediaStyles();
+  // const shadowStyles = useOverShadowStyles();
 
   if (!item) {
     return null;
   }
 
   return (
-    <StyledCard className={shadowStyles.root} onClick={onClick}>
-      <CardMedia classes={cardMediaStyles} className={classes.imageHolder}>
+    <StyledCard onClick={onClick}>
+      <CardMedia className={classes.imageHolder}>
         <Image
           src={cloudinaryUploadPath(item.image)}
           alt={item.title}

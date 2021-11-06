@@ -54,7 +54,7 @@ export const ContestNavigation: React.FC = () => {
           maxWidth: 300,
           width: '100%',
           m: 0,
-          mb: 1,
+          ml: 1,
         }}
         value={search ?? searchQuery}
         InputProps={{

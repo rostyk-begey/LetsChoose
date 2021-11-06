@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
-import { ContextValue } from '@mui-treasury/layout/Root/Root';
-import { alpha, styled } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -14,6 +15,7 @@ import {
   SidebarContent as MuiSidebarContent,
   EdgeTrigger as MuiEdgeTrigger,
   getCozyScheme,
+  ContextValue,
 } from '@mui-treasury/layout';
 import { OneTapContainer } from '../OneTapContainer';
 
@@ -33,6 +35,7 @@ export interface LayoutProps {
     sidebarState: ContextValue['state']['leftEdgeSidebar'],
   ) => ReactNode;
   toolbarContent?: ReactNode;
+  isLoading?: boolean;
 }
 
 const cozyScheme = getCozyScheme();
@@ -53,6 +56,7 @@ export const Layout: React.FC<LayoutProps> = ({
   children,
   primarySidebar,
   className,
+  isLoading,
 }) => (
   <Root
     scheme={{
@@ -88,6 +92,15 @@ export const Layout: React.FC<LayoutProps> = ({
   >
     {({ state: { leftEdgeSidebar } }) => (
       <>
+        <Backdrop
+          open={!!isLoading}
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 100,
+            color: 'common.white',
+          }}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <MuiHeader
           sx={{
             borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
@@ -95,7 +108,7 @@ export const Layout: React.FC<LayoutProps> = ({
           }}
         >
           <Toolbar>
-            <Button sx={{ padding: 0 }}>{title}</Button>
+            <Button sx={{ p: 0 }}>{title}</Button>
             {toolbarContent}
           </Toolbar>
         </MuiHeader>

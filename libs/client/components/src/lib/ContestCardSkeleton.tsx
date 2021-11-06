@@ -10,7 +10,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Skeleton from '@mui/material/Skeleton';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
+// import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 
 const PREFIX = 'ContestCardSkeleton';
 
@@ -62,10 +62,10 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 export const ContestCardSkeleton: React.FC = () => {
-  const shadowStyles = useOverShadowStyles();
+  // const shadowStyles = useOverShadowStyles();
 
   return (
-    <StyledCard className={shadowStyles.root}>
+    <StyledCard>
       <CardHeader
         className={classes.cardHeader}
         avatar={

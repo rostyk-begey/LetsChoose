@@ -36,7 +36,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import Skeleton from '@mui/material/Skeleton';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
+// import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import classNames from 'classnames';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -227,7 +227,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
   contest,
   onDelete,
 }) => {
-  const shadowStyles = useOverShadowStyles();
+  // const shadowStyles = useOverShadowStyles();
   const router = useRouter();
   const [isLinkCopied, setIsLinkCopied] = useState(false);
 
@@ -300,7 +300,7 @@ export const ContestCard: React.FC<ContestCardProps> = ({
   };
 
   return (
-    <StyledCard className={shadowStyles.root}>
+    <StyledCard>
       <CardHeader
         classes={{
           root: classes.cardHeader,

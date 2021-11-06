@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { styled } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { DropzoneDialog } from 'material-ui-dropzone';
 import Card from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
@@ -73,7 +72,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 export interface ContestItemsNavProps {
   className?: string;
   items: Item[];
-  onAddItems: (files: File[]) => void;
+  onAddItemsClick: () => void;
   selectedItems: number[];
   onSelectAllToggle: () => void;
   onDeleteSelectedItems: () => void;
@@ -82,12 +81,11 @@ export interface ContestItemsNavProps {
 export const ContestItemsNav: React.FC<ContestItemsNavProps> = ({
   items,
   className,
-  onAddItems,
+  onAddItemsClick,
   selectedItems,
   onSelectAllToggle,
   onDeleteSelectedItems,
 }) => {
-  const [itemsDialogOpen, setItemsDialogOpen] = useState(false);
   const matchesMinWidth600 = useMediaQuery(
     json2mq({
       minWidth: 600,
@@ -96,19 +94,6 @@ export const ContestItemsNav: React.FC<ContestItemsNavProps> = ({
 
   return (
     <>
-      <DropzoneDialog
-        filesLimit={100}
-        open={itemsDialogOpen}
-        onSave={(files) => {
-          onAddItems(files);
-          setItemsDialogOpen(false);
-        }}
-        acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
-        maxFileSize={5000000}
-        showAlerts={['error', 'info']}
-        onClose={() => setItemsDialogOpen(false)}
-        showPreviews
-      />
       <StyledCard className={className}>
         <Typography variant="h5" className={classes.itemsUploadHeader}>
           Items
@@ -148,7 +133,7 @@ export const ContestItemsNav: React.FC<ContestItemsNavProps> = ({
             variant="extended"
             size="small"
             className={classes.actionButton}
-            onClick={() => setItemsDialogOpen(true)}
+            onClick={onAddItemsClick}
           >
             <AddCircleIcon
               fontSize="small"
