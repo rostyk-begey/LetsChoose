@@ -1,3 +1,4 @@
+import jsonToFormData from 'json-form-data';
 import React, { useCallback, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { ROUTES } from '@lets-choose/client/utils';
@@ -33,7 +34,7 @@ export const CreateContestPage: React.FC = () => {
   return (
     <>
       <NextSeo title="New contest" />
-      <EditContestPageTemplate
+      <EditContestPageTemplate<CreateContestData>
         withItemsUpload
         title="Create a new contest"
         submitButtonText="Save"

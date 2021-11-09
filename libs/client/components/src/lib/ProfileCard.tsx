@@ -67,7 +67,7 @@ const StyledCard = styled(Card)(({ theme: { palette, ...theme } }) => ({
   },
 
   [`& .${classes.item}`]: {
-    borderColor: alpha(theme.palette.common.black, 0.08),
+    borderColor: alpha(palette.common.black, 0.08),
     height: '50%',
   },
 }));

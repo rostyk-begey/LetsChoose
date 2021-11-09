@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Box from '@mui/material/Box';
 import { alpha, styled } from '@mui/material/styles';
 import { Alert } from '@mui/material';
 import Card from '@mui/material/Card';
 import { DropzoneState } from 'react-dropzone';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
 
 import { ContestItem } from './ContestItem';
-import { Item } from './useItemsUpload';
+import { ItemsStateContext } from './ContestItemsStateProvider';
 
 const PREFIX = 'ContestItemsList';
 
@@ -60,61 +62,48 @@ const Root = styled('div')(({ theme }) => ({
 export interface ContestItemListProps {
   dropzoneState: DropzoneState;
   className?: string;
-  items: Item[];
   error?: { message: string };
-  editedItem: number;
-  selectedItems: number[];
-  onToggleSelectItem: (i: number) => void;
-  onDeleteItem: (i: number) => void;
-  onToggleItemEdit: (i: number) => void;
-  onItemChange: (i: number, title: string) => void;
 }
 
 export const ContestItemsList: React.FC<ContestItemListProps> = ({
-  items,
   error,
   className,
-  editedItem,
-  selectedItems,
-  onToggleSelectItem,
-  onDeleteItem,
-  onToggleItemEdit,
-  onItemChange,
   dropzoneState,
-}) => (
-  <Root className={className}>
-    {error && (
-      <Alert severity="error" className={classes.error}>
-        {error.message}
-      </Alert>
-    )}
-    <Card sx={{ p: 1 }} {...dropzoneState.getRootProps()}>
-      <input {...dropzoneState.getInputProps()} />
-      {!items.length ? (
-        <div className={classes.dndMessage}>
-          Drag & Drop images here to upload
-        </div>
-      ) : (
-        <Box
-          className={classes.grid}
-          sx={{ opacity: dropzoneState.isDragAccept ? 0.7 : 1 }}
-        >
-          {items.map(({ id, title, image }, i) => (
-            <ContestItem
-              key={id}
-              idx={i + ''}
-              isEditing={editedItem === i && !selectedItems.includes(i)}
-              isSelected={selectedItems.includes(i)}
-              onChange={(title) => onItemChange(i, title)}
-              onToggleEdit={() => onToggleItemEdit(i)}
-              onSelect={() => onToggleSelectItem(i)}
-              onDeleteClick={() => onDeleteItem(i)}
-              img={URL.createObjectURL(image)}
-              title={title}
-            />
-          ))}
-        </Box>
-      )}
-    </Card>
-  </Root>
-);
+}) => {
+  const { items } = useContext(ItemsStateContext);
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <Root className={className}>
+        {error && (
+          <Alert severity="error" className={classes.error}>
+            {error.message}
+          </Alert>
+        )}
+        <Card sx={{ p: 1 }} {...dropzoneState.getRootProps()}>
+          <input {...dropzoneState.getInputProps()} />
+          {!items.length ? (
+            <div className={classes.dndMessage}>
+              Drag & Drop images here to upload
+            </div>
+          ) : (
+            <Box
+              className={classes.grid}
+              sx={{ opacity: dropzoneState.isDragAccept ? 0.7 : 1 }}
+            >
+              {items.map(({ id, title, imageSrc }, i) => (
+                <ContestItem
+                  key={id}
+                  id={id}
+                  index={i}
+                  img={imageSrc}
+                  title={title}
+                />
+              ))}
+            </Box>
+          )}
+        </Card>
+      </Root>
+    </DndProvider>
+  );
+};

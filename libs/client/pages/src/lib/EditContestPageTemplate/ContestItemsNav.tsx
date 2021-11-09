@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Card from '@mui/material/Card';
@@ -11,8 +11,12 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import json2mq from 'json2mq';
 
-import { Item } from './useItemsUpload';
+import { ItemsStateContext } from './ContestItemsStateProvider';
 
+export interface ContestItemsNavProps {
+  className?: string;
+  onAddItemsClick: () => void;
+}
 const PREFIX = 'ContestItemsNav';
 
 const classes = {
@@ -69,80 +73,67 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-export interface ContestItemsNavProps {
-  className?: string;
-  items: Item[];
-  onAddItemsClick: () => void;
-  selectedItems: number[];
-  onSelectAllToggle: () => void;
-  onDeleteSelectedItems: () => void;
-}
-
 export const ContestItemsNav: React.FC<ContestItemsNavProps> = ({
-  items,
   className,
   onAddItemsClick,
-  selectedItems,
-  onSelectAllToggle,
-  onDeleteSelectedItems,
 }) => {
   const matchesMinWidth600 = useMediaQuery(
     json2mq({
       minWidth: 600,
     }),
   );
+  const { items, selectedItems, toggleSelectAll, deleteSelectedItems } =
+    useContext(ItemsStateContext);
 
   return (
-    <>
-      <StyledCard className={className}>
-        <Typography variant="h5" className={classes.itemsUploadHeader}>
-          Items
-        </Typography>
-        <Divider flexItem orientation="vertical" className={classes.divider} />
-        <div className={classes.buttonRow}>
-          <FormControlLabel
-            classes={{
-              root: classes.selectAllButton,
-              label: classes.selectAllButtonLabel,
-            }}
-            disabled={items.length === 0}
-            control={
-              <Checkbox
-                checked={selectedItems.length > 0}
-                onChange={onSelectAllToggle}
-                color="primary"
-                indeterminate={
-                  !!selectedItems.length && selectedItems.length < items.length
-                }
-              />
-            }
-            label={selectedItems.length === 0 ? 'Select All' : 'Unselect'}
-          />
-          <Fab
-            color="primary"
-            variant="extended"
-            size="small"
-            className={classes.actionButton}
-            disabled={selectedItems.length === 0}
-            onClick={onDeleteSelectedItems}
-          >
-            <DeleteForeverIcon fontSize="small" />
-          </Fab>
-          <Fab
-            color="primary"
-            variant="extended"
-            size="small"
-            className={classes.actionButton}
-            onClick={onAddItemsClick}
-          >
-            <AddCircleIcon
-              fontSize="small"
-              className={classes.actionButtonIcon}
+    <StyledCard className={className}>
+      <Typography variant="h5" className={classes.itemsUploadHeader}>
+        Items
+      </Typography>
+      <Divider flexItem orientation="vertical" className={classes.divider} />
+      <div className={classes.buttonRow}>
+        <FormControlLabel
+          classes={{
+            root: classes.selectAllButton,
+            label: classes.selectAllButtonLabel,
+          }}
+          disabled={items.length === 0}
+          control={
+            <Checkbox
+              checked={selectedItems.length > 0}
+              onChange={toggleSelectAll}
+              color="primary"
+              indeterminate={
+                !!selectedItems.length && selectedItems.length < items.length
+              }
             />
-            Add {matchesMinWidth600 && 'items'}
-          </Fab>
-        </div>
-      </StyledCard>
-    </>
+          }
+          label={selectedItems.length === 0 ? 'Select All' : 'Unselect'}
+        />
+        <Fab
+          color="primary"
+          variant="extended"
+          size="small"
+          className={classes.actionButton}
+          disabled={selectedItems.length === 0}
+          onClick={deleteSelectedItems}
+        >
+          <DeleteForeverIcon fontSize="small" />
+        </Fab>
+        <Fab
+          color="primary"
+          variant="extended"
+          size="small"
+          className={classes.actionButton}
+          onClick={onAddItemsClick}
+        >
+          <AddCircleIcon
+            fontSize="small"
+            className={classes.actionButtonIcon}
+          />
+          Add {matchesMinWidth600 && 'items'}
+        </Fab>
+      </div>
+    </StyledCard>
   );
 };

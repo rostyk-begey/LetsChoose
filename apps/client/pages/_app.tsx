@@ -4,6 +4,7 @@ import { ThemeProvider } from '@lets-choose/client/components';
 import { queryClient } from '@lets-choose/client/utils';
 import StyledEngineProvider from '@mui/material/StyledEngineProvider';
 import CssBaseline from '@mui/material/CssBaseline';
+import GlobalStyles from '@mui/material/GlobalStyles';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import 'animate.css';
@@ -102,6 +103,15 @@ const MyApp: React.FC<MyAppProps> = ({
               )}
             >
               <ConfirmProvider>
+                <GlobalStyles
+                  styles={{
+                    '#__next': {
+                      display: 'flex',
+                      height: '100vh',
+                      flexDirection: 'column',
+                    },
+                  }}
+                />
                 <Component {...pageProps} />
                 <ReactQueryDevtools position="bottom-right" />
               </ConfirmProvider>

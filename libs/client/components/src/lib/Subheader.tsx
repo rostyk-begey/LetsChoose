@@ -25,7 +25,7 @@ export const Subheader: React.FC<SubheaderProps> = ({
     <Box
       sx={{
         py: 1,
-        px: 0,
+        px: 2,
         height: '100%',
         borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
       }}
