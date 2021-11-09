@@ -9,7 +9,7 @@ import Card from '@mui/material/Card';
 export interface AuthFormCardProps {
   title: string;
   submitButtonText: string;
-  onSubmit: () => any;
+  onSubmit: () => void;
   submitDisabled?: boolean;
   cardAfter: ReactNode;
 }

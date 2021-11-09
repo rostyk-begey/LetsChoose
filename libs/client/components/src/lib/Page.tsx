@@ -102,7 +102,6 @@ export const Page: React.FC<PageProps> = ({
   });
 
   const darkModeSwitch = (
-    // <div>
     <Tooltip
       title="Toggle dark mode"
       aria-label="toggle-dark-mode"
@@ -113,22 +112,23 @@ export const Page: React.FC<PageProps> = ({
         {darkMode ? <BrightnessHighIcon /> : <Brightness4Icon />}
       </IconButton>
     </Tooltip>
-    // </div>
   );
 
   return (
     <StyledLayout
       title={
         <RouterLink href={ROUTES.HOME}>
-          <Image
-            className={classes.logo}
-            loader={({ src }) => src}
-            width={182}
-            height={46}
-            unoptimized
-            src={darkMode ? logoWhite : logo}
-            alt=""
-          />
+          <Box sx={{ '& div': { display: 'block' } }}>
+            <Image
+              className={classes.logo}
+              loader={({ src }) => src}
+              width={182}
+              height={46}
+              unoptimized
+              src={darkMode ? logoWhite : logo}
+              alt=""
+            />
+          </Box>
         </RouterLink>
       }
       isLoading={isLoading}

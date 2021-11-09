@@ -2,6 +2,7 @@ import { ROUTES } from '@lets-choose/client/utils';
 import {
   ContestDto,
   CreateContestData,
+  CreateContestDto,
   GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
@@ -9,6 +10,7 @@ import {
   HttpResponseMessageDto,
   UpdateContestData,
 } from '@lets-choose/common/dto';
+import jsonToFormData from 'json-form-data';
 
 import { Api } from './api';
 
@@ -30,11 +32,19 @@ export class ContestApi extends Api {
   };
 
   create = (data: CreateContestData) => {
-    return this.api.post<ContestDto>(this.baseURL, data);
+    return this.api.post<ContestDto>(this.baseURL, data, {
+      transformRequest: jsonToFormData,
+    });
   };
 
   update = (id: string, data: Partial<Omit<UpdateContestData, 'items'>>) => {
-    return this.api.post<HttpResponseMessageDto>(`${this.baseURL}/${id}`, data);
+    return this.api.post<HttpResponseMessageDto>(
+      `${this.baseURL}/${id}`,
+      data,
+      {
+        transformRequest: jsonToFormData,
+      },
+    );
   };
 
   reset = (id: string) => {

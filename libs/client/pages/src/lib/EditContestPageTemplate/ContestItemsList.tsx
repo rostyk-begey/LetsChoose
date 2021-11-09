@@ -91,12 +91,12 @@ export const ContestItemsList: React.FC<ContestItemListProps> = ({
               className={classes.grid}
               sx={{ opacity: dropzoneState.isDragAccept ? 0.7 : 1 }}
             >
-              {items.map(({ id, title, image }, i) => (
+              {items.map(({ id, title, imageSrc }, i) => (
                 <ContestItem
                   key={id}
                   id={id}
                   index={i}
-                  img={URL.createObjectURL(image)}
+                  img={imageSrc}
                   title={title}
                 />
               ))}

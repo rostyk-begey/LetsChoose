@@ -73,7 +73,7 @@ export const EditContestPage: React.FC<ContestPageProps> = ({
           ],
         }}
       />
-      <EditContestPageTemplate
+      <EditContestPageTemplate<UpdateContestData>
         isLoading={isLoading}
         title={contest?.title}
         submitButtonText="Save"

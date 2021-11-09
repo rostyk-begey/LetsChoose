@@ -458,9 +458,10 @@ export const ContestCard: React.FC<ContestCardProps> = ({
           <IconButton
             aria-label="share"
             className={classes.actionBtn}
+            onClick={handleShareClick}
             size="large"
           >
-            <ShareIcon fontSize="small" onClick={handleShareClick} />
+            <ShareIcon fontSize="small" />
           </IconButton>
         </Tooltip>
         <div className={classes.playBtn}>

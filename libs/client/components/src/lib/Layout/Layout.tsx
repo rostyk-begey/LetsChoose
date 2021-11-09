@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import Box from '@mui/material/Box';
 import { alpha, styled } from '@mui/material/styles';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -108,7 +109,7 @@ export const Layout: React.FC<LayoutProps> = ({
           }}
         >
           <Toolbar>
-            <Button sx={{ p: 0 }}>{title}</Button>
+            <Box display="flex">{title}</Box>
             {toolbarContent}
           </Toolbar>
         </MuiHeader>

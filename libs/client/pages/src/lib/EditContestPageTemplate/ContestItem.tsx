@@ -1,3 +1,4 @@
+import { DndTypes } from '@lets-choose/client/utils';
 import React, {
   CSSProperties,
   memo,
@@ -21,12 +22,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import classNames from 'classnames';
-import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd';
+import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { ItemsStateContext } from './ContestItemsStateProvider';
 
 const PREFIX = 'ContestItem';
 
-const classes = {
+export const classes = {
   icon: `${PREFIX}-icon`,
   tile: `${PREFIX}-tile`,
   hidden: `${PREFIX}-hidden`,
@@ -47,14 +48,23 @@ const tileBarActive: CSSProperties = {
   transform: 'none',
 };
 
-const Root = styled('div')<StyleProps>(({ theme, isSelected }) => ({
-  paddingTop: '75%',
+interface StyleProps {
+  isSelected?: boolean;
+  isDragging?: boolean;
+}
+
+export const Root = styled('div', {
+  shouldForwardProp: (prop) =>
+    !['isSelected', 'isDragging'].includes(prop as string),
+})<StyleProps>(({ theme, isSelected, isDragging }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  aspectRatio: '4/3',
   position: 'relative',
   transition: 'all 0.3s ease',
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  backgroundRepeat: 'no-repeat',
-  [`&:hover .${classes.titleBar}`]: tileBarActive,
+  backgroundColor: alpha(theme.palette.common.white, 0.11),
+  cursor: 'move',
+  ...(isDragging && { opacity: 0 }),
 
   [`& .${classes.icon}`]: {
     color: alpha(theme.palette.common.white, 0.54),
@@ -78,51 +88,54 @@ const Root = styled('div')<StyleProps>(({ theme, isSelected }) => ({
   },
 
   [`& .${classes.titleBar}`]: {
-    color: 'white',
+    color: theme.palette.common.white,
     opacity: 0,
     visibility: 'hidden',
     transition: 'all 0.5s ease',
-    ...(isSelected && tileBarActive),
+    ...(isSelected && !isDragging && tileBarActive),
+  },
+
+  [`&:hover .${classes.titleBar}`]: {
+    ...(!isDragging && tileBarActive),
   },
 
   [`& .${classes.checkboxLabel}`]: {
-    color: 'white',
+    color: theme.palette.common.white,
   },
 
   [`& .${classes.checkbox}`]: {
-    borderColor: 'white',
+    borderColor: theme.palette.common.white,
   },
 
   [`& .${classes.titleBarTitle}`]: {
     overflow: 'visible',
-    color: 'white',
+    color: theme.palette.common.white,
   },
 
   [`& .${classes.titleBarTop}`]: {
     display: 'flex',
     justifyContent: 'space-between',
     background: `
-        linear-gradient(
-          to top,
-          ${alpha(theme.palette.common.black, 0.3)} 0%, 
-          ${alpha(theme.palette.common.black, 0.7)} 70%,
-          ${theme.palette.common.black} 100%)`,
+      linear-gradient(
+        to top,
+        ${alpha(theme.palette.common.black, 0.3)} 0%, 
+        ${alpha(theme.palette.common.black, 0.7)} 70%,
+        ${theme.palette.common.black} 100%)`,
   },
 
   [`& .${classes.titleBarBottom}`]: {
     background: `
-        linear-gradient( 
-          to bottom,
-          ${alpha(theme.palette.common.black, 0.3)} 0%,
-          ${alpha(theme.palette.common.black, 0.7)} 70%,
-          ${theme.palette.common.black} 100%)`,
+      linear-gradient( 
+        to bottom,
+        ${alpha(theme.palette.common.black, 0.3)} 0%,
+        ${alpha(theme.palette.common.black, 0.7)} 70%,
+        ${theme.palette.common.black} 100%)`,
   },
 
   [`& .${classes.inputContainer}`]: {
     position: 'absolute',
     width: '100%',
     top: 0,
-    // opacity: isEditing ? 1 : 0,
   },
 }));
 
@@ -145,16 +158,6 @@ const titleInput: FormTextInputProps = {
   },
 };
 
-interface StyleProps {
-  isSelected: boolean;
-  isEditing: boolean;
-  image: string;
-}
-
-enum DndTypes {
-  ContestItem = 'ContestItem',
-}
-
 interface DragItem {
   index: number;
   id: number;
@@ -163,21 +166,23 @@ interface DragItem {
 
 export const ContestItem: React.FC<ContestItemProps> = memo(
   ({ id, index, img: image, title }) => {
+    const rootRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLDivElement>(null);
     const {
       swapIds,
       selectedItems,
       editedItem,
+      resetEditedItem,
       toggleSelectItem,
       updateItem,
       deleteItem,
       toggleEditedItem,
     } = useContext(ItemsStateContext);
+    const [isSkeletonEnabled, setIsSkeletonEnabled] = useState(true);
     const [imageLoaded, setImageLoaded] = useState(false);
     const isSelected = selectedItems.includes(id);
     const isEditing = editedItem === id;
-    const ref = useRef<HTMLDivElement>(null);
-    const [{ isDragging, handlerId }, connectDrag, preview] = useDrag(
+    const [{ isDragging }, connectDrag] = useDrag(
       {
         type: DndTypes.ContestItem,
         item: { id, index },
@@ -189,51 +194,65 @@ export const ContestItem: React.FC<ContestItemProps> = memo(
       [id, index],
     );
 
-    const [, connectDrop] = useDrop(
+    const [{ isOver }, connectDrop] = useDrop(
       {
         accept: DndTypes.ContestItem,
-        hover(item: DragItem, monitor: DropTargetMonitor) {
-          if (!ref.current) {
-            return;
+        canDrop(item: DragItem, monitor: DropTargetMonitor) {
+          if (!rootRef.current) {
+            return false;
           }
           const { index: dragIndex, id: dragId } = item;
           const hoverIndex = index;
 
           // Don't replace items with themselves
           if (dragIndex === hoverIndex) {
-            return;
+            return false;
           }
 
           // Determine rectangle on screen
-          const hoverBoundingRect = ref.current?.getBoundingClientRect();
-
+          const hoverBoundingRect = rootRef.current?.getBoundingClientRect();
           // Get vertical middle
           const hoverMiddleY =
             (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
 
+          // Get horizontal middle
+          const hoverMiddleX =
+            (hoverBoundingRect.right - hoverBoundingRect.left) / 2;
+
           // Determine mouse position
-          const clientOffset = monitor.getClientOffset();
+          const { x: clientX = 0, y: clientY = 0 } =
+            monitor.getClientOffset() ?? {};
 
           // Get pixels to the top
-          const hoverClientY =
-            (clientOffset as XYCoord).y - hoverBoundingRect.top;
+          const hoverClientY = clientX - hoverBoundingRect.top;
 
-          // Only perform the move when the mouse has crossed half of the items height
-          // When dragging downwards, only move when the cursor is below 50%
-          // When dragging upwards, only move when the cursor is above 50%
+          // Get pixels to the left
+          const hoverClientX = clientY - hoverBoundingRect.left;
 
-          // Dragging downwards
-          if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-            return;
+          const upwards = dragIndex > hoverIndex && hoverClientY > hoverMiddleY;
+          const downwards =
+            dragIndex < hoverIndex && hoverClientY < hoverMiddleY;
+          const leftwards =
+            dragIndex > hoverIndex && hoverClientX > hoverMiddleX;
+          const rightwards =
+            dragIndex < hoverIndex && hoverClientX < hoverMiddleX;
+
+          if (upwards && (leftwards || rightwards)) {
+            return false;
           }
 
-          // Dragging upwards
-          if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-            return;
+          if (downwards && (leftwards || rightwards)) {
+            return false;
           }
+
+          return true;
+        },
+        drop(item: DragItem) {
+          const { id: dragId } = item;
+          const hoverIndex = index;
 
           // Time to actually perform the action
-          moveCard(dragId, id);
+          swapIds(dragId, id);
 
           // Note: we're mutating the monitor item here!
           // Generally it's better to avoid mutations,
@@ -241,20 +260,27 @@ export const ContestItem: React.FC<ContestItemProps> = memo(
           // to avoid expensive index searches.
           item.index = hoverIndex;
         },
+        collect: (monitor) => ({
+          isOver: monitor.isOver(),
+        }),
       },
       [id, index],
     );
 
-    connectDrag(connectDrop(ref));
-    const opacity = isDragging ? 0.4 : 1;
-    const containerStyle = useMemo(() => ({ opacity }), [opacity]);
-    const moveCard = (id1: number, id2: number) => {
-      swapIds(id1, id2);
-    };
+    connectDrag(connectDrop(rootRef));
+    const containerStyle = useMemo(() => {
+      let opacity = 1;
 
-    const handleSelect = () => {
-      toggleSelectItem(id);
-    };
+      if (isDragging) {
+        opacity = 0.4;
+      } else if (isOver) {
+        opacity = 0.6;
+      }
+
+      return { opacity };
+    }, [isDragging, isOver]);
+
+    const handleSelect = () => toggleSelectItem(id);
 
     const handleTitleChange: ChangeEventHandler<HTMLInputElement> = ({
       target: { value },
@@ -262,30 +288,31 @@ export const ContestItem: React.FC<ContestItemProps> = memo(
       updateItem(id, value);
     };
 
-    const handleDelete = () => {
-      deleteItem(id);
-    };
+    const handleDelete = () => deleteItem(id);
 
     const handleToggleEdit = () => {
-      ref.current?.focus();
+      inputRef.current?.focus();
       toggleEditedItem(id);
     };
 
     return (
       <Root
-        isEditing={isEditing}
         isSelected={isSelected}
-        image={image}
+        isDragging={isDragging}
+        onBlur={resetEditedItem}
         onClick={(event) => event.stopPropagation()}
+        onMouseDown={() => setIsSkeletonEnabled(false)}
+        onDragEnd={() => setIsSkeletonEnabled(true)}
+        ref={rootRef}
         style={containerStyle}
       >
         <Skeleton
           animation="wave"
+          variant="rectangular"
           className={classes.tileImage}
           style={{
-            display: isDragging ? 'none' : 'block',
-            visibility: isDragging || imageLoaded ? 'hidden' : 'visible',
-            opacity: isDragging || imageLoaded ? 0 : 1,
+            display: !isSkeletonEnabled || isDragging ? 'none' : 'block',
+            opacity: !isSkeletonEnabled || isDragging || imageLoaded ? 0 : 1,
           }}
         />
         <img
@@ -369,13 +396,10 @@ export const ContestItem: React.FC<ContestItemProps> = memo(
       </Root>
     );
   },
-  (prevProps, nextProps) => {
-    return (
-      prevProps.id === nextProps.id &&
-      prevProps.title === nextProps.title &&
-      prevProps.img === nextProps.img
-    );
-  },
+  (prevProps, nextProps) =>
+    prevProps.id === nextProps.id &&
+    prevProps.title === nextProps.title &&
+    prevProps.img === nextProps.img,
 );
 
 ContestItem.displayName = 'ContestItem';

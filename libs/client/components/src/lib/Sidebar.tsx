@@ -25,7 +25,6 @@ import { useMutation } from 'react-query';
 
 import { authApi } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
-import { MenuLink } from './Menu';
 
 const PREFIX = 'Sidebar';
 
@@ -120,6 +119,13 @@ const MenuItem = styled(ListItem, {
     justifyContent: open ? 'flex-start' : 'center',
   },
 }));
+
+interface MenuLink {
+  href: string;
+  active?: boolean;
+  label: string;
+  icon: React.ReactNode;
+}
 
 export const Sidebar: React.FC<SidebarProps> = ({
   username,

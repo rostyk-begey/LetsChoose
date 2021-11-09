@@ -9,22 +9,11 @@ export type ItemId = number;
 
 export interface Item extends BaseItem {
   id: ItemId;
-}
-
-export interface UseItemsUploadValue {
-  items: Item[];
-  editedItem: ItemId;
-  selectedItems: ItemId[];
-  addFiles: (files: File[]) => void;
-  deleteItem: (index: number) => void;
-  deleteSelectedItems: () => void;
-  toggleSelectItem: (index: number) => void;
-  toggleEditItem: (i: number) => void;
-  updateItem: (i: number, title: string) => void;
-  toggleSelectAll: () => void;
+  imageSrc: string;
 }
 
 export interface UseItemsStateValue {
+  itemsMap: Record<string, Item>;
   items: Item[];
   editedItem: null | ItemId;
   selectedItems: ItemId[];
@@ -32,6 +21,7 @@ export interface UseItemsStateValue {
   deleteItem: (id: ItemId) => void;
   deleteSelectedItems: () => void;
   toggleSelectItem: (id: ItemId) => void;
+  resetEditedItem: () => void;
   toggleEditedItem: (id: ItemId) => void;
   updateItem: (id: ItemId, title: string) => void;
   toggleSelectAll: () => void;
@@ -52,6 +42,7 @@ enum ActionTypes {
   DeleteSelectedItems,
   ToggleSelectAll,
   ToggleSelectedItem,
+  ResetEditedItem,
   ToggleEditedItem,
   SwapIds,
 }
@@ -190,6 +181,11 @@ const toggleSelectedItemReducer: Reducer<ItemsState, Action<{ id: ItemId }>> = (
   return { ...state, ids, selected: [...selectedSet] };
 };
 
+const resetEditedItem: Reducer<ItemsState, Action> = (state) => ({
+  ...state,
+  edited: null,
+});
+
 const toggleEditedItemReducer: Reducer<ItemsState, Action<{ id: ItemId }>> = (
   state,
   { payload: { id } },
@@ -209,6 +205,7 @@ const itemsRootReducer: Reducer<ItemsState, Action> = (
     [ActionTypes.DeleteSelectedItems]: deleteSelectedItems,
     [ActionTypes.ToggleSelectAll]: toggleSelectAllReducer,
     [ActionTypes.ToggleSelectedItem]: toggleSelectedItemReducer,
+    [ActionTypes.ResetEditedItem]: resetEditedItem,
     [ActionTypes.ToggleEditedItem]: toggleEditedItemReducer,
     [ActionTypes.SwapIds]: swapIdsReducer,
   } as Record<ActionTypes, Reducer<ItemsState, Action>>;
@@ -219,15 +216,14 @@ const itemsRootReducer: Reducer<ItemsState, Action> = (
 export const useItemsState = (): UseItemsStateValue => {
   const [state, dispatch] = useReducer(itemsRootReducer, initialItemsState);
 
-  console.log(state);
   const { ids, selected, entities, edited } = state;
 
   const addFiles = useCallback(
     (files: File[]) => {
-      console.log('@addFiles');
       const items = files.map((file, i) => ({
         title: file.name,
         image: file,
+        imageSrc: URL.createObjectURL(file),
         id: new Date().getTime() + i,
       }));
       dispatch({ type: ActionTypes.AddItems, payload: items });
@@ -237,7 +233,6 @@ export const useItemsState = (): UseItemsStateValue => {
 
   const deleteItem = useCallback(
     (id: ItemId) => {
-      console.log('@deleteItem');
       dispatch({ type: ActionTypes.RemoveItem, payload: { id } });
     },
     [dispatch],
@@ -245,7 +240,6 @@ export const useItemsState = (): UseItemsStateValue => {
 
   const swapIds = useCallback(
     (id1: ItemId, id2: ItemId) => {
-      console.log('@swapIds');
       dispatch({ type: ActionTypes.SwapIds, payload: { id1, id2 } });
     },
     [dispatch],
@@ -253,39 +247,39 @@ export const useItemsState = (): UseItemsStateValue => {
 
   const updateItem = useCallback(
     (id: ItemId, title: string) => {
-      console.log('@updateItem');
       dispatch({ type: ActionTypes.UpdateItem, payload: { id, title } });
     },
     [dispatch],
   );
 
   const toggleSelectAll = useCallback(() => {
-    console.log('@toggleSelectAll');
     dispatch({ type: ActionTypes.ToggleSelectAll, payload: null });
   }, [dispatch]);
 
   const toggleSelectItem = useCallback(
     (id: ItemId) => {
-      console.log('@toggleSelectItem');
       dispatch({ type: ActionTypes.ToggleSelectedItem, payload: { id } });
     },
     [dispatch],
   );
 
+  const resetEditedItem = useCallback(() => {
+    dispatch({ type: ActionTypes.ResetEditedItem, payload: null });
+  }, [dispatch]);
+
   const toggleEditedItem = useCallback(
     (id: ItemId) => {
-      console.log('@toggleEditedItem');
       dispatch({ type: ActionTypes.ToggleEditedItem, payload: { id } });
     },
     [dispatch],
   );
 
   const deleteSelectedItems = useCallback(() => {
-    console.log('@deleteSelectedItems');
     dispatch({ type: ActionTypes.DeleteSelectedItems, payload: null });
   }, [dispatch]);
 
   return {
+    itemsMap: entities,
     items: ids.map((id) => entities[id]),
     selectedItems: selected,
     editedItem: edited,
@@ -294,6 +288,7 @@ export const useItemsState = (): UseItemsStateValue => {
     deleteSelectedItems,
     toggleSelectAll,
     toggleSelectItem,
+    resetEditedItem,
     toggleEditedItem,
     updateItem,
     swapIds,

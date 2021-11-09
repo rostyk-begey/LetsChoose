@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { queryClient } from '@lets-choose/client/utils';
 import { Meta, Story } from '@storybook/react';
 import faker from 'faker';
@@ -6,7 +6,7 @@ import * as NextImage from 'next/image';
 import { QueryClientProvider } from 'react-query';
 import { ContestCard, ContestCardProps } from './ContestCard';
 
-const nextImageContainerStyle: any = {
+const nextImageContainerStyle: CSSProperties = {
   display: 'block',
   overflow: 'hidden',
   position: 'absolute',
@@ -17,7 +17,12 @@ const nextImageContainerStyle: any = {
 
 Object.defineProperty(NextImage, 'default', {
   configurable: true,
-  value: (props: any) => (
+  value: (
+    props: React.DetailedHTMLProps<
+      React.ImgHTMLAttributes<HTMLImageElement>,
+      HTMLImageElement
+    >,
+  ) => (
     <div style={nextImageContainerStyle}>
       <img
         style={{
