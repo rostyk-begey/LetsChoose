@@ -74,11 +74,9 @@ const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: 8,
   overflow: 'visible',
   boxShadow: theme.shadows[16],
-  transform: `translateX(100px)`,
 
   '&:hover': {
     boxShadow: theme.shadows[4],
-    transform: `scale(1.07)`,
   },
 
   [`& .${classes.media}`]: {
