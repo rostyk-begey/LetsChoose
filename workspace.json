@@ -60,7 +60,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-abstract": {
       "root": "libs/api/abstract",
@@ -74,7 +75,8 @@
             "lintFilePatterns": ["libs/api/abstract/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-auth-feature": {
       "root": "libs/api/auth/feature",
@@ -96,7 +98,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-cloudinary": {
       "root": "libs/api/cloudinary",
@@ -118,7 +121,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-common-decorators": {
       "root": "libs/api/common/decorators",
@@ -132,7 +136,8 @@
             "lintFilePatterns": ["libs/api/common/decorators/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-common-pipes": {
       "root": "libs/api/common/pipes",
@@ -154,7 +159,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-common-services": {
       "root": "libs/api/common/services",
@@ -176,7 +182,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-common-utils": {
       "root": "libs/api/common/utils",
@@ -198,7 +205,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-config": {
       "root": "libs/api/config",
@@ -212,7 +220,8 @@
             "lintFilePatterns": ["libs/api/config/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-contest-data-access": {
       "root": "libs/api/contest/data-access",
@@ -234,7 +243,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-contest-feature": {
       "root": "libs/api/contest/feature",
@@ -256,7 +266,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-game-data-access": {
       "root": "libs/api/game/data-access",
@@ -278,7 +289,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-game-feature": {
       "root": "libs/api/game/feature",
@@ -300,7 +312,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-health-feature": {
       "root": "libs/api/health/feature",
@@ -322,7 +335,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-mongoose": {
       "root": "libs/api/mongoose",
@@ -336,7 +350,8 @@
             "lintFilePatterns": ["libs/api/mongoose/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-testing-builders": {
       "root": "libs/api/testing/builders",
@@ -350,7 +365,8 @@
             "lintFilePatterns": ["libs/api/testing/builders/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-testing-utils": {
       "root": "libs/api/testing/utils",
@@ -364,7 +380,8 @@
             "lintFilePatterns": ["libs/api/testing/utils/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-user-data-access": {
       "root": "libs/api/user/data-access",
@@ -386,7 +403,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "api-user-feature": {
       "root": "libs/api/user/feature",
@@ -408,7 +426,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "client": {
       "root": "apps/client",
@@ -462,7 +481,8 @@
             "lintFilePatterns": ["apps/client/**/*.{ts,tsx,js,jsx}"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "client-api": {
       "root": "libs/client/api",
@@ -483,7 +503,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "client-components": {
       "root": "libs/client/components",
@@ -535,7 +556,8 @@
             }
           }
         }
-      }
+      },
+      "tags": []
     },
     "client-components-e2e": {
       "root": "apps/client-components-e2e",
@@ -560,7 +582,9 @@
             "lintFilePatterns": ["apps/client-components-e2e/**/*.{js,ts}"]
           }
         }
-      }
+      },
+      "tags": [],
+      "implicitDependencies": ["client-components"]
     },
     "client-e2e": {
       "root": "apps/client-e2e",
@@ -586,7 +610,9 @@
             "lintFilePatterns": ["apps/client-e2e/**/*.{js,ts}"]
           }
         }
-      }
+      },
+      "tags": [],
+      "implicitDependencies": ["client"]
     },
     "client-hooks": {
       "root": "libs/client/hooks",
@@ -607,7 +633,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "client-pages": {
       "root": "libs/client/pages",
@@ -628,7 +655,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "client-utils": {
       "root": "libs/client/utils",
@@ -649,7 +677,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "common-dto": {
       "root": "libs/common/dto",
@@ -662,7 +691,8 @@
             "lintFilePatterns": ["libs/common/dto/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "common-utils": {
       "root": "libs/common/utils",
@@ -684,24 +714,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/next"
-  },
-  "generators": {
-    "@nrwl/react": {
-      "application": {
-        "babel": true
-      }
-    },
-    "@nrwl/next": {
-      "application": {
-        "style": "styled-components",
-        "linter": "eslint"
-      }
-    }
-  },
-  "defaultProject": "client"
+  }
 }

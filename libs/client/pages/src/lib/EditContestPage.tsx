@@ -32,10 +32,10 @@ export const EditContestPage: React.FC<ContestPageProps> = ({
   const { mutateAsync: updateContest } = useContestUpdate(contestId as string);
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit = useCallback(
-    async (data: UpdateContestData) => {
+    async (data: unknown) => {
       try {
         setIsLoading(true);
-        await updateContest(data);
+        await updateContest(data as UpdateContestData);
         await (router as NextRouter).push(
           `${ROUTES.CONTESTS.INDEX}/${contestId}`,
         );
@@ -73,7 +73,7 @@ export const EditContestPage: React.FC<ContestPageProps> = ({
           ],
         }}
       />
-      <EditContestPageTemplate<UpdateContestData>
+      <EditContestPageTemplate
         isLoading={isLoading}
         title={contest?.title}
         submitButtonText="Save"

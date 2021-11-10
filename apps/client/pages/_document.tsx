@@ -1,11 +1,9 @@
 /* eslint-disable react/display-name */
 import React, { Children } from 'react';
 import { themeOptions } from '@lets-choose/client/utils';
-// import { ServerStyleSheets } from '@mui/material/styles';
 import createEmotionServer from '@emotion/server/create-instance';
 import { SimplePaletteColorOptions } from '@mui/material/styles';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
-// import { ServerStyleSheet } from 'styled-components';
 import createEmotionCache from '../lib/createEmotionCache';
 
 export default class MyDocument extends Document {
