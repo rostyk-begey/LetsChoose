@@ -31,7 +31,6 @@ export const TableRowSkeleton: React.FC<TableRowProps> = ({
         <Skeleton animation="wave" width={48} height={32} />
       </TableCell>
       <TableCell width={250} {...image.getCellProps()}>
-        {/* TODO: classes.image */}
         <Skeleton animation="wave" className={classes.image} />
       </TableCell>
       {cells.map((cell, i) => (
