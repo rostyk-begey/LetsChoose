@@ -19,45 +19,46 @@ export interface TableProps {
 }
 
 export const Table: React.FC<TableProps> = ({ data, skeleton }) => {
-  const columns: Array<Column<any>> = useMemo(
-    () => [
-      {
-        Header: 'Rank',
-        accessor: 'rankScore',
-      },
-      {
-        Header: 'Image',
-        accessor: 'image',
-        width: 250,
-        minWidth: 220,
-      },
-      {
-        Header: 'Title',
-        accessor: 'title',
-      },
-      {
-        Header: '1 to 1 Win Rate',
-        accessor: 'winRate',
-        width: 100,
-      },
-      {
-        Header: 'Final Win Rate',
-        accessor: 'finalWinRate',
-        minWidth: 100,
-      },
-      {
-        accessor: 'compares',
-      },
-      {
-        accessor: 'wins',
-      },
-      {
-        accessor: 'finalWins',
-      },
-      {
-        accessor: 'games',
-      },
-    ],
+  const columns = useMemo(
+    () =>
+      [
+        {
+          Header: 'Rank',
+          accessor: 'rankScore',
+        },
+        {
+          Header: 'Image',
+          accessor: 'image',
+          width: 250,
+          minWidth: 220,
+        },
+        {
+          Header: 'Title',
+          accessor: 'title',
+        },
+        {
+          Header: '1 to 1 Win Rate',
+          accessor: 'winRate',
+          width: 100,
+        },
+        {
+          Header: 'Final Win Rate',
+          accessor: 'finalWinRate',
+          minWidth: 100,
+        },
+        {
+          accessor: 'compares',
+        },
+        {
+          accessor: 'wins',
+        },
+        {
+          accessor: 'finalWins',
+        },
+        {
+          accessor: 'games',
+        },
+      ] as Column<ContestItemDto>[],
     [],
   );
   const matchesMaxWidth700 = useMediaQuery(
@@ -83,7 +84,7 @@ export const Table: React.FC<TableProps> = ({ data, skeleton }) => {
     prepareRow, // Prepare the row (this function needs to be called for each row before getting the row props)
     setHiddenColumns,
   } = useTable({
-    columns: columns as any, // TODO: fix
+    columns,
     data,
     initialState: {
       hiddenColumns: defaultHiddenColumns,
