@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { TransformerOption } from '@cld-apis/types/lib/options/TransformerOption';
+import buildUrl, { setConfig } from 'cloudinary-build-url';
+
 export const getKeyValue =
   <T extends object, U extends keyof T>(obj: T) =>
   (key: U) =>
@@ -15,5 +18,33 @@ export const imageSize = (width: number, multiplier = 3 / 4) => ({
 });
 
 export const cloudinaryUploadPath = (secureUrl: string): string => {
-  return secureUrl.split('image/upload').pop() as string;
+  return secureUrl.split('image/upload/').pop() as string;
 };
+
+setConfig({
+  cloudName: 'dcfzgnkj8',
+});
+
+export const buildCloudinaryUrl = (
+  url: string,
+  transformations?: TransformerOption,
+) =>
+  buildUrl(cloudinaryUploadPath(url), {
+    transformations,
+  });
+
+export const cloudinaryAspectRatio = (url: string, aspectRatio = '4:3') =>
+  buildCloudinaryUrl(url, {
+    resize: {
+      type: 'fill',
+      aspectRatio,
+    },
+  });
+
+export const cloudinaryBlurPreview = (url: string) =>
+  buildCloudinaryUrl(url, {
+    effect: {
+      name: 'pixelate',
+      value: 40,
+    },
+  });

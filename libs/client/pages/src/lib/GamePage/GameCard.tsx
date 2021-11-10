@@ -3,14 +3,11 @@ import { styled } from '@mui/material/styles';
 import { ContestItemDto } from '@lets-choose/common/dto';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// import { useFourThreeCardMediaStyles } from '@mui-treasury/styles/cardMedia/fourThree';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import Image from 'next/image';
-import { cloudinaryUploadPath } from '@lets-choose/client/utils';
+import {
+  cloudinaryBlurPreview,
+  cloudinaryUploadPath,
+} from '@lets-choose/client/utils';
 
 const PREFIX = 'GameCard';
 
@@ -18,27 +15,30 @@ const classes = {
   imageHolder: `${PREFIX}-imageHolder`,
 };
 
-const StyledCard = styled(Card)(() => ({
+const StyledCard = styled(Card)(({ theme }) => ({
   cursor: 'pointer',
   width: '100%',
+  boxShadow: theme.shadows[16],
+
+  '&:hover': {
+    boxShadow: theme.shadows[20],
+  },
 
   [`& .${classes.imageHolder}`]: {
     position: 'relative',
+    aspectRatio: '4/3',
   },
 }));
 
 export interface GameCardProps {
   item?: ContestItemDto;
-  onClick?: () => any;
+  onClick?: () => void;
 }
 
 export const GameCard: React.FC<GameCardProps> = ({
   item,
   onClick = () => null,
 }) => {
-  // const cardMediaStyles = useFourThreeCardMediaStyles();
-  // const shadowStyles = useOverShadowStyles();
-
   if (!item) {
     return null;
   }
@@ -49,8 +49,11 @@ export const GameCard: React.FC<GameCardProps> = ({
         <Image
           src={cloudinaryUploadPath(item.image)}
           alt={item.title}
+          blurDataURL={cloudinaryBlurPreview(item.image)}
+          placeholder="blur"
           objectFit="cover"
           layout="fill"
+          priority
         />
       </CardMedia>
     </StyledCard>

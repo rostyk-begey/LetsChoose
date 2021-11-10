@@ -13,7 +13,12 @@ import {
   useCurrentUser,
   useGameStart,
 } from '@lets-choose/client/hooks';
-import { cloudinaryUploadPath, ROUTES } from '@lets-choose/client/utils';
+import {
+  cloudinaryAspectRatio,
+  cloudinaryBlurPreview,
+  cloudinaryUploadPath,
+  ROUTES,
+} from '@lets-choose/client/utils';
 import { ContestDto, ContestItemDto } from '@lets-choose/common/dto';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -256,10 +261,9 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
   const { mutateAsync: resetContest } = useContestReset(contest.id);
   const { mutateAsync: deleteContest } = useContestDelete(contest.id);
 
-  const thumbnail = contest.thumbnail.replace(
-    'image/upload',
-    'image/upload/c_fill,ar_4:3',
-  );
+  const thumbnail = cloudinaryAspectRatio(contest.thumbnail);
+  const blurPreviewURL = cloudinaryBlurPreview(contest.thumbnail);
+
   const itemsChip = (
     <Chip
       icon={<RecentActorsRoundedIcon />}
@@ -427,7 +431,10 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                     <Image
                       src={cloudinaryUploadPath(thumbnail)}
                       className={classes.thumbnail}
-                      alt=""
+                      alt={contest.title}
+                      blurDataURL={blurPreviewURL}
+                      placeholder="blur"
+                      objectFit="cover"
                       layout="fill"
                     />
                   ) : (

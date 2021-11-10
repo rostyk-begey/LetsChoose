@@ -22,7 +22,12 @@ import json2mq from 'json2mq';
 import { Row } from 'react-table';
 import Image from 'next/image';
 
-import { cloudinaryUploadPath, imageSize } from '@lets-choose/client/utils';
+import {
+  cloudinaryAspectRatio,
+  cloudinaryBlurPreview,
+  cloudinaryUploadPath,
+  imageSize,
+} from '@lets-choose/client/utils';
 import { CircularProgressWithLabel } from '@lets-choose/client/components';
 import { imageWidth, imageWidthMobile } from './constants';
 
@@ -127,10 +132,9 @@ export const TableRow: React.FC<TableRowProps> = ({ row }) => {
       maxWidth: 960,
     }),
   );
-  const imageSrc = image.value.replace(
-    'image/upload',
-    'image/upload/c_fill,ar_4:3',
-  );
+
+  const imageSrc = cloudinaryAspectRatio(image.value);
+  const blurPreviewURL = cloudinaryBlurPreview(image.value);
 
   const handleExpandClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -177,6 +181,9 @@ export const TableRow: React.FC<TableRowProps> = ({ row }) => {
               src={cloudinaryUploadPath(imageSrc)}
               className={classes.previewImage}
               layout="fill"
+              blurDataURL={blurPreviewURL}
+              objectFit="cover"
+              placeholder="blur"
               alt={values.title}
             />
           </StyledFigure>
@@ -214,6 +221,8 @@ export const TableRow: React.FC<TableRowProps> = ({ row }) => {
                   <StyledFigure>
                     <Image
                       src={cloudinaryUploadPath(imageSrc)}
+                      blurDataURL={blurPreviewURL}
+                      placeholder="blur"
                       className={classes.imageBig}
                       alt={values.title}
                       layout="fill"

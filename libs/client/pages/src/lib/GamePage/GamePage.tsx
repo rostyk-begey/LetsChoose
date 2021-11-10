@@ -48,16 +48,16 @@ const StyledPage = styled(Page)(({ theme }) => ({
     justifyContent: 'center',
   },
 
-  [`& .${classes.subheader}`]: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
   [`& .${classes.title}`]: {
     color: theme.palette.text.primary,
   },
 }));
+
+const StyledSubheader = styled(Subheader)({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
 
 const delayTime = 400;
 
@@ -140,16 +140,16 @@ export const GamePage: React.FC<GamePageProps> = ({ initialGame }) => {
   }
 
   return (
-    <Page
+    <StyledPage
       subHeader={
         !isLoading && (
-          <Subheader className={classes.subheader}>
+          <StyledSubheader>
             <Typography variant="h5" className={classes.title}>
               {round + 1 === totalRounds
                 ? 'Final round'
                 : `Round ${round + 1} | (${pairNumber} / ${pairsInRound})`}
             </Typography>
-          </Subheader>
+          </StyledSubheader>
         )
       }
     >
@@ -167,6 +167,6 @@ export const GamePage: React.FC<GamePageProps> = ({ initialGame }) => {
             </div>
           ))}
       </div>
-    </Page>
+    </StyledPage>
   );
 };

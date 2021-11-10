@@ -7,7 +7,12 @@ import {
   useGameStart,
 } from '@lets-choose/client/hooks';
 import { styled } from '@mui/material/styles';
-import { cloudinaryUploadPath, ROUTES } from '@lets-choose/client/utils';
+import {
+  cloudinaryAspectRatio,
+  cloudinaryBlurPreview,
+  cloudinaryUploadPath,
+  ROUTES,
+} from '@lets-choose/client/utils';
 import { ContestDto, UserPublicDto } from '@lets-choose/common/dto';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -31,12 +36,8 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
-// import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import Skeleton from '@mui/material/Skeleton';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// import { useOverShadowStyles } from '@mui-treasury/styles/shadow/over';
 import classNames from 'classnames';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -72,6 +73,13 @@ const StyledCard = styled(Card)(({ theme }) => ({
   flexDirection: 'column',
   borderRadius: 8,
   overflow: 'visible',
+  boxShadow: theme.shadows[16],
+  transform: `translateX(100px)`,
+
+  '&:hover': {
+    boxShadow: theme.shadows[4],
+    transform: `scale(1.07)`,
+  },
 
   [`& .${classes.media}`]: {
     position: 'relative',
@@ -227,7 +235,6 @@ export const ContestCard: React.FC<ContestCardProps> = ({
   contest,
   onDelete,
 }) => {
-  // const shadowStyles = useOverShadowStyles();
   const router = useRouter();
   const [isLinkCopied, setIsLinkCopied] = useState(false);
 
@@ -371,9 +378,13 @@ export const ContestCard: React.FC<ContestCardProps> = ({
             className={classNames(classes.media, classes.cursorPointer)}
           >
             <Image
-              src={cloudinaryUploadPath(thumbnail)}
+              src={cloudinaryUploadPath(
+                cloudinaryAspectRatio(thumbnail, '1:1'),
+              )}
               alt={title}
               title={title}
+              blurDataURL={cloudinaryBlurPreview(thumbnail)}
+              placeholder="blur"
               objectFit="cover"
               layout="fill"
             />
@@ -385,9 +396,13 @@ export const ContestCard: React.FC<ContestCardProps> = ({
                 className={classNames(classes.media, classes.cursorPointer)}
               >
                 <Image
-                  src={cloudinaryUploadPath(image)}
+                  src={cloudinaryUploadPath(
+                    cloudinaryAspectRatio(image, '1:1'),
+                  )}
                   alt={title}
                   title={title}
+                  blurDataURL={cloudinaryBlurPreview(image)}
+                  placeholder="blur"
                   objectFit="cover"
                   layout="fill"
                 />
