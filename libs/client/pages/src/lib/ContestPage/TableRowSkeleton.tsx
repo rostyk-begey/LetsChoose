@@ -1,8 +1,10 @@
+import { imageSize } from '@lets-choose/client/utils';
 import React from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import TableCell from '@mui/material/TableCell';
 import json2mq from 'json2mq';
+import { imageWidth } from './constants';
 
 import { classes, TableRowProps, StyledRow } from './TableRow';
 
@@ -31,7 +33,13 @@ export const TableRowSkeleton: React.FC<TableRowProps> = ({
         <Skeleton animation="wave" width={48} height={32} />
       </TableCell>
       <TableCell width={250} {...image.getCellProps()}>
-        <Skeleton animation="wave" className={classes.image} />
+        <Skeleton
+          animation="wave"
+          variant="rectangular"
+          sx={{
+            ...imageSize(imageWidth),
+          }}
+        />
       </TableCell>
       {cells.map((cell, i) => (
         // eslint-disable-next-line react/jsx-key

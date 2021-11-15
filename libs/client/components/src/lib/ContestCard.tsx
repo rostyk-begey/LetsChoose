@@ -51,7 +51,7 @@ import clip from 'text-clipper';
 
 const PREFIX = 'ContestCard';
 
-const classes = {
+export const classes = {
   media: `${PREFIX}-media`,
   cursorPointer: `${PREFIX}-cursorPointer`,
   title: `${PREFIX}-title`,
@@ -65,7 +65,7 @@ const classes = {
   headerAction: `${PREFIX}-headerAction`,
 };
 
-const StyledCard = styled(Card)(({ theme }) => ({
+export const StyledCard = styled(Card)(({ theme }) => ({
   width: '100%',
   maxWidth: 345,
   height: '100%',
@@ -73,10 +73,10 @@ const StyledCard = styled(Card)(({ theme }) => ({
   flexDirection: 'column',
   borderRadius: 8,
   overflow: 'visible',
-  boxShadow: theme.shadows[16],
+  boxShadow: theme.shadows[6],
 
   '&:hover': {
-    boxShadow: theme.shadows[4],
+    boxShadow: theme.shadows[16],
   },
 
   [`& .${classes.media}`]: {

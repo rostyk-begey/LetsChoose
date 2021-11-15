@@ -5,7 +5,7 @@ import {
   useQuery,
   useInfiniteQuery,
   UseInfiniteQueryOptions,
-  UseQueryOptions,
+  QueryKey,
 } from 'react-query';
 import {
   ContestDto,
@@ -15,14 +15,18 @@ import {
   GetItemsResponse,
   UpdateContestData,
 } from '@lets-choose/common/dto';
+import { UseQueryOptions } from 'react-query/types/react/types';
 
 export const contestApi = new ContestApi();
 
 export const useContestFind = (
   id: string,
-  options: UseQueryOptions<AxiosResponse<ContestDto>> = {},
+  options: Omit<
+    UseQueryOptions<AxiosResponse<ContestDto>>,
+    'queryKey' | 'queryFn'
+  > = {},
 ) => {
-  return useQuery(['contest', id], () => contestApi.find(id), {
+  return useQuery(['contest', id] as QueryKey, () => contestApi.find(id), {
     retry: 0,
     ...options,
   });

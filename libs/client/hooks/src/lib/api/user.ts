@@ -1,9 +1,7 @@
 import { UsersApi } from '@lets-choose/client/api';
 import Router from 'next/router';
 import { useEffect } from 'react';
-import { useMutation, useQuery, UseQueryOptions } from 'react-query';
-import { AxiosResponse } from 'axios';
-import { UserPublicDto } from '@lets-choose/common/dto';
+import { useMutation, useQuery } from 'react-query';
 
 const userApi = new UsersApi();
 
@@ -15,11 +13,9 @@ type Config = {
 export const useUserFindRedirect = (
   username: string,
   { redirectTo, redirectIfFound }: Config = {},
-  queryConfig: UseQueryOptions<AxiosResponse<UserPublicDto>> = {},
 ) => {
   const query = useQuery(['user', username], () => userApi.find(username), {
     retry: 0,
-    ...queryConfig,
   });
   const { data: response, isLoading } = query;
 
@@ -41,20 +37,13 @@ export const useUserFindRedirect = (
   return query;
 };
 
-export const useCurrentUser = (
-  config: Config = {},
-  queryConfig: UseQueryOptions<AxiosResponse<UserPublicDto>> = {},
-) => {
-  return useUserFindRedirect('me', config, queryConfig);
+export const useCurrentUser = (config: Config = {}) => {
+  return useUserFindRedirect('me', config);
 };
 
-export const useUserFind = (
-  id: string,
-  config: UseQueryOptions<AxiosResponse<UserPublicDto>> = {},
-) => {
+export const useUserFind = (id: string) => {
   return useQuery(['user', id], () => userApi.find(id), {
     retry: 0,
-    ...config,
   });
 };
 

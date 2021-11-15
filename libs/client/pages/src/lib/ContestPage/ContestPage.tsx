@@ -76,7 +76,23 @@ const StyledSubheader = styled(Subheader)(
       padding: theme.spacing(1, 1.5),
     },
 
-    [`& .${classes.subheaderText}`]: {},
+    [`& .${classes.subheaderText}`]: {
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      overflow: 'hidden',
+    },
+
+    [`& .${classes.headerTitle}`]: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      marginRight: theme.spacing(1),
+      fontSize: '1.2rem',
+      fontWeight: theme.typography.fontWeightMedium,
+      [breakpoints.down('md')]: {
+        fontSize: '1.1rem',
+      },
+    },
 
     [`& .${classes.subheaderStats}`]: {
       display: 'flex',
@@ -108,18 +124,6 @@ const StyledSubheader = styled(Subheader)(
 );
 
 const StyledPage = styled(Page)(({ theme: { breakpoints, ...theme } }) => ({
-  [`& .${classes.headerTitle}`]: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    marginRight: theme.spacing(2),
-    fontSize: '1.2rem',
-    fontWeight: theme.typography.fontWeightMedium,
-    [breakpoints.down('md')]: {
-      fontSize: '1.1rem',
-    },
-  },
-
   [`& .${classes.subheader}`]: {
     display: 'flex',
     alignItems: 'center',
@@ -240,8 +244,9 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
 
   const { mutateAsync: startGame } = useGameStart();
   const onStartGame = async () => {
-    const { data: { gameId = null } = {} } =
-      (await startGame(contestId as string)) || {};
+    const {
+      data: { gameId },
+    } = (await startGame(contestId as string)) || {};
     await router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
   };
   const {

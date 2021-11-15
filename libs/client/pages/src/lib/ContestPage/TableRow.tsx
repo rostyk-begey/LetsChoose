@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { alpha } from '@mui/material';
+import { keyframes } from '@mui/system';
 import { ContestItemDto } from '@lets-choose/common/dto';
 import { styled } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -77,6 +78,15 @@ export const StyledFigure = styled('figure')(({ theme: { breakpoints } }) => ({
   },
 }));
 
+const grow = keyframes({
+  from: {
+    width: 0,
+  },
+  to: {
+    width: '100%',
+  },
+});
+
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 20,
   border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
@@ -87,11 +97,16 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
   [`& .${linearProgressClasses.bar}`]: {
     borderRadius: 5,
+    width: 0,
+    animation: `${grow} 1s ${theme.transitions.easing.sharp}`,
+    animationFillMode: 'both',
   },
 }));
 
 export const StyledRow = styled(MuiTableRow)(
   ({ theme: { breakpoints, ...theme } }) => ({
+    cursor: 'pointer',
+
     '& > *': {
       borderBottom: 'unset',
     },
@@ -136,25 +151,22 @@ export const TableRow: React.FC<TableRowProps> = ({ row }) => {
   const imageSrc = cloudinaryAspectRatio(image.value);
   const blurPreviewURL = cloudinaryBlurPreview(image.value);
 
-  const handleExpandClick = (e: React.MouseEvent) => {
+  const handleExpandToggleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     setOpen((prev) => !prev);
   };
-
-  const handleRowClick = (e: React.MouseEvent) =>
-    matchesMaxWidth960 && handleExpandClick(e);
 
   const chipColor =
     ['#ffd700', '#c0c0c0', '#cd7f32'][row.index] || 'transparent';
 
   return (
     <>
-      <StyledRow hover onClick={handleRowClick}>
+      <StyledRow hover onClick={handleExpandToggleClick}>
         <TableCell align="center" width={50} className={classes.expandCell}>
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={handleExpandClick}
+            onClick={handleExpandToggleClick}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
