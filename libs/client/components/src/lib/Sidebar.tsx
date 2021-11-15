@@ -39,8 +39,10 @@ const classes = {
   transition: `${PREFIX}-transition`,
 };
 
-const Root = styled('div')<{ open?: boolean }>(({ theme, open }) => ({
-  [`& ${classes.transition}`]: {
+const Root = styled('div', {
+  shouldForwardProp: (prop) => prop !== 'collapsed',
+})<{ collapsed?: boolean }>(({ theme, collapsed }) => ({
+  [`& .${classes.transition}`]: {
     transition: theme.transitions.create('all', {
       duration: theme.transitions.duration.shorter,
       easing: theme.transitions.easing.easeInOut,
@@ -51,7 +53,7 @@ const Root = styled('div')<{ open?: boolean }>(({ theme, open }) => ({
     width: 48,
     height: 48,
     marginBottom: 0,
-    ...(open && {
+    ...(!collapsed && {
       width: 60,
       height: 60,
       marginBottom: theme.spacing(2),
@@ -59,13 +61,14 @@ const Root = styled('div')<{ open?: boolean }>(({ theme, open }) => ({
   },
 
   [`& .${classes.username}`]: {
+    transition: 'all 0.3s ease 0s',
     textTransform: 'none',
-    maxHeight: open ? 100 : 0,
-    opacity: open ? 1 : 0,
+    maxHeight: collapsed ? 0 : 100,
+    opacity: collapsed ? 0 : 1,
   },
 
   [`& .${classes.profileBox}`]: {
-    padding: open ? theme.spacing(2) : theme.spacing(2, 1),
+    padding: !collapsed ? theme.spacing(2) : theme.spacing(2, 1),
   },
 
   [`& .${classes.sidebarMenu}`]: {
@@ -97,6 +100,7 @@ const MenuItem = styled(ListItem, {
 >(({ theme, open }) => ({
   padding: 0,
   transition: 'all 0s linear 0.2s',
+  minWidth: open ? 254 : 64,
 
   [`& .${menuItemClasses.icon}`]: {
     transition: 'all 0.3s ease 0s',
@@ -180,7 +184,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <Root>
+    <Root collapsed={collapsed}>
       <Box className={classes.profileBox}>
         {!isLoading ? (
           <RouterLink href={`${ROUTES.USERS}/${username}`} passHref>

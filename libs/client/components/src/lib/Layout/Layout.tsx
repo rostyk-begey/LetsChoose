@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import { alpha, styled } from '@mui/material/styles';
 import Backdrop from '@mui/material/Backdrop';
@@ -7,6 +8,7 @@ import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import {
   Root,
   Header as MuiHeader,
@@ -83,7 +85,7 @@ export const Layout: React.FC<LayoutProps> = ({
             width: 256,
             collapsible: true,
           },
-          sm: {
+          xs: {
             variant: 'temporary',
             width: 256,
           },
@@ -109,13 +111,26 @@ export const Layout: React.FC<LayoutProps> = ({
           }}
         >
           <Toolbar>
+            <MuiEdgeTrigger target={{ anchor: 'left', field: 'open' }}>
+              {(open, setOpen) => (
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={() => setOpen(true)}
+                  edge="start"
+                  sx={{ mr: 2 }}
+                >
+                  <MenuRoundedIcon />
+                </IconButton>
+              )}
+            </MuiEdgeTrigger>
             <Box display="flex">{title}</Box>
             {toolbarContent}
           </Toolbar>
         </MuiHeader>
         <SubheaderContainer>{subHeader}</SubheaderContainer>
-        {primarySidebar && (
-          <MuiEdgeSidebar anchor="left" open>
+        {!!primarySidebar && (
+          <MuiEdgeSidebar anchor="left">
             <MuiSidebarContent
               sx={{ display: 'flex', flexDirection: 'column' }}
             >
@@ -124,6 +139,7 @@ export const Layout: React.FC<LayoutProps> = ({
             <MuiEdgeTrigger target={{ anchor: 'left', field: 'collapsed' }}>
               {(collapsed, setCollapsed) => (
                 <Button
+                  aria-label={`${collapsed ? 'expand' : 'collapse'} drawer`}
                   sx={{
                     width: '100%',
                     height: 52,
