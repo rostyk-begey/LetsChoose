@@ -6,7 +6,7 @@ import { AuthResetPasswordDto } from '@lets-choose/common/dto';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-
+import { useMutation } from 'react-query';
 import {
   FormTextInputProps,
   AuthFormCard,
@@ -15,7 +15,7 @@ import {
   PageWithForm,
 } from '@lets-choose/client/components';
 import { ROUTES } from '@lets-choose/client/utils';
-import { useApiResetPassword } from '@lets-choose/client/hooks';
+import { authApi } from '@lets-choose/client/hooks';
 
 const inputs: Record<string, FormTextInputProps> = {
   password: {
@@ -35,8 +35,9 @@ const inputs: Record<string, FormTextInputProps> = {
 export const ResetPasswordPage: React.FC = () => {
   const router = useRouter();
   const token = (router?.query?.token as string) || '';
-  const { mutate: resetPassword, ...resetPasswordQuery } =
-    useApiResetPassword();
+  const { mutate: resetPassword, isLoading } = useMutation(
+    authApi.resetPassword,
+  );
   const form = useForm<AuthResetPasswordDto>({
     defaultValues: {
       password: '',
@@ -48,7 +49,7 @@ export const ResetPasswordPage: React.FC = () => {
       <FormProvider {...form}>
         <AuthFormCard
           title="Reset password"
-          submitDisabled={resetPasswordQuery.isLoading}
+          submitDisabled={isLoading}
           submitButtonText="Request password"
           onSubmit={form.handleSubmit(async (data) => {
             await resetPassword({ token, data });

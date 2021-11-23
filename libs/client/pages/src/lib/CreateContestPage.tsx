@@ -4,32 +4,25 @@ import { ROUTES } from '@lets-choose/client/utils';
 import { CreateContestData } from '@lets-choose/common/dto';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
-import { useContestCreate, useCurrentUser } from '@lets-choose/client/hooks';
+import { contestApi, useCurrentUser } from '@lets-choose/client/hooks';
+import { useMutation } from 'react-query';
 
 import { EditContestPageTemplate } from './EditContestPageTemplate';
 
 export const CreateContestPage: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
-  const { mutateAsync: createContest } = useContestCreate();
-  const onSubmit = useCallback(
-    async (data: unknown) => {
-      try {
-        setIsLoading(true);
-        const { data: contest } = await createContest(
-          data as CreateContestData,
-        );
-        await router.push(`${ROUTES.CONTESTS.INDEX}/${contest.id}`);
-        enqueueSnackbar('Contest successfully created', { variant: 'success' });
-      } catch (e: any) {
-        enqueueSnackbar(e.message, { variant: 'error' });
-      } finally {
-        setIsLoading(false);
-      }
+  const { mutate: createContest, isLoading } = useMutation(contestApi.create, {
+    onSuccess: ({ data: contest }) => {
+      router.push(`${ROUTES.CONTESTS.INDEX}/${contest.id}`);
+      enqueueSnackbar('Contest successfully created', { variant: 'success' });
     },
-    [createContest, router, enqueueSnackbar],
-  );
+    onError: (error: Error) => {
+      enqueueSnackbar(error.message, { variant: 'error' });
+    },
+  });
+  const onSubmit = (data: unknown) => createContest(data as CreateContestData);
+
   useCurrentUser({ redirectTo: ROUTES.HOME });
 
   return (

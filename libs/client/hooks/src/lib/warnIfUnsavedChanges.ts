@@ -1,14 +1,15 @@
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
 export const useWarnIfUnsavedChanges = (unsavedChanges: boolean) => {
   const message = 'Do you want to leave?';
+  const router = useRouter();
 
   useEffect(() => {
     const routeChangeStart = (url: string) => {
-      if (Router.asPath !== url && unsavedChanges && !window.confirm(message)) {
-        Router.events.emit('routeChangeError');
-        Router.replace(Router, Router.asPath);
+      if (router.asPath !== url && unsavedChanges && !window.confirm(message)) {
+        router.events.emit('routeChangeError');
+        router.replace(router, router.asPath);
         throw 'Abort route change. Please ignore this error.';
       }
     };
@@ -22,11 +23,11 @@ export const useWarnIfUnsavedChanges = (unsavedChanges: boolean) => {
     };
 
     window.addEventListener('beforeunload', beforeunload);
-    Router.events.on('routeChangeStart', routeChangeStart);
+    router.events.on('routeChangeStart', routeChangeStart);
 
     return () => {
       window.removeEventListener('beforeunload', beforeunload);
-      Router.events.off('routeChangeStart', routeChangeStart);
+      router.events.off('routeChangeStart', routeChangeStart);
     };
   }, [unsavedChanges]);
 };

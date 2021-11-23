@@ -1,8 +1,8 @@
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
-
+import { useMutation } from 'react-query';
 import { oneTapContainerId } from '@lets-choose/client/utils';
-import { authApi, useAxiosMutation } from './api/auth';
+import { authApi } from './api/auth';
 import { useCurrentUser } from './api/user';
 
 export interface UseGoogleSignInPromptProps {
@@ -12,7 +12,15 @@ export interface UseGoogleSignInPromptProps {
 export const useGoogleSignInPrompt = ({
   enabled,
 }: UseGoogleSignInPromptProps) => {
-  const { mutateAsync: googleLogin } = useAxiosMutation(authApi.loginGoogle);
+  const { mutate: googleLogin } = useMutation(authApi.loginGoogle, {
+    onSuccess: async () => {
+      await refetchCurrentUser();
+      enqueueSnackbar('Successfully logged in', { variant: 'success' });
+    },
+    onError: (e: any) => {
+      enqueueSnackbar(e.response.data.message, { variant: 'error' });
+    },
+  });
   const { enqueueSnackbar } = useSnackbar();
   const { refetch: refetchCurrentUser } = useCurrentUser({});
 
@@ -35,15 +43,7 @@ export const useGoogleSignInPrompt = ({
         cancel_on_tap_outside: false,
         context: 'signin',
         prompt_parent_id: oneTapContainerId,
-        callback: async ({ credential: token }) => {
-          try {
-            await googleLogin({ token });
-            await refetchCurrentUser();
-            enqueueSnackbar('Successfully logged in', { variant: 'success' });
-          } catch (e: any) {
-            enqueueSnackbar(e.response.data.message, { variant: 'error' });
-          }
-        },
+        callback: async ({ credential: token }) => googleLogin({ token }),
       };
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

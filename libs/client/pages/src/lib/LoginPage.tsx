@@ -18,12 +18,9 @@ import {
   InputWithIcon,
   PageWithForm,
 } from '@lets-choose/client/components';
-import {
-  useCurrentUser,
-  authApi,
-  useAxiosMutation,
-} from '@lets-choose/client/hooks';
+import { useCurrentUser, authApi } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
+import { useMutation } from 'react-query';
 
 const inputs: Record<string, FormTextInputProps> = {
   login: {
@@ -58,11 +55,15 @@ export const LoginPage: React.FC = () => {
   });
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
-  const { mutateAsync: httpLogin, ...httpLoginQuery } = useAxiosMutation(
-    authApi.login,
-    {
-      onSuccess: () => router.push(ROUTES.HOME).then(),
+  const mutationConfig = {
+    onSuccess: () => router.push(ROUTES.HOME).then(),
+    onError: (e: any) => {
+      enqueueSnackbar(e.response.data.message, { variant: 'error' });
     },
+  };
+  const { mutate: httpLogin, ...httpLoginQuery } = useMutation(
+    authApi.login,
+    mutationConfig,
   );
   const form = useForm<AuthLoginDto>({
     defaultValues: {
@@ -70,25 +71,15 @@ export const LoginPage: React.FC = () => {
       password: '',
     },
   });
-  const { mutateAsync: googleLogin, ...googleLoginQuery } = useAxiosMutation(
+  const { mutate: googleLogin, ...googleLoginQuery } = useMutation(
     authApi.loginGoogle,
-    {
-      onSuccess: () => router.push(ROUTES.HOME).then(),
-    },
+    mutationConfig,
   );
-  const onOAuthSuccess = async ({ tokenId: token }: GoogleLoginResponse) => {
-    try {
-      await googleLogin({ token });
-    } catch (e: any) {
-      enqueueSnackbar(e.response.data.message, { variant: 'error' });
-    }
+  const onOAuthSuccess = ({ tokenId: token }: GoogleLoginResponse) => {
+    googleLogin({ token });
   };
-  const onFormSubmit = form.handleSubmit(async (data) => {
-    try {
-      await httpLogin(data);
-    } catch (e: any) {
-      enqueueSnackbar(e.response.data.message, { variant: 'error' });
-    }
+  const onFormSubmit = form.handleSubmit((data) => {
+    httpLogin(data);
   });
 
   return (

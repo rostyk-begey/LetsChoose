@@ -139,7 +139,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isLoading,
   onLogout,
 }) => {
-  const { mutateAsync: logout } = useMutation(authApi.logout);
+  const { mutate: logout } = useMutation(authApi.logout, {
+    onSuccess: onLogout,
+  });
   const router = useRouter();
   const links: MenuLink[] = [
     {
@@ -230,10 +232,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <Divider />
         <MenuItem open={open || !collapsed}>
           <ListItemButton
-            onClick={async () => {
-              await logout();
-              onLogout();
-            }}
+            onClick={() => logout()}
             className={menuItemClasses.button}
           >
             <ListItemIcon className={menuItemClasses.icon}>

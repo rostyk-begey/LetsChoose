@@ -58,7 +58,7 @@ export const Page: React.FC<PageProps> = ({
   isLoading,
 }) => {
   const {
-    data: { data: user } = {},
+    data: user,
     remove,
     isSuccess,
     isFetched,

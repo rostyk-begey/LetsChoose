@@ -106,9 +106,9 @@ export const UserPage: React.FC<UserPageProps> = ({ initialUser }) => {
   });
   const pages = data?.pages || [];
   const { data: userResponse, isLoading } = useUserFind(username as string, {
-    initialData: { data: initialUser } as any,
+    initialData: initialUser as never,
   });
-  const user = (userResponse?.data as UserPublicDto) || initialUser;
+  const user = userResponse || initialUser;
   const matchesMaxWidth1024 = useMediaQuery(
     json2mq({
       maxWidth: 1024,

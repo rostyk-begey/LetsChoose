@@ -1,11 +1,10 @@
 import { ContestApi } from '@lets-choose/client/api';
+import { QueryKeyFactory } from '@lets-choose/client/utils';
 import { AxiosResponse } from 'axios';
 import {
-  useMutation,
   useQuery,
   useInfiniteQuery,
   UseInfiniteQueryOptions,
-  QueryKey,
 } from 'react-query';
 import {
   ContestDto,
@@ -13,23 +12,37 @@ import {
   GetContestsResponse,
   GetItemsQuery,
   GetItemsResponse,
-  UpdateContestData,
 } from '@lets-choose/common/dto';
-import { UseQueryOptions } from 'react-query/types/react/types';
+import { UseQueryOptions } from 'react-query';
 
 export const contestApi = new ContestApi();
+
+export const contestQueryKeys: QueryKeyFactory = {
+  all: (queryParams: unknown) => [
+    { scope: 'contests', entity: 'list', queryParams },
+  ],
+  allItems: (contestId: string, queryParams: unknown) => [
+    { scope: 'contestItems', entity: 'list', contestId, queryParams },
+  ],
+  find: (id: string) => [{ scope: 'contests', entity: id }],
+};
 
 export const useContestFind = (
   id: string,
   options: Omit<
-    UseQueryOptions<AxiosResponse<ContestDto>>,
+    UseQueryOptions<AxiosResponse<ContestDto>, unknown, ContestDto>,
     'queryKey' | 'queryFn'
   > = {},
 ) => {
-  return useQuery(['contest', id] as QueryKey, () => contestApi.find(id), {
-    retry: 0,
-    ...options,
-  });
+  return useQuery<AxiosResponse<ContestDto>, unknown, ContestDto>(
+    contestQueryKeys.find(id),
+    () => contestApi.find(id),
+    {
+      retry: 0,
+      select: (response) => response.data,
+      ...options,
+    },
+  );
 };
 
 export const useContestAllInfinite = (
@@ -45,7 +58,7 @@ export const useContestAllInfinite = (
     ...params,
   };
   return useInfiniteQuery<AxiosResponse<GetContestsResponse>>(
-    ['contests', queryParams],
+    contestQueryKeys.all(queryParams),
     ({ pageParam: page = 1 }) => contestApi.all({ ...queryParams, page }),
     {
       ...options,
@@ -72,7 +85,7 @@ export const useContestItemsInfinite = (
     ...params,
   };
   return useInfiniteQuery<AxiosResponse<GetItemsResponse>>(
-    ['contestItems', contestId, queryParams],
+    contestQueryKeys.allItems(contestId, queryParams),
     ({ pageParam: page = 1 }) =>
       contestApi.allItems(contestId, { ...queryParams, page }),
     {
@@ -89,20 +102,4 @@ export const useContestItemsInfinite = (
       },
     },
   );
-};
-
-export const useContestCreate = () => {
-  return useMutation(contestApi.create);
-};
-
-export const useContestUpdate = (id: string) => {
-  return useMutation((data: UpdateContestData) => contestApi.update(id, data));
-};
-
-export const useContestReset = (id: string) => {
-  return useMutation(() => contestApi.reset(id));
-};
-
-export const useContestDelete = (id: string) => {
-  return useMutation(() => contestApi.remove(id));
 };

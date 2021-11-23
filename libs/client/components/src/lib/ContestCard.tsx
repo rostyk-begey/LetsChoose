@@ -1,10 +1,10 @@
+import { useConfirm } from 'material-ui-confirm';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  useContestDelete,
+  contestApi,
   useContestItemsInfinite,
-  useContestReset,
   useCurrentUser,
-  useGameStart,
+  useGameApi,
 } from '@lets-choose/client/hooks';
 import { styled } from '@mui/material/styles';
 import {
@@ -46,6 +46,7 @@ import Image from 'next/image';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
+import { useMutation } from 'react-query';
 import SwipeableViews from 'react-swipeable-views';
 import clip from 'text-clipper';
 
@@ -238,12 +239,13 @@ export const ContestCard: React.FC<ContestCardProps> = ({
 
   const { id, thumbnail, title, excerpt, author, games, createdAt } = contest;
   const username = (author as UserPublicDto).username;
-  const { data: { data: user } = {} } = useCurrentUser({});
-  const { mutateAsync: startGame } = useGameStart();
-  const handleStartGameClick = async () => {
-    const { data: { gameId = null } = {} } = (await startGame(id)) || {};
-    await router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
-  };
+  const { data: user } = useCurrentUser({});
+  const { mutate: startGame } = useMutation(useGameApi.start, {
+    onSuccess: ({ data: { gameId = null } = {} }) => {
+      router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
+    },
+  });
+  const handleStartGameClick = () => startGame(id);
   const {
     query: { isLoading: isSliderLoading },
     pages,
@@ -255,33 +257,37 @@ export const ContestCard: React.FC<ContestCardProps> = ({
     handleBack,
     handleStepChange,
   } = useContestItemsSlider(contest.id);
+  const confirm = useConfirm();
   const { menuAnchor, handleMenuClick, handleMenuClose } = useMenu();
-  const { mutateAsync: deleteContest } = useContestDelete(id);
-  const { mutateAsync: resetContest } = useContestReset(contest.id);
-  const handleDeleteClick = async () => {
-    if (
-      window.confirm(
-        'Are you sure you want to delete contest? All data will be lost.',
-      )
-    ) {
-      await deleteContest();
-      handleMenuClose();
-      onDelete && onDelete();
-    }
+  const handleDeleteOrResetSuccess = () => {
+    handleMenuClose();
+    onDelete && onDelete();
   };
-  const handleEditClick = () => {
-    router.push(`${ROUTES.CONTESTS.INDEX}/${contest.id}/edit`);
+  const { mutate: deleteContest } = useMutation(() => contestApi.remove(id), {
+    onSuccess: handleDeleteOrResetSuccess,
+  });
+  const { mutate: resetContest } = useMutation(() => contestApi.reset(id), {
+    onSuccess: handleDeleteOrResetSuccess,
+  });
+  const handleDeleteClick = async () => {
+    await handleMenuClose();
+    await confirm({
+      description:
+        'Are you sure you want to delete contest? All data will be lost.',
+    });
+    deleteContest();
+  };
+  const handleEditClick = async () => {
+    await handleMenuClose();
+    await router.push(`${ROUTES.CONTESTS.INDEX}/${contest.id}/edit`);
   };
   const handleResetClick = async () => {
-    if (
-      window.confirm(
+    await handleMenuClose();
+    await confirm({
+      description:
         'Are you sure you want to reset contest? All data will be reset to defaults.',
-      )
-    ) {
-      await resetContest();
-      handleMenuClose();
-      onDelete && onDelete();
-    }
+    });
+    resetContest();
   };
   const { enqueueSnackbar } = useSnackbar();
 

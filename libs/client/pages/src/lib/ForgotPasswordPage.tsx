@@ -37,8 +37,14 @@ export const ForgotPasswordPage: React.FC = () => {
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,
   });
-  const { mutateAsync: httpForgotPassword, ...httpForgotPasswordQuery } =
-    useMutation(authApi.forgotPassword);
+  const { mutate: httpForgotPassword, isLoading } = useMutation(
+    authApi.forgotPassword,
+    {
+      onSuccess: () => {
+        refetchCurrentUser();
+      },
+    },
+  );
   const form = useForm<AuthForgotPasswordDto>({
     defaultValues: {
       email: '',
@@ -51,11 +57,10 @@ export const ForgotPasswordPage: React.FC = () => {
       <FormProvider {...form}>
         <AuthFormCard
           title="Forgot password"
-          submitDisabled={httpForgotPasswordQuery.isLoading}
+          submitDisabled={isLoading}
           submitButtonText="Request password reset"
-          onSubmit={form.handleSubmit(async (data) => {
-            await httpForgotPassword(data);
-            await refetchCurrentUser();
+          onSubmit={form.handleSubmit((data) => {
+            httpForgotPassword(data);
           })}
           cardAfter={
             <Grid container>

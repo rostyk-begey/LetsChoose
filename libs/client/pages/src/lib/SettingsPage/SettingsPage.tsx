@@ -11,12 +11,7 @@ import { useSnackbar } from 'notistack';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useConfirm } from 'material-ui-confirm';
 
-import {
-  useUpdateUserPassword,
-  useCurrentUser,
-  useUserDeleteProfile,
-  useUserUpdateProfile,
-} from '@lets-choose/client/hooks';
+import { useCurrentUser, userApi, authApi } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
 import {
   FormTextInput,
@@ -24,6 +19,7 @@ import {
   Page,
   Subheader,
 } from '@lets-choose/client/components';
+import { useMutation } from 'react-query';
 import { SettingsPageSection } from './SettingsPageSection';
 
 const PREFIX = 'SettingsPage';
@@ -173,15 +169,26 @@ export const SettingsPage: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const confirm = useConfirm();
   const {
-    data: { data: user } = {},
+    data: user,
     remove,
     refetch: refetchCurrentUser,
   } = useCurrentUser({ redirectTo: ROUTES.HOME });
-  const { isLoading: updateProfileIsLoading, mutateAsync: updateProfile } =
-    useUserUpdateProfile();
-  const { isLoading: updatePasswordIsLoading, mutateAsync: updatePassword } =
-    useUpdateUserPassword();
-  const { mutateAsync: deleteAccount } = useUserDeleteProfile();
+  const mutationOptions = {
+    onSuccess: async () => {
+      remove();
+      await refetchCurrentUser();
+      enqueueSnackbar('Successfully saved', { variant: 'success' });
+    },
+    onError: (e: any) => {
+      const message = e?.response?.data?.message || 'An error occurred';
+      enqueueSnackbar(message, { variant: 'error' });
+    },
+  };
+  const { isLoading: updateProfileIsLoading, mutate: updateProfile } =
+    useMutation(userApi.updateProfile, mutationOptions);
+  const { isLoading: updatePasswordIsLoading, mutate: updatePassword } =
+    useMutation(authApi.updatePassword, mutationOptions);
+  const { mutate: deleteAccount } = useMutation(userApi.deleteProfile);
   const profileForm = useForm<any>({
     defaultValues: {
       username: user?.username || '',
@@ -195,30 +202,26 @@ export const SettingsPage: React.FC = () => {
       confirmPassword: '',
     },
   });
-  function submitHandler<T>(
-    onSubmit: (data: T) => Promise<unknown>,
-    selectData = (data: T) => data,
-  ) {
-    return async (data: T) => {
-      try {
-        await onSubmit(selectData(data));
-        remove();
-        await refetchCurrentUser();
-        enqueueSnackbar('Successfully saved', { variant: 'success' });
-      } catch (e: any) {
-        const message = e?.response?.data?.message || 'An error occurred';
-        enqueueSnackbar(message, { variant: 'error' });
-      }
+  const submitHandler =
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    <T extends object>(
+      onSubmit: (data: T) => void,
+      selectData = (data: T) => data,
+    ) => {
+      return (data: T) => onSubmit(selectData(data));
     };
-  }
+
   const handleProfileFormSubmit = submitHandler(updateProfile);
-  const handlePasswordFormSubmit = submitHandler(
-    updatePassword,
-    ({ password, newPassword }) => ({ password, newPassword }),
-  );
+  const handlePasswordFormSubmit = submitHandler<{
+    password: string;
+    newPassword: string;
+  }>(updatePassword, ({ password, newPassword }) => ({
+    password,
+    newPassword,
+  }));
   const handleDeleteClick = async () => {
     await confirm({ description: 'This action is permanent!' });
-    await deleteAccount();
+    deleteAccount();
   };
   const currentPassword = passwordForm.watch('password', '');
 

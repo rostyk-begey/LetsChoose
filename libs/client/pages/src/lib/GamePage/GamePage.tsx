@@ -2,8 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { Page, Subheader } from '@lets-choose/client/components';
 import { styled } from '@mui/material/styles';
 import {
+  useGameApi,
   useGameChoose,
-  useGameState,
   useWarnIfUnsavedChanges,
 } from '@lets-choose/client/hooks';
 import { ROUTES, sleep } from '@lets-choose/client/utils';
@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import classNames from 'classnames';
 import { NextRouter, useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
+import { useMutation } from 'react-query';
 
 import { GameCard } from './GameCard';
 
@@ -79,38 +80,36 @@ export const GamePage: React.FC<GamePageProps> = ({ initialGame }) => {
   const { id: gameId } = initialGame;
   const router = useRouter();
   const inAnimations = getAnimationClassNames();
-  const { mutateAsync: choose } = useGameChoose(gameId);
-  const { mutateAsync: getGameState } = useGameState(gameId);
   const [animations, setAnimations] = useState<string[]>(inAnimations);
+  const { enqueueSnackbar } = useSnackbar();
+  const { mutateAsync: choose } = useGameChoose(gameId);
   const [game, setGame] = useState<GameDto>(initialGame);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { mutate: getGameState, isLoading } = useMutation(
+    () => useGameApi.find(gameId),
+    {
+      onSuccess: async () => {
+        if (game?.finished) {
+          await (router as NextRouter).push(
+            `${ROUTES.CONTESTS.INDEX}/${game.contestId}`,
+          );
+        }
+
+        setGame(game);
+        setAnimations(inAnimations);
+      },
+      onError: (e: any) => {
+        enqueueSnackbar(e?.response?.data?.message, { variant: 'error' });
+      },
+    },
+  );
   const [isChooseLoading, setIsChooseLoading] = useState<boolean>(false);
   const { pair, round = 0, totalRounds, pairNumber, pairsInRound } = game || {};
-  const { enqueueSnackbar } = useSnackbar();
 
-  const fetchGameState = useCallback(
-    async (initial?: boolean) => {
-      try {
-        if (gameId) {
-          setIsLoading(true);
-          const { data: game } = (await getGameState()) || {};
-
-          if (game?.finished && !initial) {
-            await (router as NextRouter).push(
-              `${ROUTES.CONTESTS.INDEX}/${game.contestId}`,
-            );
-          }
-
-          setGame(game);
-          setAnimations(inAnimations);
-          setIsLoading(false);
-        }
-      } catch (e: any) {
-        enqueueSnackbar(e.response.data.message, { variant: 'error' });
-      }
-    },
-    [enqueueSnackbar, gameId, getGameState, inAnimations, router],
-  );
+  const fetchGameState = useCallback(() => {
+    if (gameId) {
+      getGameState();
+    }
+  }, [gameId, getGameState]);
 
   const onChoose = (idx: number, winnerId: string) => async () => {
     try {

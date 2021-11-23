@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -63,9 +63,9 @@ export const ContestGrid: React.FC<ContestGridProps> = ({ author }) => {
     if (itemsPerRow === 1) return 1;
 
     return itemsPerRow - (currentItemsLength % itemsPerRow);
-  }, [pages, getPerRowItemsLength]);
+  }, [getPerRowItemsLength, currentItemsLength]);
 
-  const renderSkeletons = () => {
+  const renderSkeletons = useCallback(() => {
     const length = calcSkeletonsLength();
 
     return Array.from({ length }).map((_, i) => (
@@ -81,7 +81,9 @@ export const ContestGrid: React.FC<ContestGridProps> = ({ author }) => {
         <ContestCardSkeleton />
       </Grid>
     ));
-  };
+  }, [calcSkeletonsLength]);
+
+  console.log('render');
 
   return (
     <Container>

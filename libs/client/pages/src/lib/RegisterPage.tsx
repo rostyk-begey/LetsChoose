@@ -19,12 +19,9 @@ import {
   InputWithIcon,
   PageWithForm,
 } from '@lets-choose/client/components';
-import {
-  authApi,
-  useAxiosMutation,
-  useCurrentUser,
-} from '@lets-choose/client/hooks';
+import { authApi, useCurrentUser } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
+import { useMutation } from 'react-query';
 
 const inputs: Record<keyof AuthRegisterDto, FormTextInputProps> = {
   email: {
@@ -83,30 +80,25 @@ export const RegisterPage: React.FC = () => {
   });
   const { enqueueSnackbar } = useSnackbar();
   const form = useForm<AuthRegisterDto>({});
-  const loginMutationConfig: any = {
-    onSuccess: () => refetchCurrentUser().then(),
+  const mutationConfig = {
+    onSuccess: () => refetchCurrentUser(),
+    onError: (e: any) => {
+      enqueueSnackbar(e.response.data.message, { variant: 'error' });
+    },
   };
-  const { mutateAsync: register, ...registerQuery } = useAxiosMutation(
+  const { mutate: register, ...registerQuery } = useMutation(
     authApi.register,
-    loginMutationConfig,
+    mutationConfig,
   );
-  const { mutateAsync: googleLogin, ...googleLoginQuery } = useAxiosMutation(
+  const { mutate: googleLogin, ...googleLoginQuery } = useMutation(
     authApi.loginGoogle,
-    loginMutationConfig,
+    mutationConfig,
   );
-  const onOAuthSuccess = async ({ tokenId: token }: GoogleLoginResponse) => {
-    try {
-      await googleLogin({ token });
-    } catch (e: any) {
-      enqueueSnackbar(e.response.data.message, { variant: 'error' });
-    }
+  const onOAuthSuccess = ({ tokenId: token }: GoogleLoginResponse) => {
+    googleLogin({ token });
   };
-  const onFormSubmit = form.handleSubmit(async (data) => {
-    try {
-      await register(data);
-    } catch (e: any) {
-      enqueueSnackbar(e.response.data.message, { variant: 'error' });
-    }
+  const onFormSubmit = form.handleSubmit((data) => {
+    register(data);
   });
 
   return (

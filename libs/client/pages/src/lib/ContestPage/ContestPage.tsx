@@ -1,3 +1,4 @@
+import { useConfirm } from 'material-ui-confirm';
 import { useSnackbar } from 'notistack';
 import {
   DropdownButton,
@@ -6,12 +7,12 @@ import {
 } from '@lets-choose/client/components';
 import { styled } from '@mui/material/styles';
 import {
-  useContestDelete,
+  contestApi,
+  contestQueryKeys,
   useContestFind,
   useContestItemsInfinite,
-  useContestReset,
   useCurrentUser,
-  useGameStart,
+  useGameApi,
 } from '@lets-choose/client/hooks';
 import {
   cloudinaryAspectRatio,
@@ -43,6 +44,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
+import { useMutation, useQueryClient } from 'react-query';
 import { Table } from './Table';
 
 const PREFIX = 'ContestPage';
@@ -236,35 +238,56 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
     isLoading: contestIsLoading,
     remove: removeContest,
   } = useContestFind(contestId as string, {
-    initialData: { data: initialContest } as AxiosResponse<ContestDto>,
+    initialData: initialContest as never,
   });
-  const { data: { data: user } = {} } = useCurrentUser({});
-  const contest = (contestResponse?.data as ContestDto) || initialContest;
+  const { data: user } = useCurrentUser({});
+  const contest = contestResponse || initialContest;
   const isCurrentUserAuthor = user?.id === contest.author;
 
-  const { mutateAsync: startGame } = useGameStart();
-  const onStartGame = async () => {
-    const {
-      data: { gameId },
-    } = (await startGame(contestId as string)) || {};
-    await router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
-  };
+  const { mutate: startGame } = useMutation(useGameApi.start, {
+    onSuccess: ({ data: { gameId } }) => {
+      router.push(`${ROUTES.GAMES.INDEX}/${gameId}`);
+    },
+  });
+  const confirm = useConfirm();
+  const onStartGame = async () => startGame(contestId as string);
   const {
     data: contestItemsData,
     fetchNextPage,
     hasNextPage,
     isLoading: contestItemsIsLoading,
-    remove: removeContestItems,
   } = useContestItemsInfinite(
     contestId as string,
     { perPage: itemsPerPage },
     { enabled: !!contest },
   );
+  const queryClient = useQueryClient();
   const isLoading = contestIsLoading || contestItemsIsLoading;
   const pages = contestItemsData?.pages || [];
   const { totalItems = 0 } = pages?.[0]?.data || {};
-  const { mutateAsync: resetContest } = useContestReset(contest.id);
-  const { mutateAsync: deleteContest } = useContestDelete(contest.id);
+  const { mutate: resetContest } = useMutation(
+    () => contestApi.reset(contest.id),
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(contestQueryKeys.all({}));
+        enqueueSnackbar('Contest successfully reset', {
+          variant: 'success',
+        });
+      },
+    },
+  );
+  const { mutate: deleteContest } = useMutation(
+    () => contestApi.remove(contest.id),
+    {
+      onSuccess: () => {
+        router.push(ROUTES.HOME);
+
+        enqueueSnackbar('Contest successfully deleted', {
+          variant: 'success',
+        });
+      },
+    },
+  );
 
   const thumbnail = cloudinaryAspectRatio(contest.thumbnail);
   const blurPreviewURL = cloudinaryBlurPreview(contest.thumbnail);
@@ -344,18 +367,11 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                       </>
                     ),
                     onClick: async () => {
-                      if (
-                        window.confirm(
+                      await confirm({
+                        description:
                           'Are you sure you want to reset contest? All data will be reset to defaults.',
-                        )
-                      ) {
-                        await resetContest();
-                        await removeContest();
-                        await removeContestItems();
-                        enqueueSnackbar('Contest successfully reset', {
-                          variant: 'success',
-                        });
-                      }
+                      });
+                      resetContest();
                     },
                   },
                   {
@@ -368,14 +384,10 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
                       </>
                     ),
                     onClick: async () => {
-                      if (window.confirm('Are you sure you want to delete?')) {
-                        await deleteContest();
-                        await router.push(ROUTES.HOME);
-
-                        enqueueSnackbar('Contest successfully deleted', {
-                          variant: 'success',
-                        });
-                      }
+                      await confirm({
+                        description: 'Are you sure you want to delete?',
+                      });
+                      deleteContest();
                     },
                   },
                 ]}

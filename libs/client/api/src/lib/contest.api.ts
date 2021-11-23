@@ -2,7 +2,6 @@ import { ROUTES } from '@lets-choose/client/utils';
 import {
   ContestDto,
   CreateContestData,
-  CreateContestDto,
   GetContestsQuery,
   GetContestsResponse,
   GetItemsQuery,
