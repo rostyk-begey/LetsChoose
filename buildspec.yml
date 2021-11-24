@@ -5,7 +5,6 @@ phases:
     commands:
       - yarn install
       - yarn lint
-      - yarn test
   build:
     commands:
       - yarn build
