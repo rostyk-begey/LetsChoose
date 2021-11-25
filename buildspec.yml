@@ -8,3 +8,16 @@ phases:
   build:
     commands:
       - yarn build
+
+artifacts:
+  files:
+    - 'dist/apps/api/**/*'
+  name: lets-choose-api
+  discard-paths: yes
+  s3-prefix: lets-choose
+  secondary-artifacts:
+    client:
+      files:
+        - 'dist/apps/client/**/*'
+      name: lets-choose-client
+      discard-paths: yes
