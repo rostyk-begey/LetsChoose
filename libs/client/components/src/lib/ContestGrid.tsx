@@ -83,8 +83,6 @@ export const ContestGrid: React.FC<ContestGridProps> = ({ author }) => {
     ));
   }, [calcSkeletonsLength]);
 
-  console.log('render');
-
   return (
     <Container>
       <InfiniteScroll
