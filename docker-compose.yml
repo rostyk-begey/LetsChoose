@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
-    image: ${DOCKER_REGISTRY}/lets-choose/api:latest
+    image: ${DOCKER_REGISTRY}/lets-choose-api:latest
     container_name: "lets-choose-api"
     env_file: ./.env
     environment:
@@ -15,7 +15,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/client/Dockerfile
-    image: ${DOCKER_REGISTRY}/lets-choose/client:latest
+    image: ${DOCKER_REGISTRY}/lets-choose-client:latest
     container_name: "lets-choose-client"
     env_file: ./.env
     environment:
