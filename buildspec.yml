@@ -8,7 +8,9 @@ phases:
   build:
     commands:
       - yarn build
-
+cache:
+  paths:
+    - 'node_modules/**/*'
 artifacts:
   files:
     - 'dist/apps/api/**/*'
