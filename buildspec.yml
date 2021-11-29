@@ -14,15 +14,15 @@ cache:
 artifacts:
   files:
     - '**/*'
-  base-path: 'dist/apps'
+  base-directory: 'dist/apps'
   secondary-artifacts:
     api:
       files:
         - '**/*'
-      base-path: 'dist/apps/api'
+      base-directory: 'dist/apps/api'
       name: lets-choose-api
     client:
       files:
         - '**/*'
-      base-path: 'dist/apps/client'
+      base-directory: 'dist/apps/client'
       name: lets-choose-client
