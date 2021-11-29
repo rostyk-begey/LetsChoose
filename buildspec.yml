@@ -13,11 +13,16 @@ cache:
     - 'node_modules/**/*'
 artifacts:
   files:
-    - 'dist/apps/api/**/*'
-  name: lets-choose-api
-  s3-prefix: lets-choose
+    - '**/*'
+  base-path: 'dist/apps'
   secondary-artifacts:
+    api:
+      files:
+        - '**/*'
+      base-path: 'dist/apps/api'
+      name: lets-choose-api
     client:
       files:
-        - 'dist/apps/client/**/*'
+        - '**/*'
+      base-path: 'dist/apps/client'
       name: lets-choose-client
