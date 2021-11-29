@@ -8,6 +8,12 @@ phases:
   build:
     commands:
       - yarn build
+  post_build:
+    commands:
+      - ls -R ./dist | awk '
+        /:$/&&f{s=$0;f=0}
+        /:$/&&!f{sub(/:$/,"");s=$0;f=1;next}
+        NF&&f{ print s"/"$0 }'
 cache:
   paths:
     - 'node_modules/**/*'
