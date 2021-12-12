@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REGISTRY_URI
+      - echo Installing dependencies...
+      - yarn install
+      - echo Linting project...
+      - yarn lint
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - yarn deploy
+      - docker tag api:$IMAGE_TAG $REGISTRY_URI/lets-choose-api:$IMAGE_TAG
+      - docker tag client:$IMAGE_TAG $REGISTRY_URI/lets-choose-client:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the api Docker image...
+      - docker push $REGISTRY_URI/lets-choose-api:$IMAGE_TAG
+      - echo Pushing the client Docker image...
+      - docker push $REGISTRY_URI/lets-choose-client:$IMAGE_TAG
