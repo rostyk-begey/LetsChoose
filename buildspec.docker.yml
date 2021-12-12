@@ -7,7 +7,7 @@ phases:
       - echo Region - $AWS_DEFAULT_REGION
       - echo Registry - $REGISTRY_URI
       - echo Tag - $IMAGE_TAG
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REGISTRY_URI
+      - aws ecr-public get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REGISTRY_URI
       - echo Installing dependencies...
       - yarn install
       - echo Linting project...
