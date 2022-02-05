@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import React, { useCallback, useState } from 'react';
 import { Page, Subheader } from '@lets-choose/client/components';
 import { styled } from '@mui/material/styles';
@@ -87,7 +88,7 @@ export const GamePage: React.FC<GamePageProps> = ({ initialGame }) => {
   const { mutate: getGameState, isLoading } = useMutation(
     () => useGameApi.find(gameId),
     {
-      onSuccess: async () => {
+      onSuccess: async ({ data: game }: AxiosResponse<GameDto>) => {
         if (game?.finished) {
           await (router as NextRouter).push(
             `${ROUTES.CONTESTS.INDEX}/${game.contestId}`,
