@@ -29,9 +29,7 @@
     "import/no-unresolved": [
       "error",
       {
-        "ignore": [
-          "\\.(png|jpg|svg)\\?(sprite)$"
-        ]
+        "ignore": ["\\.(png|jpg|svg)\\?(sprite)$"]
       }
     ],
     "react/prop-types": "off"

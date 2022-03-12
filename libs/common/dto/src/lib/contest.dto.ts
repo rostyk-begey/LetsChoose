@@ -49,7 +49,7 @@ export abstract class GetContestsQuery implements SearchQuery, PaginationQuery {
   nextCursor?: string;
 }
 
-export abstract class PaginatedResponse<T extends unknown> {
+export abstract class PaginatedResponse<T> {
   items: T[];
   totalPages: number;
   totalItems: number;

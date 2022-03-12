@@ -274,177 +274,178 @@ export interface EditContestPageTemplateProps {
   withItemsUpload?: boolean;
 }
 
-export const EditContestPageTemplate: React.FC<EditContestPageTemplateProps> =
-  ({
-    title,
-    isLoading = false,
-    defaultThumbnail = '',
-    submitButtonText,
-    onSubmit,
-    inputsDefaultValues,
-    withItemsUpload,
-  }) => {
-    const itemsState = useItemsState();
-    const { items, addFiles } = itemsState;
-    const { errors, setError, clearError } = useCustomErrors<
-      'thumbnail' | 'items'
-    >();
-    const [thumbnail, setThumbnail] = useState<File | null>(null);
-    const thumbnailDropzone = useDropzone({
-      onDropAccepted: ([file]) => {
-        setThumbnail(file);
-        clearError('items');
-      },
-    });
-    const itemsDropzone = useDropzone({
-      onDropAccepted: addFiles,
-    });
-    const thumbnailPreview = useMemo(() => {
-      return thumbnail ? URL.createObjectURL(thumbnail) : defaultThumbnail;
-    }, [thumbnail, defaultThumbnail]);
+export const EditContestPageTemplate: React.FC<
+  EditContestPageTemplateProps
+> = ({
+  title,
+  isLoading = false,
+  defaultThumbnail = '',
+  submitButtonText,
+  onSubmit,
+  inputsDefaultValues,
+  withItemsUpload,
+}) => {
+  const itemsState = useItemsState();
+  const { items, addFiles } = itemsState;
+  const { errors, setError, clearError } = useCustomErrors<
+    'thumbnail' | 'items'
+  >();
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const thumbnailDropzone = useDropzone({
+    onDropAccepted: ([file]) => {
+      setThumbnail(file);
+      clearError('items');
+    },
+  });
+  const itemsDropzone = useDropzone({
+    onDropAccepted: addFiles,
+  });
+  const thumbnailPreview = useMemo(() => {
+    return thumbnail ? URL.createObjectURL(thumbnail) : defaultThumbnail;
+  }, [thumbnail, defaultThumbnail]);
 
-    const form = useForm<FieldValues>({
-      defaultValues: inputsDefaultValues,
-    });
+  const form = useForm<FieldValues>({
+    defaultValues: inputsDefaultValues,
+  });
 
-    const handleSubmit = useCallback(
-      (contestData) => {
-        if (isLoading) return;
+  const handleSubmit = useCallback(
+    (contestData) => {
+      if (isLoading) return;
 
-        if (!thumbnail && !defaultThumbnail) {
-          setError('thumbnail', { message: 'Please add thumbnail' });
-          return;
-        }
-        if (withItemsUpload && items.length < 2) {
-          setError('items', { message: 'Please add at least 2 items' });
-          return;
-        }
+      if (!thumbnail && !defaultThumbnail) {
+        setError('thumbnail', { message: 'Please add thumbnail' });
+        return;
+      }
+      if (withItemsUpload && items.length < 2) {
+        setError('items', { message: 'Please add at least 2 items' });
+        return;
+      }
 
-        onSubmit({
-          ...contestData,
-          thumbnail,
-          items,
-        });
-      },
-      [
-        isLoading,
+      onSubmit({
+        ...contestData,
         thumbnail,
-        defaultThumbnail,
-        withItemsUpload,
         items,
-        onSubmit,
-        setError,
-      ],
-    );
+      });
+    },
+    [
+      isLoading,
+      thumbnail,
+      defaultThumbnail,
+      withItemsUpload,
+      items,
+      onSubmit,
+      setError,
+    ],
+  );
 
-    const shouldRenderCancelThumbnailButton = defaultThumbnail && thumbnail;
+  const shouldRenderCancelThumbnailButton = defaultThumbnail && thumbnail;
 
-    return (
-      <StyledPage
-        subHeader={
-          <StyledSubheader>
-            <Typography variant="h4" className={classes.title}>
-              {title}
-            </Typography>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={form.handleSubmit(handleSubmit)}
-              disabled={isLoading}
-              className={classes.submitButton}
-              startIcon={<SaveIcon />}
-            >
-              {submitButtonText}
-            </Button>
-          </StyledSubheader>
-        }
-      >
-        <FormProvider {...form}>
-          <Container className={classes.content}>
-            <div className={classes.grid}>
-              <Card
-                className={classNames(
-                  classes.contestThumbnailCard,
-                  classes.dropzoneHolder,
-                  classes.equalPaddingCard,
-                )}
-              >
-                <Dropzone
-                  dropzoneState={thumbnailDropzone}
-                  previewImage={thumbnailPreview}
-                />
-                {shouldRenderCancelThumbnailButton && (
-                  <Fab
-                    color="primary"
-                    size="small"
-                    aria-label="cancel-edit"
-                    sx={{
-                      position: 'absolute',
-                      right: (theme) => theme.spacing(3),
-                      bottom: (theme) => theme.spacing(3),
-                      zIndex: 1,
-                    }}
-                    onClick={() => {
-                      setThumbnail(null);
-                    }}
-                  >
-                    <ClearIcon />
-                  </Fab>
-                )}
-                {errors?.thumbnail && (
-                  <Typography
-                    variant="caption"
-                    color="error"
-                    className={classes.thumbnailError}
-                  >
-                    {errors?.thumbnail?.message}
-                  </Typography>
-                )}
-              </Card>
-              <Card
-                className={classNames(
-                  classes.contestTitleCard,
-                  classes.equalPaddingCard,
-                )}
-              >
-                <FormTextInput
-                  {...inputs.title}
-                  fieldProps={{
-                    ...inputs.title.fieldProps,
-                    className: classes.titleInput,
-                  }}
-                />
-              </Card>
-              <Card
-                className={classNames(
-                  classes.contestExcerptCard,
-                  classes.equalPaddingCard,
-                )}
-              >
-                <FormTextInput
-                  {...inputs.excerpt}
-                  fieldProps={{
-                    ...inputs.excerpt.fieldProps,
-                    className: classes.titleInput,
-                  }}
-                />
-              </Card>
-              {withItemsUpload && (
-                <ItemsStateContext.Provider value={itemsState}>
-                  <ContestItemsNav
-                    className={classes.contestItemsCard}
-                    onAddItemsClick={() => itemsDropzone.open()}
-                  />
-                  <ContestItemsList
-                    dropzoneState={itemsDropzone}
-                    className={classes.contestItemsCardActions}
-                    error={errors?.items}
-                  />
-                </ItemsStateContext.Provider>
+  return (
+    <StyledPage
+      subHeader={
+        <StyledSubheader>
+          <Typography variant="h4" className={classes.title}>
+            {title}
+          </Typography>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={form.handleSubmit(handleSubmit)}
+            disabled={isLoading}
+            className={classes.submitButton}
+            startIcon={<SaveIcon />}
+          >
+            {submitButtonText}
+          </Button>
+        </StyledSubheader>
+      }
+    >
+      <FormProvider {...form}>
+        <Container className={classes.content}>
+          <div className={classes.grid}>
+            <Card
+              className={classNames(
+                classes.contestThumbnailCard,
+                classes.dropzoneHolder,
+                classes.equalPaddingCard,
               )}
-            </div>
-          </Container>
-        </FormProvider>
-      </StyledPage>
-    );
-  };
+            >
+              <Dropzone
+                dropzoneState={thumbnailDropzone}
+                previewImage={thumbnailPreview}
+              />
+              {shouldRenderCancelThumbnailButton && (
+                <Fab
+                  color="primary"
+                  size="small"
+                  aria-label="cancel-edit"
+                  sx={{
+                    position: 'absolute',
+                    right: (theme) => theme.spacing(3),
+                    bottom: (theme) => theme.spacing(3),
+                    zIndex: 1,
+                  }}
+                  onClick={() => {
+                    setThumbnail(null);
+                  }}
+                >
+                  <ClearIcon />
+                </Fab>
+              )}
+              {errors?.thumbnail && (
+                <Typography
+                  variant="caption"
+                  color="error"
+                  className={classes.thumbnailError}
+                >
+                  {errors?.thumbnail?.message}
+                </Typography>
+              )}
+            </Card>
+            <Card
+              className={classNames(
+                classes.contestTitleCard,
+                classes.equalPaddingCard,
+              )}
+            >
+              <FormTextInput
+                {...inputs.title}
+                fieldProps={{
+                  ...inputs.title.fieldProps,
+                  className: classes.titleInput,
+                }}
+              />
+            </Card>
+            <Card
+              className={classNames(
+                classes.contestExcerptCard,
+                classes.equalPaddingCard,
+              )}
+            >
+              <FormTextInput
+                {...inputs.excerpt}
+                fieldProps={{
+                  ...inputs.excerpt.fieldProps,
+                  className: classes.titleInput,
+                }}
+              />
+            </Card>
+            {withItemsUpload && (
+              <ItemsStateContext.Provider value={itemsState}>
+                <ContestItemsNav
+                  className={classes.contestItemsCard}
+                  onAddItemsClick={() => itemsDropzone.open()}
+                />
+                <ContestItemsList
+                  dropzoneState={itemsDropzone}
+                  className={classes.contestItemsCardActions}
+                  error={errors?.items}
+                />
+              </ItemsStateContext.Provider>
+            )}
+          </div>
+        </Container>
+      </FormProvider>
+    </StyledPage>
+  );
+};

@@ -5,16 +5,15 @@ name: CI
 
 on:
   push:
-    branches: [ development, master ]
+    branches: [development, master]
   pull_request:
-    branches: [ development, master ]
+    branches: [development, master]
 
 env:
   NX_CLOUD_DISTRIBUTED_EXECUTION: true
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     environment: lets-choose
@@ -25,17 +24,17 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Derive appropriate SHAs for base and head for `nx affected` commands
-      uses: nrwl/nx-set-shas@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: yarn install --frozen-lockfile
-    - run: yarn nx-cloud start-ci-run
-    - run: yarn run lint
-    - run: yarn run test
-    - run: yarn nx-cloud stop-all-agents
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn install --frozen-lockfile
+      - run: yarn nx-cloud start-ci-run
+      - run: yarn run lint
+      - run: yarn run test
+      - run: yarn nx-cloud stop-all-agents
