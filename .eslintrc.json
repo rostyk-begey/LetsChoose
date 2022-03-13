@@ -17,8 +17,82 @@
             "allow": [],
             "depConstraints": [
               {
-                "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
+                "sourceTag": "scope:api",
+                "onlyDependOnLibsWithTags": ["scope:api", "scope:common"]
+              },
+              {
+                "sourceTag": "scope:client",
+                "onlyDependOnLibsWithTags": ["scope:client", "scope:common"]
+              },
+              {
+                "sourceTag": "scope:common",
+                "onlyDependOnLibsWithTags": ["scope:common"]
+              },
+              {
+                "sourceTag": "api:abstract",
+                "onlyDependOnLibsWithTags": ["common:dto"]
+              },
+              {
+                "sourceTag": "api:featue",
+                "onlyDependOnLibsWithTags": [
+                  "api:feature",
+                  "api:data-access",
+                  "api:common",
+                  "api:config"
+                ]
+              },
+              {
+                "sourceTag": "api:data-access",
+                "onlyDependOnLibsWithTags": ["*"],
+                "notDependOnLibsWithTags": ["api:feature"]
+              },
+              {
+                "sourceTag": "api:common",
+                "onlyDependOnLibsWithTags": [
+                  "api:common",
+                  "api:abstract",
+                  "api:config"
+                ]
+              },
+              {
+                "sourceTag": "api:config",
+                "onlyDependOnLibsWithTags": ["api:config"]
+              },
+              {
+                "sourceTag": "client:app",
+                "onlyDependOnLibsWithTags": [
+                  "client:api",
+                  "client:components",
+                  "client:pages",
+                  "client:utils"
+                ]
+              },
+              {
+                "sourceTag": "client:pages",
+                "onlyDependOnLibsWithTags": ["*"],
+                "notDependOnLibsWithTags": ["client:app"]
+              },
+              {
+                "sourceTag": "client:components",
+                "onlyDependOnLibsWithTags": ["*"],
+                "notDependOnLibsWithTags": ["client:app", "client:pages"]
+              },
+              {
+                "sourceTag": "client:hooks",
+                "onlyDependOnLibsWithTags": ["*"],
+                "notDependOnLibsWithTags": [
+                  "client:app",
+                  "client:pages",
+                  "client:components"
+                ]
+              },
+              {
+                "sourceTag": "client:api",
+                "onlyDependOnLibsWithTags": [
+                  "client:api",
+                  "client:utils",
+                  "scope:common"
+                ]
               }
             ]
           }

@@ -38,7 +38,6 @@ import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import RecentActorsRoundedIcon from '@mui/icons-material/RecentActorsRounded';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import Skeleton from '@mui/material/Skeleton';
-import { AxiosResponse } from 'axios';
 import { NextSeo } from 'next-seo';
 import Image from 'next/image';
 import { useRouter } from 'next/router';

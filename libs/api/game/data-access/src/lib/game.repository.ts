@@ -2,12 +2,7 @@ import {
   AbstractMongooseRepository,
   IGameRepository,
 } from '@lets-choose/api/abstract';
-
-import {
-  CreateContestItemDto,
-  CreateGameDto,
-  GameDto,
-} from '@lets-choose/common/dto';
+import { CreateGameDto, GameDto } from '@lets-choose/common/dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';

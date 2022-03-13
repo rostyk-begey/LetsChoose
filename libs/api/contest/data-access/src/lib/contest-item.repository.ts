@@ -16,7 +16,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PipelineBuilder } from 'mongodb-pipeline-builder';
 import { Add, GreaterThan, Meta } from 'mongodb-pipeline-builder/operators';
-import { Model, Types } from 'mongoose';
+import { Model, PipelineStage, Types } from 'mongoose';
 import { ContestItem, ContestItemDocument } from './contest-item.entity';
 
 interface SortOptions {
@@ -141,7 +141,7 @@ export class ContestItemRepository
         page,
         perPage,
       }),
-    ];
+    ] as PipelineStage[];
   }
 
   public async paginate(

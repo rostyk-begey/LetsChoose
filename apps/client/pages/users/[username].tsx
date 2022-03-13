@@ -1,5 +1,4 @@
 import { UsersApi } from '@lets-choose/client/api';
-
 import { UserPage, UserPageProps } from '@lets-choose/client/pages';
 import { GetServerSideProps } from 'next';
 

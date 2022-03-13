@@ -1,7 +1,7 @@
 import { ContestItemDto } from '@lets-choose/common/dto';
+import { getMongooseTransformOptions } from '@lets-choose/api/common/utils';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import { getMongooseTransformOptions } from '@lets-choose/api/common/utils';
 import { Contest } from './contest.entity';
 
 export type ContestItemDocument = ContestItem & mongoose.Document;

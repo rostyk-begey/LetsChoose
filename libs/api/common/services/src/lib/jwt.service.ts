@@ -4,7 +4,6 @@ import {
   IJwtService,
   TokenPair,
 } from '@lets-choose/api/abstract';
-
 import { Config, JwtConfig } from '@lets-choose/api/config';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

@@ -61,7 +61,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:app"]
     },
     "api-abstract": {
       "root": "libs/api/abstract",
@@ -76,7 +76,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:abstract"]
     },
     "api-auth-feature": {
       "root": "libs/api/auth/feature",
@@ -99,7 +99,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:feature"]
     },
     "api-cloudinary": {
       "root": "libs/api/cloudinary",
@@ -122,7 +122,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:feature"]
     },
     "api-common-decorators": {
       "root": "libs/api/common/decorators",
@@ -137,7 +137,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:common"]
     },
     "api-common-pipes": {
       "root": "libs/api/common/pipes",
@@ -160,7 +160,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:common"]
     },
     "api-common-services": {
       "root": "libs/api/common/services",
@@ -183,7 +183,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:common"]
     },
     "api-common-utils": {
       "root": "libs/api/common/utils",
@@ -206,7 +206,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:common"]
     },
     "api-config": {
       "root": "libs/api/config",
@@ -221,7 +221,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:config"]
     },
     "api-contest-data-access": {
       "root": "libs/api/contest/data-access",
@@ -244,7 +244,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:data-access"]
     },
     "api-contest-feature": {
       "root": "libs/api/contest/feature",
@@ -267,7 +267,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:feature"]
     },
     "api-game-data-access": {
       "root": "libs/api/game/data-access",
@@ -290,7 +290,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:data-access"]
     },
     "api-game-feature": {
       "root": "libs/api/game/feature",
@@ -313,7 +313,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:feature"]
     },
     "api-health-feature": {
       "root": "libs/api/health/feature",
@@ -336,7 +336,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:feature"]
     },
     "api-mongoose": {
       "root": "libs/api/mongoose",
@@ -351,7 +351,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:feature"]
     },
     "api-testing-builders": {
       "root": "libs/api/testing/builders",
@@ -366,7 +366,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:feature"]
     },
     "api-testing-utils": {
       "root": "libs/api/testing/utils",
@@ -381,7 +381,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:testing-utils"]
     },
     "api-user-data-access": {
       "root": "libs/api/user/data-access",
@@ -404,7 +404,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:data-access"]
     },
     "api-user-feature": {
       "root": "libs/api/user/feature",
@@ -427,7 +427,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:api", "api:feature"]
     },
     "client": {
       "root": "apps/client",
@@ -482,7 +482,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:client", "client:app"]
     },
     "client-api": {
       "root": "libs/client/api",
@@ -504,7 +504,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:client", "client:api"]
     },
     "client-components": {
       "root": "libs/client/components",
@@ -557,7 +557,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:client", "client:components"]
     },
     "client-components-e2e": {
       "root": "apps/client-components-e2e",
@@ -583,7 +583,7 @@
           }
         }
       },
-      "tags": [],
+      "tags": ["scope:client", "client:app-e2e"],
       "implicitDependencies": ["client-components"]
     },
     "client-e2e": {
@@ -611,7 +611,7 @@
           }
         }
       },
-      "tags": [],
+      "tags": ["scope:client", "client:app-e2e"],
       "implicitDependencies": ["client"]
     },
     "client-hooks": {
@@ -634,7 +634,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:client", "client:hooks"]
     },
     "client-pages": {
       "root": "libs/client/pages",
@@ -656,7 +656,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:client", "client:pages"]
     },
     "client-utils": {
       "root": "libs/client/utils",
@@ -678,7 +678,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:client", "client:utils"]
     },
     "common-dto": {
       "root": "libs/common/dto",
@@ -692,7 +692,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:common", "common:dto"]
     },
     "common-utils": {
       "root": "libs/common/utils",
@@ -715,7 +715,7 @@
           }
         }
       },
-      "tags": []
+      "tags": ["scope:common", "common:utils"]
     }
   }
 }

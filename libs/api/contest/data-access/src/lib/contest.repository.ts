@@ -6,7 +6,6 @@ import {
   IRepositoryWithPagination,
 } from '@lets-choose/api/abstract';
 import { MongoosePaginationService } from '@lets-choose/api/common/services';
-import { getSearchPipelines } from '@lets-choose/api/common/utils';
 import {
   ContestDto,
   GetContestsQuery,
@@ -17,13 +16,8 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PipelineBuilder } from 'mongodb-pipeline-builder';
-import { OnlyPayload } from 'mongodb-pipeline-builder/helpers';
-import {
-  Expression,
-  LessThanEqual,
-  Meta,
-} from 'mongodb-pipeline-builder/operators';
-import { Model } from 'mongoose';
+import { Meta } from 'mongodb-pipeline-builder/operators';
+import { Model, PipelineStage } from 'mongoose';
 import { Contest, ContestDocument } from './contest.entity';
 
 @Injectable()
@@ -137,7 +131,7 @@ export class ContestRepository
         page,
         perPage,
       }),
-    ];
+    ] as PipelineStage[];
   }
 
   public async paginate(query: GetContestsQuery): Promise<GetContestsResponse> {
