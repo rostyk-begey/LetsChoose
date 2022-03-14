@@ -10,7 +10,7 @@ on:
     branches: [development, master]
 
 env:
-  NX_CLOUD_DISTRIBUTED_EXECUTION: true
+  NX_CLOUD_DISTRIBUTED_EXECUTION: 'true'
   NODE_OPTIONS: '--max_old_space_size=4096'
 
 jobs:
@@ -26,9 +26,9 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
-      - run: npm install
+      - run: yarn install
       - name: Start Nx Agent ${{ matrix.agent }}
-        run: npx nx-cloud start-agent
+        run: yarn nx-cloud start-agent
 
   main:
     runs-on: ubuntu-latest
@@ -44,13 +44,13 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
-      - run: npm install
+      - run: yarn install
       - name: Run verification
         uses: JamesHenry/parallel-bash-commands@v0.1
         with:
-          cmd1: npx nx affected --target=build --parallel=1
-          cmd2: npx nx affected --target=lint --parallel=3
-          cmd3: npx nx affected --target=test --parallel=3
-      - run: npx nx-cloud stop-all-agents
+          cmd1: yarn nx affected --target=build --parallel=1
+          cmd2: yarn nx affected --target=lint --parallel=3
+          cmd3: yarn nx affected --target=test --parallel=3
+      - run: yarn nx-cloud stop-all-agents
       - name: Tag main branch if all jobs succeed
         uses: nrwl/nx-tag-successful-ci-run@v1
