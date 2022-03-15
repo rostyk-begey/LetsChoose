@@ -35,7 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'pull_request' }}
     environment: lets-choose
-    needs: [agents]
     steps:
       - uses: actions/checkout@v2
         name: Checkout [main]
@@ -64,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'pull_request' }}
     environment: lets-choose
-    needs: [agents, verify]
+    needs: [verify]
     steps:
       - uses: actions/checkout@v2
         name: Checkout [main]
@@ -102,7 +101,7 @@ jobs:
     name: Stop Nx Cloud Agents
     runs-on: ubuntu-latest
     if: ${{ always() }}
-    needs: [agents, verify, push]
+    needs: [verify, push]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
