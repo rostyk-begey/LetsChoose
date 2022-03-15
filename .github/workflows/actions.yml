@@ -23,9 +23,10 @@ jobs:
         agent: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: '16'
+          cache: 'yarn'
       - run: yarn install
       - name: Start Nx Agent ${{ matrix.agent }}
         run: yarn nx-cloud start-agent
@@ -44,9 +45,10 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: '16'
+          cache: 'yarn'
       - run: yarn install
 
       - name: Run verification
@@ -73,9 +75,10 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: '16'
+          cache: 'yarn'
       - run: yarn install
 
       - name: Build
@@ -104,9 +107,10 @@ jobs:
     needs: [verify, push]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: '16'
+          cache: 'yarn'
       - run: yarn install
       - name: Stop Nx Cloud Agents
         run: yarn nx-cloud stop-all-agents
