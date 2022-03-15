@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        agent: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]
+        agent: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -30,27 +30,87 @@ jobs:
       - name: Start Nx Agent ${{ matrix.agent }}
         run: yarn nx-cloud start-agent
 
-  main:
+  varify:
+    name: Varify
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'pull_request' }}
     environment: lets-choose
+    needs: [agents]
     steps:
       - uses: actions/checkout@v2
         name: Checkout [main]
         with:
           fetch-depth: 0
+
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
+
       - uses: actions/setup-node@v1
         with:
           node-version: '16'
       - run: yarn install
+
       - name: Run verification
         uses: JamesHenry/parallel-bash-commands@v0.1
         with:
-          cmd1: yarn nx affected --target=build --parallel=1
-          cmd2: yarn nx affected --target=lint --parallel=3
-          cmd3: yarn nx affected --target=test --parallel=3
-      - run: yarn nx-cloud stop-all-agents
+          cmd1: yarn nx affected --target=lint --parallel
+          cmd2: yarn nx affected --target=test --parallel
+
+      - name: Deploy
+      - run: yarn nx affected --target=deploy --parallel=1
+
       - name: Tag main branch if all jobs succeed
         uses: nrwl/nx-tag-successful-ci-run@v1
+
+  push:
+    name: Push Docker images
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' }}
+    environment: lets-choose
+    needs: [agents, varify]
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout [main]
+        with:
+          fetch-depth: 0
+
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      - run: yarn install
+
+      - name: Build
+        uses: JamesHenry/parallel-bash-commands@v0.1
+        with:
+          cmd1: yarn nx affected --target=build --parallel
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push Docker images
+        run: yarn nx affected --target=deploy --parallel
+
+  stop-agents:
+    name: Stop Nx Cloud Agents
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: [agents, varify, push]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      - run: yarn install
+      - name: Stop Nx Cloud Agents
+        run: yarn nx-cloud stop-all-agents

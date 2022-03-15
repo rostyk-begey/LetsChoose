@@ -7,13 +7,10 @@
       "projectType": "application",
       "targets": {
         "deploy": {
-          "executor": "@nrwl/workspace:run-commands",
+          "executor": "@nx-tools/nx-docker:build",
           "options": {
-            "commands": [
-              "nx build api",
-              "docker build -f ./apps/api/Dockerfile . -t api"
-            ],
-            "parallel": false
+            "push": true,
+            "tags": ["public.ecr.aws/b0b7c6u0/lets-choose-api:latest"]
           }
         },
         "build": {
@@ -444,6 +441,13 @@
           },
           "configurations": {
             "production": {}
+          }
+        },
+        "deploy": {
+          "executor": "@nx-tools/nx-docker:build",
+          "options": {
+            "push": true,
+            "tags": ["public.ecr.aws/b0b7c6u0/lets-choose-client:latest"]
           }
         },
         "serve": {
