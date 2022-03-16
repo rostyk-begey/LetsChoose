@@ -98,7 +98,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Push Docker images
-        run: yarn nx affected --target=deploy --parallel
+        run: NX_CLOUD_DISTRIBUTED_EXECUTION=false yarn nx affected --target=deploy --parallel
 
   stop-agents:
     name: Stop Nx Cloud Agents

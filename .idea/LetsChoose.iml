@@ -16,6 +16,8 @@
       <excludeFolder url="file://$MODULE_DIR$/apps/client-old/out" />
       <excludeFolder url="file://$MODULE_DIR$/.yarn/cache" />
       <excludeFolder url="file://$MODULE_DIR$/uploads" />
+      <excludeFolder url="file://$MODULE_DIR$/.yarn/unplugged" />
+      <excludeFolder url="file://$MODULE_DIR$/.yarn/releases" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
