@@ -12,7 +12,6 @@ import { AppModule } from './app/app.module';
 
 async function bootstrap() {
   const logger = new Logger('Root');
-  // mongoose.set('debug', true);
 
   try {
     const app = await NestFactory.create(AppModule);
@@ -29,7 +28,6 @@ async function bootstrap() {
 
     const config = new DocumentBuilder()
       .setTitle("Let's choose api")
-      // .setDescription('The cats API description')
       .setVersion('1.0')
       .build();
     const document = SwaggerModule.createDocument(app, config);
