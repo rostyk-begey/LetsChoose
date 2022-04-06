@@ -1,0 +1,14 @@
+{
+  "root": "libs/common/dto",
+  "sourceRoot": "libs/common/dto/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/common/dto/**/*.ts"]
+      }
+    }
+  },
+  "tags": ["scope:common", "common:dto"]
+}

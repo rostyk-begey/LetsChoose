@@ -1,0 +1,15 @@
+{
+  "root": "libs/api/abstract",
+  "sourceRoot": "libs/api/abstract/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/api/abstract/**/*.ts"]
+      }
+    }
+  },
+  "tags": ["scope:api", "api:abstract"]
+}

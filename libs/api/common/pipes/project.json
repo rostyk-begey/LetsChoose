@@ -1,0 +1,23 @@
+{
+  "root": "libs/api/common/pipes",
+  "sourceRoot": "libs/api/common/pipes/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/api/common/pipes/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/api/common/pipes"],
+      "options": {
+        "jestConfig": "libs/api/common/pipes/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["scope:api", "api:common"]
+}

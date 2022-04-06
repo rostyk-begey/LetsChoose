@@ -1,0 +1,23 @@
+{
+  "root": "libs/api/contest/feature",
+  "sourceRoot": "libs/api/contest/feature/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/api/contest/feature/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/api/contest/feature"],
+      "options": {
+        "jestConfig": "libs/api/contest/feature/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["scope:api", "api:feature"]
+}

@@ -1,0 +1,22 @@
+{
+  "root": "libs/client/hooks",
+  "sourceRoot": "libs/client/hooks/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/client/hooks/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/client/hooks"],
+      "options": {
+        "jestConfig": "libs/client/hooks/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": ["scope:client", "client:hooks"]
+}

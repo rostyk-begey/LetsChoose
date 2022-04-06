@@ -1,0 +1,15 @@
+{
+  "root": "libs/api/mongoose",
+  "sourceRoot": "libs/api/mongoose/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/api/mongoose/**/*.ts"]
+      }
+    }
+  },
+  "tags": ["scope:api", "api:feature"]
+}

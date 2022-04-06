@@ -1,0 +1,15 @@
+{
+  "root": "libs/api/testing/builders",
+  "sourceRoot": "libs/api/testing/builders/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/api/testing/builders/**/*.ts"]
+      }
+    }
+  },
+  "tags": ["scope:api", "api:feature"]
+}
