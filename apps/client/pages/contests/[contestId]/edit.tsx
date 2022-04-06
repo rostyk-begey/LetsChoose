@@ -6,8 +6,6 @@ const contestApi = new ContestApi();
 
 export default EditContestPage;
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 export const getServerSideProps: GetServerSideProps<
   ContestPageProps,
   { contestId: string }

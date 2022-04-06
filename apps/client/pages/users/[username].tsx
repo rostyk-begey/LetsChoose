@@ -6,8 +6,6 @@ const usersApi = new UsersApi();
 
 export default UserPage;
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 export const getServerSideProps: GetServerSideProps<
   UserPageProps,
   { username: string }
