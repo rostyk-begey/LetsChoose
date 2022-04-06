@@ -6,7 +6,7 @@
     "test": "yarn nx run-many --target test --all --parallel",
     "build": "yarn nx run-many --target build --all --prod",
     "ci": "yarn lint && yarn test",
-    "prepare": "husky install"
+    "postinstall": "is-ci || husky install"
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.46.0",
@@ -128,6 +128,7 @@
     "google-auth-library": "^7.9.1",
     "helmet": "^4.6.0",
     "human-time": "^0.0.2",
+    "is-ci": "^3.0.1",
     "joi": "^17.4.2",
     "json-form-data": "^1.7.2",
     "json2mq": "^0.2.0",
