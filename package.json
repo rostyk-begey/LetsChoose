@@ -2,10 +2,6 @@
   "name": "lets-choose",
   "version": "1.0.0",
   "scripts": {
-    "lint": "yarn nx run-many --target lint --all --parallel",
-    "test": "yarn nx run-many --target test --all --parallel",
-    "build": "yarn nx run-many --target build --all --prod",
-    "ci": "yarn lint && yarn test",
     "postinstall": "is-ci || husky install"
   },
   "devDependencies": {

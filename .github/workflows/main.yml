@@ -1,0 +1,100 @@
+name: Main
+
+on:
+  push:
+    branches: [development, master]
+  pull_request:
+    branches: [development, master]
+
+env:
+  NX_CLOUD_DISTRIBUTED_EXECUTION: 'true'
+
+jobs:
+  agents:
+    name: Nx Cloud Agents
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        agent: [1, 2, 3, 4, 5]
+    steps:
+      - name: Get code to get access to custom our actions
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        uses: ./.github/actions/setup
+
+      - name: Start Nx Agent ${{ matrix.agent }}
+        run: yarn nx-cloud start-agent
+
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    environment: lets-choose
+    steps:
+      - name: Get code to get access to custom our actions
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        uses: ./.github/actions/setup
+
+      - run: yarn nx-cloud start-ci-run
+      - run: yarn nx format:check
+      - run: yarn nx affected:lint --parallel --max-parallel=5
+      - run: yarn nx affected:test --parallel --max-parallel=5
+
+      - name: Tag main branch if all jobs succeed
+        uses: nrwl/nx-tag-successful-ci-run@v1
+
+  push:
+    name: Push Docker images
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' }}
+    environment: lets-choose
+    needs: [verify]
+    steps:
+      - name: Get code to get access to custom our actions
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        uses: ./.github/actions/setup
+
+      - name: Build
+        run: yarn nx affected:build --max-parallel=5
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push Docker images
+        run: NX_CLOUD_DISTRIBUTED_EXECUTION=false yarn nx affected:deploy
+
+  stop-agents:
+    name: Stop Nx Cloud Agents
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: [verify, push]
+    steps:
+      - name: Get code to get access to custom our actions
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        uses: ./.github/actions/setup
+
+      - name: Stop Nx Cloud Agents
+        run: yarn nx-cloud stop-all-agents
