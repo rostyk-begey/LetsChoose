@@ -12,7 +12,9 @@ export abstract class Api {
   protected redirected = false;
 
   constructor(config: AxiosRequestConfig = {}) {
-    const baseURL = `${process.env.NEXT_PUBLIC_APP_URL}${ROUTES.API.INDEX}`;
+    const appURL =
+      process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_VERCEL_URL;
+    const baseURL = `${appURL}${ROUTES.API.INDEX}`;
 
     this.api = axios.create({
       baseURL,
