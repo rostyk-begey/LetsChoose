@@ -150,10 +150,6 @@ export const Page: React.FC<PageProps> = ({
                 avatar={avatar}
                 open={open}
                 collapsed={collapsed}
-                onLogout={async () => {
-                  remove();
-                  await refetchCurrentUser();
-                }}
               />
             )
           : undefined

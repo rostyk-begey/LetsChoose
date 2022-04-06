@@ -21,9 +21,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Skeleton from '@mui/material/Skeleton';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/router';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
-import { authApi } from '@lets-choose/client/hooks';
+import { authApi, userQueryKeys } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
 
 const PREFIX = 'Sidebar';
@@ -82,7 +82,6 @@ export interface SidebarProps {
   isLoading?: boolean;
   username: string;
   avatar?: string;
-  onLogout: () => void;
 }
 
 const MENU_ITEM_PREFIX = 'MenuItem';
@@ -137,12 +136,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
   open,
   collapsed,
   isLoading,
-  onLogout,
 }) => {
-  const { mutate: logout } = useMutation(authApi.logout, {
-    onSuccess: onLogout,
-  });
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const { mutate: logout } = useMutation(authApi.logout, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(userQueryKeys.session());
+    },
+  });
   const links: MenuLink[] = [
     {
       href: ROUTES.HOME,

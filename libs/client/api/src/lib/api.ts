@@ -1,6 +1,10 @@
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
 import { queryClient, ROUTES } from '@lets-choose/client/utils';
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import Router from 'next/router';
 
 export abstract class Api {
   protected readonly api: AxiosInstance;
@@ -29,34 +33,45 @@ export abstract class Api {
         const originalRequest = error.config;
 
         if (
-          error?.response?.status === 401 &&
-          !originalRequest._retry &&
-          originalRequest.url !== ROUTES.API.AUTH.REFRESH_TOKEN
+          error?.response?.status !== 401 ||
+          originalRequest._retry ||
+          originalRequest.url === ROUTES.API.AUTH.REFRESH_TOKEN ||
+          originalRequest.url === ROUTES.API.AUTH.LOGOUT
         ) {
-          originalRequest._retry = true;
-
-          return (
-            this.api
-              .post(ROUTES.API.AUTH.REFRESH_TOKEN)
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore TODO: ts-ignore
-              .then((res) => {
-                if (res.status === 201) {
-                  // return originalRequest object with Axios.
-                  return this.api(originalRequest);
-                }
-              })
-              .catch((err) => {
-                if (err?.response?.status === 401 && !this.redirected) {
-                  this.redirected = true;
-                  queryClient.removeQueries(['user', 'me'], { exact: true });
-                  Router.push(ROUTES.LOGIN);
-                }
-              })
-          );
+          return Promise.reject(error);
         }
-        return Promise.reject(error);
+
+        originalRequest._retry = true;
+
+        return this.api
+          .post(ROUTES.API.AUTH.REFRESH_TOKEN)
+          .then((response) =>
+            this.onRefreshTokenSuccess(response, originalRequest),
+          )
+          .catch(this.onRefreshTokenFailure);
       },
     );
+  }
+
+  private onRefreshTokenSuccess(
+    response: AxiosResponse,
+    originalRequest: AxiosRequestConfig,
+  ) {
+    if (response.status === 201) {
+      // return originalRequest object with Axios.
+      return this.api(originalRequest);
+    }
+
+    return response;
+  }
+
+  private onRefreshTokenFailure(err: AxiosError) {
+    if (err?.response?.status === 401 && !this.redirected) {
+      this.redirected = true;
+
+      queryClient.invalidateQueries([{ scope: 'users', entity: 'session' }], {
+        exact: true,
+      });
+    }
   }
 }

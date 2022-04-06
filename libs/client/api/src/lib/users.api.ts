@@ -6,6 +6,10 @@ import { Api } from './api';
 export class UsersApi extends Api {
   private readonly baseURL = ROUTES.API.USERS;
 
+  session = () => {
+    return this.find('me');
+  };
+
   find = (idOrUsername: string) => {
     return this.api.get<UserPublicDto>(`${this.baseURL}/${idOrUsername}`);
   };
