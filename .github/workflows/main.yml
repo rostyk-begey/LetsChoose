@@ -79,8 +79,15 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Login to Heroku
+        run: heroku container:login
+
       - name: Push Docker images
-        run: NX_CLOUD_DISTRIBUTED_EXECUTION=false yarn nx affected:deploy
+        run: >
+          NX_CLOUD_DISTRIBUTED_EXECUTION=false
+          yarn nx affected
+          --target=deploy
+          --exclude=client
 
   stop-agents:
     name: Stop Nx Cloud Agents
