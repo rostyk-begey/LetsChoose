@@ -13,11 +13,14 @@ export abstract class Api {
 
   constructor(config: AxiosRequestConfig = {}) {
     const appURL =
-      process.env.NEXT_PUBLIC_APP_URL ||
       process.env.NEXT_PUBLIC_VERCEL_URL ||
+      process.env.NEXT_PUBLIC_APP_URL ||
       '';
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
 
-    const baseURL = `${appURL}${ROUTES.API.INDEX}`;
+    const baseURL = `${protocol}://${appURL.split('//').pop()}${
+      ROUTES.API.INDEX
+    }`;
 
     this.api = axios.create({
       baseURL,
