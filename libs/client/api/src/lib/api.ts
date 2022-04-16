@@ -11,16 +11,27 @@ export abstract class Api {
 
   protected redirected = false;
 
-  constructor(config: AxiosRequestConfig = {}) {
+  get baseURL(): string {
+    if (typeof window !== 'undefined') {
+      return ROUTES.API.INDEX;
+    }
+
     const appURL =
-      process.env.NEXT_PUBLIC_APP_URL ||
       process.env.NEXT_PUBLIC_VERCEL_URL ||
+      process.env.NEXT_PUBLIC_APP_URL ||
       '';
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
 
-    const baseURL = `${appURL}${ROUTES.API.INDEX}`;
+    return `${protocol}://${appURL.split('//').pop()}${ROUTES.API.INDEX}`;
+  }
 
+  private set baseURL(url: string) {
+    return;
+  }
+
+  constructor(config: AxiosRequestConfig = {}) {
     this.api = axios.create({
-      baseURL,
+      baseURL: this.baseURL,
       headers: {
         accepts: 'application/json',
         'Content-Type': 'application/json',
