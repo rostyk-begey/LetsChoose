@@ -7,7 +7,7 @@ export const userBuilder = build<User>({
     avatar: fake((f) => f.image.avatar()),
     bio: fake((f) => f.lorem.paragraph(2)),
     confirmed: oneOf(true),
-    passwordVersion: fake((f) => f.random.number({ min: 1 })),
+    passwordVersion: fake((f) => f.datatype.number({ min: 1 })),
     id: sequence((i) => `user-${i}`),
     _id: sequence((i) => `user-${i}`),
     email: fake((f) => f.internet.email()),

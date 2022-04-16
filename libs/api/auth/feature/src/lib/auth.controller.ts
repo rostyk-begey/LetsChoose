@@ -200,14 +200,15 @@ export class AuthController {
   @Post(API_ROUTES.AUTH.REFRESH_TOKEN)
   // @UsePipes(new JoiValidationPipe(refreshTokenLocation, 'query'))
   public async refreshToken(
-    @Request() req: ExpressRequest,
+    @Request()
+    req: ExpressRequest<unknown, AuthTokenDto, { refreshToken?: string }>,
     @Response({ passthrough: true }) res: ExpressResponse,
     @Query('refreshTokenLocation') refreshTokenLocation: RefreshTokenLocation,
   ): Promise<AuthTokenDto> {
     let token;
 
     if (refreshTokenLocation === 'body') {
-      token = req.body.refreshToken;
+      token = req.body?.refreshToken;
     } else {
       token = req.cookies?.refreshToken;
     }

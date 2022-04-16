@@ -18,7 +18,6 @@ import { UserService } from './user.service';
 describe('UserController', () => {
   let controller: UserController;
   let user: User;
-  let mockRequest: any;
   let userService: IUserService;
 
   beforeEach(async () => {
@@ -51,10 +50,6 @@ describe('UserController', () => {
     userService = module.get<IUserService>(UserService);
 
     user = userBuilder();
-
-    mockRequest = {
-      user,
-    };
   });
 
   afterEach(() => {
@@ -67,7 +62,7 @@ describe('UserController', () => {
 
   describe('me', () => {
     it('should return current user', async () => {
-      const result = await controller.me(mockRequest);
+      const result = await controller.me(user);
 
       expect(result).toEqual(user);
     });
@@ -92,10 +87,7 @@ describe('UserController', () => {
       username: faker.internet.userName(),
       email: faker.internet.email(),
     };
-    const result = await controller.updateUserProfile(
-      mockRequest,
-      updateProfileDto,
-    );
+    const result = await controller.updateUserProfile(user, updateProfileDto);
 
     expect(result).toMatchObject(user);
     expect(updateUserProfileSpy).toHaveBeenCalledWith(
@@ -109,7 +101,7 @@ describe('UserController', () => {
       .spyOn(userService, 'removeUserById')
       .mockImplementationOnce(() => Promise.resolve());
 
-    const { message } = await controller.removeMe(mockRequest);
+    const { message } = await controller.removeMe(user);
     expect(message).toMatch(/deleted/);
     expect(removeUserByIdSpy).toHaveBeenCalledWith(user.id);
   });

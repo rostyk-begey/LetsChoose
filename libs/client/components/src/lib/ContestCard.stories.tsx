@@ -62,7 +62,7 @@ export const Primary = Template.bind({});
 Primary.args = {
   contest: {
     id: 'contestId',
-    games: faker.random.number(0),
+    games: faker.datatype.number(0),
     thumbnail: faker.image.image(),
     title: faker.lorem.sentence(),
     excerpt: faker.lorem.sentences(),

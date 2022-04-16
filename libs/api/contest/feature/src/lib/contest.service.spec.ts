@@ -34,16 +34,16 @@ import { ContestService, CreateContestsData } from './contest.service';
 const paginatedResultBuilder = build({
   fields: {
     items: [],
-    totalItems: fake((f) => f.random.number({ min: 1, precision: 1 })),
-    totalPages: fake((f) => f.random.number({ min: 1, precision: 1 })),
-    currentPage: fake((f) => f.random.number({ min: 1, precision: 1 })),
+    totalItems: fake((f) => f.datatype.number({ min: 1, precision: 1 })),
+    totalPages: fake((f) => f.datatype.number({ min: 1, precision: 1 })),
+    currentPage: fake((f) => f.datatype.number({ min: 1, precision: 1 })),
   },
 });
 
 const searchPaginationQueryBuilder = build<SearchQuery & PaginationQuery>({
   fields: {
-    page: fake((f) => f.random.number({ min: 1, precision: 1 })),
-    perPage: fake((f) => f.random.number({ min: 1, precision: 1 })),
+    page: fake((f) => f.datatype.number({ min: 1, precision: 1 })),
+    perPage: fake((f) => f.datatype.number({ min: 1, precision: 1 })),
     search: fake((f) => f.lorem.word()),
   },
 });

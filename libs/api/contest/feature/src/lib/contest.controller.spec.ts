@@ -1,4 +1,4 @@
-import { IContestService } from '@lets-choose/api/abstract';
+import { IContestService, UserDto } from '@lets-choose/api/abstract';
 import { CloudinaryService } from '@lets-choose/api/cloudinary';
 import {
   ContestItemRepository,
@@ -163,8 +163,8 @@ describe('ContestController', () => {
       .spyOn(contestService, 'createContest')
       .mockImplementation(() => Promise.resolve(contest));
     const response = await controller.create(contestData, files, {
-      user: { id: testUserId },
-    });
+      id: testUserId,
+    } as UserDto);
 
     expect(response).toMatchObject(contest);
     expect(contestService.createContest).toBeCalledWith(testUserId, {
@@ -207,8 +207,8 @@ describe('ContestController', () => {
       .spyOn(contestService, 'resetContest')
       .mockImplementation(() => Promise.resolve(contest));
     const response = await controller.reset(contestId, {
-      user: { id: contest.author },
-    });
+      id: contest.author,
+    } as UserDto);
 
     expect(response).toMatchObject(contest);
 
@@ -227,8 +227,8 @@ describe('ContestController', () => {
       .spyOn(contestService, 'removeContest')
       .mockImplementation(() => Promise.resolve());
     const response = await controller.remove(contestId, {
-      user: { id: contest.author },
-    });
+      id: contest.author,
+    } as UserDto);
 
     expect(response).toMatchObject({
       message: 'Contest successfully deleted!',

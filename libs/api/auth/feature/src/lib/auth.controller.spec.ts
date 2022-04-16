@@ -16,6 +16,7 @@ import {
   UpdateUserPasswordDto,
 } from '@lets-choose/common/dto';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Request as ExpressRequest } from 'express';
 import * as faker from 'faker';
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { emailServiceMock } from '../../../../common/services/src/lib/email.service.mock';
@@ -29,7 +30,6 @@ describe('AuthController', () => {
   let controller: AuthController;
   let authService: IAuthService;
   const { jwt: mockJwtConfig } = config();
-  let mockRequest;
   let mockResponse;
   let user: User;
   let mockAuthTokenDto: AuthTokenDto;
@@ -90,10 +90,6 @@ describe('AuthController', () => {
       userId: user.id,
       accessToken: faker.random.alphaNumeric(20),
       refreshToken: faker.random.alphaNumeric(20),
-    };
-
-    mockRequest = {
-      user,
     };
 
     mockResponse = {
@@ -232,11 +228,7 @@ describe('AuthController', () => {
         newPassword: faker.internet.password(),
       };
 
-      const result = await controller.updatePassword(
-        mockRequest,
-        mockResponse,
-        dto,
-      );
+      const result = await controller.updatePassword(user, mockResponse, dto);
 
       expect(result).toMatchObject(mockAuthTokenDto);
 
@@ -255,13 +247,14 @@ describe('AuthController', () => {
       body: { refreshToken: 'body.refreshToken' },
       cookies: { refreshToken: 'cookies.refreshToken' },
     };
+
     it.each`
       refreshTokenLocation
       ${'body'}
       ${'cookies'}
     `('should refresh token correctly', async ({ refreshTokenLocation }) => {
       const result = await controller.refreshToken(
-        req,
+        req as ExpressRequest<unknown, unknown, { refreshToken?: string }>,
         mockResponse,
         refreshTokenLocation,
       );
