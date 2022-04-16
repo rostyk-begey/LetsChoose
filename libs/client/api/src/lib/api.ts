@@ -17,7 +17,7 @@ export abstract class Api {
       process.env.NEXT_PUBLIC_VERCEL_URL ||
       '';
 
-    const baseURL = `http://${appURL.split('//').pop()}${ROUTES.API.INDEX}`;
+    const baseURL = `${appURL}${ROUTES.API.INDEX}`;
 
     this.api = axios.create({
       baseURL,
