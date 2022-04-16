@@ -13,8 +13,8 @@ export abstract class Api {
 
   constructor(config: AxiosRequestConfig = {}) {
     const appURL =
-      process.env.NEXT_PUBLIC_APP_URL ||
       process.env.NEXT_PUBLIC_VERCEL_URL ||
+      process.env.NEXT_PUBLIC_APP_URL ||
       '';
 
     const baseURL = `${appURL}${ROUTES.API.INDEX}`;
