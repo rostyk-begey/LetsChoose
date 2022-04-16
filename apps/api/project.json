@@ -7,10 +7,7 @@
       "executor": "@nx-tools/nx-docker:build",
       "options": {
         "push": true,
-        "tags": [
-          "public.ecr.aws/b0b7c6u0/lets-choose-api:latest",
-          "registry.heroku.com/lets-choose-api/web"
-        ]
+        "tags": ["registry.heroku.com/lets-choose-api/web"]
       }
     },
     "build": {
