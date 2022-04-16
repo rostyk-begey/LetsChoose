@@ -1,6 +1,7 @@
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 const {
+  PORT,
   USE_SSL,
   APP_URL,
   ACCESS_TOKEN_KEY,
@@ -59,7 +60,7 @@ export interface Config {
 
 export const loadConfig = () => {
   const config: Config = {
-    port: 5000,
+    port: Number(PORT) || 5000,
     environment: NODE_ENV as string,
     jwt: {
       accessTokenKey: ACCESS_TOKEN_KEY || 'accessToken',
