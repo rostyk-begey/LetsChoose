@@ -1,5 +1,5 @@
 {
-  "root": "apps/client",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/client",
   "projectType": "application",
   "targets": {
@@ -12,8 +12,12 @@
         "generatePackageJson": true
       },
       "configurations": {
-        "production": {}
-      }
+        "production": {},
+        "development": {
+          "outputPath": "apps/client"
+        }
+      },
+      "defaultConfiguration": "production"
     },
     "deploy": {
       "executor": "@nx-tools/nx-docker:build",
@@ -36,8 +40,13 @@
         "production": {
           "buildTarget": "client:build:production",
           "dev": false
+        },
+        "development": {
+          "buildTarget": "client:build:development",
+          "dev": true
         }
-      }
+      },
+      "defaultConfiguration": "development"
     },
     "export": {
       "executor": "@nrwl/next:export",
@@ -49,7 +58,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/client"],
       "options": {
-        "jestConfig": "apps/client/jest.config.js",
+        "jestConfig": "apps/client/jest.config.ts",
         "passWithNoTests": true
       }
     },

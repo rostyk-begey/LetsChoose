@@ -1,5 +1,5 @@
-module.exports = {
-  displayName: 'api-common-utils',
+export default {
+  displayName: 'api-user-data-access',
   preset: '../../../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -7,9 +7,10 @@ module.exports = {
     },
   },
   testEnvironment: 'node',
+  // testMatch: '"**/?(*.)+(mock|spec|test).[jt]s?(x)"',
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../../coverage/libs/api/common/utils',
+  coverageDirectory: '../../../../coverage/libs/api/user/data-access',
 };

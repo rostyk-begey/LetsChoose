@@ -30,5 +30,6 @@
     "client-utils": "libs/client/utils",
     "common-dto": "libs/common/dto",
     "common-utils": "libs/common/utils"
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

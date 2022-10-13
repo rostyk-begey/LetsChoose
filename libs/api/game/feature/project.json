@@ -1,5 +1,5 @@
 {
-  "root": "libs/api/game/feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api/game/feature/src",
   "projectType": "library",
   "targets": {
@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/api/game/feature"],
       "options": {
-        "jestConfig": "libs/api/game/feature/jest.config.js",
+        "jestConfig": "libs/api/game/feature/jest.config.ts",
         "passWithNoTests": true
       }
     }

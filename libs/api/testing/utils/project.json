@@ -1,5 +1,5 @@
 {
-  "root": "libs/api/testing/utils",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api/testing/utils/src",
   "projectType": "library",
   "targets": {

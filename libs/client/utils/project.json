@@ -1,5 +1,5 @@
 {
-  "root": "libs/client/utils",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/client/utils/src",
   "projectType": "library",
   "targets": {
@@ -13,7 +13,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/client/utils"],
       "options": {
-        "jestConfig": "libs/client/utils/jest.config.js",
+        "jestConfig": "libs/client/utils/jest.config.ts",
         "passWithNoTests": true
       }
     }

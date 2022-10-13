@@ -1,5 +1,5 @@
 {
-  "root": "libs/api/common/decorators",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api/common/decorators/src",
   "projectType": "library",
   "targets": {
