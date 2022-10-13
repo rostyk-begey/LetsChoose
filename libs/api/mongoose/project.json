@@ -1,5 +1,5 @@
 {
-  "root": "libs/api/mongoose",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api/mongoose/src",
   "projectType": "library",
   "targets": {

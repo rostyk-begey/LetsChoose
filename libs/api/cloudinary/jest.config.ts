@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   displayName: 'api-cloudinary',
   preset: '../../../jest.preset.js',
   globals: {
