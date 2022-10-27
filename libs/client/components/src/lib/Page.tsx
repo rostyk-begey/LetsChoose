@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import Tooltip from '@mui/material/Tooltip';
@@ -46,17 +46,18 @@ export interface PageProps {
   isLoading?: boolean;
   className?: string;
   subHeader?: ReactNode;
+  children: ReactNode | ReactNode[];
 }
 
 const disableOneTapPages = [ROUTES.FORGOT_PASSWORD, ROUTES.GAMES.INDEX];
 
-export const Page: React.FC<PageProps> = ({
+export const Page = ({
   withContestNavigation = false,
   children,
   className,
   subHeader,
   isLoading,
-}) => {
+}: PageProps) => {
   const {
     data: user,
     remove,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { ReactNode, useState, MouseEvent } from 'react';
 import { alpha } from '@mui/material';
 import { keyframes } from '@mui/system';
 import { ContestItemDto } from '@lets-choose/common/dto';
@@ -125,7 +125,13 @@ export interface TableRowProps {
   row: Row<ContestItemDto>;
 }
 
-const StatisticRow: React.FC<{ title: string }> = ({ title, children }) => (
+const StatisticRow = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode | ReactNode[];
+}) => (
   <MuiTableRow>
     <TableCell component="th" variant="head" scope="row">
       {title}
@@ -134,7 +140,7 @@ const StatisticRow: React.FC<{ title: string }> = ({ title, children }) => (
   </MuiTableRow>
 );
 
-export const TableRow: React.FC<TableRowProps> = ({ row }) => {
+export const TableRow = ({ row }: TableRowProps) => {
   const [open, setOpen] = useState(false);
   const {
     cells: [rank, image, ...cells],
@@ -151,7 +157,7 @@ export const TableRow: React.FC<TableRowProps> = ({ row }) => {
   const imageSrc = cloudinaryAspectRatio(image.value);
   const blurPreviewURL = cloudinaryBlurPreview(image.value);
 
-  const handleExpandToggleClick = (e: React.MouseEvent) => {
+  const handleExpandToggleClick = (e: MouseEvent) => {
     e.stopPropagation();
     setOpen((prev) => !prev);
   };

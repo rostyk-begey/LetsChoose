@@ -1,4 +1,3 @@
-import React from 'react';
 import { alpha } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -54,7 +53,7 @@ const Root = styled('div')(
   }),
 );
 
-export const Footer: React.FC = () => (
+export const Footer = () => (
   <Root>
     {/* TODO: update footer navigation */}
     {/*<NavMenu className={classes.navMenu}>*/}

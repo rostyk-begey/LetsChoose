@@ -5,7 +5,7 @@ import {
   useQuery,
   useInfiniteQuery,
   UseInfiniteQueryOptions,
-} from 'react-query';
+} from '@tanstack/react-query';
 import {
   ContestDto,
   GetContestsQuery,
@@ -13,7 +13,7 @@ import {
   GetItemsQuery,
   GetItemsResponse,
 } from '@lets-choose/common/dto';
-import { UseQueryOptions } from 'react-query';
+import { UseQueryOptions } from '@tanstack/react-query';
 
 export const contestApi = new ContestApi();
 

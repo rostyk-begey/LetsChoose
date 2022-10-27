@@ -1,4 +1,3 @@
-import React from 'react';
 import { styled } from '@mui/material/styles';
 import { NextSeo } from 'next-seo';
 import Typography from '@mui/material/Typography';
@@ -19,7 +18,7 @@ const StyledPage = styled(Page)({
   },
 });
 
-export const NotFoundPage: React.FC = () => {
+export const NotFoundPage = () => {
   return (
     <StyledPage>
       <NextSeo title="Not found" />

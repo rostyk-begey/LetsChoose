@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -25,7 +25,7 @@ export interface ContestGridProps {
 
 const perPage = 6;
 
-export const ContestGrid: React.FC<ContestGridProps> = ({ author }) => {
+export const ContestGrid = ({ author }: ContestGridProps) => {
   const [sortBy] = useQueryState('sortBy', 'POPULAR');
   const [search] = useQueryState('search', '');
   const { data, isLoading, fetchNextPage, hasNextPage, refetch } =
@@ -85,6 +85,8 @@ export const ContestGrid: React.FC<ContestGridProps> = ({ author }) => {
 
   return (
     <Container>
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
       <InfiniteScroll
         pageStart={0}
         loadMore={() => fetchNextPage()}

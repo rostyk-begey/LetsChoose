@@ -1,4 +1,3 @@
-import React from 'react';
 import { styled } from '@mui/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import json2mq from 'json2mq';
@@ -14,7 +13,7 @@ const StyledSubheader = styled(Subheader)({
   justifyContent: 'flex-end',
 });
 
-export const HomePage: React.FC = () => {
+export const HomePage = () => {
   const matchesMaxWidth1024 = useMediaQuery(
     json2mq({
       maxWidth: 1024,

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import { alpha, styled } from '@mui/material/styles';
@@ -39,6 +39,7 @@ export interface LayoutProps {
   ) => ReactNode;
   toolbarContent?: ReactNode;
   isLoading?: boolean;
+  children: ReactNode | ReactNode[];
 }
 
 const cozyScheme = getCozyScheme();
@@ -52,7 +53,7 @@ const SubheaderContainer = styled('div')(({ theme }) => ({
   },
 }));
 
-export const Layout: React.FC<LayoutProps> = ({
+export const Layout = ({
   title,
   subHeader,
   toolbarContent,
@@ -60,7 +61,7 @@ export const Layout: React.FC<LayoutProps> = ({
   primarySidebar,
   className,
   isLoading,
-}) => (
+}: LayoutProps) => (
   <Root
     scheme={{
       ...cozyScheme,
@@ -112,6 +113,8 @@ export const Layout: React.FC<LayoutProps> = ({
         >
           <Toolbar>
             <MuiEdgeTrigger target={{ anchor: 'left', field: 'open' }}>
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/* @ts-ignore */}
               {(open, setOpen) => (
                 <IconButton
                   color="inherit"
@@ -137,6 +140,8 @@ export const Layout: React.FC<LayoutProps> = ({
               {primarySidebar(leftEdgeSidebar)}
             </MuiSidebarContent>
             <MuiEdgeTrigger target={{ anchor: 'left', field: 'collapsed' }}>
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/* @ts-ignore */}
               {(collapsed, setCollapsed) => (
                 <Button
                   aria-label={`${collapsed ? 'expand' : 'collapse'} drawer`}

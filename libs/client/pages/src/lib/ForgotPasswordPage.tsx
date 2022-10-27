@@ -1,7 +1,6 @@
-import React from 'react';
 import { NextSeo } from 'next-seo';
 import { useForm, FormProvider } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import RouterLink from 'next/link';
 import { AuthForgotPasswordDto } from '@lets-choose/common/dto';
 import Grid from '@mui/material/Grid';
@@ -32,7 +31,7 @@ const inputs: Record<string, FormTextInputProps> = {
   },
 };
 
-export const ForgotPasswordPage: React.FC = () => {
+export const ForgotPasswordPage = () => {
   const { refetch: refetchCurrentUser } = useCurrentUser({
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,

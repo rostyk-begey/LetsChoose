@@ -1,5 +1,5 @@
 {
-  "root": "libs/api/health/feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api/health/feature/src",
   "projectType": "library",
   "targets": {
@@ -12,9 +12,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/api/health/feature"],
+      "outputs": ["{workspaceRoot}/coverage/libs/api/health/feature"],
       "options": {
-        "jestConfig": "libs/api/health/feature/jest.config.js",
+        "jestConfig": "libs/api/health/feature/jest.config.ts",
         "passWithNoTests": true
       }
     }

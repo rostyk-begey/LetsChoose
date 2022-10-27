@@ -1,9 +1,10 @@
-import React, { ElementType } from 'react';
+import { ElementType, ReactNode } from 'react';
 import { styled } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
 export interface InputWithIconProps {
   icon: ElementType;
+  children: ReactNode | ReactNode[];
 }
 
 const PREFIX = 'InputWithIcon';
@@ -22,10 +23,7 @@ const Root = styled('div')(({ theme }) => ({
   },
 }));
 
-export const InputWithIcon: React.FC<InputWithIconProps> = ({
-  icon: Icon,
-  children,
-}) => (
+export const InputWithIcon = ({ icon: Icon, children }: InputWithIconProps) => (
   <Root>
     <Grid container spacing={1} alignItems="center">
       <Grid item>

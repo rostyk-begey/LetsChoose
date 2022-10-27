@@ -1,4 +1,3 @@
-import React from 'react';
 import { styled } from '@mui/material/styles';
 import { ContestItemDto } from '@lets-choose/common/dto';
 import Card from '@mui/material/Card';
@@ -35,10 +34,7 @@ export interface GameCardProps {
   onClick?: () => void;
 }
 
-export const GameCard: React.FC<GameCardProps> = ({
-  item,
-  onClick = () => null,
-}) => {
+export const GameCard = ({ item, onClick = () => null }: GameCardProps) => {
   if (!item) {
     return null;
   }

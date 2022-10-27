@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
@@ -10,7 +10,11 @@ const StyledPage = styled(Page)(() => ({
   alignItems: 'center',
 }));
 
-export const PageWithForm: React.FC = ({ children }) => (
+export const PageWithForm = ({
+  children,
+}: {
+  children?: ReactNode | ReactNode[];
+}) => (
   <StyledPage>
     <Container>
       <Grid container justifyContent="center">

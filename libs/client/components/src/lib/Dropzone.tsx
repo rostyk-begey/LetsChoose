@@ -1,4 +1,3 @@
-import React from 'react';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import { alpha, styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -82,10 +81,7 @@ const Root = styled(Box)<{ withPreview?: boolean }>(
   }),
 );
 
-export const Dropzone: React.FC<DropzoneProps> = ({
-  dropzoneState,
-  previewImage,
-}) => (
+export const Dropzone = ({ dropzoneState, previewImage }: DropzoneProps) => (
   <Root {...dropzoneState.getRootProps()} withPreview={!!previewImage}>
     <input {...dropzoneState.getInputProps()} />
     <Box

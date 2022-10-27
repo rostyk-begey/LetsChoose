@@ -3,7 +3,7 @@ import { QueryKeyFactory } from '@lets-choose/client/utils';
 import { UserPublicDto } from '@lets-choose/common/dto';
 import { AxiosResponse } from 'axios';
 import { useRouter } from 'next/router';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 export const userApi = new UsersApi();
 

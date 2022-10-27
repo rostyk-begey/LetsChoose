@@ -1,4 +1,3 @@
-import React from 'react';
 import { alpha } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { UserPublicDto } from '@lets-choose/common/dto';
@@ -76,9 +75,9 @@ export interface ProfileCardProps {
   user: UserPublicDto;
 }
 
-export const ProfileCard: React.FC<ProfileCardProps> = ({
+export const ProfileCard = ({
   user: { username, avatar },
-}) => {
+}: ProfileCardProps) => {
   // const shadowStyles = useFadedShadowStyles();
   // const theme = useTheme();
   // const borderedGridStyles = useGutterBorderedGridStyles({

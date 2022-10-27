@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { ContestItemDto } from '@lets-choose/common/dto';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import MuiTable from '@mui/material/Table';
@@ -18,7 +18,7 @@ export interface TableProps {
   skeleton?: boolean;
 }
 
-export const Table: React.FC<TableProps> = ({ data, skeleton }) => {
+export const Table = ({ data, skeleton }: TableProps) => {
   const columns = useMemo(
     () =>
       [
@@ -114,6 +114,8 @@ export const Table: React.FC<TableProps> = ({ data, skeleton }) => {
               {headerGroup.headers.map((column) => (
                 // eslint-disable-next-line react/jsx-key
                 <TableCell {...column.getHeaderProps()}>
+                  {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                  {/* @ts-ignore */}
                   {column.render('Header')}
                 </TableCell>
               ))}

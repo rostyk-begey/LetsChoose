@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -6,7 +5,7 @@ import { AuthResetPasswordDto } from '@lets-choose/common/dto';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import {
   FormTextInputProps,
   AuthFormCard,
@@ -32,7 +31,7 @@ const inputs: Record<string, FormTextInputProps> = {
   },
 };
 
-export const ResetPasswordPage: React.FC = () => {
+export const ResetPasswordPage = () => {
   const router = useRouter();
   const token = (router?.query?.token as string) || '';
   const { mutate: resetPassword, isLoading } = useMutation(

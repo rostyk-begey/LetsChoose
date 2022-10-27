@@ -1,4 +1,4 @@
-import React, { useMemo, createContext, useState, useContext } from 'react';
+import { useMemo, createContext, useState, useContext, ReactNode } from 'react';
 import { themeOptions } from '@lets-choose/client/utils';
 import {
   ThemeProvider as MuiThemeProvider,
@@ -27,7 +27,11 @@ const isLocalStorageDarkTheme = (): boolean => {
   return window?.localStorage.getItem(DARK_THEME_KEY) === 'true';
 };
 
-export const ThemeProvider: React.FC = ({ children }) => {
+export const ThemeProvider = ({
+  children,
+}: {
+  children: ReactNode | ReactNode[];
+}) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [darkModeEnabled, setDarkModeEnabled] = useState<boolean | null>(
     typeof window !== 'undefined' ? isLocalStorageDarkTheme() : null,

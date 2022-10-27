@@ -1,4 +1,3 @@
-import React from 'react';
 import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite';
 import { Story, Meta } from '@storybook/react';
 import { DropdownButton, DropdownButtonProps } from './DropdownButton';

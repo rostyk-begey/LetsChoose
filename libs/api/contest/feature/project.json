@@ -1,5 +1,5 @@
 {
-  "root": "libs/api/contest/feature",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api/contest/feature/src",
   "projectType": "library",
   "targets": {
@@ -12,9 +12,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/api/contest/feature"],
+      "outputs": ["{workspaceRoot}/coverage/libs/api/contest/feature"],
       "options": {
-        "jestConfig": "libs/api/contest/feature/jest.config.js",
+        "jestConfig": "libs/api/contest/feature/jest.config.ts",
         "passWithNoTests": true
       }
     }

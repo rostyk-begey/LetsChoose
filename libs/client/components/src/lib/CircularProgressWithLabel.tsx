@@ -1,4 +1,3 @@
-import React from 'react';
 import CircularProgress, {
   CircularProgressProps,
 } from '@mui/material/CircularProgress';
@@ -9,9 +8,9 @@ export interface CircularProgressWithLabelProps extends CircularProgressProps {
   value: number;
 }
 
-export const CircularProgressWithLabel: React.FC<
-  CircularProgressWithLabelProps
-> = (props) => (
+export const CircularProgressWithLabel = (
+  props: CircularProgressWithLabelProps,
+) => (
   <Box position="relative" display="inline-flex">
     <CircularProgress variant="determinate" {...props} />
     <Box

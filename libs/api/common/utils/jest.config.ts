@@ -1,5 +1,5 @@
-module.exports = {
-  displayName: 'api-game-feature',
+export default {
+  displayName: 'api-common-utils',
   preset: '../../../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -11,5 +11,5 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../../coverage/libs/api/game/feature',
+  coverageDirectory: '../../../../coverage/libs/api/common/utils',
 };

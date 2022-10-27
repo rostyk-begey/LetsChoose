@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
@@ -274,9 +274,7 @@ export interface EditContestPageTemplateProps {
   withItemsUpload?: boolean;
 }
 
-export const EditContestPageTemplate: React.FC<
-  EditContestPageTemplateProps
-> = ({
+export const EditContestPageTemplate = ({
   title,
   isLoading = false,
   defaultThumbnail = '',
@@ -284,7 +282,7 @@ export const EditContestPageTemplate: React.FC<
   onSubmit,
   inputsDefaultValues,
   withItemsUpload,
-}) => {
+}: EditContestPageTemplateProps) => {
   const itemsState = useItemsState();
   const { items, addFiles } = itemsState;
   const { errors, setError, clearError } = useCustomErrors<
@@ -309,7 +307,7 @@ export const EditContestPageTemplate: React.FC<
   });
 
   const handleSubmit = useCallback(
-    (contestData) => {
+    (contestData: Record<string, unknown>) => {
       if (isLoading) return;
 
       if (!thumbnail && !defaultThumbnail) {

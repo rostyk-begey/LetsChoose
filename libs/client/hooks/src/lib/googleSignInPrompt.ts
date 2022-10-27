@@ -1,6 +1,6 @@
 import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { oneTapContainerId } from '@lets-choose/client/utils';
 import { authApi } from './api/auth';
 import { useCurrentUser } from './api/user';

@@ -1,5 +1,5 @@
 import { useConfirm } from 'material-ui-confirm';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, MouseEvent } from 'react';
 import {
   contestApi,
   useContestItemsInfinite,
@@ -46,7 +46,7 @@ import Image from 'next/image';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import SwipeableViews from 'react-swipeable-views';
 import clip from 'text-clipper';
 
@@ -219,7 +219,7 @@ const useContestItemsSlider = (contestId: string) => {
 const useMenu = () => {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuClick = (event: MouseEvent<HTMLElement>) => {
     setMenuAnchor(event.currentTarget);
   };
 
@@ -230,10 +230,7 @@ const useMenu = () => {
   return { menuAnchor, handleMenuClick, handleMenuClose };
 };
 
-export const ContestCard: React.FC<ContestCardProps> = ({
-  contest,
-  onDelete,
-}) => {
+export const ContestCard = ({ contest, onDelete }: ContestCardProps) => {
   const router = useRouter();
   const [isLinkCopied, setIsLinkCopied] = useState(false);
 
@@ -373,6 +370,8 @@ export const ContestCard: React.FC<ContestCardProps> = ({
         subheader={humanTime(new Date(createdAt))}
       />
       <RouterLink href={`${ROUTES.CONTESTS.INDEX}/${id}`}>
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/* @ts-ignore */}
         <SwipeableViews
           index={activeStep}
           onChangeIndex={handleStepChange}

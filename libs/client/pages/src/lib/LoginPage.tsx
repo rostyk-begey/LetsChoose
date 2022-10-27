@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSnackbar } from 'notistack';
 import { useRouter } from 'next/router';
 import { GoogleLoginResponse } from 'react-google-login';
@@ -20,7 +19,7 @@ import {
 } from '@lets-choose/client/components';
 import { useCurrentUser, authApi } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 const inputs: Record<string, FormTextInputProps> = {
   login: {
@@ -48,7 +47,7 @@ const inputs: Record<string, FormTextInputProps> = {
   },
 };
 
-export const LoginPage: React.FC = () => {
+export const LoginPage = () => {
   useCurrentUser({
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,

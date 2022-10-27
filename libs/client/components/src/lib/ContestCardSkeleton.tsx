@@ -1,4 +1,3 @@
-import React from 'react';
 import { Paper } from '@mui/material';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -8,7 +7,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Skeleton from '@mui/material/Skeleton';
 import { StyledCard, classes } from './ContestCard';
 
-export const ContestCardSkeleton: React.FC = () => (
+export const ContestCardSkeleton = () => (
   <StyledCard>
     <CardHeader
       className={classes.cardHeader}

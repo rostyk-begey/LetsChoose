@@ -1,4 +1,3 @@
-import React from 'react';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import { useFormContext, RegisterOptions, Controller } from 'react-hook-form';
 
@@ -8,11 +7,11 @@ export interface FormTextInputProps {
   fieldProps?: TextFieldProps;
 }
 
-export const FormTextInput: React.FC<FormTextInputProps> = ({
+export const FormTextInput = ({
   name,
   validation,
   fieldProps = {},
-}) => {
+}: FormTextInputProps) => {
   const {
     formState: {
       errors: { [name]: error = false },

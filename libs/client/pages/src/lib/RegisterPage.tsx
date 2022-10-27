@@ -1,4 +1,3 @@
-import React from 'react';
 import { NextSeo } from 'next-seo';
 import { useSnackbar } from 'notistack';
 import { AuthRegisterDto } from '@lets-choose/common/dto';
@@ -21,7 +20,7 @@ import {
 } from '@lets-choose/client/components';
 import { authApi, useCurrentUser } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 const inputs: Record<keyof AuthRegisterDto, FormTextInputProps> = {
   email: {
@@ -73,7 +72,7 @@ const inputs: Record<keyof AuthRegisterDto, FormTextInputProps> = {
   },
 };
 
-export const RegisterPage: React.FC = () => {
+export const RegisterPage = () => {
   const { refetch: refetchCurrentUser } = useCurrentUser({
     redirectTo: ROUTES.HOME,
     redirectIfFound: true,

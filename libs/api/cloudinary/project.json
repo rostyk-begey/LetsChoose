@@ -1,5 +1,5 @@
 {
-  "root": "libs/api/cloudinary",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api/cloudinary/src",
   "projectType": "library",
   "targets": {
@@ -12,9 +12,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/api/cloudinary"],
+      "outputs": ["{workspaceRoot}/coverage/libs/api/cloudinary"],
       "options": {
-        "jestConfig": "libs/api/cloudinary/jest.config.js",
+        "jestConfig": "libs/api/cloudinary/jest.config.ts",
         "passWithNoTests": true
       }
     }
