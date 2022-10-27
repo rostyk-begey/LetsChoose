@@ -1,4 +1,3 @@
-import React from 'react';
 import { styled } from '@mui/material/styles';
 import {
   createTheme,
@@ -19,7 +18,7 @@ import {
   Page,
   Subheader,
 } from '@lets-choose/client/components';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { SettingsPageSection } from './SettingsPageSection';
 
 const PREFIX = 'SettingsPage';
@@ -165,7 +164,7 @@ const inputs: Record<string, FormTextInputProps> = {
 
 const redTheme = createTheme({ palette: { primary: red } });
 
-export const SettingsPage: React.FC = () => {
+export const SettingsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const confirm = useConfirm();
   const {

@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import { styled } from '@mui/material/styles';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -21,7 +21,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Skeleton from '@mui/material/Skeleton';
 import RouterLink from 'next/link';
 import { useRouter } from 'next/router';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { authApi, userQueryKeys } from '@lets-choose/client/hooks';
 import { ROUTES } from '@lets-choose/client/utils';
@@ -127,16 +127,16 @@ interface MenuLink {
   href: string;
   active?: boolean;
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({
+export const Sidebar = ({
   username,
   avatar,
   open,
   collapsed,
   isLoading,
-}) => {
+}: SidebarProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { mutate: logout } = useMutation(authApi.logout, {

@@ -41,9 +41,8 @@ import Skeleton from '@mui/material/Skeleton';
 import { NextSeo } from 'next-seo';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Table } from './Table';
 
 const PREFIX = 'ContestPage';
@@ -228,7 +227,7 @@ export interface ContestPageProps {
   initialContest: ContestDto;
 }
 
-export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
+export const ContestPage = ({ initialContest }: ContestPageProps) => {
   const { id: contestId } = initialContest;
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
@@ -523,6 +522,8 @@ export const ContestPage: React.FC<ContestPageProps> = ({ initialContest }) => {
           </Grid>
           <Grid item xs={12}>
             <Card>
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/* @ts-ignore */}
               <InfiniteScroll
                 pageStart={0}
                 loadMore={() => fetchNextPage()}

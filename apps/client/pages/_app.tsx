@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { ThemeProvider } from '@lets-choose/client/components';
 import { queryClient } from '@lets-choose/client/utils';
@@ -13,8 +13,8 @@ import { DefaultSeo, DefaultSeoProps } from 'next-seo';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { SnackbarProvider } from 'notistack';
-import { QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import createEmotionCache from '../lib/createEmotionCache';
 
 export const url = 'https://lets-choose.herokuapp.com';
@@ -48,12 +48,12 @@ export interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
-const MyApp: React.FC<MyAppProps> = ({
+const MyApp = ({
   Component,
   pageProps,
   router,
   emotionCache = clientSideEmotionCache,
-}) => {
+}: MyAppProps) => {
   useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles) {

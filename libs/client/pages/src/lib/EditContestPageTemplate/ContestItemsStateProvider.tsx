@@ -1,4 +1,10 @@
-import React, { createContext, Reducer, useCallback, useReducer } from 'react';
+import {
+  createContext,
+  ReactNode,
+  Reducer,
+  useCallback,
+  useReducer,
+} from 'react';
 
 export interface BaseItem {
   title: string;
@@ -299,7 +305,7 @@ export const ItemsStateContext = createContext<UseItemsStateValue>(
   {} as UseItemsStateValue,
 );
 
-export const ItemsStateProvider: React.FC = ({ children }) => {
+export const ItemsStateProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ItemsStateContext.Provider value={useItemsState()}>
       {children}

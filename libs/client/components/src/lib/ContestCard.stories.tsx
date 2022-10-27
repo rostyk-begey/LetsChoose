@@ -1,9 +1,9 @@
-import React, { CSSProperties } from 'react';
+import { CSSProperties, DetailedHTMLProps, ImgHTMLAttributes } from 'react';
 import { queryClient } from '@lets-choose/client/utils';
 import { Meta, Story } from '@storybook/react';
 import faker from 'faker';
 import * as NextImage from 'next/image';
-import { QueryClientProvider } from 'react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { ContestCard, ContestCardProps } from './ContestCard';
 
 const nextImageContainerStyle: CSSProperties = {
@@ -18,8 +18,8 @@ const nextImageContainerStyle: CSSProperties = {
 Object.defineProperty(NextImage, 'default', {
   configurable: true,
   value: (
-    props: React.DetailedHTMLProps<
-      React.ImgHTMLAttributes<HTMLImageElement>,
+    props: DetailedHTMLProps<
+      ImgHTMLAttributes<HTMLImageElement>,
       HTMLImageElement
     >,
   ) => (

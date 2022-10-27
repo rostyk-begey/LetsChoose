@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
@@ -13,9 +13,9 @@ enum SORT_OPTIONS {
   NEWEST = 'NEWEST',
 }
 
-type InputCallback = (e: React.ChangeEvent<HTMLInputElement>) => void;
+type InputCallback = (e: ChangeEvent<HTMLInputElement>) => void;
 
-export const ContestNavigation: React.FC = () => {
+export const ContestNavigation = () => {
   const [sortBy, setSortBy] = useQueryState('sortBy', 'POPULAR');
   const [searchQuery, setSearchQuery] = useQueryState('search', '');
   const [search, setSearch] = useState<string>();

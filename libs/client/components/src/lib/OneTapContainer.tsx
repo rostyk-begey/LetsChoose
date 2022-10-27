@@ -1,8 +1,7 @@
-import React from 'react';
 import { oneTapContainerId } from '@lets-choose/client/utils';
 import { HEADER_HEIGHT } from './Layout/constants';
 
-export const OneTapContainer: React.FC = () => (
+export const OneTapContainer = () => (
   <div
     id={oneTapContainerId}
     data-prompt_parent_id={oneTapContainerId}

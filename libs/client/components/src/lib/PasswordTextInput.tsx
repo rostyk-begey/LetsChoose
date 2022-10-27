@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
@@ -6,17 +6,15 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { FormTextInput, FormTextInputProps } from './FormTextInput';
 
-export const PasswordTextInput: React.FC<FormTextInputProps> = ({
+export const PasswordTextInput = ({
   fieldProps,
   ...props
-}) => {
+}: FormTextInputProps) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const handleClickShowPassword = () => {
     setShowPassword((value) => !value);
   };
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 

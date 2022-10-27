@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { Children } from 'react';
+import { Children } from 'react';
 import { themeOptions } from '@lets-choose/client/utils';
 import createEmotionServer from '@emotion/server/create-instance';
 import { SimplePaletteColorOptions } from '@mui/material/styles';

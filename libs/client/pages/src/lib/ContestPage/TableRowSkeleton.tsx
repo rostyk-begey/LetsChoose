@@ -1,5 +1,4 @@
 import { imageSize } from '@lets-choose/client/utils';
-import React from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import TableCell from '@mui/material/TableCell';
@@ -8,11 +7,11 @@ import { imageWidth } from './constants';
 
 import { classes, TableRowProps, StyledRow } from './TableRow';
 
-export const TableRowSkeleton: React.FC<TableRowProps> = ({
+export const TableRowSkeleton = ({
   row: {
     cells: [rank, image, ...cells],
   },
-}) => {
+}: TableRowProps) => {
   const matchesMaxWidth960 = useMediaQuery(
     json2mq({
       maxWidth: 960,

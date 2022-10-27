@@ -1,5 +1,5 @@
 import { GameApi } from '@lets-choose/client/api';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 export const useGameApi = new GameApi();
 

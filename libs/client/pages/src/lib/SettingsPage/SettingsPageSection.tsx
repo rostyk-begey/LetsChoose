@@ -1,6 +1,6 @@
-import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Typography } from '@mui/material';
+import { ReactNode } from 'react';
 
 const PREFIX = 'SettingsPageSection';
 
@@ -39,14 +39,15 @@ const Root = styled('section')(({ theme }) => ({
 
 export interface SettingsPageSectionProps {
   name: string;
-  description?: React.ReactElement | string;
+  description?: ReactNode;
+  children: ReactNode | ReactNode[];
 }
 
-export const SettingsPageSection: React.FC<SettingsPageSectionProps> = ({
+export const SettingsPageSection = ({
   name,
   description,
   children,
-}) => (
+}: SettingsPageSectionProps) => (
   <Root>
     <div className={classes.info}>
       <Typography variant="h6" color="secondary">

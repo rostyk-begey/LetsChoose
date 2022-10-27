@@ -1,7 +1,6 @@
-import React from 'react';
 import { SORT_OPTIONS, UserPublicDto } from '@lets-choose/common/dto';
 import { NextSeo } from 'next-seo';
-import { styled, Theme } from '@mui/material';
+import { styled } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Divider from '@mui/material/Divider';
 import Skeleton from '@mui/material/Skeleton';
@@ -94,7 +93,7 @@ export interface UserPageProps {
   initialUser: UserPublicDto;
 }
 
-export const UserPage: React.FC<UserPageProps> = ({ initialUser }) => {
+export const UserPage = ({ initialUser }: UserPageProps) => {
   const { query: { username = initialUser.username } = {} } = useRouter() || {};
   const [sortBy] = useQueryState('sortBy', 'POPULAR');
   const [search] = useQueryState('search', '');

@@ -1,15 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { ROUTES } from '@lets-choose/client/utils';
 import { CreateContestData } from '@lets-choose/common/dto';
 import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { contestApi, useCurrentUser } from '@lets-choose/client/hooks';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { EditContestPageTemplate } from './EditContestPageTemplate';
 
-export const CreateContestPage: React.FC = () => {
+export const CreateContestPage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const { mutate: createContest, isLoading } = useMutation(contestApi.create, {

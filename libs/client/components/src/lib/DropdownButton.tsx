@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import Button, { ButtonProps } from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -13,17 +13,17 @@ export interface DropdownButtonProps {
   className?: string;
   mainButtonProps: ButtonProps;
   items: Array<{
-    content: React.ReactNode;
+    content: ReactNode;
     onClick: () => any;
     disabled?: boolean;
   }>;
 }
 
-export const DropdownButton: React.FC<DropdownButtonProps> = ({
+export const DropdownButton = ({
   className,
   mainButtonProps,
   items,
-}) => {
+}: DropdownButtonProps) => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
 

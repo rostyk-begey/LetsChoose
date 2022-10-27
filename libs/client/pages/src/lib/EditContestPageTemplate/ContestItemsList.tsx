@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import Box from '@mui/material/Box';
 import { alpha, styled } from '@mui/material/styles';
 import { Alert } from '@mui/material';
@@ -65,11 +65,11 @@ export interface ContestItemListProps {
   error?: { message: string };
 }
 
-export const ContestItemsList: React.FC<ContestItemListProps> = ({
+export const ContestItemsList = ({
   error,
   className,
   dropzoneState,
-}) => {
+}: ContestItemListProps) => {
   const { items } = useContext(ItemsStateContext);
 
   return (

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   contestApi,
   useContestFind,
@@ -9,13 +9,11 @@ import { UpdateContestData } from '@lets-choose/common/dto';
 import { NextSeo } from 'next-seo';
 import { NextRouter, useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { ContestPageProps } from './ContestPage';
 import { EditContestPageTemplate } from './EditContestPageTemplate';
 
-export const EditContestPage: React.FC<ContestPageProps> = ({
-  initialContest,
-}) => {
+export const EditContestPage = ({ initialContest }: ContestPageProps) => {
   const { query: { contestId = initialContest.id } = {}, ...router } =
     useRouter();
   const { enqueueSnackbar } = useSnackbar();

@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Page, Subheader } from '@lets-choose/client/components';
 import { styled } from '@mui/material/styles';
 import {
@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import classNames from 'classnames';
 import { NextRouter, useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { GameCard } from './GameCard';
 
@@ -77,7 +77,7 @@ export interface GamePageProps {
   initialGame: GameDto;
 }
 
-export const GamePage: React.FC<GamePageProps> = ({ initialGame }) => {
+export const GamePage = ({ initialGame }: GamePageProps) => {
   const { id: gameId } = initialGame;
   const router = useRouter();
   const inAnimations = getAnimationClassNames();

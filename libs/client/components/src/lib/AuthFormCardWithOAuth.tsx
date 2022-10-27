@@ -1,4 +1,3 @@
-import React from 'react';
 import { styled } from '@mui/material/styles';
 import {
   GoogleLoginResponse,
@@ -47,12 +46,12 @@ export interface AuthFormCardWithOAuthProps extends AuthFormCardProps {
 
 const googleIconHeight = 42;
 
-export const AuthFormCardWithOAuth: React.FC<AuthFormCardWithOAuthProps> = ({
+export const AuthFormCardWithOAuth = ({
   onOAuthSuccess,
   googleButtonLabel,
   cardAfter,
   ...props
-}) => {
+}: AuthFormCardWithOAuthProps) => {
   const { signIn } = useGoogleLogin({
     onSuccess: onOAuthSuccess,
     clientId: process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID as string,

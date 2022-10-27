@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import Box from '@mui/material/Box';
 import { Subheader as MuiSubheader } from '@mui-treasury/layout';
 import classNames from 'classnames';
@@ -6,13 +6,14 @@ import classNames from 'classnames';
 export interface SubheaderProps {
   animated?: boolean;
   className?: string;
+  children: ReactNode | ReactNode[];
 }
 
-export const Subheader: React.FC<SubheaderProps> = ({
+export const Subheader = ({
   className,
   children,
   animated,
-}) => (
+}: SubheaderProps) => (
   <MuiSubheader
     sx={{
       backgroundColor: 'background.paper',

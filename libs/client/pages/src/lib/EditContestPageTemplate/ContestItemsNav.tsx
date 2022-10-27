@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { styled } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Card from '@mui/material/Card';
@@ -73,10 +73,10 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-export const ContestItemsNav: React.FC<ContestItemsNavProps> = ({
+export const ContestItemsNav = ({
   className,
   onAddItemsClick,
-}) => {
+}: ContestItemsNavProps) => {
   const matchesMinWidth600 = useMediaQuery(
     json2mq({
       minWidth: 600,

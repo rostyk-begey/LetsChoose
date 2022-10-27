@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
@@ -12,16 +12,17 @@ export interface AuthFormCardProps {
   onSubmit: () => void;
   submitDisabled?: boolean;
   cardAfter: ReactNode;
+  children: ReactNode | ReactNode[];
 }
 
-export const AuthFormCard: React.FC<AuthFormCardProps> = ({
+export const AuthFormCard = ({
   title,
   submitButtonText,
   onSubmit,
   submitDisabled,
   cardAfter,
   children,
-}) => (
+}: AuthFormCardProps) => (
   <Card
     component="form"
     onSubmit={onSubmit}

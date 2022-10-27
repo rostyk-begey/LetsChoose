@@ -1,5 +1,5 @@
 import { DndTypes } from '@lets-choose/client/utils';
-import React, {
+import {
   CSSProperties,
   memo,
   useRef,
@@ -164,8 +164,8 @@ interface DragItem {
   type: string;
 }
 
-export const ContestItem: React.FC<ContestItemProps> = memo(
-  ({ id, index, img: image, title }) => {
+export const ContestItem = memo(
+  ({ id, index, img: image, title }: ContestItemProps) => {
     const rootRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLDivElement>(null);
     const {
